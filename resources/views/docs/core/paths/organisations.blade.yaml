@@ -2,6 +2,19 @@
 root:
   get:
     tags: [Organisations]
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/organisation.yaml
 
   post:
     tags: [Organisations]
@@ -34,3 +47,9 @@ nested:
 
   delete:
     tags: [Organisations]
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
