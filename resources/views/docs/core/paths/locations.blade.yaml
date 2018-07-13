@@ -1,0 +1,18 @@
+# /locations
+root:
+  get:
+    tags: [Locations]
+
+  post:
+    tags: [Locations]
+
+# /locations/{location}
+nested:
+  get:
+    tags: [Locations]
+
+  put:
+    tags: [Locations]
+
+  delete:
+    tags: [Locations]

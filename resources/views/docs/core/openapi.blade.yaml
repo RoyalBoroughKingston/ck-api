@@ -13,101 +13,46 @@ servers:
 
 paths:
   /locations:
-    get:
-      tags: [Locations]
-    post:
-      tags: [Locations]
+    $ref: /docs/core/paths/locations.yaml#/root
   /locations/{location}:
-    get:
-      tags: [Locations]
-    put:
-      tags: [Locations]
-    delete:
-      tags: [Locations]
+    $ref: /docs/core/paths/locations.yaml#/nested
 
   /organisations:
-    get:
-      tags: [Organisations]
-    post:
-      tags: [Organisations]
+    $ref: /docs/core/paths/organisations.yaml#/root
   /organisations/{organisation}:
-    get:
-      tags: [Organisations]
-    put:
-      tags: [Organisations]
-    delete:
-      tags: [Organisations]
+    $ref: /docs/core/paths/organisations.yaml#/nested
 
   /referrals:
-    get:
-      tags: [Referrals]
+    $ref: /docs/core/paths/referrals.yaml#/root
   /referrals/{referral}:
-    get:
-      tags: [Referrals]
-    put:
-      tags: [Referrals]
-    delete:
-      tags: [Referrals]
+    $ref: /docs/core/paths/referrals.yaml#/nested
   /services/{service}/referrals:
-    post:
-      tags: [Referrals]
+    $ref: /docs/core/paths/referrals.yaml#/services
 
   /report-schedules:
-    get:
-      tags: [Report Schedules]
-    post:
-      tags: [Report Schedules]
+    $ref: /docs/core/paths/report-schedules.yaml#/root
   /report-schedules/{report_schedule}:
-    get:
-      tags: [Report Schedules]
-    put:
-      tags: [Report Schedules]
-    delete:
-      tags: [Report Schedules]
+    $ref: /docs/core/paths/report-schedules.yaml#/nested
 
   /reports:
-    get:
-      tags: [Reports]
-    post:
-      tags: [Reports]
+    $ref: /docs/core/paths/reports.yaml#/root
   /reports/{report}:
-    get:
-      tags: [Reports]
-    delete:
-      tags: [Reports]
+    $ref: /docs/core/paths/reports.yaml#/nested
   /reports/{report}/download:
-    get:
-      tags: [Reports]
+    $ref: /docs/core/paths/reports.yaml#/download
 
   /search:
-    post:
-      tags: [Search]
+    $ref: /docs/core/paths/search.yaml#/root
 
   /services:
-    get:
-      tags: [Services]
-    post:
-      tags: [Services]
+    $ref: /docs/core/paths/services.yaml#/root
   /services/{service}:
-    get:
-      tags: [Services]
-    put:
-      tags: [Services]
-    delete:
-      tags: [Services]
+    $ref: /docs/core/paths/services.yaml#/nested
 
   /users:
-    get:
-      tags: [Users]
-    post:
-      tags: [Users]
+    $ref: /docs/core/paths/users.yaml#/root
   /users/{user}:
-    get:
-      tags: [Users]
-    put:
-      tags: [Users]
-    delete:
-      tags: [Users]
+    $ref: /docs/core/paths/users.yaml#/nested
 
 components:
   securitySchemes:

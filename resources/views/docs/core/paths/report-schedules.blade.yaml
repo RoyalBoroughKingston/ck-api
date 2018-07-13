@@ -1,0 +1,18 @@
+# /report-schedules
+root:
+  get:
+    tags: [Report Schedules]
+
+  post:
+    tags: [Report Schedules]
+
+# /report-schedules/{report-schedule}
+nested:
+  get:
+    tags: [Report Schedules]
+
+  put:
+    tags: [Report Schedules]
+
+  delete:
+    tags: [Report Schedules]

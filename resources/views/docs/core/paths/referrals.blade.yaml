@@ -1,0 +1,20 @@
+# /referrals
+root:
+  get:
+    tags: [Referrals]
+
+# /referrals/{referral}
+nested:
+  get:
+    tags: [Referrals]
+
+  put:
+    tags: [Referrals]
+
+  delete:
+    tags: [Referrals]
+
+# /services/{service}/referrals
+services:
+  post:
+    tags: [Referrals]

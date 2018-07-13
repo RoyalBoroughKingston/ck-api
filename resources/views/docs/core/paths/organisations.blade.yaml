@@ -1,0 +1,18 @@
+# /organisations
+root:
+  get:
+    tags: [Organisations]
+
+  post:
+    tags: [Organisations]
+
+# /organisations/{organisation}
+nested:
+  get:
+    tags: [Organisations]
+
+  put:
+    tags: [Organisations]
+
+  delete:
+    tags: [Organisations]

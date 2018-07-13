@@ -1,0 +1,18 @@
+# /users
+root:
+  get:
+    tags: [Users]
+
+  post:
+    tags: [Users]
+
+# /users/{user}
+nested:
+  get:
+    tags: [Users]
+
+  put:
+    tags: [Users]
+
+  delete:
+    tags: [Users]

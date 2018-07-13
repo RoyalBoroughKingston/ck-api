@@ -1,0 +1,20 @@
+# /reports
+root:
+  get:
+    tags: [Reports]
+
+  post:
+    tags: [Reports]
+
+# /reports/{report}
+nested:
+  get:
+    tags: [Reports]
+
+  delete:
+    tags: [Reports]
+
+# /reports/{report}/download
+download:
+  get:
+    tags: [Reports]

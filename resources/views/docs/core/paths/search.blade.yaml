@@ -1,0 +1,4 @@
+# /search
+root:
+  post:
+    tags: [Search]

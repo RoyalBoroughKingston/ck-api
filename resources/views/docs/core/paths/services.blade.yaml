@@ -1,0 +1,18 @@
+# /services
+root:
+  get:
+    tags: [Services]
+
+  post:
+    tags: [Services]
+
+# /services/{service}
+nested:
+  get:
+    tags: [Services]
+
+  put:
+    tags: [Services]
+
+  delete:
+    tags: [Services]
