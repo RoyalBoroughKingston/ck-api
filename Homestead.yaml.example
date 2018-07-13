@@ -1,0 +1,20 @@
+ip: 192.168.10.12
+memory: 2048
+cpus: 1
+provider: virtualbox
+authorize: ~/.ssh/id_rsa.pub
+keys:
+    - ~/.ssh/id_rsa
+folders:
+    -
+        map: ~/Sites/cwk-api
+        to: /home/vagrant/cwk-api
+sites:
+    -
+        map: api.connectwellkingston.test
+        to: /home/vagrant/cwk-api/public
+databases:
+    - cwk_dev
+    - cwk_testing
+name: cwk-api
+hostname: cwk-api
