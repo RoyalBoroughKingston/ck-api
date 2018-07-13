@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +13,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/docs', 'DocsController@index')
+    ->name('docs.index');
+
+Route::get('/docs/{path}', 'DocsController@show')
+    ->where('path', '.*(.yaml)')
+    ->name('docs.show');

@@ -1,0 +1,28 @@
+openapi: 3.0.1
+
+info:
+  title: {{ config('app.name') }} Open Referral API Specification
+  description: For using the Open Referral {{ config('app.name') }} API
+  version: v1
+  contact:
+    name: Ayup Digital
+    url: https://ayup.agency
+
+servers:
+- url: {{ url('v1') }}
+
+paths:
+  /test:
+    get:
+      tags:
+        - Test
+
+security: []
+
+tags:
+  - name: Test
+    description: Lorem
+
+externalDocs:
+  description: Open Referral Docs
+  url: https://openreferral.readthedocs.io/

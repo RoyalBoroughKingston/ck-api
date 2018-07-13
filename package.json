@@ -18,5 +18,9 @@
         "laravel-mix": "^2.0",
         "lodash": "^4.17.4",
         "vue": "^2.5.7"
+    },
+    "dependencies": {
+        "swagger-ui": "^3.17.3",
+        "swagger-ui-themes": "^3.0.0"
     }
 }

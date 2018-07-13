@@ -1,0 +1,44 @@
+// Variables.
+$light-grey: #ececec;
+
+// @import "~swagger-ui/dist/swagger-ui.css";
+@import "~swagger-ui-themes/themes/3.x/theme-material.css";
+
+.swagger-ui .opblock .opblock-section-header {
+  background-color: $light-grey;
+  justify-content: space-between;
+}
+
+.swagger-ui .opblock .opblock-summary-description {
+  margin-left: 1rem;
+  text-decoration: underline;
+}
+
+.swagger-ui .opblock-body pre {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.swagger-ui .tab li:first-of-type:after {
+  display: none;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+code {
+  background-color: $light-grey;
+  padding: .1rem .3rem;
+  border-radius: 3px;
+}
+
+hr {
+  border: 1px solid $light-grey;
+  margin: 1rem 0;
+}
+
+.hidden {
+  display: none;
+}

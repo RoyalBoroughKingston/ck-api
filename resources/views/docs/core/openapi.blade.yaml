@@ -1,0 +1,37 @@
+openapi: 3.0.1
+
+info:
+  title: {{ config('app.name') }} Core API Specification
+  description: For using the Core {{ config('app.name') }} API
+  version: v1
+  contact:
+    name: Ayup Digital
+    url: https://ayup.agency
+
+servers:
+- url: {{ url('v1') }}
+
+paths:
+  /test:
+    get:
+      tags:
+        - Test
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: {{ url('/oauth/token') }}
+
+security:
+  - OAuth2: []
+
+tags:
+  - name: Test
+    description: Lorem
+
+externalDocs:
+  description: GitHub Wiki
+  url: https://github.com/RoyalBoroughKingston/cwk-api/wiki
