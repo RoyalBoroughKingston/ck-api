@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ mix('/css/docs.css') }}">
 </head>
 <body>
-    <div id="app">
+    <div class="app">
         <nav class="sidebar">
             <ul>
                 <li><a class="sidebar-link" href="#core-api">Core API</a></li>
