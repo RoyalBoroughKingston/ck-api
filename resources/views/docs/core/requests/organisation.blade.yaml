@@ -1,0 +1,21 @@
+store:
+  type: object
+  required:
+    - name
+    - email
+    - phone
+  properties:
+    name:
+      type: string
+    description:
+      type: string
+    url:
+      type: string
+    email:
+      type: string
+    phone:
+      type: string
+
+update:
+  allOf:
+    - $ref: "#/store"

@@ -2,6 +2,7 @@
 root:
   get:
     tags: [Organisations]
+    summary: List all the organisations
     responses:
       200:
         content:
@@ -18,6 +19,13 @@ root:
 
   post:
     tags: [Organisations]
+    summary: Create an organisation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/organisation.yaml#/store
     responses:
       200:
         content:
@@ -29,6 +37,15 @@ root:
 nested:
   get:
     tags: [Organisations]
+    summary: Get a specific organisation
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
@@ -38,6 +55,21 @@ nested:
 
   put:
     tags: [Organisations]
+    summary: Update a specific organisation
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/organisation.yaml#/update
     responses:
       200:
         content:
@@ -47,6 +79,15 @@ nested:
 
   delete:
     tags: [Organisations]
+    summary: Delete a specific organisation
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
