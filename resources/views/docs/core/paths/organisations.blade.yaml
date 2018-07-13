@@ -5,14 +5,32 @@ root:
 
   post:
     tags: [Organisations]
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/organisation.yaml
 
 # /organisations/{organisation}
 nested:
   get:
     tags: [Organisations]
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/organisation.yaml
 
   put:
     tags: [Organisations]
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/organisation.yaml
 
   delete:
     tags: [Organisations]
