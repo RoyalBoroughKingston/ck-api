@@ -36,7 +36,7 @@ const app = {
 
     bindEvents() {
         const self = this;
-        $('.sidebar-link').on('click', function (event) {
+        $('.sidebar--link').on('click', function (event) {
             event.preventDefault();
             const id = $(this).attr('href');
             self.onSidebarLinkClick(id);
@@ -44,7 +44,9 @@ const app = {
     },
 
     onSidebarLinkClick(id) {
-        $('.swagger-ui__container').addClass('hidden');
+        $('.sidebar--link').removeClass('sidebar--link__active');
+        $(`.sidebar--link[href="${id}"]`).addClass('sidebar--link__active');
+        $('.docs__container').addClass('hidden');
         $(id).removeClass('hidden');
 
         const doc = this.getDocFromId(id);
@@ -65,7 +67,6 @@ const app = {
                 break
             default:
                 console.error(`The ID [${id}] does not correspond to any doc`);
-
         }
 
         return doc;

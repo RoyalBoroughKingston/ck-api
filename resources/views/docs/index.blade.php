@@ -10,15 +10,16 @@
 <body>
     <div class="app">
         <nav class="sidebar">
-            <ul>
-                <li><a class="sidebar-link" href="#core-api">Core API</a></li>
-                <li><a class="sidebar-link" href="#open-referral-api">Open Referral API</a></li>
+            <h2>Docs</h2>
+            <ul class="sidebar--list">
+                <li><a class="sidebar--link sidebar--link__active" href="#core-api">Core API</a></li>
+                <li><a class="sidebar--link" href="#open-referral-api">Open Referral API</a></li>
             </ul>
         </nav>
 
-        <main class="swagger-ui">
-            <div id="core-api" class="swagger-ui__container"></div>
-            <div id="open-referral-api" class="swagger-ui__container hidden"></div>
+        <main class="docs">
+            <div id="core-api" class="docs__container"></div>
+            <div id="open-referral-api" class="docs__container hidden"></div>
         </main>
     </div>
 

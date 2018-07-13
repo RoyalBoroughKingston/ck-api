@@ -1,67 +1,95 @@
 // Variables.
 $light-grey: #ececec;
-
-// @import "~swagger-ui/dist/swagger-ui.css";
-@import "~swagger-ui-themes/themes/3.x/theme-material.css";
-
-.swagger-ui .opblock .opblock-section-header {
-  background-color: $light-grey;
-  justify-content: space-between;
-}
-
-.swagger-ui .opblock .opblock-summary-description {
-  margin-left: 1rem;
-  text-decoration: underline;
-}
-
-.swagger-ui .opblock-body pre {
-  font-weight: normal;
-  font-size: 14px;
-}
-
-.swagger-ui .tab li:first-of-type:after {
-  display: none;
-}
+$medium-grey: #d4d4d4;
+$dark-grey: #545454;
 
 * {
   box-sizing: border-box;
 }
 
-html, body {
-  min-height: 100vh;
-  height: 100%;
-}
-
 html {
+  height: 100%;
   font-size: 16px;
   line-height: 1.5;
 }
 
-code {
-  background-color: $light-grey;
-  padding: .1rem .3rem;
-  border-radius: 3px;
-}
-
-hr {
-  border: 1px solid $light-grey;
-  margin: 1rem 0;
-}
-
-.hidden {
-  display: none;
+body {
+  min-height: 100%;
 }
 
 .app {
-  height: 100%;
+  min-height: 100vh;
   display: flex;
 }
 
 .sidebar {
   flex: 1;
+  padding: 2rem;
   background-color: $light-grey;
+
+  .sidebar--list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar--link {
+    color: $dark-grey;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 300;
+    letter-spacing: .1rem;
+    display: block;
+    border-left: 5px solid $medium-grey;
+    margin: 0 -2rem;
+    padding: 1rem 2rem;
+    padding-left: calc(2rem - 5px);
+
+    &.sidebar--link__active {
+      border-color: $dark-grey;
+      font-weight: 400;
+    }
+  }
 }
 
-.swagger-ui {
+.docs {
   flex: 4;
+  padding: 2rem;
+
+  // @import "~swagger-ui/dist/swagger-ui.css";
+  @import "~swagger-ui-themes/themes/3.x/theme-material.css";
+
+  .swagger-ui .opblock .opblock-section-header {
+    background-color: $light-grey;
+    justify-content: space-between;
+  }
+
+  .swagger-ui .opblock .opblock-summary-description {
+    margin-left: 1rem;
+    text-decoration: underline;
+  }
+
+  .swagger-ui .opblock-body pre {
+    font-weight: normal;
+    font-size: 14px;
+  }
+
+  .swagger-ui .tab li:first-of-type:after {
+    display: none;
+  }
+
+  code {
+    background-color: $light-grey;
+    padding: .1rem .3rem;
+    border-radius: 3px;
+  }
+
+  hr {
+    border: 1px solid $light-grey;
+    margin: 1rem 0;
+  }
+}
+
+.hidden {
+  display: none;
 }
