@@ -12,10 +12,102 @@ servers:
 - url: {{ url('/core/v1') }}
 
 paths:
-  /test:
+  /locations:
     get:
-      tags:
-        - Test
+      tags: [Locations]
+    post:
+      tags: [Locations]
+  /locations/{location}:
+    get:
+      tags: [Locations]
+    put:
+      tags: [Locations]
+    delete:
+      tags: [Locations]
+
+  /organisations:
+    get:
+      tags: [Organisations]
+    post:
+      tags: [Organisations]
+  /organisations/{organisation}:
+    get:
+      tags: [Organisations]
+    put:
+      tags: [Organisations]
+    delete:
+      tags: [Organisations]
+
+  /referrals:
+    get:
+      tags: [Referrals]
+  /referrals/{referral}:
+    get:
+      tags: [Referrals]
+    put:
+      tags: [Referrals]
+    delete:
+      tags: [Referrals]
+  /services/{service}/referrals:
+    post:
+      tags: [Referrals]
+
+  /report-schedules:
+    get:
+      tags: [Report Schedules]
+    post:
+      tags: [Report Schedules]
+  /report-schedules/{report_schedule}:
+    get:
+      tags: [Report Schedules]
+    put:
+      tags: [Report Schedules]
+    delete:
+      tags: [Report Schedules]
+
+  /reports:
+    get:
+      tags: [Reports]
+    post:
+      tags: [Reports]
+  /reports/{report}:
+    get:
+      tags: [Reports]
+    delete:
+      tags: [Reports]
+  /reports/{report}/download:
+    get:
+      tags: [Reports]
+
+  /search:
+    post:
+      tags: [Search]
+
+  /services:
+    get:
+      tags: [Services]
+    post:
+      tags: [Services]
+  /services/{service}:
+    get:
+      tags: [Services]
+    put:
+      tags: [Services]
+    delete:
+      tags: [Services]
+
+  /users:
+    get:
+      tags: [Users]
+    post:
+      tags: [Users]
+  /users/{user}:
+    get:
+      tags: [Users]
+    put:
+      tags: [Users]
+    delete:
+      tags: [Users]
 
 components:
   securitySchemes:
@@ -29,8 +121,14 @@ security:
   - OAuth2: []
 
 tags:
-  - name: Test
-    description: Lorem
+  - name: Locations
+  - name: Organisations
+  - name: Referrals
+  - name: Report Schedules
+  - name: Reports
+  - name: Search
+  - name: Services
+  - name: Users
 
 externalDocs:
   description: GitHub Wiki
