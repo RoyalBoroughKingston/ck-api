@@ -1,0 +1,38 @@
+# /notifications
+root:
+  get:
+    tags: [Notifications]
+    summary: List all the notifications
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/notification.yaml
+
+# /notifications/{notification}
+nested:
+  get:
+    tags: [Notifications]
+    summary: Get a specific notification
+    parameters:
+      - name: notification
+        in: path
+        description: The ID of the notification
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/notification.yaml

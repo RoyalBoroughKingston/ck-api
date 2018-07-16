@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  user_id:
+    type: string
+    format: uuid
+    nullable: true
+  channel:
+    type: string
+    enum:
+      - email
+      - sms
+  recipient:
+    type: string
+  message:
+    type: string
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

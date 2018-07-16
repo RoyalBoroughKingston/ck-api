@@ -22,6 +22,11 @@ paths:
   /locations/{location}:
     $ref: /docs/core/paths/locations.yaml#/nested
 
+  /notifications:
+    $ref: /docs/core/paths/notifications.yaml#/root
+  /notifications/{notification}:
+    $ref: /docs/core/paths/notifications.yaml#/nested
+
   /organisations:
     $ref: /docs/core/paths/organisations.yaml#/root
   /organisations/{organisation}:
@@ -73,6 +78,7 @@ security:
 tags:
   - name: Audits
   - name: Locations
+  - name: Notifications
   - name: Organisations
   - name: Referrals
   - name: Report Schedules
