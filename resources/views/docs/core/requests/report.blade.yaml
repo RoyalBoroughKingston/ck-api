@@ -1,0 +1,14 @@
+store:
+  type: object
+  required:
+    - report_type
+  properties:
+    report_type:
+      type: string
+      enum:
+        - report_type_1
+        - report_type_2
+
+update:
+  allOf:
+    - $ref: "#/store"

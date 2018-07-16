@@ -2,19 +2,89 @@
 root:
   get:
     tags: [Reports]
+    summary: List all the reports
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/report.yaml
 
   post:
     tags: [Reports]
+    summary: Create a report
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/report.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/report.yaml
 
 # /reports/{report}
 nested:
   get:
     tags: [Reports]
+    summary: Get a specific report
+    parameters:
+      - name: report
+        in: path
+        description: The ID of the report
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/report.yaml
 
   delete:
     tags: [Reports]
+    summary: Delete a specific report
+    parameters:
+      - name: report
+        in: path
+        description: The ID of the report
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
 
 # /reports/{report}/download
 download:
   get:
     tags: [Reports]
+    summary: Download a specific report
+    parameters:
+      - name: report
+        in: path
+        description: The ID of the report
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/pdf:
