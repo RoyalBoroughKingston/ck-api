@@ -1,0 +1,43 @@
+store:
+  type: object
+  required:
+    - first_name
+    - last_name
+    - email
+    - password
+    - roles
+  properties:
+    first_name:
+      type: string
+    last_nane:
+      type: string
+    email:
+      type: string
+    password:
+      type: string
+      format: password
+    roles:
+      type: array
+      items:
+        type: object
+        required:
+          - role
+        properties:
+          role:
+            type: string
+            enum:
+              - service_admin
+              - organisation_admin
+              - system_admin
+              - tier_1_worker
+              - tier_2_worker
+          organisation_id:
+            type: string
+            nullable: true
+          service_id:
+            type: string
+            nullable: true
+
+update:
+  allOf:
+    - $ref: "#/store"

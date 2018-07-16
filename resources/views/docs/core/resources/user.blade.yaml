@@ -1,0 +1,38 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  first_name:
+    type: string
+  last_nane:
+    type: string
+  email:
+    type: string
+  roles:
+    type: array
+    items:
+      type: object
+      properties:
+        role:
+          type: string
+          enum:
+            - service_admin
+            - organisation_admin
+            - system_admin
+            - tier_1_worker
+            - tier_2_worker
+        organisation_id:
+          type: string
+          nullable: true
+        service_id:
+          type: string
+          nullable: true
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

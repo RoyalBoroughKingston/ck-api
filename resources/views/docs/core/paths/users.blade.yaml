@@ -2,17 +2,95 @@
 root:
   get:
     tags: [Users]
+    summary: List all the users
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/user.yaml
 
   post:
     tags: [Users]
+    summary: Create a user
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/user.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/user.yaml
 
 # /users/{user}
 nested:
   get:
     tags: [Users]
+    summary: Get a specific user
+    parameters:
+      - name: user
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/user.yaml
 
   put:
     tags: [Users]
+    summary: Update a specific user
+    parameters:
+      - name: user
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/user.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/user.yaml
 
   delete:
     tags: [Users]
+    summary: Delete a specific user
+    parameters:
+      - name: user
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
