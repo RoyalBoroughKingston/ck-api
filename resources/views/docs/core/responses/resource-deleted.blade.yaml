@@ -2,4 +2,4 @@ type: object
 properties:
   message:
     type: string
-    example: The resource has successfully been deleted
+    example: The resource has been successfully deleted

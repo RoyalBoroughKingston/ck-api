@@ -31,6 +31,8 @@ paths:
     $ref: /docs/core/paths/organisations.yaml#/root
   /organisations/{organisation}:
     $ref: /docs/core/paths/organisations.yaml#/nested
+  /organisations/{organisation}/logo:
+    $ref: /docs/core/paths/organisations.yaml#/logo
 
   /page-feedbacks:
     $ref: /docs/core/paths/page-feedbacks.yaml#/root
