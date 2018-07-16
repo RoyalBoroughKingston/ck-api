@@ -1,0 +1,77 @@
+store:
+  type: object
+  required:
+    - name
+    - status
+  properties:
+    name:
+      type: string
+    description:
+      type: string
+      nullable: true
+    url:
+      type: string
+      nullable: true
+    status:
+      type: string
+      enum:
+        - active
+        - inactive
+      nullable: true
+    wait_time:
+      type: string
+      nullable: true
+    fees:
+      type: string
+      nullable: true
+    regular_opening_hours:
+      type: array
+      items:
+        type: object
+        required:
+          - weekday
+          - opens_at
+          - closes_at
+        properties:
+          weekday:
+            type: string
+            enum:
+              - monday
+              - tuesday
+              - wednesday
+              - thursday
+              - friday
+              - saturday
+              - sunday
+          opens_at:
+            type: string
+            format: time
+          closes_at:
+            type: string
+            format: time
+    holiday_opening_hours:
+      type: array
+      items:
+        type: object
+        required:
+          - starts_at
+          - ends_at
+          - opens_at
+          - closes_at
+        properties:
+          starts_at:
+            type: string
+            format: date
+          ends_at:
+            type: string
+            format: date
+          opens_at:
+            type: string
+            format: time
+          closes_at:
+            type: string
+            format: time
+
+update:
+  allOf:
+    - $ref: "#/store"

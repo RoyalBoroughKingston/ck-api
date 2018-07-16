@@ -2,17 +2,95 @@
 root:
   get:
     tags: [Services]
+    summary: List all the services
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/service.yaml
 
   post:
     tags: [Services]
+    summary: Create a service
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/service.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/service.yaml
 
 # /services/{service}
 nested:
   get:
     tags: [Services]
+    summary: Get a specific service
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/service.yaml
 
   put:
     tags: [Services]
+    summary: Update a specific service
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/service.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/service.yaml
 
   delete:
     tags: [Services]
+    summary: Delete a specific service
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
