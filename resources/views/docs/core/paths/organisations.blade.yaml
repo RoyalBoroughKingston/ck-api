@@ -116,6 +116,14 @@ logo:
   post:
     tags: [Organisations]
     summary: Upload a specific organisation's logo
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:

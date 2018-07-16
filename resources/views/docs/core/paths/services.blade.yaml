@@ -17,22 +17,6 @@ root:
                       items:
                         $ref: /docs/core/resources/service.yaml
 
-  post:
-    tags: [Services]
-    summary: Create a service
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: /docs/core/requests/service.yaml#/store
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/resources/service.yaml
-
 # /services/{service}
 nested:
   get:
@@ -94,3 +78,29 @@ nested:
           application/json:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
+
+# /organisations/{organisation}/services
+organisations:
+  post:
+    tags: [Services]
+    summary: Create a service for an organisation
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/service.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/service.yaml

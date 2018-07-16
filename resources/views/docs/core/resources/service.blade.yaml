@@ -61,6 +61,10 @@ properties:
         closes_at:
           type: string
           format: time
+  taxonomies:
+    type: array
+    items:
+      $ref: /docs/core/resources/taxonomy.yaml
   created_at:
     type: string
     format: date-time

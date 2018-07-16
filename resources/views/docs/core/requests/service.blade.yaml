@@ -71,7 +71,11 @@ store:
           closes_at:
             type: string
             format: time
-
+    taxonomies:
+      type: array
+      items:
+        type: string
+        format: uuid
 update:
   allOf:
     - $ref: "#/store"

@@ -3,6 +3,9 @@ properties:
   id:
     type: string
     format: uuid
+  service_id:
+    type: string
+    format: uuid
   address_line_1:
     type: string
   address_line_2:

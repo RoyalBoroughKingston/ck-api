@@ -21,11 +21,15 @@ paths:
     $ref: /docs/core/paths/locations.yaml#/root
   /locations/{location}:
     $ref: /docs/core/paths/locations.yaml#/nested
+  /services/{service}/locations:
+    $ref: /docs/core/paths/locations.yaml#/services
 
   /notifications:
     $ref: /docs/core/paths/notifications.yaml#/root
   /notifications/{notification}:
     $ref: /docs/core/paths/notifications.yaml#/nested
+  /users/{user}/notifications:
+    $ref: /docs/core/paths/notifications.yaml#/users
 
   /organisations:
     $ref: /docs/core/paths/organisations.yaml#/root
@@ -65,6 +69,8 @@ paths:
     $ref: /docs/core/paths/services.yaml#/root
   /services/{service}:
     $ref: /docs/core/paths/services.yaml#/nested
+  /organisations/{organisation}/services:
+    $ref: /docs/core/paths/services.yaml#/organisations
 
   /taxonomies:
     $ref: /docs/core/paths/taxonomies.yaml#/root

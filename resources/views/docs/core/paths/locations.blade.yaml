@@ -17,22 +17,6 @@ root:
                       items:
                         $ref: /docs/core/resources/location.yaml
 
-  post:
-    tags: [Locations]
-    summary: Create a location
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: /docs/core/requests/location.yaml#/store
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/resources/location.yaml
-
 # /locations/{location}
 nested:
   get:
@@ -94,3 +78,29 @@ nested:
           application/json:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
+
+# /services/{service}/locations
+services:
+  post:
+    tags: [Locations]
+    summary: Create a location for a service
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/location.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/location.yaml
