@@ -1,0 +1,14 @@
+store:
+  type: object
+  required:
+    - url
+    - feedback
+  properties:
+    url:
+      type: string
+    feedback:
+      type: string
+
+update:
+  allOf:
+    - $ref: "#/store"

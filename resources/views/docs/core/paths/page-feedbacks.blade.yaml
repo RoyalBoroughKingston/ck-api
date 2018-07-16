@@ -1,0 +1,72 @@
+# /page-feedbacks
+root:
+  get:
+    tags: [Page Feedbacks]
+    summary: List all the page feedbacks
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/page-feedback.yaml
+
+  post:
+    tags: [Page Feedbacks]
+    summary: Create a page feedback
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/page-feedback.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/page-feedback.yaml
+
+# /page-feedbacks/{page_feedback}
+nested:
+  get:
+    tags: [Page Feedbacks]
+    summary: Get a specific page feedback
+    parameters:
+      - name: page_feedback
+        in: path
+        description: The ID of the page feedback
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/page-feedback.yaml
+
+  delete:
+    tags: [Page Feedbacks]
+    summary: Delete a specific page feedback
+    parameters:
+      - name: page_feedback
+        in: path
+        description: The ID of the page feedback
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
