@@ -1,0 +1,23 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  report_type:
+    type: string
+    enum:
+      - report_type_1
+      - report_type_2
+  repeat_type:
+    type: string
+    enum:
+      - weekly
+      - monthly
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

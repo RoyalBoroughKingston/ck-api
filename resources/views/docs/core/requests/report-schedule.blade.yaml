@@ -1,0 +1,20 @@
+store:
+  type: object
+  required:
+    - report_type
+    - repeat_type
+  properties:
+    report_type:
+      type: string
+      enum:
+        - report_type_1
+        - report_type_2
+    repeat_type:
+      type: string
+      enum:
+        - weekly
+        - monthly
+
+update:
+  allOf:
+    - $ref: "#/store"
