@@ -23,6 +23,15 @@ properties:
   fees:
     type: string
     nullable: true
+  twitter:
+    type: string
+    nullable: true
+  facebook:
+    type: string
+    nullable: true
+  instagram:
+    type: string
+    nullable: true
   regular_opening_hours:
     type: array
     items:
