@@ -1,0 +1,16 @@
+store:
+  type: object
+  required:
+    - parent_id
+    - name
+  properties:
+    parent_id:
+      type: string
+      format: uuid
+      nullable: true
+    name:
+      type: string
+
+update:
+  allOf:
+    - $ref: "#/store"

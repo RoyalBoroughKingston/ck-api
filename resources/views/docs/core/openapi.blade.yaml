@@ -64,6 +64,11 @@ paths:
   /services/{service}:
     $ref: /docs/core/paths/services.yaml#/nested
 
+  /taxonomies:
+    $ref: /docs/core/paths/taxonomies.yaml#/root
+  /taxonomies/{taxonomy}:
+    $ref: /docs/core/paths/taxonomies.yaml#/nested
+
   /users:
     $ref: /docs/core/paths/users.yaml#/root
   /users/{user}:
@@ -91,6 +96,7 @@ tags:
   - name: Reports
   - name: Search
   - name: Services
+  - name: Taxonomies
   - name: Users
 
 externalDocs:

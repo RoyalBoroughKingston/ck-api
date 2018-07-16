@@ -1,0 +1,96 @@
+# /taxonomies
+root:
+  get:
+    tags: [Taxonomies]
+    summary: List all the taxonomies
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/taxonomy.yaml
+
+  post:
+    tags: [Taxonomies]
+    summary: Create a taxonomy
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/taxonomy.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/taxonomy.yaml
+
+# /taxonomies/{taxonomy}
+nested:
+  get:
+    tags: [Taxonomies]
+    summary: Get a specific taxonomy
+    parameters:
+      - name: taxonomy
+        in: path
+        description: The ID of the taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/taxonomy.yaml
+
+  put:
+    tags: [Taxonomies]
+    summary: Update a specific taxonomy
+    parameters:
+      - name: taxonomy
+        in: path
+        description: The ID of the taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/taxonomy.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/taxonomy.yaml
+
+  delete:
+    tags: [Taxonomies]
+    summary: Delete a specific taxonomy
+    parameters:
+      - name: taxonomy
+        in: path
+        description: The ID of the taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
