@@ -1,0 +1,29 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  address_line_1:
+    type: string
+  address_line_2:
+    type: string
+    nullable: true
+  address_line_3:
+    type: string
+    nullable: true
+  city:
+    type: string
+  county:
+    type: string
+  postcode:
+    type: string
+  country:
+    type: string
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

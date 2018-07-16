@@ -1,0 +1,29 @@
+store:
+  type: object
+  required:
+    - address_line_1
+    - city
+    - county
+    - postcode
+    - country
+  properties:
+    address_line_1:
+      type: string
+    address_line_2:
+      type: string
+      nullable: true
+    address_line_3:
+      type: string
+      nullable: true
+    city:
+      type: string
+    county:
+      type: string
+    postcode:
+      type: string
+    country:
+      type: string
+
+update:
+  allOf:
+    - $ref: "#/store"

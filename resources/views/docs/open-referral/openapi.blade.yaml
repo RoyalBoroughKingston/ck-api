@@ -9,7 +9,7 @@ info:
     url: https://ayup.agency
 
 servers:
-- url: {{ url('/open-referral/v1') }}
+  - url: {{ url('/open-referral/v1') }}
 
 paths:
   /test:

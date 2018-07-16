@@ -9,7 +9,7 @@ info:
     url: https://ayup.agency
 
 servers:
-- url: {{ url('/core/v1') }}
+  - url: {{ url('/core/v1') }}
 
 paths:
   /locations:
