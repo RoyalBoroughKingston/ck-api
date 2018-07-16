@@ -1,0 +1,38 @@
+# /audits
+root:
+  get:
+    tags: [Audits]
+    summary: List all the audits
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/audit.yaml
+
+# /audits/{audit}
+nested:
+  get:
+    tags: [Audits]
+    summary: Get a specific audit
+    parameters:
+      - name: audit
+        in: path
+        description: The ID of the audit
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/audit.yaml

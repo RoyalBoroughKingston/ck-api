@@ -12,6 +12,11 @@ servers:
   - url: {{ url('/core/v1') }}
 
 paths:
+  /audits:
+    $ref: /docs/core/paths/audits.yaml#/root
+  /audits/{audit}:
+    $ref: /docs/core/paths/audits.yaml#/nested
+
   /locations:
     $ref: /docs/core/paths/locations.yaml#/root
   /locations/{location}:
@@ -66,6 +71,7 @@ security:
   - OAuth2: []
 
 tags:
+  - name: Audits
   - name: Locations
   - name: Organisations
   - name: Referrals

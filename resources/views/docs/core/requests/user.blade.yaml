@@ -33,9 +33,11 @@ store:
               - tier_2_worker
           organisation_id:
             type: string
+            format: uuid
             nullable: true
           service_id:
             type: string
+            format: uuid
             nullable: true
 
 update:
