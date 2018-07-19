@@ -1,6 +1,53 @@
 ---
-applications:
-- name: cwk-api
+defaults: &defaults
   memory: 128M
   instances: 1
   buildpack: php_buildpack
+  services:
+  - ((db-service-name))
+  - ((redis-service-name))
+  env:
+    APP_DEBUG: ((APP_DEBUG))
+    APP_ENV: ((APP_ENV))
+    APP_KEY: ((APP_KEY))
+    APP_NAME: Connect Well Kingston
+    APP_URL: ((APP_URL))
+    CACHE_DRIVER: redis
+    DB_CERT_PATH: /etc/ssl/certs
+    DB_CONNECTION: mysql
+    DB_DATABASE: ((DB_DATABASE))
+    DB_HOST: ((DB_HOST))
+    DB_PASSWORD: ((DB_PASSWORD))
+    DB_PORT: ((DB_PORT))
+    DB_USERNAME: ((DB_USERNAME))
+    LOG_CHANNEL: errorlog
+    MAIL_DRIVER: ((MAIL_DRIVER))
+    MAIL_ENCRYPTION: tls
+    MAIL_HOST: ((MAIL_HOST))
+    MAIL_PASSWORD: ((MAIL_PASSWORD))
+    MAIL_PORT: ((MAIL_PORT))
+    MAIL_USERNAME: ((MAIL_USERNAME))
+    QUEUE_DRIVER: redis
+    REDIS_HOST: ((REDIS_HOST))
+    REDIS_PASSWORD: ((REDIS_PASSWORD))
+    REDIS_PORT: ((REDIS_PORT))
+    REDIS_SCHEME: tls
+    SESSION_DRIVER: redis
+
+applications:
+- name: cwk-api
+  <<: *defaults
+  routes:
+  - route: ((route))
+
+- name: cwk-queue-worker
+  <<: *defaults
+  no-route: true
+  command: php artisan queue:work
+  health-check-type: process
+
+- name: cwk-scheduler
+  <<: *defaults
+  no-route: true
+  command: php artisan cwk:run-scheduler
+  health-check-type: process
