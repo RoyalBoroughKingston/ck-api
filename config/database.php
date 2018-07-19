@@ -52,6 +52,9 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'options' => [
+                PDO::MYSQL_ATTR_SSL_CAPATH => env('DB_CERT_PATH'),
+            ],
         ],
 
         'pgsql' => [

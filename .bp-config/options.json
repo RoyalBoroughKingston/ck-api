@@ -1,0 +1,10 @@
+{
+    "COMPOSER_VENDOR_DIR": "vendor",
+    "WEBDIR": "public",
+    "PHP_MODULES": ["fpm", "cli"],
+    "PHP_EXTENSIONS": ["bz2", "zlib", "openssl", "tokenizer", "curl", "mcrypt", "mbstring", "pdo", "pdo_mysql"],
+    "ADDITIONAL_PREPROCESS_CMDS": [
+        "php artisan migrate --force",
+        "php artisan config:cache"
+    ]
+}

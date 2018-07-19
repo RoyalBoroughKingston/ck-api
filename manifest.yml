@@ -1,0 +1,6 @@
+---
+applications:
+- name: cwk-api
+  memory: 128M
+  instances: 1
+  buildpack: php_buildpack
