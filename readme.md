@@ -1,60 +1,97 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Connect Well Kingston
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+A scheme run by RBK to help residents take control of their own health by connecting them with services and events in their local area.
+This system forms the online aspect of this scheme, by providing an API as well a frontend and backend web app.
 
-## About Laravel
+## Getting Started
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
+See deployment for notes on how to deploy the project on a live system.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Prerequisites
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+* PHP
+* Composer
+* Vagrant
 
-## Learning Laravel
+### Installing
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+Start by cloning the example configuration files and configuring as needed. For more information about configuring the 
+`Homestead.yaml` file, please consult the [Laravel Docs](https://laravel.com/docs/5.6/homestead):
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+```bash
+cp Homestead.yaml.example Homestead.yaml
+cp .env.example .env
 
-## Laravel Sponsors
+# Installs Laravel Homestead.
+composer install --ignore-platform-reqs
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+# Update your hosts file (use values set in Homestead.yaml).
+sudo echo "192.168.10.12 api.connectwellkingston.test" >> /etc/hosts
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
+You should then be able to start the VM and SSH into it:
+
+```bash
+vagrant up && vagrant ssh
+cd api.connectwellkingston
+
+# Generate the application key.
+php artisan key:generate
+
+# Run the migrations and initial seeder.
+php artisan migrate --seed
+
+# Install the OAuth 2.0 keys.
+php artisan pasport:keys
+
+# Create the first Global Admin user (take a note of the password outputted).
+php artisan cwk:create-user <first-name> <last-name> <email> <phone-number>
+```
+
+Ensure any API clients have been created:
+
+```bash
+php artisan passport:client --password --name="Name of Application"
+```
+
+## Running the tests
+
+To run the PHPUnit tests:
+ 
+```bash
+php vendor/bin/phpunit
+```
+
+To run the code style tests:
+
+```bash
+php vendor/bin/phpcs
+```
+
+## Deployment
+
+TODO: Write deployment process for GOV.UK PaaS.
+
+## Built With
+
+* [Laravel](https://laravel.com/docs/) - The Web Framework Used
+* [Composer](https://getcomposer.org/doc/) - Dependency Management
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Security Vulnerabilities
+## Versioning
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/RoyalBoroughKingston/cwk-api/tags). 
+
+## Authors
+
+* [Ayup Digital](https://ayup.agency/)
+
+See also the list of [contributors](https://github.com/RoyalBoroughKingston/cwk-api/contributors) who participated in this project.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md) file for details.
