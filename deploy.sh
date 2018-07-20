@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Set variables.
-CLI_URL="https://cli.run.pivotal.io/stable?release=linux64binary&source=github"
 SECRETS_FILE="secrets.travis.yml"
 
 # Set missing variables.
@@ -18,14 +17,11 @@ php -r "
     ]);
     file_put_contents('$SECRETS_FILE', \$contents);"
 
-# Download Cloud Foundry CLI.
-curl -L "$CLI_URL" | tar -zx
-
 # Connect to the Cloud Foundry API.
-./cf api $CF_API
+cf api $CF_API
 
 # Login to Cloud Foundry.
-./cf login -u $CF_USERNAME -p $CF_PASSWORD -o $CF_ORGANISATION -s $CF_SPACE
+cf login -u $CF_USERNAME -p $CF_PASSWORD -o $CF_ORGANISATION -s $CF_SPACE
 
 # Deploy
-./cf push --vars-file $SECRETS_FILE
+cf push --vars-file $SECRETS_FILE
