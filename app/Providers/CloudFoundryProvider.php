@@ -23,8 +23,8 @@ class CloudFoundryProvider extends ServiceProvider
         if (env('VCAP_SERVICES', null) !== null) {
             // Decode the JSON provided by Cloud Foundry.
             $config = json_decode(env('VCAP_SERVICES'), true);
-            $mysqlConfig = $config['mysql']['credentials'];
-            $redisConfig = $config['redis']['credentials'];
+            $mysqlConfig = $config['mysql'][0]['credentials'];
+            $redisConfig = $config['redis'][0]['credentials'];
 
             // Set the MySQL config.
             Config::set('database.connections.mysql.host', $mysqlConfig['host']);
