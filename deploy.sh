@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Set variables.
-CLI_URL=https://cli.run.pivotal.io/stable?release=linux64binary&source=github
-SECRETS_FILE=secrets.travis.yml
+CLI_URL="https://cli.run.pivotal.io/stable?release=linux64binary&source=github"
+SECRETS_FILE="secrets.travis.yml"
 
 # Set missing variables.
 php -r "
