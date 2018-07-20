@@ -46,6 +46,7 @@ script:
 deploy:
   provider: script
   script: bash deploy.sh
+  skip_cleanup: true
   on:
     repo: RoyalBoroughKingston/cwk-api
     branch: develop
