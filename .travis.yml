@@ -40,13 +40,8 @@ script:
   - vendor/bin/phpunit
 
 deploy:
-  provider: cloudfoundry
-  api: api.cloud.service.gov.uk
-  username: matt@ayup.agency
-  password:
-    secure: VmZbkr6GRFrSEZVnwBxjuAlqD9WmIP+u5uR9Wk6vIuEhT2oR0RAIu2sqK5/f5thURZi+FzaEHC0jvZoWabxVwk5bq6Gw+RapPpD8XrZi8XAdKa31AEigYQQr9ZV1eZbe1l9b/IfEY29EADo82ru9JQWsd5YENTLzBFj5aBUsRZXjrKXJWT3yW2WRyv9MYX9uLggeUgYazCYKy6gWa9UfCg58dxoRtA9h4T7nsbIy5avb80aF78jJlHAlgZdtud4rw70B/iXtg4zg7FvG4yWM2vl5jJ1ZacG52bfZ0Ws4GrR5EZ5+rOPQVBA3X9yoitkB48RRHHCGcBvHNenLXfGMKVONI/pZQtMD3dyeaShG4t8Ae6GUH/+ogg4ag8e3UwSNmAJyqUsHWezGDx5wU6FMXqgo+VV3bWByJDSq+zTPEIRBhvd/kHveooGe9AeLt8bjIVPHTfqydtqx1Q/qCt8/Fva1ddZn0iTCeVCvhvjGpePwYgaH3u8CxiQY/DBEX5vJOTlyZDdRD9rQGf+naqm2tBqe6AY3lSOtSalXfuOcSDHZkX/Rq6HfBQRvVgXdeZjLkrqPFvkk6RVT1TXMTWbnUZtE5YGcSm1p0GMuS23MgudWv1c81gGpD/9l3bhXfLuuXG4owJRi/CjDWgmyv0GcJPLXxY+goJSGopjfgvkx0Eo=
-  organization: kingston-council-digital-design
-  space: connectwellkingston-dev
+  provider: script
+  script: bash deploy.sh
   on:
     repo: RoyalBoroughKingston/cwk-api
     branch: develop
