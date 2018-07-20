@@ -71,7 +71,7 @@ php vendor/bin/phpcs
 
 ## Deployment
 
-TODO: Write deployment process for GOV.UK PaaS.
+TODO: Write deployment process for GOV.UK PaaS
 
 ## Built With
 
