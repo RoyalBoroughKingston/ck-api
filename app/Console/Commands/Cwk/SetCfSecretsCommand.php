@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Cwk;
 
+use Exception;
 use Illuminate\Console\Command;
 use Symfony\Component\Yaml\Yaml;
 
@@ -37,6 +38,7 @@ class SetCfSecretsCommand extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @throws \Exception
      */
     public function handle()
     {
@@ -51,10 +53,20 @@ class SetCfSecretsCommand extends Command
             $matches = [];
 
             // Check to see if the value should be replaced with the following syntax: `KEY: ${ENV_VAR}`.
-            if (preg_match('/^\${(.+)}$/', $secret, $matches) >= 1) {
-                $envName = $matches[1];
-                $secret = env($envName, null);
+            $isReplaceable = preg_match('/^\${(.+)}$/', $secret, $matches) >= 1;
+            if (!$isReplaceable) {
+                continue;
             }
+
+            // Check if the environment variable exists and error out if it doesn't.
+            $envName = $matches[1];
+            $envExists = array_key_exists($envName, $_ENV);
+            if (!$envExists) {
+                throw new Exception("The environment variable [$envName] has not been set.");
+            }
+
+            // Update the value with the environment variable.
+            $secret = env($envName, null);
         }
 
         // Export the array back to a YAML string.
