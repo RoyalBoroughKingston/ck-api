@@ -60,12 +60,6 @@ class SetCfSecretsCommand extends Command
 
             // Check if the environment variable exists and error out if it doesn't.
             $envName = $matches[1];
-            $envExists = array_key_exists($envName, $_ENV);
-            if (!$envExists) {
-                throw new Exception("The environment variable [$envName] has not been set.");
-            }
-
-            // Update the value with the environment variable.
             $secret = env($envName, null);
         }
 
