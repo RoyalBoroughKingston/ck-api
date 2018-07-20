@@ -37,10 +37,10 @@ class CloudFoundryProvider extends ServiceProvider
             Config::set('database.redis.default.host', $redisConfig['host']);
             Config::set('database.redis.default.password', $redisConfig['password']);
             Config::set('database.redis.default.port', $redisConfig['port']);
-
-            // Mark the environment as being parsed.
-            Config::set('cloudfoundry.environment_parsed', true);
         }
+
+        // Mark the environment as being parsed.
+        Config::set('cloudfoundry.environment_parsed', true);
     }
 
     /**
