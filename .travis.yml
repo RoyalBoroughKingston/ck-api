@@ -18,10 +18,18 @@ dist: trusty
 
 sudo: required
 
-before_script:
-  - cp .env.travis .env
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+install:
   - composer self-update
   - composer install --no-interaction
+  - npm install
+  - npm run prod
+
+before_script:
+  - cp .env.travis .env
   - php artisan key:generate
   - mysql -e 'create database cwk_testing;'
   - php artisan migrate --force --seed
