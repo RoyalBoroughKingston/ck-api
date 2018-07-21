@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
-class CloudFoundryProvider extends ServiceProvider
+class CloudFoundryServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap services.
