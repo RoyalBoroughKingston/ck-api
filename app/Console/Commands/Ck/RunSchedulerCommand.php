@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Cwk;
+namespace App\Console\Commands\Ck;
 
 use Illuminate\Console\Command;
 
@@ -11,7 +11,7 @@ class RunSchedulerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cwk:run-scheduler {--sleep=60 : The number of seconds to sleep between each run}';
+    protected $signature = 'ck:run-scheduler {--sleep=60 : The number of seconds to sleep between each run}';
 
     /**
      * The console command description.

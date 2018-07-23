@@ -37,7 +37,7 @@ install:
   - npm run prod
 
 before_script:
-  - mysql -e 'create database cwk_testing;'
+  - mysql -e 'create database ck_testing;'
   - php artisan migrate --force --seed
 
 script:
@@ -49,5 +49,5 @@ deploy:
   script: bash deploy.sh
   skip_cleanup: true
   on:
-    repo: RoyalBoroughKingston/cwk-api
+    repo: RoyalBoroughKingston/ck-api
     branch: develop
