@@ -111,6 +111,8 @@ return [
 
         'client' => 'predis',
 
+        'cluster' => 'redis',
+
         'clusters' => [
             'default' => [
                 'scheme' => env('REDIS_SCHEME', 'tcp'),
@@ -119,13 +121,18 @@ return [
                 'port' => env('REDIS_PORT', 6379),
                 'database' => 0,
             ],
+
+            'options' => [
+                'cluster' => 'redis',
+            ]
         ],
 
         'options' => [
-            'cluster' => 'redis',
             'parameters' => [
+                'scheme' => env('REDIS_SCHEME', 'tcp'),
                 'password' => env('REDIS_PASSWORD', null),
             ],
+
             'ssl' => [
                 'verify_peer' => false,
             ],
