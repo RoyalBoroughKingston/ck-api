@@ -10,7 +10,7 @@ defaults: &defaults
     APP_DEBUG: ((APP_DEBUG))
     APP_ENV: ((APP_ENV))
     APP_KEY: ((APP_KEY))
-    APP_NAME: Connect Well Kingston
+    APP_NAME: Connected Kingston
     APP_URL: ((APP_URL))
     CACHE_DRIVER: redis
     DB_CERT_PATH: /etc/ssl/certs
@@ -27,19 +27,19 @@ defaults: &defaults
     SESSION_DRIVER: redis
 
 applications:
-- name: cwk-api
+- name: ck-api
   <<: *defaults
   routes:
   - route: ((route))
 
-- name: cwk-queue-worker
+- name: ck-queue-worker
   <<: *defaults
   no-route: true
   command: php artisan queue:work
   health-check-type: process
 
-- name: cwk-scheduler
+- name: ck-scheduler
   <<: *defaults
   no-route: true
-  command: php artisan cwk:run-scheduler
+  command: php artisan ck:run-scheduler
   health-check-type: process

@@ -4,7 +4,7 @@
 SECRETS_FILE="secrets.travis.yml"
 
 # Set missing variables.
-php artisan cwk:set-cf-secrets --path=$SECRETS_FILE
+php artisan ck:set-cf-secrets --path=$SECRETS_FILE
 
 # Connect to the Cloud Foundry API.
 cf api $CF_API

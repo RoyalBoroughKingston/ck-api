@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Cwk;
+namespace App\Console\Commands\Ck;
 
 use Exception;
 use Illuminate\Console\Command;
@@ -13,7 +13,7 @@ class SetCfSecretsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cwk:set-cf-secrets 
+    protected $signature = 'ck:set-cf-secrets 
                             {--show : Display the secrets instead of modifying files}
                             {--path=secrets.yml : The path of the secrets file}';
 
