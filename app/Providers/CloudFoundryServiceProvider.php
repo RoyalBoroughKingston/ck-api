@@ -34,9 +34,9 @@ class CloudFoundryServiceProvider extends ServiceProvider
             Config::set('database.connections.mysql.password', $mysqlConfig['password']);
 
             // Set the Redis config.
-            Config::set('database.redis.default.host', $redisConfig['host']);
-            Config::set('database.redis.default.password', $redisConfig['password']);
-            Config::set('database.redis.default.port', $redisConfig['port']);
+            Config::set('database.redis.clusters.default.host', $redisConfig['host']);
+            Config::set('database.redis.clusters.default.password', $redisConfig['password']);
+            Config::set('database.redis.clusters.default.port', $redisConfig['port']);
         }
 
         // Mark the environment as being parsed.
