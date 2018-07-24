@@ -3,84 +3,116 @@ store:
   required:
     - name
     - status
+    - intro
+    - description
+    - is_free
+    - contact_name
+    - contact_phone
+    - contact_email
+    - accreditation_logos
+    - show_referral_disclaimer
+    - referral_button_text
+    - referral_method
+    - seo_title
+    - seo_description
+    - seo_image_url
+    - social_medias
+    - category_taxonomies
   properties:
     name:
       type: string
-    description:
-      type: string
-      nullable: true
-    url:
-      type: string
-      nullable: true
     status:
       type: string
       enum:
         - active
         - inactive
-      nullable: true
+    intro:
+      type: string
+    description:
+      type: string
     wait_time:
       type: string
       nullable: true
+    is_free:
+      type: boolean
     fees:
       type: string
       nullable: true
-    twitter:
+    testimonial:
       type: string
       nullable: true
-    facebook:
+    video_embed:
       type: string
       nullable: true
-    instagram:
+    url:
       type: string
       nullable: true
-    regular_opening_hours:
+    contact_name:
+      type: string
+    contact_phone:
+      type: string
+    contact_email:
+      type: string
+    accreditation_logos:
+      type: array
+      items:
+        type: string
+    show_referral_disclaimer:
+      type: boolean
+    referral_button_text:
+      type: string
+    referral_method:
+      type: string
+      enum:
+        - internal
+        - url
+        - none
+    referral_email:
+      type: string
+      nullable: true
+    referral_url:
+      type: string
+      nullable: true
+    seo_title:
+      type: string
+    seo_description:
+      type: string
+    seo_image_url:
+      type: string
+    useful_infos:
       type: array
       items:
         type: object
         required:
-          - weekday
-          - opens_at
-          - closes_at
+          - title
+          - description
+          - order
         properties:
-          weekday:
+          title:
+            type: string
+          description:
+            type: string
+          order:
+            type: integer
+    social_medias:
+      type: array
+      items:
+        type: object
+        required:
+          - type
+          - url
+        properties:
+          type:
             type: string
             enum:
-              - monday
-              - tuesday
-              - wednesday
-              - thursday
-              - friday
-              - saturday
-              - sunday
-          opens_at:
+              - twitter
+              - facebook
+              - instagram
+              - youtube
+              - other
+          url:
             type: string
-            format: time
-          closes_at:
-            type: string
-            format: time
-    holiday_opening_hours:
-      type: array
-      items:
-        type: object
-        required:
-          - starts_at
-          - ends_at
-          - opens_at
-          - closes_at
-        properties:
-          starts_at:
-            type: string
-            format: date
-          ends_at:
-            type: string
-            format: date
-          opens_at:
-            type: string
-            format: time
-          closes_at:
-            type: string
-            format: time
-    taxonomies:
+    category_taxonomies:
       type: array
       items:
         type: string

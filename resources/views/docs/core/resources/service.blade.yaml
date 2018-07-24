@@ -3,73 +3,77 @@ properties:
   id:
     type: string
     format: uuid
+  organisation_id:
+    type: string
+    format: uuid
   name:
     type: string
-  description:
-    type: string
-    nullable: true
-  url:
-    type: string
-    nullable: true
   status:
     type: string
     enum:
       - active
       - inactive
-    nullable: true
+  intro:
+    type: string
+  description:
+    type: string
   wait_time:
     type: string
     nullable: true
+  is_free:
+    type: boolean
   fees:
     type: string
     nullable: true
-  twitter:
+  testimonial:
     type: string
     nullable: true
-  facebook:
+  video_embed:
     type: string
     nullable: true
-  instagram:
+  url:
     type: string
     nullable: true
-  regular_opening_hours:
+  contact_name:
+    type: string
+  contact_phone:
+    type: string
+  contact_email:
+    type: string
+  accreditation_logos:
     type: array
     items:
-      type: object
-      properties:
-        weekday:
-          type: string
-          enum:
-            - monday
-            - tuesday
-            - wednesday
-            - thursday
-            - friday
-            - saturday
-            - sunday
-        opens_at:
-          type: string
-          format: time
-        closes_at:
-          type: string
-          format: time
-  holiday_opening_hours:
+      type: string
+  show_referral_disclaimer:
+    type: boolean
+  referral_button_text:
+    type: string
+  referral_method:
+    type: string
+    enum:
+      - internal
+      - url
+      - none
+  referral_email:
+    type: string
+    nullable: true
+  referral_url:
+    type: string
+    nullable: true
+  seo_title:
+    type: string
+  seo_description:
+    type: string
+  seo_image_url:
+    type: string
+  useful_infos:
     type: array
     items:
-      type: object
-      properties:
-        starts_at:
-          type: string
-          format: date
-        ends_at:
-          type: string
-          format: date
-        opens_at:
-          type: string
-          format: time
-        closes_at:
-          type: string
-          format: time
+      $ref: /docs/core/resources/useful-info.yaml
+  social_medias:
+    type: array
+    items:
+      $ref: /docs/core/resources/social-media.yaml
   category_taxonomies:
     type: array
     items:
