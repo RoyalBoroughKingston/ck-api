@@ -2,19 +2,114 @@
 root:
   get:
     tags: [Referrals]
+    summary: List all the referrals
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/referral.yaml
 
 # /referrals/{referral}
 nested:
   get:
     tags: [Referrals]
+    summary: Get a specific referral
+    parameters:
+      - name: referral
+        in: path
+        description: The ID of the referral
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/referral.yaml
 
   put:
     tags: [Referrals]
+    summary: Update a specific referral
+    parameters:
+      - name: referral
+        in: path
+        description: The ID of the referral
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/referral.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/referral.yaml
 
-  delete:
+# /referrals/{referral}/status-updates
+history:
+  get:
     tags: [Referrals]
+    summary: List all of the status updates for the referral
+    parameters:
+      - name: referral
+        in: path
+        description: The ID of the referral
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/status-update.yaml
 
 # /services/{service}/referrals
 services:
   post:
     tags: [Referrals]
+    summary: Create a referral for a service
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/referral.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/referral.yaml

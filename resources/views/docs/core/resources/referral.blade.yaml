@@ -1,0 +1,62 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  service_id:
+    type: string
+    format: uuid
+  reference:
+    type: string
+  status:
+    type: string
+    enum:
+      - new
+      - in_progress
+      - completed
+      - declined
+  name:
+    type: string
+  email:
+    type: string
+    nullable: true
+  phone:
+    type: string
+    nullable: true
+  other_contact:
+    type: string
+    nullable: true
+  postcode_outward_code:
+    type: string
+    nullable: true
+  comments:
+    type: string
+    nullable: true
+  referral_consented_at:
+    type: string
+    format: date-time
+    nullable: true
+  feedback_consented_at:
+    type: string
+    format: date-time
+    nullable: true
+  referee_name:
+    type: string
+    nullable: true
+  referee_email:
+    type: string
+    nullable: true
+  referee_phone:
+    type: string
+    nullable: true
+  referee_organisation:
+    type: string
+    nullable: true
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

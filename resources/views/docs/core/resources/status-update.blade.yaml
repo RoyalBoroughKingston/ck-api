@@ -1,0 +1,30 @@
+type: object
+properties:
+  user_id:
+    type: string
+    format: uuid
+  from:
+    type: string
+    enum:
+      - new
+      - in_progress
+      - completed
+      - declined
+  to:
+    type: string
+    enum:
+      - new
+      - in_progress
+      - completed
+      - declined
+  comments:
+    type: string
+    nullable: true
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

@@ -52,6 +52,8 @@ paths:
     $ref: /docs/core/paths/referrals.yaml#/root
   /referrals/{referral}:
     $ref: /docs/core/paths/referrals.yaml#/nested
+  /referrals/{referral}/status-updates:
+    $ref: /docs/core/paths/referrals.yaml#/history
   /services/{service}/referrals:
     $ref: /docs/core/paths/referrals.yaml#/services
 
