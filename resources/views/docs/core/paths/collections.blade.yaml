@@ -1,8 +1,8 @@
-# /locations
+# /collections
 root:
   get:
-    tags: [Locations]
-    summary: List all the locations
+    tags: [Collections]
+    summary: List all the collections
     responses:
       200:
         content:
@@ -15,32 +15,33 @@ root:
                     data:
                       type: array
                       items:
-                        $ref: /docs/core/resources/location.yaml
+                        $ref: /docs/core/resources/collection.yaml
+
   post:
-    tags: [Locations]
-    summary: Create a location
+    tags: [Collections]
+    summary: Create a collection
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/location.yaml#/store
+            $ref: /docs/core/requests/collection.yaml#/store
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/location.yaml
+              $ref: /docs/core/resources/collection.yaml
 
-# /locations/{location}
+# /collections/{collection}
 nested:
   get:
-    tags: [Locations]
-    summary: Get a specific location
+    tags: [Collections]
+    summary: Get a specific collection
     parameters:
-      - name: location
+      - name: collection
         in: path
-        description: The ID of the location
+        description: The ID of the collection
         required: true
         schema:
           type: string
@@ -50,15 +51,15 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/location.yaml
+              $ref: /docs/core/resources/collection.yaml
 
   put:
-    tags: [Locations]
-    summary: Update a specific location
+    tags: [Collections]
+    summary: Update a specific collection
     parameters:
-      - name: location
+      - name: collection
         in: path
-        description: The ID of the location
+        description: The ID of the collection
         required: true
         schema:
           type: string
@@ -68,21 +69,21 @@ nested:
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/location.yaml#/update
+            $ref: /docs/core/requests/collection.yaml#/update
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/location.yaml
+              $ref: /docs/core/resources/collection.yaml
 
   delete:
-    tags: [Locations]
-    summary: Delete a specific location
+    tags: [Collections]
+    summary: Delete a specific collection
     parameters:
-      - name: location
+      - name: collection
         in: path
-        description: The ID of the location
+        description: The ID of the collection
         required: true
         schema:
           type: string

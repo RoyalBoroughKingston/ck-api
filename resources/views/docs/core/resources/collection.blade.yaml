@@ -3,14 +3,14 @@ properties:
   id:
     type: string
     format: uuid
-  parent_id:
-    type: string
-    format: uuid
-    nullable: true
   name:
     type: string
   order:
     type: integer
+  taxonomy_categories:
+    type: array
+    items:
+      $ref: /docs/core/resources/taxonomy.yaml
   created_at:
     type: string
     format: date-time

@@ -17,12 +17,15 @@ paths:
   /audits/{audit}:
     $ref: /docs/core/paths/audits.yaml#/nested
 
+  /collections:
+    $ref: /docs/core/paths/collections.yaml#/root
+  /collections/{collection}:
+    $ref: /docs/core/paths/collections.yaml#/nested
+
   /locations:
     $ref: /docs/core/paths/locations.yaml#/root
   /locations/{location}:
     $ref: /docs/core/paths/locations.yaml#/nested
-  /services/{service}/locations:
-    $ref: /docs/core/paths/locations.yaml#/services
 
   /notifications:
     $ref: /docs/core/paths/notifications.yaml#/root
@@ -95,6 +98,7 @@ security:
 
 tags:
   - name: Audits
+  - name: Collections
   - name: Locations
   - name: Notifications
   - name: Organisations
