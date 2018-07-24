@@ -1,8 +1,8 @@
-# /taxonomies
+# /taxonomies/categories
 root:
   get:
-    tags: [Taxonomies]
-    summary: List all the taxonomies
+    tags: [Taxonomy Categories]
+    summary: List all the category taxonomies
     responses:
       200:
         content:
@@ -18,8 +18,8 @@ root:
                         $ref: /docs/core/resources/taxonomy.yaml
 
   post:
-    tags: [Taxonomies]
-    summary: Create a taxonomy
+    tags: [Taxonomy Categories]
+    summary: Create a category taxonomy
     requestBody:
       required: true
       content:
@@ -33,15 +33,15 @@ root:
             schema:
               $ref: /docs/core/resources/taxonomy.yaml
 
-# /taxonomies/{taxonomy}
+# /taxonomies/categories/{category}
 nested:
   get:
-    tags: [Taxonomies]
-    summary: Get a specific taxonomy
+    tags: [Taxonomy Categories]
+    summary: Get a specific category taxonomy
     parameters:
-      - name: taxonomy
+      - name: category
         in: path
-        description: The ID of the taxonomy
+        description: The ID of the category taxonomy
         required: true
         schema:
           type: string
@@ -54,12 +54,12 @@ nested:
               $ref: /docs/core/resources/taxonomy.yaml
 
   put:
-    tags: [Taxonomies]
-    summary: Update a specific taxonomy
+    tags: [Taxonomy Categories]
+    summary: Update a specific category taxonomy
     parameters:
-      - name: taxonomy
+      - name: category
         in: path
-        description: The ID of the taxonomy
+        description: The ID of the category taxonomy
         required: true
         schema:
           type: string
@@ -78,12 +78,12 @@ nested:
               $ref: /docs/core/resources/taxonomy.yaml
 
   delete:
-    tags: [Taxonomies]
-    summary: Delete a specific taxonomy
+    tags: [Taxonomy Categories]
+    summary: Delete a specific category taxonomy
     parameters:
-      - name: taxonomy
+      - name: category
         in: path
-        description: The ID of the taxonomy
+        description: The ID of the category taxonomy
         required: true
         schema:
           type: string
