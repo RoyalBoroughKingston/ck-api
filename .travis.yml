@@ -34,7 +34,7 @@ install:
   - composer self-update
   - composer install --no-interaction
   - npm install
-  - npm run prod
+  - npm run dev
 
 before_script:
   - mysql -e 'create database ck_testing;'
