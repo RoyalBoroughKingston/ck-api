@@ -76,14 +76,14 @@ paths:
     $ref: /docs/core/paths/services.yaml#/organisations
 
   /taxonomies/categories:
-    $ref: /docs/core/paths/taxonomy-categories.yaml#/root
+    $ref: /docs/core/paths/category-taxonomies.yaml#/root
   /taxonomies/categories/{category}:
-    $ref: /docs/core/paths/taxonomy-categories.yaml#/nested
+    $ref: /docs/core/paths/category-taxonomies.yaml#/nested
 
   /taxonomies/organisations:
-    $ref: /docs/core/paths/taxonomy-organisations.yaml#/root
+    $ref: /docs/core/paths/organisation-taxonomies.yaml#/root
   /taxonomies/organisations/{organisation}:
-    $ref: /docs/core/paths/taxonomy-organisations.yaml#/nested
+    $ref: /docs/core/paths/organisation-taxonomies.yaml#/nested
 
   /users:
     $ref: /docs/core/paths/users.yaml#/root
@@ -113,8 +113,8 @@ tags:
   - name: Reports
   - name: Search
   - name: Services
-  - name: Taxonomy Categories
-  - name: Taxonomy Organisations
+  - name: "Taxonomy: Categories"
+  - name: "Taxonomy: Organisations"
   - name: Users
 
 externalDocs:

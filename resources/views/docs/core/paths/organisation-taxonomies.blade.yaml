@@ -1,7 +1,7 @@
 # /taxonomies/organisations
 root:
   get:
-    tags: [Taxonomies]
+    tags: ["Taxonomy: Organisations"]
     summary: List all the organisation taxonomies
     responses:
       200:
@@ -15,28 +15,28 @@ root:
                     data:
                       type: array
                       items:
-                        $ref: /docs/core/resources/taxonomy.yaml
+                        $ref: /docs/core/resources/organisation-taxonomy.yaml
 
   post:
-    tags: [Taxonomy Organisations]
+    tags: ["Taxonomy: Organisations"]
     summary: Create an organisation taxonomy
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/taxonomy.yaml#/store
+            $ref: /docs/core/requests/organisation-taxonomy.yaml#/store
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/taxonomy.yaml
+              $ref: /docs/core/resources/organisation-taxonomy.yaml
 
 # /taxonomies/organisations/{organisation}
 nested:
   get:
-    tags: [Taxonomy Organisations]
+    tags: ["Taxonomy: Organisations"]
     summary: Get a specific organisation taxonomy
     parameters:
       - name: organisation
@@ -51,10 +51,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/taxonomy.yaml
+              $ref: /docs/core/resources/organisation-taxonomy.yaml
 
   put:
-    tags: [Taxonomy Organisations]
+    tags: ["Taxonomy: Organisations"]
     summary: Update a specific organisation taxonomy
     parameters:
       - name: organisation
@@ -69,16 +69,16 @@ nested:
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/taxonomy.yaml#/update
+            $ref: /docs/core/requests/organisation-taxonomy.yaml#/update
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/taxonomy.yaml
+              $ref: /docs/core/resources/organisation-taxonomy.yaml
 
   delete:
-    tags: [Taxonomy Organisations]
+    tags: ["Taxonomy: Organisations"]
     summary: Delete a specific organisation taxonomy
     parameters:
       - name: organisation

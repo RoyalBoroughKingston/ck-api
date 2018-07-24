@@ -7,10 +7,6 @@ properties:
     type: string
   order:
     type: integer
-  category_taxonomies:
-    type: array
-    items:
-      $ref: /docs/core/resources/category-taxonomy.yaml
   created_at:
     type: string
     format: date-time

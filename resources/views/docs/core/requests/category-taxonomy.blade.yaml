@@ -1,19 +1,18 @@
 store:
   type: object
   required:
+    - parent_id
     - name
     - order
-    - category_taxonomies
   properties:
+    parent_id:
+      type: string
+      format: uuid
+      nullable: true
     name:
       type: string
     order:
       type: integer
-    category_taxonomies:
-      type: array
-      items:
-        type: string
-        format: uuid
 
 update:
   allOf:
