@@ -16,6 +16,8 @@ paths:
     $ref: /docs/core/paths/audits.yaml#/root
   /audits/{audit}:
     $ref: /docs/core/paths/audits.yaml#/nested
+  /users/{user}/audits:
+    $ref: /docs/core/paths/audits.yaml#/users
 
   /collections:
     $ref: /docs/core/paths/collections.yaml#/root
