@@ -76,6 +76,8 @@ paths:
     $ref: /docs/core/paths/services.yaml#/root
   /services/{service}:
     $ref: /docs/core/paths/services.yaml#/nested
+  /services/{service}/logo:
+    $ref: /docs/core/paths/services.yaml#/logo
   /organisations/{organisation}/services:
     $ref: /docs/core/paths/services.yaml#/organisations
 
