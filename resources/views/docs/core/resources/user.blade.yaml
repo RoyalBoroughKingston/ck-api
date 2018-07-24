@@ -9,6 +9,8 @@ properties:
     type: string
   email:
     type: string
+  phone:
+    type: string
   roles:
     type: array
     items:
@@ -17,11 +19,10 @@ properties:
         role:
           type: string
           enum:
+            - service_worker
             - service_admin
             - organisation_admin
-            - system_admin
-            - tier_1_worker
-            - tier_2_worker
+            - global_admin
         organisation_id:
           type: string
           format: uuid
