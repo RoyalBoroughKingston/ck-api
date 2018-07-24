@@ -23,6 +23,8 @@ store:
       type: string
     country:
       type: string
+    access_information:
+      type: string
 
 update:
   allOf:
