@@ -109,6 +109,8 @@ paths:
     $ref: /docs/core/paths/update-requests.yaml#/approve
   /services/{service}/update-requests:
     $ref: /docs/core/paths/update-requests.yaml#/services
+  /service-locations/{service_location}/update-requests:
+    $ref: /docs/core/paths/update-requests.yaml#/service-locations
 
   /users:
     $ref: /docs/core/paths/users.yaml#/root
