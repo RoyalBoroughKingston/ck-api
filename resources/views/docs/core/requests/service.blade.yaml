@@ -41,7 +41,10 @@ store:
       nullable: true
     is_free:
       type: boolean
-    fees:
+    fees_text:
+      type: string
+      nullable: true
+    fees_url:
       type: string
       nullable: true
     testimonial:
