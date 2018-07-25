@@ -3,13 +3,13 @@ store:
   required:
     - name
     - order
-    - persona_taxonomies
+    - category_taxonomies
   properties:
     name:
       type: string
     order:
       type: integer
-    persona_taxonomies:
+    category_taxonomies:
       type: array
       items:
         type: string
