@@ -1,0 +1,113 @@
+store:
+  type: object
+  required:
+    - location_id
+    - regular_opening_hours
+    - holiday_opening_hours
+  properties:
+    location_id:
+      type: string
+      format: uuid
+    regular_opening_hours:
+      type: array
+      items:
+        type: object
+        required:
+          - weekday
+          - opens_at
+          - closes_at
+        properties:
+          weekday:
+            type: string
+            enum:
+              - monday
+              - tuesday
+              - wednesday
+              - thursday
+              - friday
+              - saturday
+              - sunday
+          opens_at:
+            type: string
+            format: date-time
+          closes_at:
+            type: string
+            format: date-time
+    holiday_opening_hours:
+      type: array
+      items:
+        type: object
+        required:
+          - is_closed
+          - starts_at
+          - ends_at
+        properties:
+          is_closed:
+            type: boolean
+          starts_at:
+            type: string
+            format: date-time
+          ends_at:
+            type: string
+            format: date-time
+          opens_at:
+            type: string
+            format: date-time
+          closes_at:
+            type: string
+            format: date-time
+
+update:
+  type: object
+  required:
+    - regular_opening_hours
+    - holiday_opening_hours
+  properties:
+    regular_opening_hours:
+      type: array
+      items:
+        type: object
+        required:
+          - weekday
+          - opens_at
+          - closes_at
+        properties:
+          weekday:
+            type: string
+            enum:
+              - monday
+              - tuesday
+              - wednesday
+              - thursday
+              - friday
+              - saturday
+              - sunday
+          opens_at:
+            type: string
+            format: date-time
+          closes_at:
+            type: string
+            format: date-time
+    holiday_opening_hours:
+      type: array
+      items:
+        type: object
+        required:
+          - is_closed
+          - starts_at
+          - ends_at
+        properties:
+          is_closed:
+            type: boolean
+          starts_at:
+            type: string
+            format: date-time
+          ends_at:
+            type: string
+            format: date-time
+          opens_at:
+            type: string
+            format: date-time
+          closes_at:
+            type: string
+            format: date-time

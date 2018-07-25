@@ -1,0 +1,18 @@
+type: object
+properties:
+  weekday:
+    type: string
+    enum:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+  opens_at:
+    type: string
+    format: date-time
+  closes_at:
+    type: string
+    format: date-time

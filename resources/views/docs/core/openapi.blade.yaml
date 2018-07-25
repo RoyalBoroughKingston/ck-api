@@ -72,6 +72,13 @@ paths:
   /search:
     $ref: /docs/core/paths/search.yaml#/root
 
+  /service-locations:
+    $ref: /docs/core/paths/service-locations.yaml#/root
+  /service-locations/{service_location}:
+    $ref: /docs/core/paths/service-locations.yaml#/nested
+  /services/{service}/service-locations:
+    $ref: /docs/core/paths/service-locations.yaml#/services
+
   /services:
     $ref: /docs/core/paths/services.yaml#/root
   /services/{service}:

@@ -1,0 +1,27 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  service_id:
+    type: string
+    format: uuid
+  location_id:
+    type: string
+    format: uuid
+  regular_opening_hours:
+    type: array
+    items:
+      $ref: /docs/core/resources/regular-opening-hour.yaml
+  holiday_opening_hours:
+    type: array
+    items:
+      $ref: /docs/core/resources/holiday-opening-hour.yaml
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

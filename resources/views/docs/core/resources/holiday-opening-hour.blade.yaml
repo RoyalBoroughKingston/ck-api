@@ -1,0 +1,16 @@
+type: object
+properties:
+  is_closed:
+    type: boolean
+  starts_at:
+    type: string
+    format: date-time
+  ends_at:
+    type: string
+    format: date-time
+  opens_at:
+    type: string
+    format: date-time
+  closes_at:
+    type: string
+    format: date-time
