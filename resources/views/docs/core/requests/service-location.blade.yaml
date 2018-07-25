@@ -8,6 +8,8 @@ store:
     location_id:
       type: string
       format: uuid
+    name:
+      type: string
     regular_opening_hours:
       type: array
       items:
