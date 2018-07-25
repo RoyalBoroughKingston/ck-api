@@ -1,8 +1,8 @@
-# /collections
+# /collections/categories
 root:
   get:
-    tags: [Collections]
-    summary: List all the collections
+    tags: ["Collection: Categories"]
+    summary: List all the category collections
     responses:
       200:
         content:
@@ -15,33 +15,33 @@ root:
                     data:
                       type: array
                       items:
-                        $ref: /docs/core/resources/collection.yaml
+                        $ref: /docs/core/resources/category-collection.yaml
 
   post:
-    tags: [Collections]
-    summary: Create a collection
+    tags: ["Collection: Categories"]
+    summary: Create a category collection
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/collection.yaml#/store
+            $ref: /docs/core/requests/category-collection.yaml#/store
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/collection.yaml
+              $ref: /docs/core/resources/category-collection.yaml
 
-# /collections/{collection}
+# /collections/categories/{category}
 nested:
   get:
-    tags: [Collections]
-    summary: Get a specific collection
+    tags: ["Collection: Categories"]
+    summary: Get a specific category collection
     parameters:
-      - name: collection
+      - name: category
         in: path
-        description: The ID of the collection
+        description: The ID of the category collection
         required: true
         schema:
           type: string
@@ -51,15 +51,15 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/collection.yaml
+              $ref: /docs/core/resources/category-collection.yaml
 
   put:
-    tags: [Collections]
-    summary: Update a specific collection
+    tags: ["Collection: Categories"]
+    summary: Update a specific category collection
     parameters:
-      - name: collection
+      - name: category
         in: path
-        description: The ID of the collection
+        description: The ID of the category collection
         required: true
         schema:
           type: string
@@ -69,21 +69,21 @@ nested:
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/collection.yaml#/update
+            $ref: /docs/core/requests/category-collection.yaml#/update
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/collection.yaml
+              $ref: /docs/core/resources/category-collection.yaml
 
   delete:
-    tags: [Collections]
-    summary: Delete a specific collection
+    tags: ["Collection: Categories"]
+    summary: Delete a specific category collection
     parameters:
-      - name: collection
+      - name: category
         in: path
-        description: The ID of the collection
+        description: The ID of the category collection
         required: true
         schema:
           type: string

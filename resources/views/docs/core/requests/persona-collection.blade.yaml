@@ -1,0 +1,20 @@
+store:
+  type: object
+  required:
+    - name
+    - order
+    - persona_taxonomies
+  properties:
+    name:
+      type: string
+    order:
+      type: integer
+    persona_taxonomies:
+      type: array
+      items:
+        type: string
+        format: uuid
+
+update:
+  allOf:
+    - $ref: "#/store"

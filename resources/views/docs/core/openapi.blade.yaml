@@ -19,10 +19,15 @@ paths:
   /users/{user}/audits:
     $ref: /docs/core/paths/audits.yaml#/users
 
-  /collections:
-    $ref: /docs/core/paths/collections.yaml#/root
-  /collections/{collection}:
-    $ref: /docs/core/paths/collections.yaml#/nested
+  /collections/categories:
+    $ref: /docs/core/paths/category-collections.yaml#/root
+  /collections/categories/{category}:
+    $ref: /docs/core/paths/category-collections.yaml#/nested
+
+  /collections/personas:
+    $ref: /docs/core/paths/persona-collections.yaml#/root
+  /collections/personas/{persona}:
+    $ref: /docs/core/paths/persona-collections.yaml#/nested
 
   /locations:
     $ref: /docs/core/paths/locations.yaml#/root
@@ -123,7 +128,8 @@ security:
 
 tags:
   - name: Audits
-  - name: Collections
+  - name: "Collection: Categories"
+  - name: "Collection: Personas"
   - name: Locations
   - name: Notifications
   - name: Organisations

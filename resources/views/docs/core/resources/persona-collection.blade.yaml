@@ -1,0 +1,21 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  name:
+    type: string
+  order:
+    type: integer
+  persona_taxonomies:
+    type: array
+    items:
+      $ref: /docs/core/resources/persona-taxonomy.yaml
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true
