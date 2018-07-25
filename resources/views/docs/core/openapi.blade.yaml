@@ -98,6 +98,11 @@ paths:
   /taxonomies/organisations/{organisation}:
     $ref: /docs/core/paths/organisation-taxonomies.yaml#/nested
 
+  /update-requests/{update_request}:
+    $ref: /docs/core/paths/update-requests.yaml#/nested
+  /update-requests/{update_request}/approve:
+    $ref: /docs/core/paths/update-requests.yaml#/approve
+
   /users:
     $ref: /docs/core/paths/users.yaml#/root
   /users/{user}:
@@ -129,6 +134,7 @@ tags:
   - name: Services
   - name: "Taxonomy: Categories"
   - name: "Taxonomy: Organisations"
+  - name: Update Requests
   - name: Users
 
 externalDocs:

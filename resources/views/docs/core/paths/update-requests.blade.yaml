@@ -1,0 +1,57 @@
+# /update-requests/{update_request}
+nested:
+  get:
+    tags: [Update Requests]
+    summary: Get a specific update request
+    parameters:
+      - name: update_request
+        in: path
+        description: The ID of the udpate request
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/update-request.yaml
+
+  delete:
+    tags: [Update Requests]
+    summary: Delete a specific update request
+    parameters:
+      - name: update_request
+        in: path
+        description: The ID of the update request
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
+
+# /update-requests/{update_request}/approve
+approve:
+  put:
+    tags: [Update Requests]
+    summary: Approve a specific update request
+    parameters:
+      - name: update_request
+        in: path
+        description: The ID of the udpate request
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/update-request.yaml
