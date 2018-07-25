@@ -32,6 +32,12 @@ store:
       type: string
     wait_time:
       type: string
+      enum:
+        - one_week
+        - two_weeks
+        - three_weeks
+        - month
+        - longer
       nullable: true
     is_free:
       type: boolean
