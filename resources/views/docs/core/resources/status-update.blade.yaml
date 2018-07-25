@@ -9,14 +9,14 @@ properties:
       - new
       - in_progress
       - completed
-      - declined
+      - incompleted
   to:
     type: string
     enum:
       - new
       - in_progress
       - completed
-      - declined
+      - incompleted
   comments:
     type: string
     nullable: true

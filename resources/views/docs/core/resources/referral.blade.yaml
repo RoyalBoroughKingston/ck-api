@@ -14,7 +14,7 @@ properties:
       - new
       - in_progress
       - completed
-      - declined
+      - incompleted
   name:
     type: string
   email:

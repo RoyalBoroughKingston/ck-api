@@ -52,6 +52,6 @@ update:
         - new
         - in_progress
         - completed
-        - declined
+        - incompleted
     comments:
       type: string
