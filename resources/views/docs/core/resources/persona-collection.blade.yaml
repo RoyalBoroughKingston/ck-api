@@ -5,6 +5,10 @@ properties:
     format: uuid
   name:
     type: string
+  intro:
+    type: string
+  subtitle:
+    type: string
   order:
     type: integer
   category_taxonomies:

@@ -2,10 +2,16 @@ store:
   type: object
   required:
     - name
+    - intro
+    - icon
     - order
     - category_taxonomies
   properties:
     name:
+      type: string
+    intro:
+      type: string
+    icon:
       type: string
     order:
       type: integer
