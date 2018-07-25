@@ -102,6 +102,8 @@ paths:
     $ref: /docs/core/paths/update-requests.yaml#/nested
   /update-requests/{update_request}/approve:
     $ref: /docs/core/paths/update-requests.yaml#/approve
+  /services/{service}/update-requests:
+    $ref: /docs/core/paths/update-requests.yaml#/services
 
   /users:
     $ref: /docs/core/paths/users.yaml#/root

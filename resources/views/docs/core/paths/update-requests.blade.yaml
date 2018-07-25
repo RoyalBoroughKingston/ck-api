@@ -55,3 +55,30 @@ approve:
           application/json:
             schema:
               $ref: /docs/core/resources/update-request.yaml
+
+# /services/{service}/update-requests
+services:
+  get:
+    tags: [Update Requests]
+    summary: List all the update requests for a service
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/update-request.yaml
