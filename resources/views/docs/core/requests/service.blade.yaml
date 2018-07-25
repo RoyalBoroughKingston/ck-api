@@ -13,6 +13,7 @@ store:
     - show_referral_disclaimer
     - referral_button_text
     - referral_method
+    - criteria
     - seo_title
     - seo_description
     - seo_image_url
@@ -82,6 +83,30 @@ store:
     referral_url:
       type: string
       nullable: true
+    criteria:
+      type: object
+      properties:
+        age_group:
+          type: string
+          nullable: true
+        disability:
+          type: string
+          nullable: true
+        employment:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        housing:
+          type: string
+          nullable: true
+        language:
+          type: string
+          nullable: true
+        other:
+          type: string
+          nullable: true
     seo_title:
       type: string
     seo_description:
