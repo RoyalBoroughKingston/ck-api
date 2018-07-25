@@ -26,7 +26,7 @@ properties:
     type: number
   lng:
     type: number
-  access_information:
+  accessibility_info:
     type: string
   created_at:
     type: string

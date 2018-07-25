@@ -23,7 +23,7 @@ store:
       type: string
     country:
       type: string
-    access_information:
+    accessibility_info:
       type: string
 
 update:

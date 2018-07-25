@@ -75,7 +75,7 @@ store:
       type: string
       enum:
         - internal
-        - url
+        - external
         - none
     referral_email:
       type: string
