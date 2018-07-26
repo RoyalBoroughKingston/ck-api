@@ -161,6 +161,7 @@ return [
         App\Providers\CloudFoundryServiceProvider::class,
         App\Providers\DatabaseServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\MigrationServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
     ],
