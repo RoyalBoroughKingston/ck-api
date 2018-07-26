@@ -16,7 +16,7 @@ properties:
     format: date
   opens_at:
     type: string
-    format: date-time
+    format: time
   closes_at:
     type: string
-    format: date-time
+    format: time
