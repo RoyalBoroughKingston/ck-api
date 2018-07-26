@@ -92,6 +92,8 @@ paths:
     $ref: /docs/core/paths/services.yaml#/nested
   /services/{service}/logo:
     $ref: /docs/core/paths/services.yaml#/logo
+  /services/{service}/seo-image:
+    $ref: /docs/core/paths/services.yaml#/seo-image
   /organisations/{organisation}/services:
     $ref: /docs/core/paths/services.yaml#/organisations
 

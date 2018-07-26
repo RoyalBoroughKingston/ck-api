@@ -97,8 +97,6 @@ properties:
     type: string
   seo_description:
     type: string
-  seo_image_url:
-    type: string
   useful_infos:
     type: array
     items:

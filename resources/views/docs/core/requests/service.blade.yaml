@@ -16,7 +16,6 @@ store:
     - criteria
     - seo_title
     - seo_description
-    - seo_image_url
     - social_medias
     - category_taxonomies
   properties:
@@ -110,8 +109,6 @@ store:
     seo_title:
       type: string
     seo_description:
-      type: string
-    seo_image_url:
       type: string
     useful_infos:
       type: array

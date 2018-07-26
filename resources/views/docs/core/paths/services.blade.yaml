@@ -144,6 +144,71 @@ logo:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
 
+# /services/{service}/seo-image
+seo-image:
+  get:
+    tags: [Services]
+    summary: Get a specific service's SEO image
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          image/png:
+
+  post:
+    tags: [Services]
+    summary: Upload a specific service's SEO image
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        image/png:
+          schema:
+            type: string
+            format: binary
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The service's SEO image has been successfully uploaded
+
+  delete:
+    tags: [Services]
+    summary: Delete a specific service's SEO image
+    parameters:
+      - name: service
+        in: path
+        description: The ID of the service
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
+
 # /organisations/{organisation}/services
 organisations:
   post:
