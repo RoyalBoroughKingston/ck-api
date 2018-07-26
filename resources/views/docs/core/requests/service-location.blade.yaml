@@ -28,7 +28,7 @@ store:
               - nth_week_of_month
           weekday:
             type: integer
-          day_of_month:
+          week_of_month:
             type: integer
           starts_at:
             type: string
@@ -87,7 +87,7 @@ update:
               - nth_week_of_month
           weekday:
             type: integer
-          day_of_month:
+          week_of_month:
             type: integer
           starts_at:
             type: string
