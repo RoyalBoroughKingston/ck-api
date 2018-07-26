@@ -3,7 +3,6 @@ store:
   required:
     - parent_id
     - name
-    - order
   properties:
     parent_id:
       type: string
@@ -11,8 +10,6 @@ store:
       nullable: true
     name:
       type: string
-    order:
-      type: integer
 
 update:
   allOf:

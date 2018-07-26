@@ -34,6 +34,8 @@ class CollectionsTableSeeder extends Seeder
     protected function seedCategoryCollections()
     {
         // TODO: Confirm categories and seed records for them.
+
+        // TODO: Seed records for collection_taxonomies pivot table.
     }
 
     /**
@@ -42,5 +44,7 @@ class CollectionsTableSeeder extends Seeder
     protected function seedPersonaCollections()
     {
         // TODO: Confirm personas and seed records for them.
+
+        // TODO: Seed records for collection_taxonomies pivot table.
     }
 }
