@@ -22,6 +22,14 @@ class AppServiceProvider extends ServiceProvider
         Blueprint::macro('nullableForeignUuid', function (string $column, string $referencesTable, string $referencedColumn = 'id') {
             $this->foreignUuid($column, $referencesTable, $referencedColumn, true);
         });
+
+        Blueprint::macro('morphsUuid', function (string $name, string $indexName = null) {
+            $this->string("{$name}_type");
+
+            $this->uuid("{$name}_id");
+
+            $this->index(["{$name}_type", "{$name}_id"], $indexName);
+        });
     }
 
     /**
