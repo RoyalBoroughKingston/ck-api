@@ -33,6 +33,7 @@ store:
               - service_admin
               - organisation_admin
               - global_admin
+              - super_admin
           organisation_id:
             type: string
             format: uuid
