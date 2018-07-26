@@ -11,6 +11,8 @@ properties:
     format: uuid
   name:
     type: string
+  is_open_now:
+    type: boolean
   regular_opening_hours:
     type: array
     items:

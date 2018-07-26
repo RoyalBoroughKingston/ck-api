@@ -1,15 +1,19 @@
 type: object
 properties:
-  weekday:
+  frequency:
     type: string
     enum:
-      - monday
-      - tuesday
-      - wednesday
-      - thursday
-      - friday
-      - saturday
-      - sunday
+      - weekly
+      - monthly
+      - fortnightly
+      - nth_week_of_month
+  weekday:
+    type: integer
+  day_of_month:
+    type: integer
+  starts_at:
+    type: string
+    format: date
   opens_at:
     type: string
     format: date-time
