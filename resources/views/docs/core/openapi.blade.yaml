@@ -28,6 +28,8 @@ paths:
     $ref: /docs/core/paths/persona-collections.yaml#/root
   /collections/personas/{persona}:
     $ref: /docs/core/paths/persona-collections.yaml#/nested
+  /collections/personas/{persona}/image:
+    $ref: /docs/core/paths/persona-collections.yaml#/image
 
   /locations:
     $ref: /docs/core/paths/locations.yaml#/root
