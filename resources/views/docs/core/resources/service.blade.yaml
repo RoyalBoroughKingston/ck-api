@@ -55,14 +55,15 @@ properties:
       type: string
   show_referral_disclaimer:
     type: boolean
-  referral_button_text:
-    type: string
   referral_method:
     type: string
     enum:
       - internal
       - external
       - none
+  referral_button_text:
+    type: string
+    nullable: true
   referral_email:
     type: string
     nullable: true
