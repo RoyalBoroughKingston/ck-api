@@ -24,7 +24,7 @@ properties:
     type: string
   lat:
     type: number
-  lng:
+  lon:
     type: number
   accessibility_info:
     type: string
