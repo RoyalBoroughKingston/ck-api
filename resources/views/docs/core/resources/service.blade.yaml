@@ -87,6 +87,9 @@ properties:
       housing:
         type: string
         nullable: true
+      income:
+        type: string
+        nullable: true
       language:
         type: string
         nullable: true
