@@ -19,11 +19,11 @@ properties:
         role:
           type: string
           enum:
-            - service_worker
-            - service_admin
-            - organisation_admin
-            - global_admin
-            - super_admin
+            - Service Worker
+            - Service Admin
+            - Organisation Admin
+            - Global Admin
+            - Super Admin
         organisation_id:
           type: string
           format: uuid
