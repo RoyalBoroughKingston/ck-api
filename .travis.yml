@@ -4,40 +4,26 @@ php:
   - 7.2
 
 services:
+  - mysql
   - redis-server
 
 addons:
   apt:
     sources:
       - mysql-5.7-trusty
-      - sourceline: deb https://packages.cloudfoundry.org/debian stable main
-        key_url: https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key
     packages:
       - mysql-server
-      - cf-cli
 
 dist: trusty
 
 sudo: required
 
-branches:
-  only:
-    - master
-    - develop
-
-cache:
-  directories:
-    - vendor
-    - node_modules
-
-install:
+before_script:
+  - cp .env.travis .env
   - composer self-update
   - composer install --no-interaction
-  - npm install
-  - npm run dev
-
-before_script:
-  - mysql -e 'create database ck_testing;'
+  - php artisan key:generate
+  - mysql -e 'create database cwk_testing;'
   - php artisan migrate --force --seed
 
 script:
@@ -45,9 +31,13 @@ script:
   - vendor/bin/phpunit
 
 deploy:
-  provider: script
-  script: bash deploy.sh
-  skip_cleanup: true
+  provider: cloudfoundry
+  api: https://api.cloud.service.gov.uk
+  username: matt@ayup.agency
+  password:
+    secure: fqu3f8fMn3Nd4R8aqfgpE/+VDmTGE0TuIc6cuH/6ZM+0Pv3hxwMBMF1wR0gEVYLbpmm48LejMhLDGLDoE5IEmnajIl8AwbzMaJ61LUmK7CnTuCFe38irNIs+PA/mczJiMn2IwmC/t88qw0TqNEfLW+LLP1bdpcTGrK+QUMbFGl76paTqrnZgO164o+FxPEt8XYGXzfrbHhmy5cD7liFKjh2rzAkg/pKbILOM0e+I0EZQZViylcrEcyfyC355QSuLUPXZOzwqJhKqxZkJ8JSEqKTPOTlrkgzyr4d79IfJIiEflSJ0zuJaC9UvS+l+wCw3Ruv5PXMupr84T4EShUTzRIQoypWeNrzgThTldR/iLlNSdr22Fil7/Uu6FdhnMQdVhDE5ixYY+kWbQgr4zx3t+3l91A6/LW10Hws/aEDvMvY77aFvKWMrNQ7xi88ilq55cTrkpGOmimpfNEDFxHCngxkUr5Fbwnnb5gKJ4wTDmd5y3GSWJdedTfLhv1F9grMm9dwS2g3Nxm4TF1YlT+z8FDsCYnk9ZJk5gnnQkvvahUMICmJzyvgZpc7HZ+lLZpDq9cO32nuESgId5b3/NfZY67fTEM9Sdzx4IUh8QNGtCZ6PmHlD/StQPOpABw1DQdNeyoUB7zIwXDYhccHx0R1pJMn5Ynmz8rTEhWVW3QjgGq0=
+  organization: kingston-council-digital-design
+  space: connectwellkingston-dev
   on:
-    repo: RoyalBoroughKingston/ck-api
+    repo: RoyalBoroughKingston/cwk-api
     branch: develop

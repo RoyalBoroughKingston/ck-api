@@ -1,4 +1,4 @@
-# Connected Kingston
+# Connect Well Kingston
 
 A scheme run by RBK to help residents take control of their own health by connecting them with services and events in their local area.
 This system forms the online aspect of this scheme, by providing an API as well a frontend and backend web app.
@@ -27,14 +27,14 @@ cp .env.example .env
 composer install --ignore-platform-reqs
 
 # Update your hosts file (use values set in Homestead.yaml).
-sudo echo "192.168.10.12 api.connectedkingston.test" >> /etc/hosts
+sudo echo "192.168.10.12 api.connectwellkingston.test" >> /etc/hosts
 ```
 
 You should then be able to start the VM and SSH into it:
 
 ```bash
 vagrant up && vagrant ssh
-cd api.connectedkingston
+cd api.connectwellkingston
 
 # Generate the application key.
 php artisan key:generate
@@ -46,7 +46,7 @@ php artisan migrate --seed
 php artisan pasport:keys
 
 # Create the first Global Admin user (take a note of the password outputted).
-php artisan ck:create-user <first-name> <last-name> <email> <phone-number>
+php artisan cwk:create-user <first-name> <last-name> <email> <phone-number>
 ```
 
 Ensure any API clients have been created:
@@ -71,7 +71,7 @@ php vendor/bin/phpcs
 
 ## Deployment
 
-TODO: Write deployment process for GOV.UK PaaS
+TODO: Write deployment process for GOV.UK PaaS.
 
 ## Built With
 
@@ -84,13 +84,13 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/RoyalBoroughKingston/ck-api/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/RoyalBoroughKingston/cwk-api/tags). 
 
 ## Authors
 
 * [Ayup Digital](https://ayup.agency/)
 
-See also the list of [contributors](https://github.com/RoyalBoroughKingston/ck-api/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/RoyalBoroughKingston/cwk-api/contributors) who participated in this project.
 
 ## License
 

@@ -16,25 +16,13 @@ paths:
     $ref: /docs/core/paths/audits.yaml#/root
   /audits/{audit}:
     $ref: /docs/core/paths/audits.yaml#/nested
-  /users/{user}/audits:
-    $ref: /docs/core/paths/audits.yaml#/users
-
-  /collections/categories:
-    $ref: /docs/core/paths/category-collections.yaml#/root
-  /collections/categories/{category}:
-    $ref: /docs/core/paths/category-collections.yaml#/nested
-
-  /collections/personas:
-    $ref: /docs/core/paths/persona-collections.yaml#/root
-  /collections/personas/{persona}:
-    $ref: /docs/core/paths/persona-collections.yaml#/nested
-  /collections/personas/{persona}/image:
-    $ref: /docs/core/paths/persona-collections.yaml#/image
 
   /locations:
     $ref: /docs/core/paths/locations.yaml#/root
   /locations/{location}:
     $ref: /docs/core/paths/locations.yaml#/nested
+  /services/{service}/locations:
+    $ref: /docs/core/paths/locations.yaml#/services
 
   /notifications:
     $ref: /docs/core/paths/notifications.yaml#/root
@@ -59,8 +47,6 @@ paths:
     $ref: /docs/core/paths/referrals.yaml#/root
   /referrals/{referral}:
     $ref: /docs/core/paths/referrals.yaml#/nested
-  /referrals/{referral}/status-updates:
-    $ref: /docs/core/paths/referrals.yaml#/history
   /services/{service}/referrals:
     $ref: /docs/core/paths/referrals.yaml#/services
 
@@ -79,42 +65,17 @@ paths:
   /search:
     $ref: /docs/core/paths/search.yaml#/root
 
-  /service-locations:
-    $ref: /docs/core/paths/service-locations.yaml#/root
-  /service-locations/{service_location}:
-    $ref: /docs/core/paths/service-locations.yaml#/nested
-  /services/{service}/service-locations:
-    $ref: /docs/core/paths/service-locations.yaml#/services
-
   /services:
     $ref: /docs/core/paths/services.yaml#/root
   /services/{service}:
     $ref: /docs/core/paths/services.yaml#/nested
-  /services/{service}/logo:
-    $ref: /docs/core/paths/services.yaml#/logo
-  /services/{service}/seo-image:
-    $ref: /docs/core/paths/services.yaml#/seo-image
   /organisations/{organisation}/services:
     $ref: /docs/core/paths/services.yaml#/organisations
 
-  /taxonomies/categories:
-    $ref: /docs/core/paths/category-taxonomies.yaml#/root
-  /taxonomies/categories/{category}:
-    $ref: /docs/core/paths/category-taxonomies.yaml#/nested
-
-  /taxonomies/organisations:
-    $ref: /docs/core/paths/organisation-taxonomies.yaml#/root
-  /taxonomies/organisations/{organisation}:
-    $ref: /docs/core/paths/organisation-taxonomies.yaml#/nested
-
-  /update-requests/{update_request}:
-    $ref: /docs/core/paths/update-requests.yaml#/nested
-  /update-requests/{update_request}/approve:
-    $ref: /docs/core/paths/update-requests.yaml#/approve
-  /services/{service}/update-requests:
-    $ref: /docs/core/paths/update-requests.yaml#/services
-  /service-locations/{service_location}/update-requests:
-    $ref: /docs/core/paths/update-requests.yaml#/service-locations
+  /taxonomies:
+    $ref: /docs/core/paths/taxonomies.yaml#/root
+  /taxonomies/{taxonomy}:
+    $ref: /docs/core/paths/taxonomies.yaml#/nested
 
   /users:
     $ref: /docs/core/paths/users.yaml#/root
@@ -134,8 +95,6 @@ security:
 
 tags:
   - name: Audits
-  - name: "Collection: Categories"
-  - name: "Collection: Personas"
   - name: Locations
   - name: Notifications
   - name: Organisations
@@ -144,11 +103,8 @@ tags:
   - name: Report Schedules
   - name: Reports
   - name: Search
-  - name: Service Locations
   - name: Services
-  - name: "Taxonomy: Categories"
-  - name: "Taxonomy: Organisations"
-  - name: Update Requests
+  - name: Taxonomies
   - name: Users
 
 externalDocs:
