@@ -30,7 +30,7 @@ abstract class Model extends BaseModel
         parent::boot();
 
         static::creating(function ($model) {
-            if (empty($model->{$key})) {
+            if (empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = uuid();
             }
         });
