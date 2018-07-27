@@ -2,19 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Mutators\UserMutators;
-use App\Models\Relationships\UserRelationships;
-use App\Models\Scopes\UserScopes;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 
-class User extends Authenticatable
+abstract class Model extends BaseModel
 {
-    use Notifiable;
-    use UserMutators;
-    use UserRelationships;
-    use UserScopes;
-
     /**
      * Indicates if the IDs are auto-incrementing.
      *
@@ -39,7 +30,7 @@ class User extends Authenticatable
         parent::boot();
 
         static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
+            if (empty($model->{$key})) {
                 $model->{$model->getKeyName()} = uuid();
             }
         });

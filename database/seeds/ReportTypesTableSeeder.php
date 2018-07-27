@@ -16,7 +16,7 @@ class ReportTypesTableSeeder extends Seeder
 
         DB::table('report_types')->insert([
             'id' => uuid(),
-            'name' => 'commissioners_report',
+            'name' => 'Commissioners Report',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
