@@ -11,4 +11,7 @@ class Notification extends Model
     use NotificationMutators;
     use NotificationRelationships;
     use NotificationScopes;
+
+    const CHANNEL_EMAIL = 'email';
+    const CHANNEL_SMS = 'sms';
 }

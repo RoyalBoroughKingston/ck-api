@@ -22,4 +22,9 @@ class RegularOpeningHour extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    const FREQUENCY_WEEKLY = 'weekly';
+    const FREQUENCY_MONTHLY = 'monthly';
+    const FREQUENCY_FORTNIGHTLY = 'fortnightly';
+    const FREQUENCY_NTH_WEEK_OF_MONTH = 'nth_week_of_month';
 }

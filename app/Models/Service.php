@@ -12,6 +12,19 @@ class Service extends Model
     use ServiceRelationships;
     use ServiceScopes;
 
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
+
+    const WAIT_TIME_ONE_WEEK = 'one_week';
+    const WAIT_TIME_TWO_WEEKS = 'two_weeks';
+    const WAIT_TIME_THREE_WEEKS = 'three_weeks';
+    const WAIT_TIME_MONTH = 'month';
+    const WAIT_TIME_LONGER = 'longer';
+
+    const REFERRAL_METHOD_INTERNAL = 'internal';
+    const REFERRAL_METHOD_EXTERNAL = 'external';
+    const REFERRAL_METHOD_NONE = 'none';
+
     /**
      * The attributes that should be cast to native types.
      *

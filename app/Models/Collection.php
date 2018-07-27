@@ -11,4 +11,7 @@ class Collection extends Model
     use CollectionMutators;
     use CollectionRelationships;
     use CollectionScopes;
+
+    const TYPE_CATEGORY = 'category';
+    const TYPE_PERSONA = 'persona';
 }

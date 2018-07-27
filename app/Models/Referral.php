@@ -23,4 +23,9 @@ class Referral extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    const STATUS_NEW = 'new';
+    const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_INCOMPLETED = 'incompleted';
 }

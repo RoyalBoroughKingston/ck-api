@@ -11,4 +11,9 @@ class Audit extends Model
     use AuditMutators;
     use AuditRelationships;
     use AuditScopes;
+
+    const ACTION_CREATE = 'create';
+    const ACTION_READ = 'read';
+    const ACTION_UPDATE = 'update';
+    const ACTION_DELETE = 'delete';
 }
