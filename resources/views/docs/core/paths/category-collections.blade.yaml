@@ -1,0 +1,96 @@
+# /collections/categories
+root:
+  get:
+    tags: ["Collection: Categories"]
+    summary: List all the category collections
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/category-collection.yaml
+
+  post:
+    tags: ["Collection: Categories"]
+    summary: Create a category collection
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/category-collection.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/category-collection.yaml
+
+# /collections/categories/{category}
+nested:
+  get:
+    tags: ["Collection: Categories"]
+    summary: Get a specific category collection
+    parameters:
+      - name: category
+        in: path
+        description: The ID of the category collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/category-collection.yaml
+
+  put:
+    tags: ["Collection: Categories"]
+    summary: Update a specific category collection
+    parameters:
+      - name: category
+        in: path
+        description: The ID of the category collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/category-collection.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/category-collection.yaml
+
+  delete:
+    tags: ["Collection: Categories"]
+    summary: Delete a specific category collection
+    parameters:
+      - name: category
+        in: path
+        description: The ID of the category collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml

@@ -1,0 +1,96 @@
+# /taxonomies/categories
+root:
+  get:
+    tags: ["Taxonomy: Categories"]
+    summary: List all the category taxonomies
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/category-taxonomy.yaml
+
+  post:
+    tags: ["Taxonomy: Categories"]
+    summary: Create a category taxonomy
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/category-taxonomy.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/category-taxonomy.yaml
+
+# /taxonomies/categories/{category}
+nested:
+  get:
+    tags: ["Taxonomy: Categories"]
+    summary: Get a specific category taxonomy
+    parameters:
+      - name: category
+        in: path
+        description: The ID of the category taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/category-taxonomy.yaml
+
+  put:
+    tags: ["Taxonomy: Categories"]
+    summary: Update a specific category taxonomy
+    parameters:
+      - name: category
+        in: path
+        description: The ID of the category taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/category-taxonomy.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/category-taxonomy.yaml
+
+  delete:
+    tags: ["Taxonomy: Categories"]
+    summary: Delete a specific category taxonomy
+    parameters:
+      - name: category
+        in: path
+        description: The ID of the category taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml

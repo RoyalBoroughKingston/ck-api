@@ -3,77 +3,116 @@ properties:
   id:
     type: string
     format: uuid
+  organisation_id:
+    type: string
+    format: uuid
   name:
     type: string
-  description:
-    type: string
-    nullable: true
-  url:
-    type: string
-    nullable: true
   status:
     type: string
     enum:
       - active
       - inactive
-    nullable: true
+  intro:
+    type: string
+  description:
+    type: string
   wait_time:
     type: string
+    enum:
+      - one_week
+      - two_weeks
+      - three_weeks
+      - month
+      - longer
     nullable: true
-  fees:
+  is_free:
+    type: boolean
+  fees_text:
     type: string
     nullable: true
-  twitter:
+  fees_url:
     type: string
     nullable: true
-  facebook:
+  testimonial:
     type: string
     nullable: true
-  instagram:
+  video_embed:
     type: string
     nullable: true
-  regular_opening_hours:
+  url:
+    type: string
+    nullable: true
+  contact_name:
+    type: string
+  contact_phone:
+    type: string
+  contact_email:
+    type: string
+  accreditation_logos:
     type: array
     items:
-      type: object
-      properties:
-        weekday:
-          type: string
-          enum:
-            - monday
-            - tuesday
-            - wednesday
-            - thursday
-            - friday
-            - saturday
-            - sunday
-        opens_at:
-          type: string
-          format: time
-        closes_at:
-          type: string
-          format: time
-  holiday_opening_hours:
+      type: string
+  show_referral_disclaimer:
+    type: boolean
+  referral_method:
+    type: string
+    enum:
+      - internal
+      - external
+      - none
+  referral_button_text:
+    type: string
+    nullable: true
+  referral_email:
+    type: string
+    nullable: true
+  referral_url:
+    type: string
+    nullable: true
+  criteria:
+    type: object
+    properties:
+      age_group:
+        type: string
+        nullable: true
+      disability:
+        type: string
+        nullable: true
+      employment:
+        type: string
+        nullable: true
+      gender:
+        type: string
+        nullable: true
+      housing:
+        type: string
+        nullable: true
+      income:
+        type: string
+        nullable: true
+      language:
+        type: string
+        nullable: true
+      other:
+        type: string
+        nullable: true
+  seo_title:
+    type: string
+  seo_description:
+    type: string
+  useful_infos:
     type: array
     items:
-      type: object
-      properties:
-        starts_at:
-          type: string
-          format: date
-        ends_at:
-          type: string
-          format: date
-        opens_at:
-          type: string
-          format: time
-        closes_at:
-          type: string
-          format: time
-  taxonomies:
+      $ref: /docs/core/resources/useful-info.yaml
+  social_medias:
     type: array
     items:
-      $ref: /docs/core/resources/taxonomy.yaml
+      $ref: /docs/core/resources/social-media.yaml
+  category_taxonomies:
+    type: array
+    items:
+      $ref: /docs/core/resources/category-taxonomy.yaml
   created_at:
     type: string
     format: date-time

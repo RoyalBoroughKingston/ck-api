@@ -1,0 +1,11 @@
+store:
+  type: object
+  required:
+    - name
+  properties:
+    name:
+      type: string
+
+update:
+  allOf:
+    - $ref: "#/store"

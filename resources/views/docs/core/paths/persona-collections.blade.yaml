@@ -1,0 +1,161 @@
+# /collections/personas
+root:
+  get:
+    tags: ["Collection: Personas"]
+    summary: List all the persona collections
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/persona-collection.yaml
+
+  post:
+    tags: ["Collection: Personas"]
+    summary: Create a persona collection
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/persona-collection.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/persona-collection.yaml
+
+# /collections/personas/{persona}
+nested:
+  get:
+    tags: ["Collection: Personas"]
+    summary: Get a specific persona collection
+    parameters:
+      - name: persona
+        in: path
+        description: The ID of the persona collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/persona-collection.yaml
+
+  put:
+    tags: ["Collection: Personas"]
+    summary: Update a specific persona collection
+    parameters:
+      - name: persona
+        in: path
+        description: The ID of the persona collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/persona-collection.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/persona-collection.yaml
+
+  delete:
+    tags: ["Collection: Personas"]
+    summary: Delete a specific persona collection
+    parameters:
+      - name: persona
+        in: path
+        description: The ID of the persona collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
+
+# /collections/personas/{persona}/image
+image:
+  get:
+    tags: ["Collection: Personas"]
+    summary: Get a specific persona collection's image
+    parameters:
+      - name: persona
+        in: path
+        description: The ID of the persona collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          image/png:
+
+  post:
+    tags: ["Collection: Personas"]
+    summary: Upload a specific persona collection's image
+    parameters:
+      - name: persona
+        in: path
+        description: The ID of the persona collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        image/png:
+          schema:
+            type: string
+            format: binary
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The persona collection's image has been successfully uploaded
+
+  delete:
+    tags: ["Collection: Personas"]
+    summary: Delete a specific persona collection's image
+    parameters:
+      - name: persona
+        in: path
+        description: The ID of the persona collection
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml

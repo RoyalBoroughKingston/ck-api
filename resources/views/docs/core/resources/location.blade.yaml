@@ -22,6 +22,12 @@ properties:
     type: string
   country:
     type: string
+  lat:
+    type: number
+  lon:
+    type: number
+  accessibility_info:
+    type: string
   created_at:
     type: string
     format: date-time

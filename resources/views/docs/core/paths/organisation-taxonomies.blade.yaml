@@ -1,0 +1,96 @@
+# /taxonomies/organisations
+root:
+  get:
+    tags: ["Taxonomy: Organisations"]
+    summary: List all the organisation taxonomies
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/organisation-taxonomy.yaml
+
+  post:
+    tags: ["Taxonomy: Organisations"]
+    summary: Create an organisation taxonomy
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/organisation-taxonomy.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/organisation-taxonomy.yaml
+
+# /taxonomies/organisations/{organisation}
+nested:
+  get:
+    tags: ["Taxonomy: Organisations"]
+    summary: Get a specific organisation taxonomy
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/organisation-taxonomy.yaml
+
+  put:
+    tags: ["Taxonomy: Organisations"]
+    summary: Update a specific organisation taxonomy
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/organisation-taxonomy.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/organisation-taxonomy.yaml
+
+  delete:
+    tags: ["Taxonomy: Organisations"]
+    summary: Delete a specific organisation taxonomy
+    parameters:
+      - name: organisation
+        in: path
+        description: The ID of the organisation taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml
