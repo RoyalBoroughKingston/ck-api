@@ -16,35 +16,35 @@ class RolesTableSeeder extends Seeder
 
         DB::table('roles')->insert([
             'id' => uuid(),
-            'name' => 'service_worker',
+            'name' => 'Service Worker',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
 
         DB::table('roles')->insert([
             'id' => uuid(),
-            'name' => 'service_admin',
+            'name' => 'Service Admin',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
 
         DB::table('roles')->insert([
             'id' => uuid(),
-            'name' => 'organisation_admin',
+            'name' => 'Organisation Admin',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
 
         DB::table('roles')->insert([
             'id' => uuid(),
-            'name' => 'global_admin',
+            'name' => 'Global Admin',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
 
         DB::table('roles')->insert([
             'id' => uuid(),
-            'name' => 'super_admin',
+            'name' => 'Super Admin',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
