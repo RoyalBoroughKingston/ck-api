@@ -7,6 +7,8 @@ properties:
     type: string
     format: uuid
     nullable: true
+  client:
+    type: string
   action:
     type: string
     enum:
@@ -14,6 +16,8 @@ properties:
       - read
       - update
       - delete
+      - login
+      - logout
   description:
     type: string
   ip_address:

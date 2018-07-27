@@ -6,7 +6,8 @@ store:
     report_type:
       type: string
       enum:
-        - Commissioners Report
+        - report_type_1
+        - report_type_2
 
 update:
   allOf:

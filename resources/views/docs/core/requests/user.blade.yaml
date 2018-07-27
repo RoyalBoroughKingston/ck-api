@@ -4,7 +4,6 @@ store:
     - first_name
     - last_name
     - email
-    - phone
     - password
     - roles
   properties:
@@ -13,8 +12,6 @@ store:
     last_nane:
       type: string
     email:
-      type: string
-    phone:
       type: string
     password:
       type: string
@@ -29,11 +26,11 @@ store:
           role:
             type: string
             enum:
-              - Service Worker
-              - Service Admin
-              - Organisation Admin
-              - Global Admin
-              - Super Admin
+              - service_admin
+              - organisation_admin
+              - system_admin
+              - tier_1_worker
+              - tier_2_worker
           organisation_id:
             type: string
             format: uuid
