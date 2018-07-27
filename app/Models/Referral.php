@@ -11,4 +11,16 @@ class Referral extends Model
     use ReferralMutators;
     use ReferralRelationships;
     use ReferralScopes;
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'referral_consented_at' => 'datetime',
+        'feedback_consented_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }
