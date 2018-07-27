@@ -6,12 +6,10 @@ use App\Models\Mutators\UserMutators;
 use App\Models\Relationships\UserRelationships;
 use App\Models\Scopes\UserScopes;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
     use SoftDeletes;
     use UserMutators;
     use UserRelationships;
