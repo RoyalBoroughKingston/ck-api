@@ -21,6 +21,16 @@ abstract class Model extends BaseModel
     protected $guarded = [];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
      * The "booting" method of the model.
      *
      * @return void
