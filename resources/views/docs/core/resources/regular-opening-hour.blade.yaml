@@ -9,14 +9,14 @@ properties:
       - nth_week_of_month
   weekday:
     type: integer
-  day_of_month:
+  week_of_month:
     type: integer
   starts_at:
     type: string
     format: date
   opens_at:
     type: string
-    format: date-time
+    format: time
   closes_at:
     type: string
-    format: date-time
+    format: time

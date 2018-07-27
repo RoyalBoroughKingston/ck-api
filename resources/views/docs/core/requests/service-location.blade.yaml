@@ -28,17 +28,17 @@ store:
               - nth_week_of_month
           weekday:
             type: integer
-          day_of_month:
+          week_of_month:
             type: integer
           starts_at:
             type: string
             format: date
           opens_at:
             type: string
-            format: date-time
+            format: time
           closes_at:
             type: string
-            format: date-time
+            format: time
     holiday_opening_hours:
       type: array
       items:
@@ -47,21 +47,23 @@ store:
           - is_closed
           - starts_at
           - ends_at
+          - opens_at
+          - closes_at
         properties:
           is_closed:
             type: boolean
           starts_at:
             type: string
-            format: date-time
+            format: date
           ends_at:
             type: string
-            format: date-time
+            format: date
           opens_at:
             type: string
-            format: date-time
+            format: time
           closes_at:
             type: string
-            format: date-time
+            format: time
 
 update:
   type: object
@@ -87,7 +89,7 @@ update:
               - nth_week_of_month
           weekday:
             type: integer
-          day_of_month:
+          week_of_month:
             type: integer
           starts_at:
             type: string
