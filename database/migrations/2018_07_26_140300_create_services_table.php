@@ -19,7 +19,7 @@ class CreateServicesTable extends Migration
             $table->nullableForeignUuid('logo_file_id', 'files');
             $table->string('name');
             $table->enum('status', ['active', 'inactive']);
-            $table->string('into');
+            $table->string('intro');
             $table->text('description');
             $table->enum('wait_time', ['one_week', 'two_weeks', 'three_weeks', 'month', 'longer'])->nullable();
             $table->boolean('is_free');
