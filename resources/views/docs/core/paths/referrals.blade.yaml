@@ -3,6 +3,8 @@ root:
   get:
     tags: [Referrals]
     summary: List all the referrals
+    description: |
+       **Permission:** `Service Worker`
     responses:
       200:
         content:
@@ -22,6 +24,8 @@ nested:
   get:
     tags: [Referrals]
     summary: Get a specific referral
+    description: |
+       **Permission:** `Service Worker`
     parameters:
       - name: referral
         in: path
@@ -40,6 +44,8 @@ nested:
   put:
     tags: [Referrals]
     summary: Update a specific referral
+    description: |
+       **Permission:** `Service Worker`
     parameters:
       - name: referral
         in: path
@@ -66,6 +72,8 @@ history:
   get:
     tags: [Referrals]
     summary: List all of the status updates for the referral
+    description: |
+       **Permission:** `Service Worker`
     parameters:
       - name: referral
         in: path
@@ -93,6 +101,8 @@ services:
   post:
     tags: [Referrals]
     summary: Create a referral for a service
+    description: |
+       **Permission:** `Open`
     security: []
     parameters:
       - name: service

@@ -3,6 +3,8 @@ root:
   get:
     tags: ["Collection: Personas"]
     summary: List all the persona collections
+    description: |
+       **Permission:** `Open`
     security: []
     responses:
       200:
@@ -21,6 +23,8 @@ root:
   post:
     tags: ["Collection: Personas"]
     summary: Create a persona collection
+    description: |
+       **Permission:** `Super Admin`
     requestBody:
       required: true
       content:
@@ -39,6 +43,8 @@ nested:
   get:
     tags: ["Collection: Personas"]
     summary: Get a specific persona collection
+    description: |
+       **Permission:** `Open`
     security: []
     parameters:
       - name: persona
@@ -58,6 +64,8 @@ nested:
   put:
     tags: ["Collection: Personas"]
     summary: Update a specific persona collection
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: persona
         in: path
@@ -82,6 +90,8 @@ nested:
   delete:
     tags: ["Collection: Personas"]
     summary: Delete a specific persona collection
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: persona
         in: path
@@ -102,6 +112,8 @@ image:
   get:
     tags: ["Collection: Personas"]
     summary: Get a specific persona collection's image
+    description: |
+       **Permission:** `Open`
     security: []
     parameters:
       - name: persona
@@ -119,6 +131,8 @@ image:
   post:
     tags: ["Collection: Personas"]
     summary: Upload a specific persona collection's image
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: persona
         in: path
@@ -148,6 +162,8 @@ image:
   delete:
     tags: ["Collection: Personas"]
     summary: Delete a specific persona collection's image
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: persona
         in: path

@@ -3,6 +3,8 @@ root:
   get:
     tags: ["Taxonomy: Categories"]
     summary: List all the category taxonomies
+    description: |
+       **Permission:** `Open`
     security: []
     responses:
       200:
@@ -21,6 +23,8 @@ root:
   post:
     tags: ["Taxonomy: Categories"]
     summary: Create a category taxonomy
+    description: |
+       **Permission:** `Super Admin`
     requestBody:
       required: true
       content:
@@ -39,6 +43,8 @@ nested:
   get:
     tags: ["Taxonomy: Categories"]
     summary: Get a specific category taxonomy
+    description: |
+       **Permission:** `Open`
     security: []
     parameters:
       - name: category
@@ -58,6 +64,8 @@ nested:
   put:
     tags: ["Taxonomy: Categories"]
     summary: Update a specific category taxonomy
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: category
         in: path
@@ -82,6 +90,8 @@ nested:
   delete:
     tags: ["Taxonomy: Categories"]
     summary: Delete a specific category taxonomy
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: category
         in: path

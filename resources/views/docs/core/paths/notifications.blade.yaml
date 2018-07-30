@@ -3,6 +3,8 @@ root:
   get:
     tags: [Notifications]
     summary: List all the notifications
+    description: |
+       **Permission:** `Global Admin`
     responses:
       200:
         content:
@@ -22,6 +24,8 @@ nested:
   get:
     tags: [Notifications]
     summary: Get a specific notification
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: notification
         in: path
@@ -41,6 +45,8 @@ users:
   get:
     tags: [Notifications]
     summary: List all the notifications for a user
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: user
         in: path

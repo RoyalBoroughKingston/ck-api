@@ -3,6 +3,8 @@ root:
   get:
     tags: [Services]
     summary: List all the services
+    description: |
+      **Permission:** `Open`
     security: []
     responses:
       200:
@@ -23,6 +25,8 @@ nested:
   get:
     tags: [Services]
     summary: Get a specific service
+    description: |
+      **Permission:** `Open`
     security: []
     parameters:
       - name: service
@@ -42,6 +46,8 @@ nested:
   put:
     tags: [Services]
     summary: Update a specific service
+    description: |
+      **Permission:** `Service Admin`
     parameters:
       - name: service
         in: path
@@ -66,6 +72,8 @@ nested:
   delete:
     tags: [Services]
     summary: Delete a specific service
+    description: |
+      **Permission:** `Super Admin`
     parameters:
       - name: service
         in: path
@@ -86,6 +94,8 @@ logo:
   get:
     tags: [Services]
     summary: Get a specific service's logo
+    description: |
+      **Permission:** `Open`
     security: []
     parameters:
       - name: service
@@ -103,6 +113,8 @@ logo:
   post:
     tags: [Services]
     summary: Upload a specific service's logo
+    description: |
+      **Permission:** `Service Admin`
     parameters:
       - name: service
         in: path
@@ -132,6 +144,8 @@ logo:
   delete:
     tags: [Services]
     summary: Delete a specific service's logo
+    description: |
+      **Permission:** `Super Admin`
     parameters:
       - name: service
         in: path
@@ -152,6 +166,8 @@ seo-image:
   get:
     tags: [Services]
     summary: Get a specific service's SEO image
+    description: |
+      **Permission:** `Service Admin`
     security: []
     parameters:
       - name: service
@@ -169,6 +185,8 @@ seo-image:
   post:
     tags: [Services]
     summary: Upload a specific service's SEO image
+    description: |
+      **Permission:** `Service Admin`
     parameters:
       - name: service
         in: path
@@ -198,6 +216,8 @@ seo-image:
   delete:
     tags: [Services]
     summary: Delete a specific service's SEO image
+    description: |
+      **Permission:** `Service Admin`
     parameters:
       - name: service
         in: path
@@ -218,6 +238,8 @@ organisations:
   post:
     tags: [Services]
     summary: Create a service for an organisation
+    description: |
+      **Permission:** `Organisation Admin`
     parameters:
       - name: organisation
         in: path

@@ -3,6 +3,8 @@ root:
   get:
     tags: [Service Locations]
     summary: List all the service locations
+    description: |
+       **Permission:** `Open`
     security: []
     responses:
       200:
@@ -23,6 +25,8 @@ nested:
   get:
     tags: [Service Locations]
     summary: Get a specific service location
+    description: |
+       **Permission:** `Open`
     security: []
     parameters:
       - name: service_location
@@ -42,6 +46,8 @@ nested:
   put:
     tags: [Service Locations]
     summary: Update a specific service location
+    description: |
+       **Permission:** `Service Admin`
     parameters:
       - name: service_location
         in: path
@@ -66,6 +72,8 @@ nested:
   delete:
     tags: [Service Locations]
     summary: Delete a specific service location
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: service_location
         in: path
@@ -86,6 +94,8 @@ services:
   get:
     tags: [Service Locations]
     summary: List all the service locations for a service
+    description: |
+       **Permission:** `Open`
     security: []
     parameters:
       - name: service
@@ -112,6 +122,8 @@ services:
   post:
     tags: [Service Locations]
     summary: Create a service location for an service
+    description: |
+       **Permission:** `Service Admin`
     parameters:
       - name: service
         in: path

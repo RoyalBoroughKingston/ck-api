@@ -3,6 +3,8 @@ root:
   get:
     tags: [Report Schedules]
     summary: List all the report schedules
+    description: |
+       **Permission:** `Global Admin`
     responses:
       200:
         content:
@@ -20,6 +22,8 @@ root:
   post:
     tags: [Report Schedules]
     summary: Create a report schedule
+    description: |
+       **Permission:** `Global Admin`
     requestBody:
       required: true
       content:
@@ -38,6 +42,8 @@ nested:
   get:
     tags: [Report Schedules]
     summary: Get a specific report schedule
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: report_schedule
         in: path
@@ -56,6 +62,8 @@ nested:
   put:
     tags: [Report Schedules]
     summary: Update a specific report schedule
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: report_schedule
         in: path
@@ -80,6 +88,8 @@ nested:
   delete:
     tags: [Report Schedules]
     summary: Delete a specific report schdule
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: report_schedule
         in: path

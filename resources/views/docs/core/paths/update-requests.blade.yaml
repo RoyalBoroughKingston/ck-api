@@ -3,6 +3,8 @@ nested:
   get:
     tags: [Update Requests]
     summary: Get a specific update request
+    description: |
+      **Permission:** `Global Admin`
     parameters:
       - name: update_request
         in: path
@@ -21,6 +23,8 @@ nested:
   delete:
     tags: [Update Requests]
     summary: Delete a specific update request
+    description: |
+      **Permission:** `Global Admin`
     parameters:
       - name: update_request
         in: path
@@ -41,6 +45,8 @@ approve:
   put:
     tags: [Update Requests]
     summary: Approve a specific update request
+    description: |
+      **Permission:** `Global Admin`
     parameters:
       - name: update_request
         in: path
@@ -61,6 +67,8 @@ services:
   get:
     tags: [Update Requests]
     summary: List all the update requests for a service
+    description: |
+      **Permission:** `Global Admin`
     parameters:
       - name: service
         in: path
@@ -88,6 +96,8 @@ service-locations:
   get:
     tags: [Update Requests]
     summary: List all the update requests for a service location
+    description: |
+      **Permission:** `Global Admin`
     parameters:
       - name: service_location
         in: path

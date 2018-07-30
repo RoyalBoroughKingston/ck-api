@@ -3,6 +3,8 @@ root:
   get:
     tags: [Locations]
     summary: List all the locations
+    description: |
+       **Permission:** `Open`
     security: []
     responses:
       200:
@@ -20,6 +22,8 @@ root:
   post:
     tags: [Locations]
     summary: Create a location
+    description: |
+       **Permission:** `Service Admin`
     requestBody:
       required: true
       content:
@@ -38,6 +42,8 @@ nested:
   get:
     tags: [Locations]
     summary: Get a specific location
+    description: |
+       **Permission:** `Open`
     security: []
     parameters:
       - name: location
@@ -57,6 +63,8 @@ nested:
   put:
     tags: [Locations]
     summary: Update a specific location
+    description: |
+       **Permission:** `Service Admin`
     parameters:
       - name: location
         in: path
@@ -81,6 +89,8 @@ nested:
   delete:
     tags: [Locations]
     summary: Delete a specific location
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: location
         in: path

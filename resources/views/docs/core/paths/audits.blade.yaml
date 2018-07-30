@@ -3,6 +3,8 @@ root:
   get:
     tags: [Audits]
     summary: List all the audits
+    description: |
+       **Permission:** `Global Admin`
     responses:
       200:
         content:
@@ -22,6 +24,8 @@ nested:
   get:
     tags: [Audits]
     summary: Get a specific audit
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: audit
         in: path
@@ -42,6 +46,8 @@ users:
   get:
     tags: [Audits]
     summary: List all the audits for a user
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: user
         in: path
