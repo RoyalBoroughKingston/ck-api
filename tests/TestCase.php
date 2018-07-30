@@ -28,14 +28,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // Set cache prefix.
-        Config::set('cache.prefix', 'testing');
-
         // Set the log path.
         Config::set('logging.channels.single.path', storage_path('logs/testing.log'));
-
-        // Clear the cache.
-        Artisan::call('cache:clear');
 
         $this->now = now();
     }
