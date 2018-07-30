@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CollectionsTableSeeder extends Seeder
 {
@@ -33,7 +34,70 @@ class CollectionsTableSeeder extends Seeder
      */
     protected function seedCategoryCollections()
     {
-        // TODO: Confirm categories and seed records for them.
+        $this->seedLeisureCategory();
+        $this->seedSelfHelpCategory();
+        $this->seedAdviceCategory();
+    }
+
+    /**
+     * Seed the Leisure and Social Activities category.
+     */
+    protected function seedLeisureCategory()
+    {
+        $uuid = uuid();
+        DB::table('collections')->insert([
+            'id' => $uuid,
+            'name' => 'Leisure and Social Activities',
+            'meta' => json_encode([
+                'intro' => 'Lorem ipsum',
+                'icon' => 'coffee',
+            ]),
+            'order' => 1,
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        // TODO: Seed records for collection_taxonomies pivot table.
+    }
+
+    /**
+     * Seed the Self Help category.
+     */
+    protected function seedSelfHelpCategory()
+    {
+        $uuid = uuid();
+        DB::table('collections')->insert([
+            'id' => $uuid,
+            'name' => 'Self Help',
+            'meta' => json_encode([
+                'intro' => 'Lorem ipsum',
+                'icon' => 'life-ring',
+            ]),
+            'order' => 2,
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        // TODO: Seed records for collection_taxonomies pivot table.
+    }
+
+    /**
+     * Seed the Advice and Support Services category.
+     */
+    protected function seedAdviceCategory()
+    {
+        $uuid = uuid();
+        DB::table('collections')->insert([
+            'id' => $uuid,
+            'name' => 'Advice and Support Services',
+            'meta' => json_encode([
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info-circle',
+            ]),
+            'order' => 3,
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
 
         // TODO: Seed records for collection_taxonomies pivot table.
     }
