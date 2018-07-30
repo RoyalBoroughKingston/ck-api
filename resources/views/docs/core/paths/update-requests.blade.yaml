@@ -1,3 +1,37 @@
+# /update-requests
+root:
+  get:
+    tags: [Update Requests]
+    summary: List all the update requests
+    description: |
+      **Permission:** `Global Admin`
+    parameters:
+    - name: filter[service_id]
+      in: path
+      description: The ID of the service
+      schema:
+        type: string
+        format: uuid
+    - name: filter[service_location_id]
+      in: path
+      description: The ID of the service location
+      schema:
+        type: string
+        format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/update-request.yaml
+
 # /update-requests/{update_request}
 nested:
   get:
@@ -61,61 +95,3 @@ approve:
           application/json:
             schema:
               $ref: /docs/core/resources/update-request.yaml
-
-# /services/{service}/update-requests
-services:
-  get:
-    tags: [Update Requests]
-    summary: List all the update requests for a service
-    description: |
-      **Permission:** `Global Admin`
-    parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/update-request.yaml
-
-# /service-locations/{service_location}/update-requests
-service-locations:
-  get:
-    tags: [Update Requests]
-    summary: List all the update requests for a service location
-    description: |
-      **Permission:** `Global Admin`
-    parameters:
-      - name: service_location
-        in: path
-        description: The ID of the service location
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/update-request.yaml

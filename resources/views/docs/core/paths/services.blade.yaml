@@ -6,6 +6,13 @@ root:
     description: |
       **Permission:** `Open`
     security: []
+    parameters:
+    - name: filter[organisation_id]
+      in: path
+      description: The ID of the organisation
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
@@ -19,6 +26,24 @@ root:
                       type: array
                       items:
                         $ref: /docs/core/resources/service.yaml
+
+  post:
+    tags: [Services]
+    summary: Create a service
+    description: |
+      **Permission:** `Organisation Admin`
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/service.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/service.yaml
 
 # /services/{service}
 nested:
@@ -232,31 +257,3 @@ seo-image:
           application/json:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
-
-# /organisations/{organisation}/services
-organisations:
-  post:
-    tags: [Services]
-    summary: Create a service for an organisation
-    description: |
-      **Permission:** `Organisation Admin`
-    parameters:
-      - name: organisation
-        in: path
-        description: The ID of the organisation
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: /docs/core/requests/service.yaml#/store
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/resources/service.yaml

@@ -16,8 +16,6 @@ paths:
     $ref: /docs/core/paths/audits.yaml#/root
   /audits/{audit}:
     $ref: /docs/core/paths/audits.yaml#/nested
-  /users/{user}/audits:
-    $ref: /docs/core/paths/audits.yaml#/users
 
   /collections/categories:
     $ref: /docs/core/paths/category-collections.yaml#/root
@@ -40,8 +38,6 @@ paths:
     $ref: /docs/core/paths/notifications.yaml#/root
   /notifications/{notification}:
     $ref: /docs/core/paths/notifications.yaml#/nested
-  /users/{user}/notifications:
-    $ref: /docs/core/paths/notifications.yaml#/users
 
   /organisations:
     $ref: /docs/core/paths/organisations.yaml#/root
@@ -61,8 +57,6 @@ paths:
     $ref: /docs/core/paths/referrals.yaml#/nested
   /referrals/{referral}/status-updates:
     $ref: /docs/core/paths/referrals.yaml#/history
-  /services/{service}/referrals:
-    $ref: /docs/core/paths/referrals.yaml#/services
 
   /report-schedules:
     $ref: /docs/core/paths/report-schedules.yaml#/root
@@ -83,8 +77,6 @@ paths:
     $ref: /docs/core/paths/service-locations.yaml#/root
   /service-locations/{service_location}:
     $ref: /docs/core/paths/service-locations.yaml#/nested
-  /services/{service}/service-locations:
-    $ref: /docs/core/paths/service-locations.yaml#/services
 
   /services:
     $ref: /docs/core/paths/services.yaml#/root
@@ -94,8 +86,6 @@ paths:
     $ref: /docs/core/paths/services.yaml#/logo
   /services/{service}/seo-image:
     $ref: /docs/core/paths/services.yaml#/seo-image
-  /organisations/{organisation}/services:
-    $ref: /docs/core/paths/services.yaml#/organisations
 
   /taxonomies/categories:
     $ref: /docs/core/paths/category-taxonomies.yaml#/root
@@ -107,14 +97,12 @@ paths:
   /taxonomies/organisations/{organisation}:
     $ref: /docs/core/paths/organisation-taxonomies.yaml#/nested
 
+  /update-requests:
+    $ref: /docs/core/paths/update-requests.yaml#/root
   /update-requests/{update_request}:
     $ref: /docs/core/paths/update-requests.yaml#/nested
   /update-requests/{update_request}/approve:
     $ref: /docs/core/paths/update-requests.yaml#/approve
-  /services/{service}/update-requests:
-    $ref: /docs/core/paths/update-requests.yaml#/services
-  /service-locations/{service_location}/update-requests:
-    $ref: /docs/core/paths/update-requests.yaml#/service-locations
 
   /users:
     $ref: /docs/core/paths/users.yaml#/root

@@ -1,10 +1,14 @@
 store:
   type: object
   required:
+    - service_id
     - location_id
     - regular_opening_hours
     - holiday_opening_hours
   properties:
+    service_id:
+      type: string
+      format: uuid
     location_id:
       type: string
       format: uuid

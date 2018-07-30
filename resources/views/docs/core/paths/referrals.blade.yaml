@@ -5,6 +5,14 @@ root:
     summary: List all the referrals
     description: |
        **Permission:** `Service Worker`
+    parameters:
+    - name: filter[service_id]
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
@@ -95,32 +103,3 @@ history:
                       type: array
                       items:
                         $ref: /docs/core/resources/status-update.yaml
-
-# /services/{service}/referrals
-services:
-  post:
-    tags: [Referrals]
-    summary: Create a referral for a service
-    description: |
-       **Permission:** `Open`
-    security: []
-    parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: /docs/core/requests/referral.yaml#/store
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/resources/referral.yaml

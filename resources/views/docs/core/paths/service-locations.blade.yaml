@@ -6,6 +6,13 @@ root:
     description: |
        **Permission:** `Open`
     security: []
+    parameters:
+    - name: filter[service_id]
+      in: path
+      description: The ID of the service
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
@@ -19,6 +26,24 @@ root:
                       type: array
                       items:
                         $ref: /docs/core/resources/service-location.yaml
+
+  post:
+    tags: [Service Locations]
+    summary: Create a service location
+    description: |
+      **Permission:** `Service Admin`
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/service-location.yaml#/store
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/service-location.yaml
 
 # /service-locations/{service_location}
 nested:
@@ -88,59 +113,3 @@ nested:
           application/json:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
-
-# /services/{service}/service-locations
-services:
-  get:
-    tags: [Service Locations]
-    summary: List all the service locations for a service
-    description: |
-       **Permission:** `Open`
-    security: []
-    parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/service-location.yaml
-
-  post:
-    tags: [Service Locations]
-    summary: Create a service location for an service
-    description: |
-       **Permission:** `Service Admin`
-    parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: /docs/core/requests/service-location.yaml#/store
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/resources/service-location.yaml
