@@ -15,6 +15,7 @@ class EndpointHitSubscriber
      */
     protected $events = [
         \App\Events\Audit\AuditsListed::class,
+        \App\Events\Audit\AuditRead::class,
     ];
 
     /**
