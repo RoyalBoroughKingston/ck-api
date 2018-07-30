@@ -96,17 +96,15 @@ class AuditsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            'data' => [
-                [
-                    'id' => $audit->id,
-                    'user_id' => null,
-                    'action' => Audit::ACTION_READ,
-                    'description' => 'Someone viewed a resource',
-                    'ip_address' => '127.0.0.1',
-                    'user_agent' => null,
-                    'created_at' => $this->now->format(Carbon::ISO8601),
-                    'updated_at' => $this->now->format(Carbon::ISO8601),
-                ]
+            [
+                'id' => $audit->id,
+                'user_id' => null,
+                'action' => Audit::ACTION_READ,
+                'description' => 'Someone viewed a resource',
+                'ip_address' => '127.0.0.1',
+                'user_agent' => null,
+                'created_at' => $this->now->format(Carbon::ISO8601),
+                'updated_at' => $this->now->format(Carbon::ISO8601),
             ]
         ]);
     }
@@ -126,7 +124,7 @@ class AuditsTest extends TestCase
             'created_at' => $this->now,
             'updated_at' => $this->now,
         ]);
-        factory(Audit::class, 10)->create();
+        $anotherAudit = factory(Audit::class)->create();
 
         Passport::actingAs($user);
 
@@ -134,17 +132,27 @@ class AuditsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            'data' => [
-                [
-                    'id' => $audit->id,
-                    'user_id' => $user->id,
-                    'action' => Audit::ACTION_READ,
-                    'description' => 'Someone viewed a resource',
-                    'ip_address' => '127.0.0.1',
-                    'user_agent' => null,
-                    'created_at' => $this->now->format(Carbon::ISO8601),
-                    'updated_at' => $this->now->format(Carbon::ISO8601),
-                ]
+            [
+                'id' => $audit->id,
+                'user_id' => $user->id,
+                'action' => Audit::ACTION_READ,
+                'description' => 'Someone viewed a resource',
+                'ip_address' => '127.0.0.1',
+                'user_agent' => null,
+                'created_at' => $this->now->format(Carbon::ISO8601),
+                'updated_at' => $this->now->format(Carbon::ISO8601),
+            ]
+        ]);
+        $response->assertJsonMissing([
+            [
+                'id' => $anotherAudit->id,
+                'user_id' => $anotherAudit->user_id,
+                'action' => $anotherAudit->action,
+                'description' => $anotherAudit->description,
+                'ip_address' => $anotherAudit->ip_address,
+                'user_agent' => $anotherAudit->user_agent,
+                'created_at' => $anotherAudit->created_at->format(Carbon::ISO8601),
+                'updated_at' => $anotherAudit->updated_at->format(Carbon::ISO8601),
             ]
         ]);
     }

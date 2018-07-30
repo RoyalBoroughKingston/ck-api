@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Events\Audit\AuditsListed;
 use App\Http\Requests\Audit\IndexRequest;
 use App\Http\Resources\AuditResource;
 use App\Models\Audit;
@@ -26,7 +27,7 @@ class AuditController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        // TODO: Fire event and log the audit.
+        event(new AuditsListed($request));
 
         $audits = QueryBuilder::for(Audit::class)
             ->allowedFilters(['user_id'])
