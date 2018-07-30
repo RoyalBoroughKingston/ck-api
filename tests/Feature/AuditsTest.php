@@ -156,4 +156,105 @@ class AuditsTest extends TestCase
             ]
         ]);
     }
+
+    /*
+     * Get a sepcific audit.
+     */
+
+    public function test_guest_cannot_list_it()
+    {
+        $audit = factory(Audit::class)->create();
+
+        $response = $this->json('GET', "/core/v1/audits/{$audit->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_list_it()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $audit = factory(Audit::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/audits/{$audit->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_list_it()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $audit = factory(Audit::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/audits/{$audit->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_list_it()
+    {
+        /**
+         * @var \App\Models\Organisation $organisation
+         * @var \App\Models\User $user
+         */
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+        $audit = factory(Audit::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/audits/{$audit->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_list_it()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $audit = Audit::create([
+            'action' => Audit::ACTION_READ,
+            'description' => 'Someone viewed a resource',
+            'ip_address' => '127.0.0.1',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/audits/{$audit->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $audit->id,
+                'user_id' => null,
+                'action' => Audit::ACTION_READ,
+                'description' => 'Someone viewed a resource',
+                'ip_address' => '127.0.0.1',
+                'user_agent' => null,
+                'created_at' => $this->now->format(Carbon::ISO8601),
+                'updated_at' => $this->now->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
 }
