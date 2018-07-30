@@ -31,4 +31,14 @@ class AuthServiceProvider extends ServiceProvider
             $router->forAccessTokens();
         });
     }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        Passport::ignoreMigrations();
+    }
 }
