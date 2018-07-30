@@ -93,6 +93,7 @@ services:
   post:
     tags: [Referrals]
     summary: Create a referral for a service
+    security: []
     parameters:
       - name: service
         in: path

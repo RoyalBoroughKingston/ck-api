@@ -3,6 +3,7 @@ root:
   get:
     tags: [Locations]
     summary: List all the locations
+    security: []
     responses:
       200:
         content:
@@ -37,6 +38,7 @@ nested:
   get:
     tags: [Locations]
     summary: Get a specific location
+    security: []
     parameters:
       - name: location
         in: path

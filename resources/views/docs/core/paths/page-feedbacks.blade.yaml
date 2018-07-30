@@ -20,6 +20,7 @@ root:
   post:
     tags: [Page Feedbacks]
     summary: Create a page feedback
+    security: []
     requestBody:
       required: true
       content:

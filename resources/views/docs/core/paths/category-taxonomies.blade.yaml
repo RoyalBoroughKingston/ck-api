@@ -3,6 +3,7 @@ root:
   get:
     tags: ["Taxonomy: Categories"]
     summary: List all the category taxonomies
+    security: []
     responses:
       200:
         content:
@@ -38,6 +39,7 @@ nested:
   get:
     tags: ["Taxonomy: Categories"]
     summary: Get a specific category taxonomy
+    security: []
     parameters:
       - name: category
         in: path

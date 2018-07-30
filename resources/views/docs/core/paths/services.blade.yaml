@@ -3,6 +3,7 @@ root:
   get:
     tags: [Services]
     summary: List all the services
+    security: []
     responses:
       200:
         content:
@@ -22,6 +23,7 @@ nested:
   get:
     tags: [Services]
     summary: Get a specific service
+    security: []
     parameters:
       - name: service
         in: path
@@ -84,6 +86,7 @@ logo:
   get:
     tags: [Services]
     summary: Get a specific service's logo
+    security: []
     parameters:
       - name: service
         in: path
@@ -149,6 +152,7 @@ seo-image:
   get:
     tags: [Services]
     summary: Get a specific service's SEO image
+    security: []
     parameters:
       - name: service
         in: path

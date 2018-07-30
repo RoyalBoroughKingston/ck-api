@@ -3,6 +3,7 @@ root:
   get:
     tags: [Organisations]
     summary: List all the organisations
+    security: []
     responses:
       200:
         content:
@@ -38,6 +39,7 @@ nested:
   get:
     tags: [Organisations]
     summary: Get a specific organisation
+    security: []
     parameters:
       - name: organisation
         in: path
@@ -100,6 +102,7 @@ logo:
   get:
     tags: [Organisations]
     summary: Get a specific organisation's logo
+    security: []
     parameters:
       - name: organisation
         in: path

@@ -3,6 +3,7 @@ root:
   get:
     tags: ["Collection: Categories"]
     summary: List all the category collections
+    security: []
     responses:
       200:
         content:
@@ -38,6 +39,7 @@ nested:
   get:
     tags: ["Collection: Categories"]
     summary: Get a specific category collection
+    security: []
     parameters:
       - name: category
         in: path

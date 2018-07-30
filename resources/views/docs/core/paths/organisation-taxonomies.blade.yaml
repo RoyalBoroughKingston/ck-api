@@ -3,6 +3,7 @@ root:
   get:
     tags: ["Taxonomy: Organisations"]
     summary: List all the organisation taxonomies
+    security: []
     responses:
       200:
         content:
@@ -38,6 +39,7 @@ nested:
   get:
     tags: ["Taxonomy: Organisations"]
     summary: Get a specific organisation taxonomy
+    security: []
     parameters:
       - name: organisation
         in: path

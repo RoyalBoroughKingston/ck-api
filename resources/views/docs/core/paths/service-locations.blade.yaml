@@ -3,6 +3,7 @@ root:
   get:
     tags: [Service Locations]
     summary: List all the service locations
+    security: []
     responses:
       200:
         content:
@@ -22,6 +23,7 @@ nested:
   get:
     tags: [Service Locations]
     summary: Get a specific service location
+    security: []
     parameters:
       - name: service_location
         in: path
@@ -84,6 +86,7 @@ services:
   get:
     tags: [Service Locations]
     summary: List all the service locations for a service
+    security: []
     parameters:
       - name: service
         in: path
