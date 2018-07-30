@@ -7,7 +7,7 @@ root:
        **Permission:** `Service Worker`
     parameters:
     - name: filter[service_id]
-      in: path
+      in: query
       description: The ID of the service
       required: true
       schema:

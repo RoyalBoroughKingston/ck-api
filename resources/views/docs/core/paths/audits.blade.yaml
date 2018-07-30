@@ -6,8 +6,9 @@ root:
     description: |
        **Permission:** `Global Admin`
     parameters:
+    - $ref: /docs/core/parameters/page.yaml
     - name: filter[user_id]
-      in: path
+      in: query
       description: The ID of the user
       schema:
         type: string

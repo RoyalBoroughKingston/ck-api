@@ -8,7 +8,7 @@ root:
     security: []
     parameters:
     - name: filter[service_id]
-      in: path
+      in: query
       description: The ID of the service
       schema:
         type: string
