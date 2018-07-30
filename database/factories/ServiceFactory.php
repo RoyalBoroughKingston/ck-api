@@ -5,11 +5,14 @@ use Faker\Generator as Faker;
 
 $factory->define(Service::class, function (Faker $faker) {
     return [
+        'organisation_id' => function () {
+            return factory(\App\Models\Organisation::class)->create()->id;
+        },
         'name' => 'Preventing Homelessness',
         'status' => Service::STATUS_ACTIVE,
         'intro' => 'This service prevents homelessness.',
         'description' => $faker->paragraph,
-        'if_free' => true,
+        'is_free' => true,
         'url' => $faker->url,
         'contact_name' => $faker->name,
         'contact_phone' => $faker->phoneNumber,

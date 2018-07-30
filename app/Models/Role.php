@@ -17,7 +17,7 @@ class Role extends Model
      */
     public static function serviceWorker(): self
     {
-        return static::where('name', 'Service Worker')->firstOfFail();
+        return static::where('name', 'Service Worker')->firstOrFail();
     }
 
     /**
@@ -25,7 +25,7 @@ class Role extends Model
      */
     public static function serviceAdmin(): self
     {
-        return static::where('name', 'Service Admin')->firstOfFail();
+        return static::where('name', 'Service Admin')->firstOrFail();
     }
 
     /**
@@ -33,7 +33,7 @@ class Role extends Model
      */
     public static function organisationAdmin(): self
     {
-        return static::where('name', 'Organisation Admin')->firstOfFail();
+        return static::where('name', 'Organisation Admin')->firstOrFail();
     }
 
     /**
@@ -41,7 +41,7 @@ class Role extends Model
      */
     public static function globalAdmin(): self
     {
-        return static::where('name', 'Global Admin')->firstOfFail();
+        return static::where('name', 'Global Admin')->firstOrFail();
     }
 
     /**
@@ -49,6 +49,6 @@ class Role extends Model
      */
     public static function superAdmin(): self
     {
-        return static::where('name', 'Super Admin')->firstOfFail();
+        return static::where('name', 'Super Admin')->firstOrFail();
     }
 }
