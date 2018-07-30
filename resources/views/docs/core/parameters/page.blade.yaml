@@ -1,0 +1,6 @@
+name: page
+in: query
+description: The page of pagination
+schema:
+  type: integer
+  default: 1

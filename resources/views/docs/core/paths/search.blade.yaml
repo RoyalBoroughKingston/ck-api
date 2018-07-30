@@ -2,3 +2,6 @@
 root:
   post:
     tags: [Search]
+    description: |
+       **Permission:** `Open`
+    security: []

@@ -3,6 +3,8 @@ root:
   get:
     tags: [Users]
     summary: List all the users
+    description: |
+      **Permission:** `Service Worker`
     responses:
       200:
         content:
@@ -20,6 +22,16 @@ root:
   post:
     tags: [Users]
     summary: Create a user
+    description: |
+      **Permission:** `Service Admin`
+      - Can create service workers
+      - Can create other service admins
+
+      **Permission:** `Global Admin`
+      - Can create other global admins
+
+      **Permission:** `Super Admin`
+      - Can create other super admins
     requestBody:
       required: true
       content:
@@ -38,6 +50,8 @@ nested:
   get:
     tags: [Users]
     summary: Get a specific user
+    description: |
+      **Permission:** `Service Worker`
     parameters:
       - name: user
         in: path
@@ -56,6 +70,16 @@ nested:
   put:
     tags: [Users]
     summary: Update a specific user
+    description: |
+      **Permission:** `Service Admin`
+      - Can update service workers
+      - Can update other service admins
+
+      **Permission:** `Global Admin`
+      - Can update other global admins
+
+      **Permission:** `Super Admin`
+      - Can update other super admins
     parameters:
       - name: user
         in: path
@@ -80,6 +104,16 @@ nested:
   delete:
     tags: [Users]
     summary: Delete a specific user
+    description: |
+      **Permission:** `Service Admin`
+      - Can delete service workers
+      - Can delete other service admins
+
+      **Permission:** `Global Admin`
+      - Can delete other global admins
+
+      **Permission:** `Super Admin`
+      - Can delete other super admins
     parameters:
       - name: user
         in: path

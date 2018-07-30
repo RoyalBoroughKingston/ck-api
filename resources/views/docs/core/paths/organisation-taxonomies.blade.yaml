@@ -3,6 +3,9 @@ root:
   get:
     tags: ["Taxonomy: Organisations"]
     summary: List all the organisation taxonomies
+    description: |
+       **Permission:** `Open`
+    security: []
     responses:
       200:
         content:
@@ -20,6 +23,8 @@ root:
   post:
     tags: ["Taxonomy: Organisations"]
     summary: Create an organisation taxonomy
+    description: |
+       **Permission:** `Super Admin`
     requestBody:
       required: true
       content:
@@ -38,6 +43,9 @@ nested:
   get:
     tags: ["Taxonomy: Organisations"]
     summary: Get a specific organisation taxonomy
+    description: |
+       **Permission:** `Open`
+    security: []
     parameters:
       - name: organisation
         in: path
@@ -56,6 +64,8 @@ nested:
   put:
     tags: ["Taxonomy: Organisations"]
     summary: Update a specific organisation taxonomy
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: organisation
         in: path
@@ -80,6 +90,8 @@ nested:
   delete:
     tags: ["Taxonomy: Organisations"]
     summary: Delete a specific organisation taxonomy
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: organisation
         in: path

@@ -3,6 +3,8 @@ root:
   get:
     tags: [Reports]
     summary: List all the reports
+    description: |
+       **Permission:** `Global Admin`
     responses:
       200:
         content:
@@ -20,6 +22,8 @@ root:
   post:
     tags: [Reports]
     summary: Create a report
+    description: |
+       **Permission:** `Global Admin`
     requestBody:
       required: true
       content:
@@ -38,6 +42,8 @@ nested:
   get:
     tags: [Reports]
     summary: Get a specific report
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: report
         in: path
@@ -56,6 +62,8 @@ nested:
   delete:
     tags: [Reports]
     summary: Delete a specific report
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: report
         in: path
@@ -76,6 +84,8 @@ download:
   get:
     tags: [Reports]
     summary: Download a specific report
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: report
         in: path

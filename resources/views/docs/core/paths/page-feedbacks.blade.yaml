@@ -3,6 +3,8 @@ root:
   get:
     tags: [Page Feedbacks]
     summary: List all the page feedbacks
+    description: |
+       **Permission:** `Global Admin`
     responses:
       200:
         content:
@@ -20,6 +22,9 @@ root:
   post:
     tags: [Page Feedbacks]
     summary: Create a page feedback
+    description: |
+       **Permission:** `Open`
+    security: []
     requestBody:
       required: true
       content:
@@ -38,6 +43,8 @@ nested:
   get:
     tags: [Page Feedbacks]
     summary: Get a specific page feedback
+    description: |
+       **Permission:** `Global Admin`
     parameters:
       - name: page_feedback
         in: path
@@ -52,21 +59,3 @@ nested:
           application/json:
             schema:
               $ref: /docs/core/resources/page-feedback.yaml
-
-  delete:
-    tags: [Page Feedbacks]
-    summary: Delete a specific page feedback
-    parameters:
-      - name: page_feedback
-        in: path
-        description: The ID of the page feedback
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/responses/resource-deleted.yaml

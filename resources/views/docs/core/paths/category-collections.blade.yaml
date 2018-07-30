@@ -3,6 +3,9 @@ root:
   get:
     tags: ["Collection: Categories"]
     summary: List all the category collections
+    description: |
+       **Permission:** `Open`
+    security: []
     responses:
       200:
         content:
@@ -20,6 +23,8 @@ root:
   post:
     tags: ["Collection: Categories"]
     summary: Create a category collection
+    description: |
+       **Permission:** `Super Admin`
     requestBody:
       required: true
       content:
@@ -38,6 +43,9 @@ nested:
   get:
     tags: ["Collection: Categories"]
     summary: Get a specific category collection
+    description: |
+       **Permission:** `Open`
+    security: []
     parameters:
       - name: category
         in: path
@@ -56,6 +64,8 @@ nested:
   put:
     tags: ["Collection: Categories"]
     summary: Update a specific category collection
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: category
         in: path
@@ -80,6 +90,8 @@ nested:
   delete:
     tags: ["Collection: Categories"]
     summary: Delete a specific category collection
+    description: |
+       **Permission:** `Super Admin`
     parameters:
       - name: category
         in: path
