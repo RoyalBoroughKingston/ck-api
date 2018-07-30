@@ -211,7 +211,7 @@ class User extends Authenticatable
             $this->makeServiceAdmin($service);
         }
 
-        $this->assignRole(Role::organisationAdmin(), $organisation);
+        $this->assignRole(Role::organisationAdmin(), null, $organisation);
 
         return $this;
     }

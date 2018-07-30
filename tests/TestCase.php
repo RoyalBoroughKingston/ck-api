@@ -15,6 +15,11 @@ abstract class TestCase extends BaseTestCase
     use RefreshDatabase;
 
     /**
+     * @var \Illuminate\Support\Carbon
+     */
+    protected $now;
+
+    /**
      * Setup the test environment.
      *
      * @return void
@@ -31,6 +36,8 @@ abstract class TestCase extends BaseTestCase
 
         // Clear the cache.
         Artisan::call('cache:clear');
+
+        $this->now = now();
     }
 
     /**
