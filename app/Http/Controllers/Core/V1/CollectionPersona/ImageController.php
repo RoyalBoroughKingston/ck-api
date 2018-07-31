@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Core\V1\CollectionPersona;
 
+use App\Events\CollectionPersona\Image\ImageCreated;
 use App\Events\CollectionPersona\Image\ImageRead;
 use App\Http\Requests\CollectionPersona\Image\DestroyRequest;
 use App\Http\Requests\CollectionPersona\Image\ShowRequest;
 use App\Http\Requests\CollectionPersona\Image\StoreRequest;
+use App\Http\Responses\FileUploaded;
 use App\Models\Collection;
 use App\Models\File;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
@@ -31,13 +34,32 @@ class ImageController extends Controller
      */
     public function store(StoreRequest $request, Collection $persona)
     {
-        // TODO: If the persona already has an image then delete it.
+        return DB::transaction(function () use ($request, $persona) {
+            // If the persona already has an image then delete it.
+            if ($persona->meta['image_file_id']) {
+                // TODO: Delete the file from disk.
+                File::find($persona->meta['image_file_id'])->delete();
+            }
 
-        // TODO: Create the file record.
+            // Create the file record.
+            $file = File::create([
+                'filename' => $persona->id.'.png',
+                'mime_type' => 'image/png',
+            ]);
 
-        // TODO: Update the persona record to point to the file.
+            // Update the persona record to point to the file.
+            $meta = $persona->meta;
+            $meta['image_file_id'] = $file->id;
+            $persona->meta = $meta;
+            $persona->save();
 
-        // TODO: Upload the file.
+            // Upload the file.
+            $file->uploadBase64EncodedPng($request->input('file'));
+
+            event(new ImageCreated($request, $persona));
+
+            return new FileUploaded("persona collection's image");
+        });
     }
 
     /**

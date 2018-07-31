@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\CollectionPersona\Image;
 
+use App\Rules\Base64EncodedPng;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -28,7 +29,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            // TODO
+            'file' => ['required', 'string', new Base64EncodedPng()],
         ];
     }
 }

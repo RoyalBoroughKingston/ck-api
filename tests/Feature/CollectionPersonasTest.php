@@ -10,6 +10,7 @@ use App\Models\Taxonomy;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -37,7 +38,7 @@ class CollectionPersonasTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',
@@ -154,7 +155,7 @@ class CollectionPersonasTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',
@@ -425,7 +426,7 @@ class CollectionPersonasTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',
@@ -558,7 +559,7 @@ class CollectionPersonasTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',
@@ -1065,7 +1066,7 @@ class CollectionPersonasTest extends TestCase
      * Upload a specific persona collection's image.
      */
 
-    public function test_guest_cannot_create_image()
+    public function test_guest_cannot_upload_image()
     {
         $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
@@ -1074,7 +1075,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_create_image()
+    public function test_service_worker_cannot_upload_image()
     {
         /**
          * @var \App\Models\Service $service
@@ -1092,7 +1093,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_create_image()
+    public function test_service_admin_cannot_upload_image()
     {
         /**
          * @var \App\Models\Service $service
@@ -1110,7 +1111,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_create_image()
+    public function test_organisation_admin_cannot_upload_image()
     {
         /**
          * @var \App\Models\Organisation $organisation
@@ -1128,7 +1129,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_create_image()
+    public function test_global_admin_cannot_upload_image()
     {
         /**
          * @var \App\Models\User $user
@@ -1142,5 +1143,24 @@ class CollectionPersonasTest extends TestCase
         $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_super_admin_can_upload_image()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
     }
 }

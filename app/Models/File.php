@@ -23,10 +23,30 @@ class File extends Model implements Responsable
      */
     public function toResponse($request)
     {
-        $content = Storage::cloud()->get('files/'.$this->id);
+        $content = Storage::cloud()->get('files/' . $this->id);
 
         return response()->make($content, Response::HTTP_OK, [
             'Content-Type' => $this->mime_type,
         ]);
+    }
+
+    /**
+     * @param string $content
+     */
+    public function upload(string $content)
+    {
+        Storage::cloud()->put('/files/' . $this->id, $content);
+    }
+
+    /**
+     * @param string $content
+     */
+    public function uploadBase64EncodedPng(string $content)
+    {
+        list($type, $data) = explode(';', $content);
+        list(, $data) = explode(',', $data);
+        $data = base64_decode($data);
+
+        $this->upload($data);
     }
 }
