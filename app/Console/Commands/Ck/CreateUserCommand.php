@@ -58,8 +58,8 @@ class CreateUserCommand extends Command
             // Create the user record.
             $user = $this->createUser($password);
 
-            // TODO: Make the user a Super Admin.
-            // $user->makeSuperAdmin();
+            // Make the user a Super Admin.
+            $user->makeSuperAdmin();
 
             // Output message.
             $this->info('User created successfully.');

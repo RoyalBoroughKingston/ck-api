@@ -67,6 +67,7 @@ class CollectionObserver
                 ->where('type', $collection->type)
                 ->where('id', '!=', $collection->id)
                 ->where('order', '<=', $collection->order)
+                ->where('order', '>', $originalOrder)
                 ->decrement('order');
         } else {
             // If the order has decreased then increment the other order ahead.
@@ -74,6 +75,7 @@ class CollectionObserver
                 ->where('type', $collection->type)
                 ->where('id', '!=', $collection->id)
                 ->where('order', '>=', $collection->order)
+                ->where('order', '<', $originalOrder)
                 ->increment('order');
         }
     }
