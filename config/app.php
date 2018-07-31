@@ -162,7 +162,9 @@ return [
         App\Providers\DatabaseServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\MigrationServiceProvider::class,
+        App\Providers\ModelServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TestingServiceProvider::class,
 
     ],
 

@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use App\Models\Collection;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 
 abstract class TestCase extends BaseTestCase
@@ -53,5 +53,16 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->beginDatabaseTransaction();
+    }
+
+    /**
+     * Delete all the collection categories and pivot records.
+     */
+    protected function truncateCollectionCategories()
+    {
+        Collection::categories()->get()->each(function (Collection $collection) {
+            $collection->collectionTaxonomies()->delete();
+        });
+        Collection::categories()->delete();
     }
 }

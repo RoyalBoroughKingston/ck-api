@@ -14,10 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(function () {
-    Route::apiResource('audits', 'AuditController')->only('index', 'show');
+    // Audits.
+    Route::apiResource('/audits', 'AuditController')->only('index', 'show');
+
+    // Collection Categories.
+    Route::apiResource('/collections/categories', 'CollectionCategoryController')->names([
+        'index' => 'collection-categories.index',
+        'store' => 'collection-categories.store',
+        'show' => 'collection-categories.show',
+        'update' => 'collection-categories.update',
+        'destroy' => 'collection-categories.destroy',
+    ]);
 });
