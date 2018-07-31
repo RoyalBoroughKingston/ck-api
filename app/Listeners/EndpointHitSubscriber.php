@@ -14,10 +14,20 @@ class EndpointHitSubscriber
      * @var array
      */
     protected $events = [
+        /*
+         * Audits.
+         */
         \App\Events\Audit\AuditsListed::class,
         \App\Events\Audit\AuditRead::class,
 
+        /*
+         * Collection Categories.
+         */
         \App\Events\CollectionCategory\CollectionCategoriesListed::class,
+        \App\Events\CollectionCategory\CollectionCategoryCreated::class,
+        \App\Events\CollectionCategory\CollectionCategoryRead::class,
+        \App\Events\CollectionCategory\CollectionCategoryUpdated::class,
+        \App\Events\CollectionCategory\CollectionCategoryDeleted::class,
     ];
 
     /**

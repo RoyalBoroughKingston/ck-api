@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Core\V1;
 
 use App\Events\CollectionCategory\CollectionCategoryCreated;
 use App\Events\CollectionCategory\CollectionCategoriesListed;
+use App\Events\CollectionCategory\CollectionCategoryDeleted;
 use App\Events\CollectionCategory\CollectionCategoryRead;
 use App\Events\CollectionCategory\CollectionCategoryUpdated;
+use App\Http\Requests\CollectionCategory\DestroyRequest;
 use App\Http\Requests\CollectionCategory\IndexRequest;
 use App\Http\Requests\CollectionCategory\ShowRequest;
 use App\Http\Requests\CollectionCategory\StoreRequest;
 use App\Http\Requests\CollectionCategory\UpdateRequest;
 use App\Http\Resources\CollectionCategoryResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use Illuminate\Http\Request;
@@ -139,11 +142,19 @@ class CollectionCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Collection  $collection
+     * @param \App\Http\Requests\CollectionCategory\DestroyRequest $request
+     * @param  \App\Models\Collection $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Collection $collection)
+    public function destroy(DestroyRequest $request, Collection $category)
     {
-        //
+        return DB::transaction(function () use ($request, $category) {
+            event(new CollectionCategoryDeleted($request, $category));
+
+            $category->collectionTaxonomies()->delete();
+            $category->delete();
+
+            return new ResourceDeleted('category');
+        });
     }
 }
