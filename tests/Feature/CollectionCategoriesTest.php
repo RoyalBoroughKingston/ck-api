@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Collection;
+use App\Models\CollectionTaxonomy;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
@@ -860,5 +861,23 @@ class CollectionCategoriesTest extends TestCase
         $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_super_admin_can_delete_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $category->id]);
+        $this->assertDatabaseMissing((new CollectionTaxonomy())->getTable(), ['collection_id' => $category->id]);
     }
 }

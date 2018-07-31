@@ -36,46 +36,8 @@ class CollectionObserver
      */
     public function updated(Collection $collection)
     {
-        /*
-         * Updates the order for all other collections of the same type.
-         */
-
-        // Get all the ID's for the collection type.
-        $collectionOrders = Collection::query()
-            ->where('type', $collection->type)
-            ->pluck('order');
-
-        // Set the original order to null.
-        $originalOrder = null;
-
-        // Loop through the number of collections until the missing ID is found, as this must be the original order.
-        foreach (range(1, $collectionOrders->count()) as $order) {
-            if (!$collectionOrders->contains($order)) {
-                $originalOrder = $order;
-                break;
-            }
-        }
-
-        // The original order should always have been found.
-        if ($originalOrder === null) {
-            throw new Exception('Could not find original order number');
-        }
-
-        if ($originalOrder < $collection->order) {
-            // If the order has increased then decrement the other order behind.
-            Collection::query()
-                ->where('type', $collection->type)
-                ->where('id', '!=', $collection->id)
-                ->where('order', '<=', $collection->order)
-                ->decrement('order');
-        } else {
-            // If the order has decreased then increment the other order ahead.
-            Collection::query()
-                ->where('type', $collection->type)
-                ->where('id', '!=', $collection->id)
-                ->where('order', '>=', $collection->order)
-                ->increment('order');
-        }
+        // Updates the order for all other collections of the same type.
+        $this->updateOrder($collection);
     }
 
     /**
@@ -87,10 +49,16 @@ class CollectionObserver
      */
     public function deleted(Collection $collection)
     {
-        /*
-         * Updates the order for all other collections of the same type.
-         */
+        // Updates the order for all other collections of the same type.
+        $this->updateOrder($collection, true);
+    }
 
+    /**
+     * @param \App\Models\Collection $collection
+     * @param bool $wasDeleted
+     */
+    protected function updateOrder(Collection $collection, bool $wasDeleted = false)
+    {
         // Get all the ID's for the collection type.
         $collectionOrders = Collection::query()
             ->where('type', $collection->type)
@@ -99,17 +67,25 @@ class CollectionObserver
         // Set the original order to null.
         $originalOrder = null;
 
+        // Get the total number of collections.
+        $collectionCount = $collectionOrders->count();
+
+        // Increment the count if the resource was deleted.
+        if ($wasDeleted) {
+            $collectionCount++;
+        }
+
         // Loop through the number of collections until the missing ID is found, as this must be the original order.
-        foreach (range(1, $collectionOrders->count() + 1) as $order) {
+        foreach (range(1, $collectionCount) as $order) {
             if (!$collectionOrders->contains($order)) {
                 $originalOrder = $order;
                 break;
             }
         }
 
-        // The original order should always have been found.
+        // If the order number was not updated.
         if ($originalOrder === null) {
-            throw new Exception('Could not find original order number');
+            return;
         }
 
         if ($originalOrder < $collection->order) {
