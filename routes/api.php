@@ -35,4 +35,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         'update' => 'collection-personas.update',
         'destroy' => 'collection-personas.destroy',
     ]);
+    Route::post('/collections/personas/{persona}/image', 'CollectionPersona\\ImageController@store')->name('collection-personas.image.store');
+    Route::get('/collections/personas/{persona}/image', 'CollectionPersona\\ImageController@show')->name('collection-personas.image.show');
+    Route::put('/collections/personas/{persona}/image', 'CollectionPersona\\ImageController@update')->name('collection-personas.image.update');
 });

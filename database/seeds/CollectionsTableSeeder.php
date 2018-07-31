@@ -170,6 +170,7 @@ class CollectionsTableSeeder extends Seeder
             'meta' => json_encode([
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Or at risk of homelessness',
+                'image_file_id' => null,
             ]),
             'order' => 1,
             'created_at' => $this->now,
@@ -195,6 +196,7 @@ class CollectionsTableSeeder extends Seeder
             'meta' => json_encode([
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Lorem ipsum',
+                'image_file_id' => null,
             ]),
             'order' => 2,
             'created_at' => $this->now,
@@ -227,6 +229,7 @@ class CollectionsTableSeeder extends Seeder
             'meta' => json_encode([
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Lorem ipsum',
+                'image_file_id' => null,
             ]),
             'order' => 3,
             'created_at' => $this->now,

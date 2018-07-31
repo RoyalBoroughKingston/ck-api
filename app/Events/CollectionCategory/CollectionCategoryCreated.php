@@ -13,13 +13,13 @@ class CollectionCategoryCreated extends EndpointHit
      * Create a new event instance.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Collection $collection
+     * @param \App\Models\Collection $category
      */
-    public function __construct(Request $request, Collection $collection)
+    public function __construct(Request $request, Collection $category)
     {
         parent::__construct($request);
 
         $this->action = Audit::ACTION_CREATE;
-        $this->description = "Created collection category [{$collection->id}]";
+        $this->description = "Created collection category [{$category->id}]";
     }
 }

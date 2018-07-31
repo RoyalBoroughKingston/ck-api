@@ -13,13 +13,13 @@ class CollectionCategoryRead extends EndpointHit
      * Create a new event instance.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Collection $collection
+     * @param \App\Models\Collection $category
      */
-    public function __construct(Request $request, Collection $collection)
+    public function __construct(Request $request, Collection $category)
     {
         parent::__construct($request);
 
         $this->action = Audit::ACTION_READ;
-        $this->description = "Viewed collection category [{$collection->id}]";
+        $this->description = "Viewed collection category [{$category->id}]";
     }
 }

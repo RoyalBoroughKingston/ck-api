@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Events\CollectionPersona;
+namespace App\Events\CollectionPersona\Image;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 
-class CollectionPersonaCreated extends EndpointHit
+class ImageRead extends EndpointHit
 {
     /**
      * Create a new event instance.
@@ -19,7 +19,7 @@ class CollectionPersonaCreated extends EndpointHit
     {
         parent::__construct($request);
 
-        $this->action = Audit::ACTION_CREATE;
-        $this->description = "Created collection persona [{$persona->id}]";
+        $this->action = Audit::ACTION_READ;
+        $this->description = "Viewed collection persona image [{$persona->id}]";
     }
 }

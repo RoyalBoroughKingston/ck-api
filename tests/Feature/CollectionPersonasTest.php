@@ -1046,4 +1046,18 @@ class CollectionPersonasTest extends TestCase
         $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $first->id, 'order' => 1]);
         $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 2]);
     }
+
+    /*
+     * Get a specific persona collection's image.
+     */
+
+    public function test_guest_can_view_image()
+    {
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        $response = $this->get("/core/v1/collections/personas/{$persona->id}/image");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
+    }
 }
