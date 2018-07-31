@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\CollectionCategory\CollectionCategoryCreated;
 use App\Events\CollectionCategory\CollectionCategoriesListed;
 use App\Events\CollectionCategory\CollectionCategoryRead;
+use App\Events\CollectionCategory\CollectionCategoryUpdated;
 use App\Http\Requests\CollectionCategory\IndexRequest;
 use App\Http\Requests\CollectionCategory\ShowRequest;
 use App\Http\Requests\CollectionCategory\StoreRequest;
+use App\Http\Requests\CollectionCategory\UpdateRequest;
 use App\Http\Resources\CollectionCategoryResource;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
@@ -98,13 +100,40 @@ class CollectionCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Collection  $collection
+     * @param \App\Http\Requests\CollectionCategory\UpdateRequest $request
+     * @param  \App\Models\Collection $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Collection $collection)
+    public function update(UpdateRequest $request, Collection $category)
     {
-        //
+        return DB::transaction(function () use ($request, $category) {
+            // Update the collection record.
+            $category->update([
+                'name' => $request->name,
+                'meta' => [
+                    'intro' => $request->intro,
+                    'icon' => $request->icon,
+                ],
+                'order' => $request->order,
+            ]);
+
+            // Update or create all of the pivot records.
+            foreach ($request->category_taxonomies as $categoryTaxonomyId) {
+                CollectionTaxonomy::updateOrCreate([
+                    'collection_id' => $category->id,
+                    'taxonomy_id' => $categoryTaxonomyId,
+                ]);
+            }
+
+            // Delete any pivot records that exist but were not submitted.
+            $category->collectionTaxonomies()
+                ->whereNotIn('taxonomy_id', $request->category_taxonomies)
+                ->delete();
+
+            event(new CollectionCategoryUpdated($request, $category));
+
+            return new CollectionCategoryResource($category);
+        });
     }
 
     /**

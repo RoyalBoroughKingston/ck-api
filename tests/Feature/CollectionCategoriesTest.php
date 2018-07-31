@@ -169,7 +169,7 @@ class CollectionCategoriesTest extends TestCase
         ]);
     }
 
-    public function test_order_is_updated_when_inserted_at_beginning()
+    public function test_order_is_updated_when_created_at_beginning()
     {
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
@@ -221,7 +221,7 @@ class CollectionCategoriesTest extends TestCase
         $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $third->id, 'order' => 4]);
     }
 
-    public function test_order_is_updated_when_inserted_at_middle()
+    public function test_order_is_updated_when_created_at_middle()
     {
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
@@ -273,7 +273,7 @@ class CollectionCategoriesTest extends TestCase
         $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $third->id, 'order' => 4]);
     }
 
-    public function test_order_is_updated_when_inserted_at_end()
+    public function test_order_is_updated_when_created_at_end()
     {
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
@@ -325,7 +325,7 @@ class CollectionCategoriesTest extends TestCase
         $this->assertDatabaseHas((new Collection())->getTable(), ['order' => 4]);
     }
 
-    public function test_order_cannot_be_less_than_1()
+    public function test_order_cannot_be_less_than_1_when_created()
     {
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
@@ -349,7 +349,7 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_order_cannot_be_greater_than_count_plus_1()
+    public function test_order_cannot_be_greater_than_count_plus_1_when_created()
     {
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
@@ -427,5 +427,355 @@ class CollectionCategoriesTest extends TestCase
             'created_at' => $collectionCategory->created_at->format(Carbon::ISO8601),
             'updated_at' => $collectionCategory->updated_at->format(Carbon::ISO8601),
         ]);
+    }
+
+    /*
+     * Update a specific category collection.
+     */
+
+    public function test_guest_cannot_update_one()
+    {
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_update_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_update_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_update_one()
+    {
+        /**
+         * @var \App\Models\Organisation $organisation
+         * @var \App\Models\User $user
+         */
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_cannot_update_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_super_admin_can_update_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'name',
+            'intro',
+            'icon',
+            'order',
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ]
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $taxonomy->id,
+        ]);
+    }
+
+    public function test_order_is_updated_when_updated_to_beginning()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $first = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $second = Collection::categories()->create([
+            'name' => 'Second',
+            'order' => 2,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $third = Collection::categories()->create([
+            'name' => 'Third',
+            'order' => 3,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$third->id}", [
+            'name' => 'Third',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'category_taxonomies' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $first->id, 'order' => 2]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 3]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $third->id, 'order' => 1]);
+    }
+
+    public function test_order_is_updated_when_updated_to_middle()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $first = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $second = Collection::categories()->create([
+            'name' => 'Second',
+            'order' => 2,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $third = Collection::categories()->create([
+            'name' => 'Third',
+            'order' => 3,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$first->id}", [
+            'name' => 'First',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 2,
+            'category_taxonomies' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $first->id, 'order' => 2]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $third->id, 'order' => 3]);
+    }
+
+    public function test_order_is_updated_when_updated_to_end()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $first = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $second = Collection::categories()->create([
+            'name' => 'Second',
+            'order' => 2,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $third = Collection::categories()->create([
+            'name' => 'Third',
+            'order' => 3,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$first->id}", [
+            'name' => 'First',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 3,
+            'category_taxonomies' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $first->id, 'order' => 3]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $third->id, 'order' => 2]);
+    }
+
+    public function test_order_cannot_be_less_than_1_when_updated()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $category = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'name' => 'First',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 0,
+            'category_taxonomies' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_order_cannot_be_greater_than_count_plus_1_when_updated()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $category = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'name' => 'First',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 2,
+            'category_taxonomies' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
