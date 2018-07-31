@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Core\V1\CollectionPersona;
 
 use App\Events\CollectionPersona\Image\ImageCreated;
+use App\Events\CollectionPersona\Image\ImageDeleted;
 use App\Events\CollectionPersona\Image\ImageRead;
 use App\Http\Requests\CollectionPersona\Image\DestroyRequest;
 use App\Http\Requests\CollectionPersona\Image\ShowRequest;
 use App\Http\Requests\CollectionPersona\Image\StoreRequest;
 use App\Http\Responses\FileUploaded;
+use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
 use App\Models\File;
 use App\Http\Controllers\Controller;
@@ -28,7 +30,7 @@ class ImageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\CollectionPersona\Image\StoreRequest $request
      * @param  \App\Models\Collection $persona
      * @return \Illuminate\Http\Response
      */
@@ -86,11 +88,29 @@ class ImageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param \App\Http\Requests\CollectionPersona\Image\DestroyRequest $request
      * @param  \App\Models\Collection $persona
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Collection $persona)
     {
-        //
+        if ($persona->meta['image_file_id'] === null) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+
+        return DB::transaction(function () use ($request, $persona) {
+            // Delete the file record.
+            File::find($persona->meta['image_file_id'])->delete();
+
+            // Update the persona record to point to the file.
+            $meta = $persona->meta;
+            $meta['image_file_id'] = null;
+            $persona->meta = $meta;
+            $persona->save();
+
+            event(new ImageDeleted($request, $persona));
+
+            return new ResourceDeleted("persona collection's image");
+        });
     }
 }

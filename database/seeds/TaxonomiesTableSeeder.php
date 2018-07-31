@@ -23,6 +23,7 @@ class TaxonomiesTableSeeder extends Seeder
      * Run the database seeds.
      *
      * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function run()
     {
@@ -32,6 +33,8 @@ class TaxonomiesTableSeeder extends Seeder
 
     /**
      * Seed the category taxonomies.
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function seedCategoryTaxonomies()
     {
@@ -45,7 +48,6 @@ class TaxonomiesTableSeeder extends Seeder
             'updated_at' => $this->now,
         ]);
 
-        // TODO: Add Open Eligibility records.
         $taxonomies = $this->loadOpenEligibilityTaxonomies();
         $taxonomies = $this->normaliseOpenEligibilityTaxonomies($categoryId, $taxonomies);
 
