@@ -26,4 +26,13 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         'update' => 'collection-categories.update',
         'destroy' => 'collection-categories.destroy',
     ]);
+
+    // Collection Personas.
+    Route::apiResource('/collections/personas', 'CollectionPersonaController')->names([
+        'index' => 'collection-personas.index',
+        'store' => 'collection-personas.store',
+        'show' => 'collection-personas.show',
+        'update' => 'collection-personas.update',
+        'destroy' => 'collection-personas.destroy',
+    ]);
 });

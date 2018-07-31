@@ -13,22 +13,22 @@ use Illuminate\Support\Carbon;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
-class CollectionCategoriesTest extends TestCase
+class CollectionPersonasTest extends TestCase
 {
     /*
-     * List all the category collections.
+     * List all the persona collections.
      */
 
     public function test_guest_can_list_them()
     {
-        $response = $this->json('GET', '/core/v1/collections/categories');
+        $response = $this->json('GET', '/core/v1/collections/personas');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCollection([
             'id',
             'name',
             'intro',
-            'icon',
+            'subtitle',
             'order',
             'category_taxonomies' => [
                 '*' => [
@@ -45,12 +45,12 @@ class CollectionCategoriesTest extends TestCase
     }
 
     /*
-     * Create a collection category.
+     * Create a collection persona.
      */
 
     public function test_guest_cannot_create_one()
     {
-        $response = $this->json('POST', '/core/v1/collections/categories');
+        $response = $this->json('POST', '/core/v1/collections/personas');
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -67,7 +67,7 @@ class CollectionCategoriesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories');
+        $response = $this->json('POST', '/core/v1/collections/personas');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -84,7 +84,7 @@ class CollectionCategoriesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories');
+        $response = $this->json('POST', '/core/v1/collections/personas');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -101,7 +101,7 @@ class CollectionCategoriesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories');
+        $response = $this->json('POST', '/core/v1/collections/personas');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -116,7 +116,7 @@ class CollectionCategoriesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories');
+        $response = $this->json('POST', '/core/v1/collections/personas');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -132,10 +132,10 @@ class CollectionCategoriesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories', [
-            'name' => 'Test Category',
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 1,
             'category_taxonomies' => [$randomCategory->id],
         ]);
@@ -145,7 +145,7 @@ class CollectionCategoriesTest extends TestCase
             'id',
             'name',
             'intro',
-            'icon',
+            'subtitle',
             'order',
             'category_taxonomies' => [
                 '*' => [
@@ -160,9 +160,9 @@ class CollectionCategoriesTest extends TestCase
             'updated_at',
         ]);
         $response->assertJsonFragment([
-            'name' => 'Test Category',
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 1,
         ]);
         $response->assertJsonFragment([
@@ -172,8 +172,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_created_at_beginning()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -181,39 +181,39 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories', [
-            'name' => 'Test Category',
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 1,
             'category_taxonomies' => [],
         ]);
@@ -227,8 +227,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_created_at_middle()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -236,39 +236,39 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories', [
-            'name' => 'Test Category',
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 2,
             'category_taxonomies' => [],
         ]);
@@ -282,8 +282,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_created_at_end()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -291,39 +291,39 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories', [
-            'name' => 'Test Category',
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 4,
             'category_taxonomies' => [],
         ]);
@@ -337,8 +337,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_cannot_be_less_than_1_when_created()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -348,10 +348,10 @@ class CollectionCategoriesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories', [
-            'name' => 'Test Category',
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 0,
             'category_taxonomies' => [],
         ]);
@@ -361,8 +361,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_cannot_be_greater_than_count_plus_1_when_created()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -370,30 +370,30 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', '/core/v1/collections/categories', [
-            'name' => 'Test Category',
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 4,
             'category_taxonomies' => [],
         ]);
@@ -402,21 +402,21 @@ class CollectionCategoriesTest extends TestCase
     }
 
     /*
-     * Get a specific category collection.
+     * Get a specific persona collection.
      */
 
     public function test_guest_can_view_one()
     {
-        $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
-        $response = $this->json('GET', "/core/v1/collections/categories/{$collectionCategory->id}");
+        $response = $this->json('GET', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
             'name',
             'intro',
-            'icon',
+            'subtitle',
             'order',
             'category_taxonomies' => [
                 '*' => [
@@ -431,25 +431,25 @@ class CollectionCategoriesTest extends TestCase
             'updated_at',
         ]);
         $response->assertJsonFragment([
-            'id' => $collectionCategory->id,
-            'name' => $collectionCategory->name,
-            'intro' => $collectionCategory->meta['intro'],
-            'icon' => $collectionCategory->meta['icon'],
-            'order' => $collectionCategory->order,
-            'created_at' => $collectionCategory->created_at->format(Carbon::ISO8601),
-            'updated_at' => $collectionCategory->updated_at->format(Carbon::ISO8601),
+            'id' => $persona->id,
+            'name' => $persona->name,
+            'intro' => $persona->meta['intro'],
+            'subtitle' => $persona->meta['subtitle'],
+            'order' => $persona->order,
+            'created_at' => $persona->created_at->format(Carbon::ISO8601),
+            'updated_at' => $persona->updated_at->format(Carbon::ISO8601),
         ]);
     }
 
     /*
-     * Update a specific category collection.
+     * Update a specific persona collection.
      */
 
     public function test_guest_cannot_update_one()
     {
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -463,11 +463,11 @@ class CollectionCategoriesTest extends TestCase
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create();
         $user->makeServiceWorker($service);
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -481,11 +481,11 @@ class CollectionCategoriesTest extends TestCase
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create();
         $user->makeServiceAdmin($service);
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -499,11 +499,11 @@ class CollectionCategoriesTest extends TestCase
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create();
         $user->makeOrganisationAdmin($organisation);
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -515,11 +515,11 @@ class CollectionCategoriesTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -531,15 +531,15 @@ class CollectionCategoriesTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
-            'name' => 'Test Category',
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 1,
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -549,7 +549,7 @@ class CollectionCategoriesTest extends TestCase
             'id',
             'name',
             'intro',
-            'icon',
+            'subtitle',
             'order',
             'category_taxonomies' => [
                 '*' => [
@@ -564,9 +564,9 @@ class CollectionCategoriesTest extends TestCase
             'updated_at',
         ]);
         $response->assertJsonFragment([
-            'name' => 'Test Category',
+            'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 1,
         ]);
         $response->assertJsonFragment([
@@ -576,8 +576,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_updated_to_beginning()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -585,39 +585,39 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$third->id}", [
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$third->id}", [
             'name' => 'Third',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 1,
             'category_taxonomies' => [],
         ]);
@@ -630,8 +630,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_updated_to_middle()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -639,39 +639,39 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$first->id}", [
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$first->id}", [
             'name' => 'First',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 2,
             'category_taxonomies' => [],
         ]);
@@ -684,8 +684,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_updated_to_end()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -693,39 +693,39 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$first->id}", [
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$first->id}", [
             'name' => 'First',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 3,
             'category_taxonomies' => [],
         ]);
@@ -738,30 +738,30 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_cannot_be_less_than_1_when_updated()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
          */
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
-        $category = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+        $persona = Collection::create([
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
             'name' => 'First',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 0,
             'category_taxonomies' => [],
         ]);
@@ -771,30 +771,30 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_cannot_be_greater_than_count_plus_1_when_updated()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
          */
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
-        $category = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+        $persona = Collection::create([
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
             'name' => 'First',
             'intro' => 'Lorem ipsum',
-            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
             'order' => 2,
             'category_taxonomies' => [],
         ]);
@@ -803,14 +803,14 @@ class CollectionCategoriesTest extends TestCase
     }
 
     /*
-     * Delete a specific category collection.
+     * Delete a specific persona collection.
      */
 
     public function test_guest_cannot_delete_one()
     {
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -824,11 +824,11 @@ class CollectionCategoriesTest extends TestCase
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create();
         $user->makeServiceWorker($service);
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -842,11 +842,11 @@ class CollectionCategoriesTest extends TestCase
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create();
         $user->makeServiceAdmin($service);
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -860,11 +860,11 @@ class CollectionCategoriesTest extends TestCase
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create();
         $user->makeOrganisationAdmin($organisation);
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -876,11 +876,11 @@ class CollectionCategoriesTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -892,21 +892,21 @@ class CollectionCategoriesTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $category->id]);
-        $this->assertDatabaseMissing((new CollectionTaxonomy())->getTable(), ['collection_id' => $category->id]);
+        $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $persona->id]);
+        $this->assertDatabaseMissing((new CollectionTaxonomy())->getTable(), ['collection_id' => $persona->id]);
     }
 
     public function test_order_is_updated_when_deleted_at_beginning()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -914,36 +914,36 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$first->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$first->id}");
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $first->id]);
@@ -953,8 +953,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_deleted_at_middle()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -962,36 +962,36 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$second->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$second->id}");
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $second->id]);
@@ -1001,8 +1001,8 @@ class CollectionCategoriesTest extends TestCase
 
     public function test_order_is_updated_when_deleted_at_end()
     {
-        // Delete the existing seeded categories.
-        $this->truncateCollectionCategories();
+        // Delete the existing seeded personas.
+        $this->truncateCollectionPersonas();
 
         /**
          * @var \App\Models\User $user
@@ -1010,36 +1010,36 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $first = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'First',
             'order' => 1,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $second = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Second',
             'order' => 2,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
         $third = Collection::create([
-            'type' => Collection::TYPE_CATEGORY,
+            'type' => Collection::TYPE_PERSONA,
             'name' => 'Third',
             'order' => 3,
             'meta' => [
                 'intro' => 'Lorem ipsum',
-                'icon' => 'info',
+                'subtitle' => 'Subtitle here',
             ],
         ]);
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/collections/categories/{$third->id}");
+        $response = $this->json('DELETE', "/core/v1/collections/personas/{$third->id}");
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $third->id]);
