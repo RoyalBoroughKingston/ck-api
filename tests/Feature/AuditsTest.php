@@ -158,10 +158,10 @@ class AuditsTest extends TestCase
     }
 
     /*
-     * Get a sepcific audit.
+     * Get a specific audit.
      */
 
-    public function test_guest_cannot_list_it()
+    public function test_guest_cannot_view_one()
     {
         $audit = factory(Audit::class)->create();
 
@@ -170,7 +170,7 @@ class AuditsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_list_it()
+    public function test_service_worker_cannot_view_one()
     {
         /**
          * @var \App\Models\Service $service
@@ -188,7 +188,7 @@ class AuditsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_list_it()
+    public function test_service_admin_cannot_view_one()
     {
         /**
          * @var \App\Models\Service $service
@@ -206,7 +206,7 @@ class AuditsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_list_it()
+    public function test_organisation_admin_cannot_view_one()
     {
         /**
          * @var \App\Models\Organisation $organisation
@@ -224,7 +224,7 @@ class AuditsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_can_list_it()
+    public function test_global_admin_can_view_one()
     {
         /**
          * @var \App\Models\User $user
