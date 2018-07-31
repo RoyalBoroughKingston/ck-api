@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Events\CollectionCategory\CollectionCategoryCreated;
 use App\Events\CollectionCategory\CollectionCategoriesListed;
+use App\Events\CollectionCategory\CollectionCategoryRead;
 use App\Http\Requests\CollectionCategory\IndexRequest;
+use App\Http\Requests\CollectionCategory\ShowRequest;
 use App\Http\Requests\CollectionCategory\StoreRequest;
 use App\Http\Resources\CollectionCategoryResource;
 use App\Models\Collection;
@@ -31,11 +34,11 @@ class CollectionCategoryController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        event(new CollectionCategoriesListed($request));
-
         $categories = QueryBuilder::for(Collection::categories())
             ->with('taxonomies')
             ->paginate();
+
+        event(new CollectionCategoriesListed($request));
 
         return CollectionCategoryResource::collection($categories);
     }
@@ -51,7 +54,7 @@ class CollectionCategoryController extends Controller
     {
         return DB::transaction(function () use ($request) {
             // Create the collection record.
-            $collectionCategory = Collection::create([
+            $category = Collection::create([
                 'type' => Collection::TYPE_CATEGORY,
                 'name' => $request->name,
                 'meta' => [
@@ -64,27 +67,32 @@ class CollectionCategoryController extends Controller
             // Create all of the pivot records.
             foreach ($request->category_taxonomies as $categoryTaxonomyId) {
                 CollectionTaxonomy::create([
-                    'collection_id' => $collectionCategory->id,
+                    'collection_id' => $category->id,
                     'taxonomy_id' => $categoryTaxonomyId,
                 ]);
             }
 
             // Reload the newly created pivot records.
-            $collectionCategory->load('taxonomies');
+            $category->load('taxonomies');
 
-            return new CollectionCategoryResource($collectionCategory);
+            event(new CollectionCategoryCreated($request, $category));
+
+            return new CollectionCategoryResource($category);
         });
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Collection  $collection
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\CollectionCategory\ShowRequest $request
+     * @param  \App\Models\Collection $category
+     * @return \App\Http\Resources\CollectionCategoryResource
      */
-    public function show(Collection $collection)
+    public function show(ShowRequest $request, Collection $category)
     {
-        //
+        event(new CollectionCategoryRead($request, $category));
+
+        return new CollectionCategoryResource($category);
     }
 
     /**

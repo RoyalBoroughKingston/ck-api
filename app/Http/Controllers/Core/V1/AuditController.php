@@ -29,11 +29,11 @@ class AuditController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        event(new AuditsListed($request));
-
         $audits = QueryBuilder::for(Audit::class)
             ->allowedFilters(['user_id'])
             ->paginate();
+
+        event(new AuditsListed($request));
 
         return AuditResource::collection($audits);
     }

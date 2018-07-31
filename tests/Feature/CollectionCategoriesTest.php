@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -386,5 +387,45 @@ class CollectionCategoriesTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /*
+     * Get a specific category collection.
+     */
+
+    public function test_guest_can_view_one()
+    {
+        $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        $response = $this->json('GET', "/core/v1/collections/categories/{$collectionCategory->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'name',
+            'intro',
+            'icon',
+            'order',
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ]
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collectionCategory->id,
+            'name' => $collectionCategory->name,
+            'intro' => $collectionCategory->meta['intro'],
+            'icon' => $collectionCategory->meta['icon'],
+            'order' => $collectionCategory->order,
+            'created_at' => $collectionCategory->created_at->format(Carbon::ISO8601),
+            'updated_at' => $collectionCategory->updated_at->format(Carbon::ISO8601),
+        ]);
     }
 }
