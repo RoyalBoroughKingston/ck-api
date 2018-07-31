@@ -37,28 +37,6 @@ class CollectionObserver
     public function updated(Collection $collection)
     {
         // Updates the order for all other collections of the same type.
-        $this->updateOrder($collection);
-    }
-
-    /**
-     * Handle the collection "deleted" event.
-     *
-     * @param  \App\Models\Collection $collection
-     * @return void
-     * @throws \Exception
-     */
-    public function deleted(Collection $collection)
-    {
-        // Updates the order for all other collections of the same type.
-        $this->updateOrder($collection, true);
-    }
-
-    /**
-     * @param \App\Models\Collection $collection
-     * @param bool $wasDeleted
-     */
-    protected function updateOrder(Collection $collection, bool $wasDeleted = false)
-    {
         // Get all the ID's for the collection type.
         $collectionOrders = Collection::query()
             ->where('type', $collection->type)
@@ -69,11 +47,6 @@ class CollectionObserver
 
         // Get the total number of collections.
         $collectionCount = $collectionOrders->count();
-
-        // Increment the count if the resource was deleted.
-        if ($wasDeleted) {
-            $collectionCount++;
-        }
 
         // Loop through the number of collections until the missing ID is found, as this must be the original order.
         foreach (range(1, $collectionCount) as $order) {
@@ -103,5 +76,21 @@ class CollectionObserver
                 ->where('order', '>=', $collection->order)
                 ->increment('order');
         }
+    }
+
+    /**
+     * Handle the collection "deleted" event.
+     *
+     * @param  \App\Models\Collection $collection
+     * @return void
+     * @throws \Exception
+     */
+    public function deleted(Collection $collection)
+    {
+        // Updates the order for all other collections of the same type.
+        Collection::query()
+            ->where('type', $collection->type)
+            ->where('order', '>', $collection->order)
+            ->decrement('order');
     }
 }

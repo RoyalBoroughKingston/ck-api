@@ -880,4 +880,142 @@ class CollectionCategoriesTest extends TestCase
         $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $category->id]);
         $this->assertDatabaseMissing((new CollectionTaxonomy())->getTable(), ['collection_id' => $category->id]);
     }
+
+    public function test_order_is_updated_when_deleted_at_beginning()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $first = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $second = Collection::categories()->create([
+            'name' => 'Second',
+            'order' => 2,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $third = Collection::categories()->create([
+            'name' => 'Third',
+            'order' => 3,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        dump(Collection::categories()->get()->toArray());
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/collections/categories/{$first->id}");
+        dump(Collection::categories()->get()->toArray());
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $first->id]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $third->id, 'order' => 2]);
+    }
+
+    public function test_order_is_updated_when_deleted_at_middle()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $first = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $second = Collection::categories()->create([
+            'name' => 'Second',
+            'order' => 2,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $third = Collection::categories()->create([
+            'name' => 'Third',
+            'order' => 3,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/collections/categories/{$second->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $second->id]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $first->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $third->id, 'order' => 2]);
+    }
+
+    public function test_order_is_updated_when_deleted_at_end()
+    {
+        // Delete the existing seeded categories.
+        $this->truncateCollectionCategories();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $first = Collection::categories()->create([
+            'name' => 'First',
+            'order' => 1,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $second = Collection::categories()->create([
+            'name' => 'Second',
+            'order' => 2,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+        $third = Collection::categories()->create([
+            'name' => 'Third',
+            'order' => 3,
+            'meta' => [
+                'intro' => 'Lorem ipsum',
+                'icon' => 'info',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/collections/categories/{$third->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $third->id]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $first->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 2]);
+    }
 }
