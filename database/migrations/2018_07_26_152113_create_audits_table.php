@@ -19,7 +19,7 @@ class CreateAuditsTable extends Migration
             $table->enum('action', ['create', 'read', 'update', 'delete']);
             $table->string('description', 1000);
             $table->ipAddress('ip_address');
-            $table->string('user_agent', 1000);
+            $table->string('user_agent', 1000)->nullable();
             $table->timestamps();
         });
     }

@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(function () {
+    Route::apiResource('audits', 'AuditController')->only('index', 'show');
+});
