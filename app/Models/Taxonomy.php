@@ -12,15 +12,15 @@ class Taxonomy extends Model
     use TaxonomyRelationships;
     use TaxonomyScopes;
 
-    const ROOT_CATEGORY = 'Category';
-    const ROOT_ORGANISATION = 'Organisation';
+    const NAME_CATEGORY = 'Category';
+    const NAME_ORGANISATION = 'Organisation';
 
     /**
      * @return \App\Models\Taxonomy
      */
     public static function category(): self
     {
-        return static::whereNull('parent_id')->where('name', static::ROOT_CATEGORY)->firstOrFail();
+        return static::whereNull('parent_id')->where('name', static::NAME_CATEGORY)->firstOrFail();
     }
 
     /**
@@ -28,7 +28,7 @@ class Taxonomy extends Model
      */
     public static function organisation(): self
     {
-        return static::whereNull('parent_id')->where('name', static::ROOT_ORGANISATION)->firstOrFail();
+        return static::whereNull('parent_id')->where('name', static::NAME_ORGANISATION)->firstOrFail();
     }
 
     /**
