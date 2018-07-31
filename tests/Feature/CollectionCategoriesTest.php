@@ -916,12 +916,9 @@ class CollectionCategoriesTest extends TestCase
             ],
         ]);
 
-        dump(Collection::categories()->get()->toArray());
-
         Passport::actingAs($user);
 
         $response = $this->json('DELETE', "/core/v1/collections/categories/{$first->id}");
-        dump(Collection::categories()->get()->toArray());
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $first->id]);
