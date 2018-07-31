@@ -2,22 +2,24 @@
 
 namespace App\Providers;
 
+use App\Models\Collection;
+use App\Observers\CollectionObserver;
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+class ModelServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap any application services.
+     * Bootstrap services.
      *
      * @return void
      */
     public function boot()
     {
-        //
+        Collection::observe(CollectionObserver::class);
     }
 
     /**
-     * Register any application services.
+     * Register services.
      *
      * @return void
      */

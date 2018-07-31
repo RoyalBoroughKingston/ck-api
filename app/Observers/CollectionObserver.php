@@ -14,6 +14,7 @@ class CollectionObserver
      */
     public function saved(Collection $collection)
     {
+        // Update the order for any other collections of the same type.
         Collection::query()
             ->where('type', $collection->type)
             ->where('id', '!=', $collection->id)
