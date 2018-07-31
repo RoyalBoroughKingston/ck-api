@@ -35,8 +35,8 @@ class StoreRequest extends FormRequest
             'intro' => ['required', 'string', 'min:1', 'max:255'],
             'icon' => ['required', 'string', 'min:1', 'max:255'],
             'order' => ['required', 'integer', 'min:1', 'max:'.(Collection::categories()->count() + 1)],
-            'category_taxonomies' => ['required', 'array'],
-            'category_taxonomies*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
+            'category_taxonomies' => ['present', 'array'],
+            'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
         ];
     }
 }
