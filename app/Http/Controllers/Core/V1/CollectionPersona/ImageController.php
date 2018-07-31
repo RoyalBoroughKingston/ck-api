@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Core\V1\CollectionPersona;
 
 use App\Events\CollectionPersona\Image\ImageRead;
+use App\Http\Requests\CollectionPersona\Image\DestroyRequest;
 use App\Http\Requests\CollectionPersona\Image\ShowRequest;
+use App\Http\Requests\CollectionPersona\Image\StoreRequest;
 use App\Models\Collection;
 use App\Models\File;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -28,9 +29,15 @@ class ImageController extends Controller
      * @param  \App\Models\Collection $persona
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Collection $persona)
+    public function store(StoreRequest $request, Collection $persona)
     {
-        //
+        // TODO: If the persona already has an image then delete it.
+
+        // TODO: Create the file record.
+
+        // TODO: Update the persona record to point to the file.
+
+        // TODO: Upload the file.
     }
 
     /**
@@ -60,7 +67,7 @@ class ImageController extends Controller
      * @param  \App\Models\Collection $persona
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Collection $persona)
+    public function destroy(DestroyRequest $request, Collection $persona)
     {
         //
     }

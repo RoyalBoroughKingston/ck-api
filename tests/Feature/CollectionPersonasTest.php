@@ -1060,4 +1060,87 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
     }
+
+    /*
+     * Upload a specific persona collection's image.
+     */
+
+    public function test_guest_cannot_create_image()
+    {
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_create_image()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_create_image()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_create_image()
+    {
+        /**
+         * @var \App\Models\Organisation $organisation
+         * @var \App\Models\User $user
+         */
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_cannot_create_image()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
 }
