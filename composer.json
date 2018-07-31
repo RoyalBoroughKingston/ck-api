@@ -16,6 +16,7 @@
         "symfony/yaml": "^4.1"
     },
     "require-dev": {
+        "beyondcode/laravel-dump-server": "^1.1",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
         "laravel/homestead": "^7.10",

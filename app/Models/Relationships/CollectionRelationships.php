@@ -20,6 +20,6 @@ trait CollectionRelationships
      */
     public function taxonomies()
     {
-        return $this->hasManyThrough(Taxonomy::class, CollectionTaxonomy::class);
+        return $this->belongsToMany(Taxonomy::class, (new CollectionTaxonomy())->getTable());
     }
 }

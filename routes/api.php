@@ -19,5 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(function () {
-    Route::apiResource('audits', 'AuditController')->only('index', 'show');
+    Route::apiResource('/audits', 'AuditController')->only('index', 'show');
+    Route::apiResource('/collections/categories', 'CollectionCategoryController');
 });

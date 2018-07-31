@@ -163,6 +163,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\MigrationServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TestingServiceProvider::class,
 
     ],
 
