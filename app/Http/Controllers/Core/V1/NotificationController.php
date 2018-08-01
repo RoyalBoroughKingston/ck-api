@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Events\Notification\NotificationRead;
 use App\Events\Notification\NotificationsListed;
 use App\Http\Requests\Notification\IndexRequest;
+use App\Http\Requests\Notification\ShowRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use App\Http\Controllers\Controller;
@@ -39,11 +41,14 @@ class NotificationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Notification\ShowRequest $request
+     * @param  \App\Models\Notification $notification
+     * @return \App\Http\Resources\NotificationResource
      */
-    public function show(Notification $notification)
+    public function show(ShowRequest $request, Notification $notification)
     {
-        //
+        event(new NotificationRead($request, $notification));
+
+        return new NotificationResource($notification);
     }
 }

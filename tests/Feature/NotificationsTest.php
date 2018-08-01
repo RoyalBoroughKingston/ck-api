@@ -160,4 +160,126 @@ class NotificationsTest extends TestCase
             ]
         ]);
     }
+
+    /*
+     * Get a specific notification.
+     */
+
+    public function test_guest_cannot_view_one()
+    {
+        $notification = Notification::create([
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        $response = $this->json('GET', "/core/v1/notifications/{$notification->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_view_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $notification = Notification::create([
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/notifications/{$notification->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_view_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $notification = Notification::create([
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/notifications/{$notification->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_view_one()
+    {
+        /**
+         * @var \App\Models\Organisation $organisation
+         * @var \App\Models\User $user
+         */
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+        $notification = Notification::create([
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/notifications/{$notification->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_view_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $notification = Notification::create([
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/notifications/{$notification->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $notification->id,
+            'user_id' => $notification->user_id,
+            'channel' => $notification->channel,
+            'recipient' => $notification->recipient,
+            'message' => $notification->message,
+            'created_at' => $notification->created_at->format(Carbon::ISO8601),
+            'updated_at' => $notification->updated_at->format(Carbon::ISO8601),
+        ]);
+    }
 }
