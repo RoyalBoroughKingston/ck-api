@@ -6,6 +6,7 @@ use App\Models\Mutators\UserMutators;
 use App\Models\Relationships\UserRelationships;
 use App\Models\Scopes\UserScopes;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use InvalidArgumentException;
@@ -74,8 +75,12 @@ class User extends Authenticatable
 
         return $this->userRoles()
             ->where('user_roles.role_id', $role->id)
-            ->where('user_roles.service_id', $service->id ?? null)
-            ->where('user_roles.organisation_id', $organisation->id ?? null)
+            ->when($service, function (Builder $query) use ($service) {
+                return $query->where('user_roles.service_id', $service->id);
+            })
+            ->when($organisation, function (Builder $query) use ($organisation) {
+                return $query->where('user_roles.organisation_id', $organisation->id);
+            })
             ->exists();
     }
 
@@ -135,28 +140,28 @@ class User extends Authenticatable
     }
 
     /**
-     * @param \App\Models\Service $service
+     * @param null|\App\Models\Service $service
      * @return bool
      */
-    public function isServiceWorker(Service $service): bool
+    public function isServiceWorker(Service $service = null): bool
     {
         return $this->hasRole(Role::serviceWorker(), $service);
     }
 
     /**
-     * @param \App\Models\Service $service
+     * @param null|\App\Models\Service $service
      * @return bool
      */
-    public function isServiceAdmin(Service $service): bool
+    public function isServiceAdmin(Service $service = null): bool
     {
         return $this->hasRole(Role::serviceAdmin(), $service);
     }
 
     /**
-     * @param \App\Models\Organisation $organisation
+     * @param null|\App\Models\Organisation $organisation
      * @return bool
      */
-    public function isOrganisationAdmin(Organisation $organisation): bool
+    public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
         return $this->hasRole(Role::organisationAdmin(), null, $organisation);
     }
@@ -166,7 +171,7 @@ class User extends Authenticatable
      */
     public function isGlobalAdmin(): bool
     {
-        return $this->hasRole(Role::organisationAdmin());
+        return $this->hasRole(Role::globalAdmin());
     }
 
     /**
@@ -225,7 +230,7 @@ class User extends Authenticatable
             $this->makeOrganisationAdmin($organisation);
         }
 
-        $this->assignRole(Role::organisationAdmin());
+        $this->assignRole(Role::globalAdmin());
 
         return $this;
     }
