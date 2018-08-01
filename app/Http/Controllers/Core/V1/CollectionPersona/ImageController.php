@@ -39,8 +39,7 @@ class ImageController extends Controller
         return DB::transaction(function () use ($request, $persona) {
             // If the persona already has an image then delete it.
             if ($persona->meta['image_file_id']) {
-                // TODO: Delete the file from disk.
-                File::find($persona->meta['image_file_id'])->delete();
+                File::findOrFail($persona->meta['image_file_id'])->delete();
             }
 
             // Create the file record.
@@ -100,7 +99,7 @@ class ImageController extends Controller
 
         return DB::transaction(function () use ($request, $persona) {
             // Delete the file record.
-            File::find($persona->meta['image_file_id'])->delete();
+            File::findOrFail($persona->meta['image_file_id'])->delete();
 
             // Update the persona record to point to the file.
             $meta = $persona->meta;

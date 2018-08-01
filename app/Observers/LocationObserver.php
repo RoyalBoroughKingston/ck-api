@@ -16,4 +16,16 @@ class LocationObserver
     {
         $location->updateCoordinate();
     }
+
+    /**
+     * Handle the organisation "deleting" event.
+     *
+     * @param  \App\Models\Location $location
+     * @return void
+     */
+    public function deleting(Location $location)
+    {
+        $location->updateRequests()->delete();
+        $location->serviceLocations()->delete();
+    }
 }

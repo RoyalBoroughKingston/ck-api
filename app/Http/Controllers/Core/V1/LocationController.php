@@ -133,12 +133,6 @@ class LocationController extends Controller
         return DB::transaction(function () use ($request, $location) {
             event(new LocationDeleted($request, $location));
 
-            $location->serviceLocations->each(function (ServiceLocation $serviceLocation) {
-                $serviceLocation->regularOpeningHours()->delete();
-                $serviceLocation->holidayOpeningHours()->delete();
-            });
-            $location->serviceLocations()->delete();
-            $location->updateRequests()->delete();
             $location->delete();
 
             return new ResourceDeleted('location');

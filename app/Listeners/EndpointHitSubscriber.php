@@ -37,6 +37,9 @@ class EndpointHitSubscriber
         \App\Events\CollectionPersona\CollectionPersonaRead::class,
         \App\Events\CollectionPersona\CollectionPersonaUpdated::class,
         \App\Events\CollectionPersona\CollectionPersonaDeleted::class,
+        \App\Events\CollectionPersona\Image\ImageCreated::class,
+        \App\Events\CollectionPersona\Image\ImageRead::class,
+        \App\Events\CollectionPersona\Image\ImageDeleted::class,
 
         /*
          * Locations.
@@ -46,6 +49,18 @@ class EndpointHitSubscriber
         \App\Events\Location\LocationRead::class,
         \App\Events\Location\LocationUpdated::class,
         \App\Events\Location\LocationDeleted::class,
+
+        /*
+         * Organisations.
+         */
+        \App\Events\Organisation\OrganisationsListed::class,
+        \App\Events\Organisation\OrganisationCreated::class,
+        \App\Events\Organisation\OrganisationRead::class,
+        \App\Events\Organisation\OrganisationUpdated::class,
+        \App\Events\Organisation\OrganisationDeleted::class,
+        \App\Events\Organisation\Image\ImageCreated::class,
+        \App\Events\Organisation\Image\ImageRead::class,
+        \App\Events\Organisation\Image\ImageDeleted::class,
     ];
 
     /**

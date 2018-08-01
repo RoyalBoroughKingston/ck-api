@@ -174,13 +174,13 @@ logo:
               properties:
                 message:
                   type: string
-                  example: The service's logo has been successfully uploaded
+                  example: The update request has been received and needs to be reviewed
 
   delete:
     tags: [Services]
     summary: Delete a specific service's logo
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Service Admin`
     parameters:
       - name: service
         in: path
@@ -194,7 +194,11 @@ logo:
         content:
           application/json:
             schema:
-              $ref: /docs/core/responses/resource-deleted.yaml
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The update request has been received and needs to be reviewed
 
 # /services/{service}/seo-image
 seo-image:
@@ -250,7 +254,7 @@ seo-image:
               properties:
                 message:
                   type: string
-                  example: The service's SEO image has been successfully uploaded
+                  example: The update request has been received and needs to be reviewed
 
   delete:
     tags: [Services]
@@ -270,4 +274,8 @@ seo-image:
         content:
           application/json:
             schema:
-              $ref: /docs/core/responses/resource-deleted.yaml
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The update request has been received and needs to be reviewed

@@ -11,6 +11,7 @@ use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UsefulInfo;
+use App\Models\UserRole;
 
 trait ServiceRelationships
 {
@@ -92,5 +93,13 @@ trait ServiceRelationships
     public function taxonomies()
     {
         return $this->belongsToMany(Taxonomy::class, (new ServiceTaxonomy())->getTable());
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userRoles()
+    {
+        return $this->hasMany(UserRole::class);
     }
 }

@@ -11,4 +11,5 @@ class Organisation extends Model
     use OrganisationMutators;
     use OrganisationRelationships;
     use OrganisationScopes;
+    use UpdateRequests;
 }

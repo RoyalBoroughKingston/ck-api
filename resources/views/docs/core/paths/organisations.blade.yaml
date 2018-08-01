@@ -85,7 +85,13 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/organisation.yaml
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The update request has been received and needs to be reviewed
+                data:
+                  $ref: /docs/core/requests/organisation.yaml#/update
 
   delete:
     tags: [Organisations]
@@ -161,7 +167,7 @@ logo:
               properties:
                 message:
                   type: string
-                  example: The organisation's logo has been successfully uploaded
+                  example: The update request has been received and needs to be reviewed
 
   delete:
     tags: [Organisations]
@@ -181,4 +187,8 @@ logo:
         content:
           application/json:
             schema:
-              $ref: /docs/core/responses/resource-deleted.yaml
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The update request has been received and needs to be reviewed

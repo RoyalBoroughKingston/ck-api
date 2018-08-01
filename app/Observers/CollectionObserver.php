@@ -78,6 +78,17 @@ class CollectionObserver
     }
 
     /**
+     * Handle the organisation "deleting" event.
+     *
+     * @param  \App\Models\Collection $collection
+     * @return void
+     */
+    public function deleting(Collection $collection)
+    {
+        $collection->collectionTaxonomies()->delete();
+    }
+
+    /**
      * Handle the collection "deleted" event.
      *
      * @param  \App\Models\Collection $collection

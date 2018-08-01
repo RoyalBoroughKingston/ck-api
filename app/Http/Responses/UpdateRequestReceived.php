@@ -3,6 +3,7 @@
 namespace App\Http\Responses;
 
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Response;
 
 class UpdateRequestReceived implements Responsable
 {
@@ -12,13 +13,20 @@ class UpdateRequestReceived implements Responsable
     protected $data;
 
     /**
+     * @var int
+     */
+    protected $code;
+
+    /**
      * UpdateRequestReceived constructor.
      *
      * @param array $data
+     * @param int $code
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [], int $code = Response::HTTP_OK)
     {
         $this->data = $data;
+        $this->code = $code;
     }
 
     /**
@@ -32,6 +40,6 @@ class UpdateRequestReceived implements Responsable
         return response()->json([
             'message' => 'The update request has been received and needs to be reviewed',
             'data' => $this->data,
-        ]);
+        ], $this->code);
     }
 }

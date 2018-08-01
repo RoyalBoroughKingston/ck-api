@@ -150,7 +150,6 @@ class CollectionCategoryController extends Controller
         return DB::transaction(function () use ($request, $category) {
             event(new CollectionCategoryDeleted($request, $category));
 
-            $category->collectionTaxonomies()->delete();
             $category->delete();
 
             return new ResourceDeleted('collection category');

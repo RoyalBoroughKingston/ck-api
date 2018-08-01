@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,4 +43,10 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Notifications.
     Route::apiResource('/notifications', 'NotificationController')->only('index', 'show');
+
+    // Organisations.
+    Route::apiResource('/organisations', 'OrganisationController');
+    Route::post('/organisations/{organisation}/logo', 'Organisation\\ImageController@store')->name('organisations.logo.store');
+    Route::get('/organisations/{organisation}/logo', 'Organisation\\ImageController@show')->name('organisations.logo.show');
+    Route::delete('/organisations/{organisation}/logo', 'Organisation\\ImageController@destroy')->name('organisations.logo.destroy');
 });
