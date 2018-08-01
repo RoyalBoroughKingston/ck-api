@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\Organisation\OrganisationCreated;
 use App\Events\Organisation\OrganisationRead;
 use App\Events\Organisation\OrganisationsListed;
+use App\Events\Organisation\OrganisationUpdated;
 use App\Http\Requests\Organisation\IndexRequest;
 use App\Http\Requests\Organisation\ShowRequest;
 use App\Http\Requests\Organisation\StoreRequest;
+use App\Http\Requests\Organisation\UpdateRequest;
 use App\Http\Resources\OrganisationResource;
+use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Organisation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -81,13 +84,28 @@ class OrganisationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Organisation  $organisation
+     * @param \App\Http\Requests\Organisation\UpdateRequest $request
+     * @param  \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Organisation $organisation)
+    public function update(UpdateRequest $request, Organisation $organisation)
     {
-        //
+        return DB::transaction(function () use ($request, $organisation) {
+            $organisation->updateRequests()->create([
+                'user_id' => $request->user()->id,
+                'data' => [
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'url' => $request->url,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                ]
+            ]);
+
+            event(new OrganisationUpdated($request, $organisation));
+
+            return new UpdateRequestReceived($request->all());
+        });
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Collection;
 use App\Models\Location;
+use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Observers\CollectionObserver;
@@ -27,6 +28,7 @@ class ModelServiceProvider extends ServiceProvider
             'locations' => Location::class,
             'services' => Service::class,
             'service-locations' => ServiceLocation::class,
+            'organisations' => Organisation::class,
         ]);
     }
 
