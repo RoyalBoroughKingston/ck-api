@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Location;
+use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\UpdateRequest;
 use App\Models\User;
@@ -218,5 +219,89 @@ class LocationsTest extends TestCase
             ->firstOrFail()
             ->data;
         $this->assertEquals($data, $payload);
+    }
+
+    /*
+     * Delete a specific location.
+     */
+
+    public function test_guest_cannot_delete_one()
+    {
+        $location = factory(Location::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_delete_one()
+    {
+        /**
+         * @var \App\Models\Organisation $organisation
+         * @var \App\Models\User $user
+         */
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_delete_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Location())->getTable(), ['id' => $location->id]);
     }
 }

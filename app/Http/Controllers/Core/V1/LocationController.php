@@ -3,15 +3,20 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\Location\LocationCreated;
+use App\Events\Location\LocationDeleted;
 use App\Events\Location\LocationRead;
 use App\Events\Location\LocationsListed;
+use App\Events\Location\LocationUpdated;
+use App\Http\Requests\Location\DestroyRequest;
 use App\Http\Requests\Location\IndexRequest;
 use App\Http\Requests\Location\ShowRequest;
 use App\Http\Requests\Location\StoreRequest;
 use App\Http\Requests\Location\UpdateRequest;
 use App\Http\Resources\LocationResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Location;
+use App\Models\ServiceLocation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -111,6 +116,8 @@ class LocationController extends Controller
                 ]
             ]);
 
+            event(new LocationUpdated($request, $location));
+
             return new UpdateRequestReceived($request->all());
         });
     }
@@ -118,11 +125,24 @@ class LocationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Location  $location
+     * @param \App\Http\Requests\Location\DestroyRequest $request
+     * @param  \App\Models\Location $location
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Location $location)
+    public function destroy(DestroyRequest $request, Location $location)
     {
-        //
+        return DB::transaction(function () use ($request, $location) {
+            event(new LocationDeleted($request, $location));
+            
+            $location->serviceLocations->each(function (ServiceLocation $serviceLocation) {
+                $serviceLocation->regularOpeningHours()->delete();
+                $serviceLocation->holidayOpeningHours()->delete();
+            });
+            $location->serviceLocations()->delete();
+            $location->updateRequests()->delete();
+            $location->delete();
+
+            return new ResourceDeleted('location');
+        });
     }
 }
