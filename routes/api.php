@@ -44,4 +44,10 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Notifications.
     Route::apiResource('/notifications', 'NotificationController')->only('index', 'show');
+
+    // Organisations.
+    Route::apiResource('/organisations', 'OrganisationController');
+    // Route::post('/organisations/{persona}/image', 'Organisation\\ImageController@store')->name('organisations.image.store');
+    // Route::get('/organisations/{persona}/image', 'Organisation\\ImageController@show')->name('organisations.image.show');
+    // Route::delete('/organisations/{persona}/image', 'Organisation\\ImageController@destroy')->name('organisations.image.destroy');
 });

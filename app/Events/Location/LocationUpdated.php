@@ -20,6 +20,6 @@ class LocationUpdated extends EndpointHit
         parent::__construct($request);
 
         $this->action = Audit::ACTION_UPDATE;
-        $this->description = "Updated location [{$location->id}]";
+        $this->description = "Update request created for location [{$location->id}]";
     }
 }
