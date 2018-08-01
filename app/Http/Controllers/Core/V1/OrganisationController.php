@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\Organisation\OrganisationCreated;
+use App\Events\Organisation\OrganisationRead;
 use App\Events\Organisation\OrganisationsListed;
 use App\Http\Requests\Organisation\IndexRequest;
+use App\Http\Requests\Organisation\ShowRequest;
 use App\Http\Requests\Organisation\StoreRequest;
 use App\Http\Resources\OrganisationResource;
 use App\Models\Organisation;
@@ -65,12 +67,15 @@ class OrganisationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Organisation  $organisation
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Organisation\ShowRequest $request
+     * @param  \App\Models\Organisation $organisation
+     * @return \App\Http\Resources\OrganisationResource
      */
-    public function show(Organisation $organisation)
+    public function show(ShowRequest $request, Organisation $organisation)
     {
-        //
+        event(new OrganisationRead($request, $organisation));
+
+        return new OrganisationResource($organisation);
     }
 
     /**

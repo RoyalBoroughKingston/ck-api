@@ -121,4 +121,29 @@ class OrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
     }
+
+    /*
+     * Get a specific organisation.
+     */
+
+    public function test_guest_can_view_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $response = $this->json('GET', "/core/v1/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $organisation->id,
+                'name' => $organisation->name,
+                'description' => $organisation->description,
+                'url' => $organisation->url,
+                'email' => $organisation->email,
+                'phone' => $organisation->phone,
+                'created_at' => $organisation->created_at->format(Carbon::ISO8601),
+                'updated_at' => $organisation->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
 }
