@@ -1160,8 +1160,10 @@ class CollectionPersonasTest extends TestCase
         $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
+        $content = $this->get("/core/v1/collections/personas/{$persona->id}/image")->content();
 
         $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertEquals($image, $content);
     }
 
     /*
