@@ -171,7 +171,7 @@ class User extends Authenticatable
      */
     public function isGlobalAdmin(): bool
     {
-        return $this->hasRole(Role::organisationAdmin());
+        return $this->hasRole(Role::globalAdmin());
     }
 
     /**
@@ -230,7 +230,7 @@ class User extends Authenticatable
             $this->makeOrganisationAdmin($organisation);
         }
 
-        $this->assignRole(Role::organisationAdmin());
+        $this->assignRole(Role::globalAdmin());
 
         return $this;
     }

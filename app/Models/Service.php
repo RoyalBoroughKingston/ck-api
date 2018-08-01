@@ -11,6 +11,7 @@ class Service extends Model
     use ServiceMutators;
     use ServiceRelationships;
     use ServiceScopes;
+    use UpdateRequests;
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';

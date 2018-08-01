@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Location;
 use App\Models\Service;
+use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -178,5 +179,44 @@ class LocationsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/locations/{$location->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_request_to_update_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'address_line_1' => '30-34 Aire St',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Leeds',
+            'county' => 'West Yorkshire',
+            'postcode' => 'LS1 4HT',
+            'country' => 'England',
+            'accessibility_info' => null,
+        ];
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'locations',
+            'updateable_id' => $location->id,
+        ]);
+        $data = UpdateRequest::where('updateable_type', 'locations')
+            ->where('updateable_id', $location->id)
+            ->firstOrFail()
+            ->data;
+        $this->assertEquals($data, $payload);
     }
 }

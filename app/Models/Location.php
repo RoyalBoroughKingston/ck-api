@@ -12,6 +12,7 @@ class Location extends Model
     use LocationMutators;
     use LocationRelationships;
     use LocationScopes;
+    use UpdateRequests;
 
     /**
      * The attributes that should be cast to native types.

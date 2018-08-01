@@ -11,4 +11,5 @@ class ServiceLocation extends Model
     use ServiceLocationMutators;
     use ServiceLocationRelationships;
     use ServiceLocationScopes;
+    use UpdateRequests;
 }
