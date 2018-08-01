@@ -120,4 +120,32 @@ class LocationsTest extends TestCase
             'accessibility_info' => null,
         ]);
     }
+
+    /*
+     * Get a specific location.
+     */
+
+    public function test_guest_can_view_one()
+    {
+        $location = factory(Location::class)->create();
+
+        $response = $this->json('GET', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $location->id,
+            'address_line_1' => $location->address_line_1,
+            'address_line_2' => $location->address_line_2,
+            'address_line_3' => $location->address_line_3,
+            'city' => $location->city,
+            'county' => $location->county,
+            'postcode' => $location->postcode,
+            'country' => $location->country,
+            'lat' => $location->lat,
+            'lon' => $location->lon,
+            'accessibility_info' => $location->accessibility_info,
+            'created_at' => $location->created_at->format(Carbon::ISO8601),
+            'updated_at' => $location->updated_at->format(Carbon::ISO8601),
+        ]);
+    }
 }

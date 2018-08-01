@@ -28,7 +28,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            // TODO
+            'address_line_1' => ['required', 'string', 'min:1', 'max:255'],
+            'address_line_2' => ['nullable', 'string', 'min:1', 'max:255'],
+            'address_line_3' => ['nullable', 'string', 'min:1', 'max:255'],
+            'city' => ['required', 'string', 'min:1', 'max:255'],
+            'county' => ['required', 'string', 'min:1', 'max:255'],
+            'postcode' => ['required', 'string', 'min:1', 'max:255'],
+            'country' => ['required', 'string', 'min:1', 'max:255'],
+            'accessibility_info' => ['nullable', 'string', 'min:1', 'max:10000'],
         ];
     }
 }

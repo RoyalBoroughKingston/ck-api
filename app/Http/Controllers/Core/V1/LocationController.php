@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Events\Location\LocationCreated;
+use App\Events\Location\LocationRead;
 use App\Events\Location\LocationsListed;
 use App\Http\Requests\Location\IndexRequest;
+use App\Http\Requests\Location\ShowRequest;
 use App\Http\Requests\Location\StoreRequest;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
@@ -62,6 +65,8 @@ class LocationController extends Controller
             // Persist the record to the database.
             $location->save();
 
+            event(new LocationCreated($request, $location));
+
             return new LocationResource($location);
         });
     }
@@ -69,12 +74,15 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Location  $location
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Location\ShowRequest $request
+     * @param  \App\Models\Location $location
+     * @return \App\Http\Resources\LocationResource
      */
-    public function show(Location $location)
+    public function show(ShowRequest $request, Location $location)
     {
-        //
+        event(new LocationRead($request, $location));
+
+        return new LocationResource($location);
     }
 
     /**
