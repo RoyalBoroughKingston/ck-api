@@ -8,6 +8,7 @@ use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -291,5 +292,77 @@ class OrganisationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Organisation())->getTable(), ['id' => $organisation->id]);
+    }
+
+    /*
+     * Get a specific organisation's logo.
+     */
+
+    public function test_guest_can_view_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $response = $this->get("/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    /*
+     * Upload a specific organisation's logo.
+     */
+
+    public function test_guest_cannot_upload_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_upload_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_upload_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_can_upload_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
     }
 }

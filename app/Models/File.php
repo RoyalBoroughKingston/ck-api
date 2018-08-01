@@ -31,11 +31,27 @@ class File extends Model implements Responsable
     }
 
     /**
+     * @return string
+     */
+    public function path(): string
+    {
+        return '/files/' . $this->id;
+    }
+
+    /**
      * @param string $content
      */
     public function upload(string $content)
     {
-        Storage::cloud()->put('/files/' . $this->id, $content);
+        Storage::cloud()->put($this->path(), $content);
+    }
+
+    /**
+     * Deletes the file from disk.
+     */
+    public function deleteFromDisk()
+    {
+        Storage::cloud()->delete($this->path());
     }
 
     /**

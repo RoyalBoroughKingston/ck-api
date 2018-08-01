@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use App\Models\Collection;
+use App\Models\File;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Observers\CollectionObserver;
+use App\Observers\FileObserver;
 use App\Observers\LocationObserver;
 use App\Observers\OrganisationObserver;
 use App\Observers\ReferralObserver;
@@ -27,6 +29,7 @@ class ModelServiceProvider extends ServiceProvider
     public function boot()
     {
         Collection::observe(CollectionObserver::class);
+        File::observe(FileObserver::class);
         Location::observe(LocationObserver::class);
         Organisation::observe(OrganisationObserver::class);
         Referral::observe(ReferralObserver::class);
