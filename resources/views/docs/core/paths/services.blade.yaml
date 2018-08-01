@@ -92,7 +92,13 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/service.yaml
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The update request has been received and needs to be reviewed
+                data:
+                  $ref: /docs/core/requests/service.yaml#/update
 
   delete:
     tags: [Services]

@@ -148,4 +148,35 @@ class LocationsTest extends TestCase
             'updated_at' => $location->updated_at->format(Carbon::ISO8601),
         ]);
     }
+
+    /*
+     * Update a specific location.
+     */
+
+    public function test_guest_cannot_update_one()
+    {
+        $location = factory(Location::class)->create();
+
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_update_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
 }
