@@ -28,7 +28,7 @@ class Location extends Model
     /**
      * @return \App\Models\Location
      */
-    protected function updateCoordinate(): self
+    public function updateCoordinate(): self
     {
         /**
          * @var \App\Contracts\Geocoder $geocoder

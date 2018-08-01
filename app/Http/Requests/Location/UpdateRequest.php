@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests\Location;
 
-use App\Models\Collection;
-use App\Models\Taxonomy;
-use App\Rules\RootTaxonomyIs;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest

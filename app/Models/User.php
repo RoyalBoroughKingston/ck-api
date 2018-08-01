@@ -6,6 +6,7 @@ use App\Models\Mutators\UserMutators;
 use App\Models\Relationships\UserRelationships;
 use App\Models\Scopes\UserScopes;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use InvalidArgumentException;
@@ -74,8 +75,12 @@ class User extends Authenticatable
 
         return $this->userRoles()
             ->where('user_roles.role_id', $role->id)
-            ->where('user_roles.service_id', $service->id ?? null)
-            ->where('user_roles.organisation_id', $organisation->id ?? null)
+            ->when($service, function (Builder $query) use ($service) {
+                return $query->where('user_roles.service_id', $service->id);
+            })
+            ->when($organisation, function (Builder $query) use ($organisation) {
+                return $query->where('user_roles.organisation_id', $organisation->id);
+            })
             ->exists();
     }
 

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Core\V1;
 
 use App\Events\Location\LocationsListed;
 use App\Http\Requests\Location\IndexRequest;
+use App\Http\Requests\Location\StoreRequest;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class LocationController extends Controller
@@ -39,12 +41,29 @@ class LocationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\Location\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            // Create a location instance.
+            $location = new Location([
+                'address_line_1' => $request->address_line_1,
+                'address_line_2' => $request->address_line_2,
+                'address_line_3' => $request->address_line_3,
+                'city' => $request->city,
+                'county' => $request->county,
+                'postcode' => $request->postcode,
+                'country' => $request->country,
+                'accessibility_info' => $request->accessibility_info,
+            ]);
+
+            // Persist the record to the database.
+            $location->save();
+
+            return new LocationResource($location);
+        });
     }
 
     /**

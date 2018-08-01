@@ -15,6 +15,6 @@ class StubGeocoder implements Geocoder
     public function geocode(string $address): Coordinate
     {
         // Return coordinates for Leeds, UK.
-        return new Coordinate(53.801277, ‎-1.548567);
+        return new Coordinate(53.801277, -1.548567);
     }
 }
