@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\UpdateRequest;
@@ -364,5 +365,71 @@ class OrganisationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'organisations',
+            'updateable_id' => $organisation->id,
+        ]);
+    }
+
+    /*
+     * Delete a specific organisation's logo.
+     */
+
+    public function test_guest_cannot_delete_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_logo()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_can_delete_logo()
+    {
+        $file = File::create(['filename' => 'test/png', 'mime_type' => 'image/png']);
+        $organisation = factory(Organisation::class)->create(['logo_file_id' => $file->id]);
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'organisations',
+            'updateable_id' => $organisation->id,
+        ]);
     }
 }
