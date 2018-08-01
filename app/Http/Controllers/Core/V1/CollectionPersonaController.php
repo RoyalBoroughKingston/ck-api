@@ -150,7 +150,6 @@ class CollectionPersonaController extends Controller
         return DB::transaction(function () use ($request, $persona) {
             event(new CollectionPersonaDeleted($request, $persona));
 
-            $persona->collectionTaxonomies()->delete();
             $persona->delete();
 
             return new ResourceDeleted('collection persona');

@@ -216,4 +216,43 @@ class OrganisationsTest extends TestCase
             ->firstOrFail()->data;
         $this->assertEquals($data, $payload);
     }
+
+    /*
+     * Delete a specific organisation.
+     */
+
+    public function test_guest_cannot_delete_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $organisation = factory(Organisation::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $organisation = factory(Organisation::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
 }

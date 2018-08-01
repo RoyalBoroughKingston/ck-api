@@ -5,10 +5,15 @@ namespace App\Providers;
 use App\Models\Collection;
 use App\Models\Location;
 use App\Models\Organisation;
+use App\Models\Referral;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Observers\CollectionObserver;
 use App\Observers\LocationObserver;
+use App\Observers\OrganisationObserver;
+use App\Observers\ReferralObserver;
+use App\Observers\ServiceLocationObserver;
+use App\Observers\ServiceObserver;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +28,10 @@ class ModelServiceProvider extends ServiceProvider
     {
         Collection::observe(CollectionObserver::class);
         Location::observe(LocationObserver::class);
+        Organisation::observe(OrganisationObserver::class);
+        Referral::observe(ReferralObserver::class);
+        ServiceLocation::observe(ServiceLocationObserver::class);
+        Service::observe(ServiceObserver::class);
 
         Relation::morphMap([
             'locations' => Location::class,
