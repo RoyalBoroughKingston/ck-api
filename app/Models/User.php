@@ -135,28 +135,28 @@ class User extends Authenticatable
     }
 
     /**
-     * @param \App\Models\Service $service
+     * @param null|\App\Models\Service $service
      * @return bool
      */
-    public function isServiceWorker(Service $service): bool
+    public function isServiceWorker(Service $service = null): bool
     {
         return $this->hasRole(Role::serviceWorker(), $service);
     }
 
     /**
-     * @param \App\Models\Service $service
+     * @param null|\App\Models\Service $service
      * @return bool
      */
-    public function isServiceAdmin(Service $service): bool
+    public function isServiceAdmin(Service $service = null): bool
     {
         return $this->hasRole(Role::serviceAdmin(), $service);
     }
 
     /**
-     * @param \App\Models\Organisation $organisation
+     * @param null|\App\Models\Organisation $organisation
      * @return bool
      */
-    public function isOrganisationAdmin(Organisation $organisation): bool
+    public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
         return $this->hasRole(Role::organisationAdmin(), null, $organisation);
     }

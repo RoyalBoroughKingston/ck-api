@@ -37,6 +37,15 @@ class EndpointHitSubscriber
         \App\Events\CollectionPersona\CollectionPersonaRead::class,
         \App\Events\CollectionPersona\CollectionPersonaUpdated::class,
         \App\Events\CollectionPersona\CollectionPersonaDeleted::class,
+
+        /*
+         * Locations.
+         */
+        \App\Events\Location\LocationsListed::class,
+        \App\Events\Location\LocationCreated::class,
+        \App\Events\Location\LocationRead::class,
+        \App\Events\Location\LocationUpdated::class,
+        \App\Events\Location\LocationDeleted::class,
     ];
 
     /**

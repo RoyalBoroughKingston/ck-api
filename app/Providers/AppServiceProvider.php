@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\Geocoder;
+use App\Geocode\StubGeocoder;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->bind(Geocoder::class, StubGeocoder::class);
     }
 
     /**
