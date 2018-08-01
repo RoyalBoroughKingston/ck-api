@@ -28,6 +28,15 @@ class EndpointHitSubscriber
         \App\Events\CollectionCategory\CollectionCategoryRead::class,
         \App\Events\CollectionCategory\CollectionCategoryUpdated::class,
         \App\Events\CollectionCategory\CollectionCategoryDeleted::class,
+
+        /*
+         * Collection Personas.
+         */
+        \App\Events\CollectionPersona\CollectionPersonasListed::class,
+        \App\Events\CollectionPersona\CollectionPersonaCreated::class,
+        \App\Events\CollectionPersona\CollectionPersonaRead::class,
+        \App\Events\CollectionPersona\CollectionPersonaUpdated::class,
+        \App\Events\CollectionPersona\CollectionPersonaDeleted::class,
     ];
 
     /**

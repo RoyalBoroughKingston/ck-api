@@ -1,25 +1,25 @@
 <?php
 
-namespace App\Events\CollectionCategory;
+namespace App\Events\CollectionPersona;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 
-class CollectionCategoryCreated extends EndpointHit
+class CollectionPersonaCreated extends EndpointHit
 {
     /**
      * Create a new event instance.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Collection $category
+     * @param \App\Models\Collection $persona
      */
-    public function __construct(Request $request, Collection $category)
+    public function __construct(Request $request, Collection $persona)
     {
         parent::__construct($request);
 
         $this->action = Audit::ACTION_CREATE;
-        $this->description = "Created collection category [{$category->id}]";
+        $this->description = "Created collection persona [{$persona->id}]";
     }
 }

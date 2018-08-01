@@ -65,4 +65,15 @@ abstract class TestCase extends BaseTestCase
         });
         Collection::categories()->delete();
     }
+
+    /**
+     * Delete all the collection personas and pivot records.
+     */
+    protected function truncateCollectionPersonas()
+    {
+        Collection::personas()->get()->each(function (Collection $collection) {
+            $collection->collectionTaxonomies()->delete();
+        });
+        Collection::personas()->delete();
+    }
 }

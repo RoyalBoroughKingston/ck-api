@@ -16,10 +16,7 @@ class CollectionObserver
      */
     public function created(Collection $collection)
     {
-        /*
-         * Updates the order for all other collections of the same type.
-         */
-
+        // Updates the order for all other collections of the same type.
         Collection::query()
             ->where('type', $collection->type)
             ->where('id', '!=', $collection->id)

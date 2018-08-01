@@ -16,7 +16,6 @@ use App\Http\Resources\CollectionCategoryResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -154,7 +153,7 @@ class CollectionCategoryController extends Controller
             $category->collectionTaxonomies()->delete();
             $category->delete();
 
-            return new ResourceDeleted('category');
+            return new ResourceDeleted('collection category');
         });
     }
 }
