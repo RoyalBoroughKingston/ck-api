@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Referral;
 use App\Models\Service;
+use App\Models\StatusUpdate;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -212,6 +213,85 @@ class ReferralsTest extends TestCase
                 'created_at' => $referral->created_at->format(Carbon::ISO8601),
                 'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
             ]
+        ]);
+    }
+
+    /*
+     * Update a specific referral.
+     */
+
+    public function test_guest_cannot_update_one()
+    {
+        $referral = factory(Referral::class)->create();
+
+        $response = $this->json('PUT', "/core/v1/referrals/{$referral->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_for_another_service_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/referrals/{$referral->id}", [
+            'status' => Referral::STATUS_IN_PROGRESS,
+            'comments' => 'Assigned to me',
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_worker_can_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'referral_consented_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/referrals/{$referral->id}", [
+            'status' => Referral::STATUS_IN_PROGRESS,
+            'comments' => 'Assigned to me',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                'id' => $referral->id,
+                'service_id' => $referral->service_id,
+                'reference' => $referral->reference,
+                'status' => Referral::STATUS_IN_PROGRESS,
+                'name' => $referral->name,
+                'email' => null,
+                'phone' => null,
+                'other_contact' => null,
+                'postcode_outward_code' => null,
+                'comments' => null,
+                'referral_consented_at' => $this->now->format(Carbon::ISO8601),
+                'feedback_consented_at' => null,
+                'referee_name' => null,
+                'referee_email' => null,
+                'referee_phone' => null,
+                'referee_organisation' => null,
+                'created_at' => $referral->created_at->format(Carbon::ISO8601),
+                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+        $this->assertDatabaseHas((new StatusUpdate())->getTable(), [
+            'user_id' => $user->id,
+            'referral_id' => $referral->id,
+            'from' => Referral::STATUS_NEW,
+            'to' => Referral::STATUS_IN_PROGRESS,
+            'comments' => 'Assigned to me',
         ]);
     }
 }

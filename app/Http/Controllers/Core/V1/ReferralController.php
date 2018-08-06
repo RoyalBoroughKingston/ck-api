@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\Referral\ReferralCreated;
 use App\Events\Referral\ReferralRead;
 use App\Events\Referral\ReferralsListed;
+use App\Events\Referral\ReferralUpdated;
 use App\Http\Requests\Referral\IndexRequest;
 use App\Http\Requests\Referral\ShowRequest;
 use App\Http\Requests\Referral\StoreRequest;
@@ -93,12 +94,25 @@ class ReferralController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Referral  $referral
+     * @param \App\Http\Requests\Referral\UpdateRequest $request
+     * @param  \App\Models\Referral $referral
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Referral $referral)
     {
-        //
+        return DB::transaction(function () use ($request, $referral) {
+            $referral->statusUpdates()->create([
+                'user_id' => $request->user()->id,
+                'from' => $referral->status,
+                'to' => $request->status,
+                'comments' => $request->comments,
+            ]);
+
+            $referral->update(['status' => $request->status]);
+
+            event(new ReferralUpdated($request, $referral));
+
+            return new ReferralResource($referral);
+        });
     }
 }
