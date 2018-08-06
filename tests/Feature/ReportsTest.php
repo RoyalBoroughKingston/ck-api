@@ -339,5 +339,6 @@ class ReportsTest extends TestCase
         $response = $this->json('GET', "/core/v1/reports/{$report->id}/download");
 
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
     }
 }
