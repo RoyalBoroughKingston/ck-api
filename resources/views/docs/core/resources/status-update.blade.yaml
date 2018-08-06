@@ -3,6 +3,9 @@ properties:
   user_id:
     type: string
     format: uuid
+  referral_id:
+    type: string
+    format: uuid
   from:
     type: string
     enum:

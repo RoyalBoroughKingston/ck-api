@@ -5,9 +5,10 @@ use Faker\Generator as Faker;
 
 $factory->define(Referral::class, function (Faker $faker) {
     return [
-        'reference' => str_random(10),
+        'service_id' => function () {
+            return factory(\App\Models\Service::class)->create()->id;
+        },
         'status' => Referral::STATUS_NEW,
         'name' => $faker->name,
-        'email' => $faker->safeEmail,
     ];
 });

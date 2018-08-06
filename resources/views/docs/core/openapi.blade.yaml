@@ -55,8 +55,6 @@ paths:
     $ref: /docs/core/paths/referrals.yaml#/root
   /referrals/{referral}:
     $ref: /docs/core/paths/referrals.yaml#/nested
-  /referrals/{referral}/status-updates:
-    $ref: /docs/core/paths/referrals.yaml#/history
 
   /report-schedules:
     $ref: /docs/core/paths/report-schedules.yaml#/root
@@ -86,6 +84,9 @@ paths:
     $ref: /docs/core/paths/services.yaml#/logo
   /services/{service}/seo-image:
     $ref: /docs/core/paths/services.yaml#/seo-image
+
+  /status-updates:
+    $ref: /docs/core/paths/status-updates.yaml#/root
 
   /taxonomies/categories:
     $ref: /docs/core/paths/category-taxonomies.yaml#/root
@@ -134,6 +135,7 @@ tags:
   - name: Search
   - name: Service Locations
   - name: Services
+  - name: Status Updates
   - name: "Taxonomy: Categories"
   - name: "Taxonomy: Organisations"
   - name: Update Requests
