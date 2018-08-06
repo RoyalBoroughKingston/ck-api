@@ -38,6 +38,7 @@ class LogoController extends Controller
             $file = File::create([
                 'filename' => $organisation->id.'.png',
                 'mime_type' => 'image/png',
+                'is_private' => false,
             ]);
 
             // Create an update request for the organisation.

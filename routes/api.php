@@ -60,5 +60,5 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::apiResource('/report-schedules', 'ReportScheduleController');
 
     // Reports.
-    Route::apiResource('/reports', 'ReportController')->only('index', 'create', 'show', 'destroy');
+    Route::apiResource('/reports', 'ReportController')->only('index', 'store', 'show', 'destroy');
 });

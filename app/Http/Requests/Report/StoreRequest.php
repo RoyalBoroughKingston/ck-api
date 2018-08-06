@@ -13,6 +13,10 @@ class StoreRequest extends FormRequest
      */
     public function authorize()
     {
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
+
         return false;
     }
 
@@ -24,7 +28,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'report_type' => ['required', 'exists:report_types,name'],
         ];
     }
 }

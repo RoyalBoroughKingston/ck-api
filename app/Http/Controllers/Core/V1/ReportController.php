@@ -10,6 +10,8 @@ use App\Http\Requests\Report\StoreRequest;
 use App\Http\Resources\ReportResource;
 use App\Models\Report;
 use App\Http\Controllers\Controller;
+use App\Models\ReportType;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ReportController extends Controller
@@ -42,12 +44,19 @@ class ReportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\Report\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            $reportType = ReportType::where('name', $request->report_type)->firstOrFail();
+            $report = Report::generate($reportType);
+
+            event(EndpointHit::onCreate($request, "Created report [{$report->id}]", $report));
+
+            return new ReportResource($report);
+        });
     }
 
     /**

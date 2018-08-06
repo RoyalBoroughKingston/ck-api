@@ -16,6 +16,17 @@ class File extends Model implements Responsable
     use FileScopes;
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_private' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
      * Create an HTTP response that represents the object.
      *
      * @param  \Illuminate\Http\Request $request
@@ -23,7 +34,7 @@ class File extends Model implements Responsable
      */
     public function toResponse($request)
     {
-        $content = Storage::cloud()->get('files/' . $this->id);
+        $content = Storage::cloud()->get($this->path());
 
         return response()->make($content, Response::HTTP_OK, [
             'Content-Type' => $this->mime_type,
@@ -35,7 +46,9 @@ class File extends Model implements Responsable
      */
     public function path(): string
     {
-        return '/files/' . $this->id;
+        $directory = $this->is_private ? 'files/private' : 'files/public';
+
+        return "/{$directory}/{$this->id}";
     }
 
     /**

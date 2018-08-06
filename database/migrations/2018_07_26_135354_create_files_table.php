@@ -17,6 +17,7 @@ class CreateFilesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('filename');
             $table->string('mime_type');
+            $table->boolean('is_private');
             $table->timestamps();
         });
     }
