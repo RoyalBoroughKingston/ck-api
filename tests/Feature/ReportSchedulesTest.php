@@ -3,9 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Organisation;
+use App\Models\Report;
+use App\Models\ReportSchedule;
+use App\Models\ReportType;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -59,6 +63,28 @@ class ReportSchedulesTest extends TestCase
         $response = $this->json('GET', '/core/v1/report-schedules');
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_Global_admin_can_list_them()
+    {
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $reportSchedule = ReportSchedule::create([
+            'report_type_id' => ReportType::commissionersReport()->id,
+            'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', '/core/v1/report-schedules');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $reportSchedule->id,
+            'report_type' => ReportType::commissionersReport()->name,
+            'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
+            'created_at' => $reportSchedule->created_at->format(Carbon::ISO8601),
+        ]);
     }
 
     /*

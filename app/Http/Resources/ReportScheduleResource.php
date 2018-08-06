@@ -17,7 +17,7 @@ class ReportScheduleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'report_type' => $this->report_type,
+            'report_type' => $this->reportType->name,
             'repeat_type' => $this->repeat_type,
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
