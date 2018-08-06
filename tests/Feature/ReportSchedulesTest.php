@@ -173,6 +173,65 @@ class ReportSchedulesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
+    public function test_service_worker_cannot_view_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_view_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_view_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_view_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                'id' => $reportSchedule->id,
+                'report_type' => $reportSchedule->reportType->name,
+                'repeat_type' => $reportSchedule->repeat_type,
+                'created_at' => $reportSchedule->created_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     /*
      * Update a specific report schedule.
      */

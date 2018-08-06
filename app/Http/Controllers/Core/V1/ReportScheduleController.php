@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\ReportSchedule\ReportScheduleCreated;
+use App\Events\ReportSchedule\ReportScheduleRead;
 use App\Events\ReportSchedule\ReportSchedulesListed;
 use App\Http\Requests\ReportSchedule\DestroyRequest;
 use App\Http\Requests\ReportSchedule\IndexRequest;
@@ -65,12 +66,15 @@ class ReportScheduleController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param \App\Http\Requests\ReportSchedule\ShowRequest $request
      * @param  \App\Models\ReportSchedule $reportSchedule
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\ReportScheduleResource
      */
     public function show(ShowRequest $request, ReportSchedule $reportSchedule)
     {
-        //
+        event(new ReportScheduleRead($request, $reportSchedule));
+
+        return new ReportScheduleResource($reportSchedule);
     }
 
     /**
