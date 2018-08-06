@@ -31,15 +31,15 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $email
+     * @param null|string $email
      */
-    public function setEmailAttribute(string $email)
+    public function setEmailAttribute(?string $email)
     {
-        $this->attributes['email'] = encrypt($email);
+        $this->attributes['email'] = $email ? encrypt($email) : null;
     }
 
     /**
-     * @param string $phone
+     * @param null|string $phone
      * @return null|string
      */
     public function getPhoneAttribute(?string $phone): ?string
@@ -48,15 +48,15 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $phone
+     * @param null|string $phone
      */
-    public function setPhoneAttribute(string $phone)
+    public function setPhoneAttribute(?string $phone)
     {
-        $this->attributes['phone'] = encrypt($phone);
+        $this->attributes['phone'] = $phone ? encrypt($phone) : null;
     }
 
     /**
-     * @param string $otherContact
+     * @param null|string $otherContact
      * @return null|string
      */
     public function getOtherContactAttribute(?string $otherContact): ?string
@@ -65,15 +65,15 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $otherContact
+     * @param null|string $otherContact
      */
-    public function setOtherContactAttribute(string $otherContact)
+    public function setOtherContactAttribute(?string $otherContact)
     {
-        $this->attributes['other_contact'] = encrypt($otherContact);
+        $this->attributes['other_contact'] = $otherContact ? encrypt($otherContact) : null;
     }
 
     /**
-     * @param string $postcodeOutwardCode
+     * @param null|string $postcodeOutwardCode
      * @return null|string
      */
     public function getPostcodeOutwardCodeAttribute(?string $postcodeOutwardCode): ?string
@@ -82,15 +82,15 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $postcodeOutwardCode
+     * @param null|string $postcodeOutwardCode
      */
-    public function setPostcodeOutwardCodeAttribute(string $postcodeOutwardCode)
+    public function setPostcodeOutwardCodeAttribute(?string $postcodeOutwardCode)
     {
-        $this->attributes['postcode_outward_code'] = encrypt($postcodeOutwardCode);
+        $this->attributes['postcode_outward_code'] = $postcodeOutwardCode ? encrypt($postcodeOutwardCode) : null;
     }
 
     /**
-     * @param string $comments
+     * @param null|string $comments
      * @return null|string
      */
     public function getCommentsAttribute(?string $comments): ?string
@@ -99,15 +99,15 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $comments
+     * @param null|string $comments
      */
-    public function setCommentsAttribute(string $comments)
+    public function setCommentsAttribute(?string $comments)
     {
-        $this->attributes['comments'] = encrypt($comments);
+        $this->attributes['comments'] = $comments ? encrypt($comments) : null;
     }
 
     /**
-     * @param string $refereeName
+     * @param null|string $refereeName
      * @return null|string
      */
     public function getRefereeNameAttribute(?string $refereeName): ?string
@@ -116,32 +116,32 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $refereeName
+     * @param null|string $refereeName
      */
-    public function setRefereeNameAttribute(string $refereeName)
+    public function setRefereeNameAttribute(?string $refereeName)
     {
-        $this->attributes['referee_name'] = encrypt($refereeName);
+        $this->attributes['referee_name'] = $refereeName ? encrypt($refereeName) : null;
     }
 
     /**
-     * @param string $refereeEmail
+     * @param null|string $refereeEmail
      * @return null|string
      */
-    public function getRefereeEmailAttribute(string $refereeEmail): ?string
+    public function getRefereeEmailAttribute(?string $refereeEmail): ?string
     {
         return $refereeEmail ? decrypt($refereeEmail) : $refereeEmail;
     }
 
     /**
-     * @param string $refereeEmail
+     * @param null|string $refereeEmail
      */
-    public function setRefereeEmailAttribute(string $refereeEmail)
+    public function setRefereeEmailAttribute(?string $refereeEmail)
     {
-        $this->attributes['referee_email'] = encrypt($refereeEmail);
+        $this->attributes['referee_email'] = $refereeEmail ? encrypt($refereeEmail) : null;
     }
 
     /**
-     * @param string $refereePhone
+     * @param null|string $refereePhone
      * @return null|string
      */
     public function getRefereePhoneAttribute(?string $refereePhone): ?string
@@ -152,8 +152,8 @@ trait ReferralMutators
     /**
      * @param string $refereePhone
      */
-    public function setRefereePhoneAttribute(string $refereePhone)
+    public function setRefereePhoneAttribute(?string $refereePhone)
     {
-        $this->attributes['referee_phone'] = encrypt($refereePhone);
+        $this->attributes['referee_phone'] = $refereePhone ? encrypt($refereePhone) : null;
     }
 }

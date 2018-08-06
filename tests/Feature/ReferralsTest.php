@@ -106,4 +106,46 @@ class ReferralsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+    
+    /*
+     * Create a referral.
+     */
+
+    public function test_guest_can_create_referral()
+    {
+        $service = factory(Service::class)->create();
+
+        $payload = [
+            'service_id' => $service->id,
+            'name' => $this->faker->name,
+            'email' => $this->faker->safeEmail,
+            'phone' => null,
+            'other_contact' => null,
+            'postcode_outward_code' => null,
+            'comments' => null,
+            'referral_consented' => true,
+            'feedback_consented' => false,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => $this->faker->phoneNumber,
+            'organisation' => $this->faker->company,
+        ];
+
+        $response = $this->json('POST', '/core/v1/referrals', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment([
+            'service_id' => $payload['service_id'],
+            'name' => $payload['name'],
+            'email' => $payload['email'],
+            'phone' => $payload['phone'],
+            'other_contact' => $payload['other_contact'],
+            'postcode_outward_code' => $payload['postcode_outward_code'],
+            'comments' => $payload['comments'],
+            'referee_name' => $payload['referee_name'],
+            'referee_email' => $payload['referee_email'],
+            'referee_phone' => $payload['referee_phone'],
+            'referee_organisation' => $payload['organisation'],
+        ]);
+    }
 }

@@ -68,6 +68,14 @@ class EndpointHitSubscriber
         \App\Events\PageFeedback\PageFeedbacksListed::class,
         \App\Events\PageFeedback\PageFeedbackCreated::class,
         \App\Events\PageFeedback\PageFeedbackRead::class,
+
+        /*
+         * Referrals.
+         */
+        \App\Events\Referral\ReferralsListed::class,
+        \App\Events\Referral\ReferralCreated::class,
+        \App\Events\Referral\ReferralRead::class,
+        \App\Events\Referral\ReferralUpdated::class,
     ];
 
     /**
