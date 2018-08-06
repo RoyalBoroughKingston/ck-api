@@ -89,4 +89,21 @@ class ReferralsTest extends TestCase
             ]
         ]);
     }
+
+    public function test_service_worker_cannot_list_without_service_id()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', '/core/v1/referrals');
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 }
