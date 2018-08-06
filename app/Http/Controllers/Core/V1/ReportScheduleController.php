@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\ReportSchedule\ReportScheduleCreated;
 use App\Events\ReportSchedule\ReportScheduleRead;
 use App\Events\ReportSchedule\ReportSchedulesListed;
+use App\Events\ReportSchedule\ReportScheduleUpdated;
 use App\Http\Requests\ReportSchedule\DestroyRequest;
 use App\Http\Requests\ReportSchedule\IndexRequest;
 use App\Http\Requests\ReportSchedule\ShowRequest;
@@ -80,13 +81,22 @@ class ReportScheduleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\ReportSchedule\UpdateRequest $request
      * @param  \App\Models\ReportSchedule $reportSchedule
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, ReportSchedule $reportSchedule)
     {
-        //
+        return DB::transaction(function () use ($request, $reportSchedule) {
+            $reportSchedule->update([
+                'report_type_id' => ReportType::where('name', $request->report_type)->firstOrFail()->id,
+                'repeat_type' => $request->repeat_type,
+            ]);
+
+            event(new ReportScheduleUpdated($request, $reportSchedule));
+
+            return new ReportScheduleResource($reportSchedule);
+        });
     }
 
     /**

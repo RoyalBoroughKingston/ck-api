@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\ReportSchedule;
 
+use App\Models\ReportSchedule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
@@ -13,6 +15,10 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
+
         return false;
     }
 
@@ -24,7 +30,8 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'report_type' => ['required', 'exists:report_types,name'],
+            'repeat_type' => ['required', Rule::in([ReportSchedule::REPEAT_TYPE_WEEKLY, ReportSchedule::REPEAT_TYPE_MONTHLY])],
         ];
     }
 }

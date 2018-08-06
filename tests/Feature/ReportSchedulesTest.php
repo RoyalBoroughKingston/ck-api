@@ -236,6 +236,79 @@ class ReportSchedulesTest extends TestCase
      * Update a specific report schedule.
      */
 
+    public function test_guest_cannot_update_one()
+    {
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        $response = $this->json('PUT', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_update_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_update_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $reportSchedule = factory(ReportSchedule::class)->create([
+            'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/report-schedules/{$reportSchedule->id}", [
+            'report_type' => $reportSchedule->reportType->name,
+            'repeat_type' => ReportSchedule::REPEAT_TYPE_MONTHLY,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                'id' => $reportSchedule->id,
+                'report_type' => $reportSchedule->reportType->name,
+                'repeat_type' => ReportSchedule::REPEAT_TYPE_MONTHLY,
+                'created_at' => $reportSchedule->created_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     /*
      * Delete a specific report schdule.
      */
