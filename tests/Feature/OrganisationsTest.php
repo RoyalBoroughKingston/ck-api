@@ -415,7 +415,11 @@ class OrganisationsTest extends TestCase
 
     public function test_organisation_admin_can_delete_logo()
     {
-        $file = File::create(['filename' => 'test/png', 'mime_type' => 'image/png']);
+        $file = File::create([
+            'filename' => 'test/png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ]);
         $organisation = factory(Organisation::class)->create(['logo_file_id' => $file->id]);
         $user = factory(User::class)->create();
         $user->makeOrganisationAdmin($organisation);

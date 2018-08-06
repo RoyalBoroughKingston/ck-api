@@ -44,6 +44,7 @@ class ImageController extends Controller
             $file = File::create([
                 'filename' => $persona->id.'.png',
                 'mime_type' => 'image/png',
+                'is_private' => false,
             ]);
 
             // Update the persona record to point to the file.
