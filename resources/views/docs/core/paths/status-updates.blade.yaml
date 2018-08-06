@@ -1,0 +1,28 @@
+# /status-updates
+root:
+  get:
+    tags: [Status Updates]
+    summary: List all of the status updates
+    description: |
+       **Permission:** `Service Worker`
+    parameters:
+      - name: filter[referral_id]
+        in: query
+        description: The ID of the referral
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/status-update.yaml

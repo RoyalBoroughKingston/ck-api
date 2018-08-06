@@ -12,7 +12,6 @@ store:
 update:
   type: object
   required:
-    - organisation_id
     - name
     - status
     - intro

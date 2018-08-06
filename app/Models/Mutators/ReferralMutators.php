@@ -23,11 +23,11 @@ trait ReferralMutators
 
     /**
      * @param string $email
-     * @return string
+     * @return null|string
      */
-    public function getEmailAttribute(string $email): string
+    public function getEmailAttribute(?string $email): ?string
     {
-        return decrypt($email);
+        return $email ? decrypt($email) : null;
     }
 
     /**
@@ -40,11 +40,11 @@ trait ReferralMutators
 
     /**
      * @param string $phone
-     * @return string
+     * @return null|string
      */
-    public function getPhoneAttribute(string $phone): string
+    public function getPhoneAttribute(?string $phone): ?string
     {
-        return decrypt($phone);
+        return $phone ? decrypt($phone) : null;
     }
 
     /**
@@ -57,11 +57,11 @@ trait ReferralMutators
 
     /**
      * @param string $otherContact
-     * @return string
+     * @return null|string
      */
-    public function getOtherContactAttribute(string $otherContact): string
+    public function getOtherContactAttribute(?string $otherContact): ?string
     {
-        return decrypt($otherContact);
+        return $otherContact ? decrypt($otherContact) : null;
     }
 
     /**
@@ -74,11 +74,11 @@ trait ReferralMutators
 
     /**
      * @param string $postcodeOutwardCode
-     * @return string
+     * @return null|string
      */
-    public function getPostcodeOutwardCodeAttribute(string $postcodeOutwardCode): string
+    public function getPostcodeOutwardCodeAttribute(?string $postcodeOutwardCode): ?string
     {
-        return decrypt($postcodeOutwardCode);
+        return $postcodeOutwardCode ? decrypt($postcodeOutwardCode) : null;
     }
 
     /**
@@ -91,11 +91,11 @@ trait ReferralMutators
 
     /**
      * @param string $comments
-     * @return string
+     * @return null|string
      */
-    public function getCommentsAttribute(string $comments): string
+    public function getCommentsAttribute(?string $comments): ?string
     {
-        return decrypt($comments);
+        return $comments ? decrypt($comments) : null;
     }
 
     /**
@@ -108,11 +108,11 @@ trait ReferralMutators
 
     /**
      * @param string $refereeName
-     * @return string
+     * @return null|string
      */
-    public function getRefereeNameAttribute(string $refereeName): string
+    public function getRefereeNameAttribute(?string $refereeName): ?string
     {
-        return decrypt($refereeName);
+        return $refereeName ? decrypt($refereeName) : null;
     }
 
     /**
@@ -125,11 +125,11 @@ trait ReferralMutators
 
     /**
      * @param string $refereeEmail
-     * @return string
+     * @return null|string
      */
-    public function getRefereeEmailAttribute(string $refereeEmail): string
+    public function getRefereeEmailAttribute(string $refereeEmail): ?string
     {
-        return decrypt($refereeEmail);
+        return $refereeEmail ? decrypt($refereeEmail) : $refereeEmail;
     }
 
     /**
@@ -142,11 +142,11 @@ trait ReferralMutators
 
     /**
      * @param string $refereePhone
-     * @return string
+     * @return null|string
      */
-    public function getRefereePhoneAttribute(string $refereePhone): string
+    public function getRefereePhoneAttribute(?string $refereePhone): ?string
     {
-        return decrypt($refereePhone);
+        return $refereePhone ? decrypt($refereePhone) : null;
     }
 
     /**

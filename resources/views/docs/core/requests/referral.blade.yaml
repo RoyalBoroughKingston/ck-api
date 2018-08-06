@@ -1,8 +1,12 @@
 store:
   type: object
   required:
+    - service_id
     - name
   properties:
+    service_id:
+      type: string
+      format: uuid
     name:
       type: string
     email:

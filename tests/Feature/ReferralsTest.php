@@ -1,0 +1,92 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Referral;
+use App\Models\Service;
+use App\Models\User;
+use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
+use Laravel\Passport\Passport;
+use Tests\TestCase;
+
+class ReferralsTest extends TestCase
+{
+    /*
+     * List all the referrals.
+     */
+
+    public function test_guest_cannot_list_them()
+    {
+        $response = $this->json('GET', '/core/v1/referrals');
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_for_another_service_cannot_list_them()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $anotherService = factory(Service::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals?filter[service_id]={$anotherService->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_worker_can_list_them()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => $this->faker->phoneNumber,
+            'organisation' => $this->faker->company,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals?filter[service_id]={$service->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $referral->id,
+                'service_id' => $referral->service_id,
+                'reference' => $referral->reference,
+                'status' => $referral->status,
+                'name' => $referral->name,
+                'email' => $referral->email,
+                'phone' => $referral->phone,
+                'other_contact' => $referral->other_contact,
+                'postcode_outward_code' => $referral->postcode_outward_code,
+                'comments' => $referral->comments,
+                'referral_consented_at' => $referral->referral_consented_at->format(Carbon::ISO8601),
+                'feedback_consented_at' => null,
+                'referee_name' => $referral->referee_name,
+                'referee_email' => $referral->referee_email,
+                'referee_phone' => $referral->referee_phone,
+                'referee_organisation' => $referral->organisation,
+                'created_at' => $referral->created_at->format(Carbon::ISO8601),
+                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+}

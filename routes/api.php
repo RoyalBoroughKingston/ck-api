@@ -52,4 +52,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Page Feedbacks.
     Route::apiResource('/page-feedbacks', 'PageFeedbackController')->only('index', 'store', 'show');
+
+    // Referrals.
+    Route::apiResource('/referrals', 'ReferralController')->only('index', 'store', 'show', 'update');
 });
