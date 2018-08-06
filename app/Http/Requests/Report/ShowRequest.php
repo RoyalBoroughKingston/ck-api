@@ -13,6 +13,10 @@ class ShowRequest extends FormRequest
      */
     public function authorize()
     {
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
+
         return false;
     }
 

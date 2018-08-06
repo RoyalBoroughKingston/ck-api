@@ -146,6 +146,70 @@ class ReportsTest extends TestCase
      * Get a specific report.
      */
 
+    public function test_guest_cannot_view_one()
+    {
+        $report = factory(Report::class)->create();
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_view_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_view_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_view_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_view_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $report->id,
+            'report_type' => $report->reportType->name,
+        ]);
+    }
+
     /*
      * Delete a specific report.
      */
