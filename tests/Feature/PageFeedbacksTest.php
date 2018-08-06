@@ -104,4 +104,21 @@ class PageFeedbacksTest extends TestCase
             ]
         ]);
     }
+
+    /*
+     * Create a page feedback.
+     */
+
+    public function test_guest_can_create_one()
+    {
+        $payload = [
+            'url' => url('test-page'),
+            'feedback' => 'This page does not work',
+        ];
+
+        $response = $this->json('POST', '/core/v1/page-feedbacks', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($payload);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Events\PageFeedback\PageFeedbackCreated;
 use App\Events\PageFeedback\PageFeedbacksListed;
 use App\Http\Requests\PageFeedback\IndexRequest;
 use App\Http\Requests\PageFeedback\ShowRequest;
@@ -9,6 +10,7 @@ use App\Http\Requests\PageFeedback\StoreRequest;
 use App\Http\Resources\PageFeedbackResource;
 use App\Models\PageFeedback;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PageFeedbackController extends Controller
@@ -40,18 +42,27 @@ class PageFeedbackController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\PageFeedback\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            $pageFeedback = PageFeedback::create([
+                'url' => $request->url,
+                'feedback' => $request->feedback,
+            ]);
+
+            event(new PageFeedbackCreated($request, $pageFeedback));
+
+            return new PageFeedbackResource($pageFeedback);
+        });
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\PageFeedback  $pageFeedback
+     * @param  \App\Models\PageFeedback $pageFeedback
      * @return \Illuminate\Http\Response
      */
     public function show(ShowRequest $request, PageFeedback $pageFeedback)
