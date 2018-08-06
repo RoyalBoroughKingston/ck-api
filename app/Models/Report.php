@@ -6,7 +6,6 @@ use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
 use Exception;
-use Illuminate\Support\Facades\Storage;
 
 class Report extends Model
 {
@@ -26,8 +25,8 @@ class Report extends Model
     {
         // Create the file record.
         $file = File::create([
-            'filename' => 'temp.txt',
-            'mime_type' => 'text/plain',
+            'filename' => 'temp.csv',
+            'mime_type' => 'text/csv',
             'is_private' => true,
         ]);
 

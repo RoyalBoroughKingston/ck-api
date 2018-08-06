@@ -38,6 +38,7 @@ class File extends Model implements Responsable
 
         return response()->make($content, Response::HTTP_OK, [
             'Content-Type' => $this->mime_type,
+            'Content-Disposition' => sprintf('inline; filename="%s"', $this->filename),
         ]);
     }
 

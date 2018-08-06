@@ -70,7 +70,7 @@ class LogoController extends Controller
     {
         event(EndpointHit::onRead($request, "Viewed logo for organisation [{$organisation->id}]", $organisation));
 
-        $image = File::find($organisation->logo_file_id);
+        $image = $organisation->logoFile;
 
         return $image ?? response()->make(
             Storage::disk('local')->get('/placeholders/image.png'),

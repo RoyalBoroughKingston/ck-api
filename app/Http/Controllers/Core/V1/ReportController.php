@@ -8,6 +8,7 @@ use App\Http\Requests\Report\IndexRequest;
 use App\Http\Requests\Report\ShowRequest;
 use App\Http\Requests\Report\StoreRequest;
 use App\Http\Resources\ReportResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Models\Report;
 use App\Http\Controllers\Controller;
 use App\Models\ReportType;
@@ -62,22 +63,32 @@ class ReportController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Report  $report
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Report\ShowRequest $request
+     * @param  \App\Models\Report $report
+     * @return \App\Http\Resources\ReportResource
      */
     public function show(ShowRequest $request, Report $report)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed report [{$report->id}]", $report));
+
+        return new ReportResource($report);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Report  $report
+     * @param \App\Http\Requests\Report\DestroyRequest $request
+     * @param  \App\Models\Report $report
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Report $report)
     {
-        //
+        return DB::transaction(function () use ($request, $report) {
+            event(EndpointHit::onDelete($request, "Deleted report [{$report->id}]", $report));
+
+            $report->delete();
+
+            return new ResourceDeleted('report');
+        });
     }
 }
