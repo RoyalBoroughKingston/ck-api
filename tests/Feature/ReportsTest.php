@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Report;
 use App\Models\ReportType;
@@ -213,6 +214,68 @@ class ReportsTest extends TestCase
     /*
      * Delete a specific report.
      */
+
+    public function test_guest_cannot_delete_one()
+    {
+        $report = factory(Report::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_delete_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_delete_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/reports/{$report->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Report())->getTable(), ['id' => $report->id]);
+        $this->assertDatabaseMissing((new File())->getTable(), ['id' => $report->file_id]);
+    }
 
     /*
      * Download a specific report.
