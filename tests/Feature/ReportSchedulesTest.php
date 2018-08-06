@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Organisation;
-use App\Models\Report;
 use App\Models\ReportSchedule;
 use App\Models\ReportType;
 use App\Models\Service;
@@ -310,6 +309,67 @@ class ReportSchedulesTest extends TestCase
     }
 
     /*
-     * Delete a specific report schdule.
+     * Delete a specific report schedule.
      */
+
+    public function test_guest_cannot_delete_one()
+    {
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_delete_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_delete_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new ReportSchedule())->getTable(), ['id' => $reportSchedule->id]);
+    }
 }
