@@ -55,4 +55,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Referrals.
     Route::apiResource('/referrals', 'ReferralController')->only('index', 'store', 'show', 'update');
+
+    // Report Schedules.
+    Route::apiResource('/report-schedules', 'ReportScheduleController');
 });

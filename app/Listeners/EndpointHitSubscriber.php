@@ -76,6 +76,15 @@ class EndpointHitSubscriber
         \App\Events\Referral\ReferralCreated::class,
         \App\Events\Referral\ReferralRead::class,
         \App\Events\Referral\ReferralUpdated::class,
+
+        /*
+         * Report Schedules.
+         */
+        \App\Events\ReportSchedule\ReportSchedulesListed::class,
+        \App\Events\ReportSchedule\ReportScheduleCreated::class,
+        \App\Events\ReportSchedule\ReportScheduleRead::class,
+        \App\Events\ReportSchedule\ReportScheduleUpdated::class,
+        \App\Events\ReportSchedule\ReportScheduleDeleted::class,
     ];
 
     /**
