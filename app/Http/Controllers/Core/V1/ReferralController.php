@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\Referral\ReferralCreated;
+use App\Events\Referral\ReferralRead;
 use App\Events\Referral\ReferralsListed;
 use App\Http\Requests\Referral\IndexRequest;
 use App\Http\Requests\Referral\ShowRequest;
@@ -78,12 +79,15 @@ class ReferralController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Referral  $referral
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Referral\ShowRequest $request
+     * @param  \App\Models\Referral $referral
+     * @return \App\Http\Resources\ReferralResource
      */
     public function show(ShowRequest $request, Referral $referral)
     {
-        //
+        event(new ReferralRead($request, $referral));
+
+        return new ReferralResource($referral);
     }
 
     /**

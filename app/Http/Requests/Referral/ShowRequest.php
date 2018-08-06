@@ -13,6 +13,12 @@ class ShowRequest extends FormRequest
      */
     public function authorize()
     {
+        $referral = $this->route('referral');
+
+        if ($this->user()->isServiceWorker($referral->service)) {
+            return true;
+        }
+
         return false;
     }
 
