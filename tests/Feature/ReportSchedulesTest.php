@@ -164,6 +164,15 @@ class ReportSchedulesTest extends TestCase
      * Get a specific report schedule.
      */
 
+    public function test_guest_cannot_view_one()
+    {
+        $reportSchedule = factory(ReportSchedule::class)->create();
+
+        $response = $this->json('GET', "/core/v1/report-schedules/{$reportSchedule->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
     /*
      * Update a specific report schedule.
      */
