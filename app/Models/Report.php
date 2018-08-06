@@ -6,7 +6,6 @@ use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
 use Exception;
-use Illuminate\Support\Facades\Storage;
 
 class Report extends Model
 {

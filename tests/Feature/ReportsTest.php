@@ -280,4 +280,64 @@ class ReportsTest extends TestCase
     /*
      * Download a specific report.
      */
+
+    public function test_guest_cannot_download_file()
+    {
+        $report = factory(Report::class)->create();
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}/download");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_download_file()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}/download");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_download_file()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}/download");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_download_file()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}/download");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_download_file()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $report = Report::generate(ReportType::commissionersReport());
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/reports/{$report->id}/download");
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
 }
