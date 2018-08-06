@@ -87,7 +87,7 @@ nested:
 
   delete:
     tags: [Report Schedules]
-    summary: Delete a specific report schdule
+    summary: Delete a specific report schedule
     description: |
        **Permission:** `Global Admin`
     parameters:

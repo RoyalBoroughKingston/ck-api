@@ -11,4 +11,12 @@ class ReportType extends Model
     use ReportTypeMutators;
     use ReportTypeRelationships;
     use ReportTypeScopes;
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function commissionersReport(): self
+    {
+        return static::where('name', 'Commissioners Report')->firstOrFail();
+    }
 }
