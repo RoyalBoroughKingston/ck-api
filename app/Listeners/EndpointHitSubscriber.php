@@ -61,6 +61,13 @@ class EndpointHitSubscriber
         \App\Events\Organisation\Image\ImageCreated::class,
         \App\Events\Organisation\Image\ImageRead::class,
         \App\Events\Organisation\Image\ImageDeleted::class,
+
+        /*
+         * Page Feedbacks.
+         */
+        \App\Events\PageFeedback\PageFeedbacksListed::class,
+        \App\Events\PageFeedback\PageFeedbackCreated::class,
+        \App\Events\PageFeedback\PageFeedbackRead::class,
     ];
 
     /**
