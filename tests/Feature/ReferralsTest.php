@@ -283,7 +283,6 @@ class ReferralsTest extends TestCase
                 'referee_phone' => null,
                 'referee_organisation' => null,
                 'created_at' => $referral->created_at->format(Carbon::ISO8601),
-                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
             ]
         ]);
         $this->assertDatabaseHas((new StatusUpdate())->getTable(), [
