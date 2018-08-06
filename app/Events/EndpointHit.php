@@ -2,12 +2,15 @@
 
 namespace App\Events;
 
+use App\Models\Audit;
+use App\Models\Model;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Support\Carbon;
 
-abstract class EndpointHit
+class EndpointHit
 {
     use Dispatchable;
     use SerializesModels;
@@ -38,16 +41,77 @@ abstract class EndpointHit
     protected $userAgent;
 
     /**
+     * @var \Illuminate\Support\Carbon
+     */
+    protected $createdAt;
+
+    /**
+     * @var \App\Models\Model|null
+     */
+    protected $model;
+
+    /**
      * Create a new event instance.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $action
+     * @param string $description
+     * @param \App\Models\Model|null $model
      */
-    public function __construct(Request $request)
+    protected function __construct(Request $request, string $action, string $description, Model $model = null)
     {
         $user = $request->user();
         $this->user = $user;
+        $this->action = $action;
+        $this->description = $description;
         $this->ipAddress = $request->ip();
         $this->userAgent = $request->userAgent();
+        $this->createdAt = now();
+        $this->model = $model;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \App\Models\Model|null $model
+     * @return \App\Events\EndpointHit
+     */
+    public static function onCreate(Request $request, string $message, Model $model = null): self
+    {
+        return new static($request, Audit::ACTION_CREATE, $message, $model);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \App\Models\Model|null $model
+     * @return \App\Events\EndpointHit
+     */
+    public static function onRead(Request $request, string $message, Model $model = null): self
+    {
+        return new static($request, Audit::ACTION_READ, $message, $model);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \App\Models\Model|null $model
+     * @return \App\Events\EndpointHit
+     */
+    public static function onUpdate(Request $request, string $message, Model $model = null): self
+    {
+        return new static($request, Audit::ACTION_UPDATE, $message, $model);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \App\Models\Model|null $model
+     * @return \App\Events\EndpointHit
+     */
+    public static function onDelete(Request $request, string $message, Model $model = null): self
+    {
+        return new static($request, Audit::ACTION_DELETE, $message, $model);
     }
 
     /**
@@ -88,5 +152,21 @@ abstract class EndpointHit
     public function getUserAgent(): string
     {
         return $this->userAgent;
+    }
+
+    /**
+     * @return \Illuminate\Support\Carbon
+     */
+    public function getCreatedAt(): Carbon
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return \App\Models\Model|null
+     */
+    public function getModel(): ?Model
+    {
+        return $this->model;
     }
 }

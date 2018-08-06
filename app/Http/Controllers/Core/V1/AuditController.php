@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\Audit\AuditRead;
-use App\Events\Audit\AuditsListed;
+use App\Events\EndpointHit;
 use App\Http\Requests\Audit\IndexRequest;
 use App\Http\Requests\Audit\ShowRequest;
 use App\Http\Resources\AuditResource;
@@ -33,7 +32,7 @@ class AuditController extends Controller
             ->allowedFilters(['user_id'])
             ->paginate();
 
-        event(new AuditsListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all audits'));
 
         return AuditResource::collection($audits);
     }
@@ -47,7 +46,7 @@ class AuditController extends Controller
      */
     public function show(ShowRequest $request, Audit $audit)
     {
-        event(new AuditRead($request, $audit));
+        event(EndpointHit::onRead($request, "Viewed audit [{$audit->id}]", $audit));
 
         return new AuditResource($audit);
     }

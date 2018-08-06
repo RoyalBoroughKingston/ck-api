@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1\Organisation;
 
-use App\Events\Organisation\Image\ImageCreated;
-use App\Events\Organisation\Image\ImageDeleted;
-use App\Events\Organisation\Image\ImageRead;
+use App\Events\EndpointHit;
 use App\Http\Requests\Organisation\Image\DestroyRequest;
 use App\Http\Requests\Organisation\Image\ShowRequest;
 use App\Http\Requests\Organisation\Image\StoreRequest;
@@ -16,10 +14,10 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class ImageController extends Controller
+class LogoController extends Controller
 {
     /**
-     * ImageController constructor.
+     * LogoController constructor.
      */
     public function __construct()
     {
@@ -53,7 +51,7 @@ class ImageController extends Controller
             // Upload the file.
             $file->uploadBase64EncodedPng($request->input('file'));
 
-            event(new ImageCreated($request, $organisation));
+            event(EndpointHit::onCreate($request, "Created logo for organisation [{$organisation->id}]", $organisation));
 
             return new UpdateRequestReceived([], Response::HTTP_CREATED);
         });
@@ -69,7 +67,7 @@ class ImageController extends Controller
      */
     public function show(ShowRequest $request, Organisation $organisation)
     {
-        event(new ImageRead($request, $organisation));
+        event(EndpointHit::onRead($request, "Viewed logo for organisation [{$organisation->id}]", $organisation));
 
         $image = File::find($organisation->logo_file_id);
 
@@ -102,7 +100,7 @@ class ImageController extends Controller
                 ]
             ]);
 
-            event(new ImageDeleted($request, $organisation));
+            event(EndpointHit::onDelete($request, "Deleted logo for organisation [{$organisation->id}]", $organisation));
 
             return new UpdateRequestReceived();
         });

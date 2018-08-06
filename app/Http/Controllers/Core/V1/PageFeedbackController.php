@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\PageFeedback\PageFeedbackCreated;
-use App\Events\PageFeedback\PageFeedbackRead;
-use App\Events\PageFeedback\PageFeedbacksListed;
+use App\Events\EndpointHit;
 use App\Http\Requests\PageFeedback\IndexRequest;
 use App\Http\Requests\PageFeedback\ShowRequest;
 use App\Http\Requests\PageFeedback\StoreRequest;
@@ -35,7 +33,7 @@ class PageFeedbackController extends Controller
         $pageFeedbacks = QueryBuilder::for(PageFeedback::class)
             ->paginate();
 
-        event(new PageFeedbacksListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all page feedbacks'));
 
         return PageFeedbackResource::collection($pageFeedbacks);
     }
@@ -54,7 +52,7 @@ class PageFeedbackController extends Controller
                 'feedback' => $request->feedback,
             ]);
 
-            event(new PageFeedbackCreated($request, $pageFeedback));
+            event(EndpointHit::onCreate($request, "Created page feedback [{$pageFeedback->id}]", $pageFeedback));
 
             return new PageFeedbackResource($pageFeedback);
         });
@@ -69,7 +67,7 @@ class PageFeedbackController extends Controller
      */
     public function show(ShowRequest $request, PageFeedback $pageFeedback)
     {
-        event(new PageFeedbackRead($request, $pageFeedback));
+        event(EndpointHit::onRead($request, "Viewed page feedback [{$pageFeedback->id}]", $pageFeedback));
 
         return new PageFeedbackResource($pageFeedback);
     }

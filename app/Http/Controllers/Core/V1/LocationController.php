@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\Location\LocationCreated;
-use App\Events\Location\LocationDeleted;
-use App\Events\Location\LocationRead;
-use App\Events\Location\LocationsListed;
-use App\Events\Location\LocationUpdated;
+use App\Events\EndpointHit;
 use App\Http\Requests\Location\DestroyRequest;
 use App\Http\Requests\Location\IndexRequest;
 use App\Http\Requests\Location\ShowRequest;
@@ -16,7 +12,6 @@ use App\Http\Resources\LocationResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Location;
-use App\Models\ServiceLocation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -39,7 +34,7 @@ class LocationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        event(new LocationsListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all locations'));
 
         $locations = QueryBuilder::for(Location::class)
             ->paginate();
@@ -71,7 +66,7 @@ class LocationController extends Controller
             // Persist the record to the database.
             $location->save();
 
-            event(new LocationCreated($request, $location));
+            event(EndpointHit::onCreate($request, "Created location [{$location->id}]", $location));
 
             return new LocationResource($location);
         });
@@ -86,7 +81,7 @@ class LocationController extends Controller
      */
     public function show(ShowRequest $request, Location $location)
     {
-        event(new LocationRead($request, $location));
+        event(EndpointHit::onRead($request, "Viewed location [{$location->id}]", $location));
 
         return new LocationResource($location);
     }
@@ -115,7 +110,7 @@ class LocationController extends Controller
                 ]
             ]);
 
-            event(new LocationUpdated($request, $location));
+            event(EndpointHit::onUpdate($request, "Updated location [{$location->id}]", $location));
 
             return new UpdateRequestReceived($request->all());
         });
@@ -131,7 +126,7 @@ class LocationController extends Controller
     public function destroy(DestroyRequest $request, Location $location)
     {
         return DB::transaction(function () use ($request, $location) {
-            event(new LocationDeleted($request, $location));
+            event(EndpointHit::onDelete($request, "Deleted location [{$location->id}]", $location));
 
             $location->delete();
 

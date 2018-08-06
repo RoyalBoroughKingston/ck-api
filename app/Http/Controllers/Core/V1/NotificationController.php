@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\Notification\NotificationRead;
-use App\Events\Notification\NotificationsListed;
+use App\Events\EndpointHit;
 use App\Http\Requests\Notification\IndexRequest;
 use App\Http\Requests\Notification\ShowRequest;
 use App\Http\Resources\NotificationResource;
@@ -33,7 +32,7 @@ class NotificationController extends Controller
             ->allowedFilters('user_id')
             ->paginate();
 
-        event(new NotificationsListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all Notifications'));
 
         return NotificationResource::collection($notifications);
     }
@@ -47,7 +46,7 @@ class NotificationController extends Controller
      */
     public function show(ShowRequest $request, Notification $notification)
     {
-        event(new NotificationRead($request, $notification));
+        event(EndpointHit::onRead($request, "Viewed Notification [{$notification->id}]", $notification));
 
         return new NotificationResource($notification);
     }

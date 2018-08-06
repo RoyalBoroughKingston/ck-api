@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1\CollectionPersona;
 
-use App\Events\CollectionPersona\Image\ImageCreated;
-use App\Events\CollectionPersona\Image\ImageDeleted;
-use App\Events\CollectionPersona\Image\ImageRead;
+use App\Events\EndpointHit;
 use App\Http\Requests\CollectionPersona\Image\DestroyRequest;
 use App\Http\Requests\CollectionPersona\Image\ShowRequest;
 use App\Http\Requests\CollectionPersona\Image\StoreRequest;
@@ -57,7 +55,7 @@ class ImageController extends Controller
             // Upload the file.
             $file->uploadBase64EncodedPng($request->input('file'));
 
-            event(new ImageCreated($request, $persona));
+            event(EndpointHit::onCreate($request, "Created image for collection persona [{$persona->id}]", $persona));
 
             return new FileUploaded("persona collection's image");
         });
@@ -73,7 +71,7 @@ class ImageController extends Controller
      */
     public function show(ShowRequest $request, Collection $persona)
     {
-        event(new ImageRead($request, $persona));
+        event(EndpointHit::onRead($request, "Viewed image for collection persona [{$persona->id}]", $persona));
 
         $image = File::find($persona->meta['image_file_id']);
 
@@ -107,7 +105,7 @@ class ImageController extends Controller
             $persona->meta = $meta;
             $persona->save();
 
-            event(new ImageDeleted($request, $persona));
+            event(EndpointHit::onDelete($request, "Deleted image for collection persona [{$persona->id}]", $persona));
 
             return new ResourceDeleted("persona collection's image");
         });

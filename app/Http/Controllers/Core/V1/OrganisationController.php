@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\Organisation\OrganisationCreated;
-use App\Events\Organisation\OrganisationDeleted;
-use App\Events\Organisation\OrganisationRead;
-use App\Events\Organisation\OrganisationsListed;
-use App\Events\Organisation\OrganisationUpdated;
+use App\Events\EndpointHit;
 use App\Http\Requests\Organisation\DestroyRequest;
 use App\Http\Requests\Organisation\IndexRequest;
 use App\Http\Requests\Organisation\ShowRequest;
@@ -41,7 +37,7 @@ class OrganisationController extends Controller
         $organisations = QueryBuilder::for(Organisation::class)
             ->paginate();
 
-        event(new OrganisationsListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all organisations'));
 
         return OrganisationResource::collection($organisations);
     }
@@ -63,7 +59,7 @@ class OrganisationController extends Controller
                 'phone' => $request->phone,
             ]);
 
-            event(new OrganisationCreated($request, $organisation));
+            event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));
 
             return new OrganisationResource($organisation);
         });
@@ -78,7 +74,7 @@ class OrganisationController extends Controller
      */
     public function show(ShowRequest $request, Organisation $organisation)
     {
-        event(new OrganisationRead($request, $organisation));
+        event(EndpointHit::onRead($request, "Viewed organisation [{$organisation->id}]", $organisation));
 
         return new OrganisationResource($organisation);
     }
@@ -104,7 +100,7 @@ class OrganisationController extends Controller
                 ]
             ]);
 
-            event(new OrganisationUpdated($request, $organisation));
+            event(EndpointHit::onUpdate($request, "Updated organisation [{$organisation->id}]", $organisation));
 
             return new UpdateRequestReceived($request->all());
         });
@@ -120,7 +116,7 @@ class OrganisationController extends Controller
     public function destroy(DestroyRequest $request, Organisation $organisation)
     {
         return DB::transaction(function () use ($request, $organisation) {
-            event(new OrganisationDeleted($request, $organisation));
+            event(EndpointHit::onDelete($request, "Deleted organisation [{$organisation->id}]", $organisation));
 
             $organisation->delete();
 

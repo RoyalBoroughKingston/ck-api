@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\Referral\ReferralCreated;
-use App\Events\Referral\ReferralRead;
-use App\Events\Referral\ReferralsListed;
-use App\Events\Referral\ReferralUpdated;
+use App\Events\EndpointHit;
 use App\Http\Requests\Referral\IndexRequest;
 use App\Http\Requests\Referral\ShowRequest;
 use App\Http\Requests\Referral\StoreRequest;
@@ -39,7 +36,7 @@ class ReferralController extends Controller
 
         $referrals = QueryBuilder::for($baseQuery)->paginate();
 
-        event(new ReferralsListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all referrals'));
 
         return ReferralResource::collection($referrals);
     }
@@ -71,7 +68,7 @@ class ReferralController extends Controller
                 'organisation' => $request->organisation,
             ]);
 
-            event(new ReferralCreated($request, $referral));
+            event(EndpointHit::onCreate($request, "Created referral [{$referral->id}]", $referral));
 
             return new ReferralResource($referral);
         });
@@ -86,7 +83,7 @@ class ReferralController extends Controller
      */
     public function show(ShowRequest $request, Referral $referral)
     {
-        event(new ReferralRead($request, $referral));
+        event(EndpointHit::onRead($request, "Viewed referral [{$referral->id}]", $referral));
 
         return new ReferralResource($referral);
     }
@@ -110,7 +107,7 @@ class ReferralController extends Controller
 
             $referral->update(['status' => $request->status]);
 
-            event(new ReferralUpdated($request, $referral));
+            event(EndpointHit::onUpdate($request, "Updated referral [{$referral->id}]", $referral));
 
             return new ReferralResource($referral);
         });

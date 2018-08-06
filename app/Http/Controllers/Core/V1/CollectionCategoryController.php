@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\CollectionCategory\CollectionCategoryCreated;
-use App\Events\CollectionCategory\CollectionCategoriesListed;
-use App\Events\CollectionCategory\CollectionCategoryDeleted;
-use App\Events\CollectionCategory\CollectionCategoryRead;
-use App\Events\CollectionCategory\CollectionCategoryUpdated;
+use App\Events\EndpointHit;
 use App\Http\Requests\CollectionCategory\DestroyRequest;
 use App\Http\Requests\CollectionCategory\IndexRequest;
 use App\Http\Requests\CollectionCategory\ShowRequest;
@@ -42,7 +38,7 @@ class CollectionCategoryController extends Controller
             ->with('taxonomies')
             ->paginate();
 
-        event(new CollectionCategoriesListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all collection categories'));
 
         return CollectionCategoryResource::collection($categories);
     }
@@ -79,7 +75,7 @@ class CollectionCategoryController extends Controller
             // Reload the newly created pivot records.
             $category->load('taxonomies');
 
-            event(new CollectionCategoryCreated($request, $category));
+            event(EndpointHit::onCreate($request, "Created collection category [{$category->id}]", $category));
 
             return new CollectionCategoryResource($category);
         });
@@ -94,7 +90,7 @@ class CollectionCategoryController extends Controller
      */
     public function show(ShowRequest $request, Collection $category)
     {
-        event(new CollectionCategoryRead($request, $category));
+        event(EndpointHit::onRead($request, "Viewed collection category [{$category->id}]", $category));
 
         return new CollectionCategoryResource($category);
     }
@@ -132,7 +128,7 @@ class CollectionCategoryController extends Controller
                 ->whereNotIn('taxonomy_id', $request->category_taxonomies)
                 ->delete();
 
-            event(new CollectionCategoryUpdated($request, $category));
+            event(EndpointHit::onUpdate($request, "Updated collection category [{$category->id}]", $category));
 
             return new CollectionCategoryResource($category);
         });
@@ -148,7 +144,7 @@ class CollectionCategoryController extends Controller
     public function destroy(DestroyRequest $request, Collection $category)
     {
         return DB::transaction(function () use ($request, $category) {
-            event(new CollectionCategoryDeleted($request, $category));
+            event(EndpointHit::onDelete($request, "Deleted collection category [{$category->id}]", $category));
 
             $category->delete();
 

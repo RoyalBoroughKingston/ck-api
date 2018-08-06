@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\ReportSchedule\ReportScheduleCreated;
-use App\Events\ReportSchedule\ReportScheduleDeleted;
-use App\Events\ReportSchedule\ReportScheduleRead;
-use App\Events\ReportSchedule\ReportSchedulesListed;
-use App\Events\ReportSchedule\ReportScheduleUpdated;
+use App\Events\EndpointHit;
 use App\Http\Requests\ReportSchedule\DestroyRequest;
 use App\Http\Requests\ReportSchedule\IndexRequest;
 use App\Http\Requests\ReportSchedule\ShowRequest;
@@ -41,7 +37,7 @@ class ReportScheduleController extends Controller
         $baseQuery = ReportSchedule::query();
         $reportSchedules = QueryBuilder::for($baseQuery)->paginate();
 
-        event(new ReportSchedulesListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all report schedules'));
 
         return ReportScheduleResource::collection($reportSchedules);
     }
@@ -60,7 +56,7 @@ class ReportScheduleController extends Controller
                 'repeat_type' => $request->repeat_type,
             ]);
 
-            event(new ReportScheduleCreated($request, $reportSchedule));
+            event(EndpointHit::onCreate($request, "Created report schedule [{$reportSchedule->id}]", $reportSchedule));
 
             return new ReportScheduleResource($reportSchedule);
         });
@@ -75,7 +71,7 @@ class ReportScheduleController extends Controller
      */
     public function show(ShowRequest $request, ReportSchedule $reportSchedule)
     {
-        event(new ReportScheduleRead($request, $reportSchedule));
+        event(EndpointHit::onRead($request, "Viewed report schedule [{$reportSchedule->id}]", $reportSchedule));
 
         return new ReportScheduleResource($reportSchedule);
     }
@@ -95,7 +91,7 @@ class ReportScheduleController extends Controller
                 'repeat_type' => $request->repeat_type,
             ]);
 
-            event(new ReportScheduleUpdated($request, $reportSchedule));
+            event(EndpointHit::onUpdate($request, "Updated report schedule [{$reportSchedule->id}]", $reportSchedule));
 
             return new ReportScheduleResource($reportSchedule);
         });
@@ -111,7 +107,7 @@ class ReportScheduleController extends Controller
     public function destroy(DestroyRequest $request, ReportSchedule $reportSchedule)
     {
         return DB::transaction(function () use ($request, $reportSchedule) {
-            event(new ReportScheduleDeleted($request, $reportSchedule));
+            event(EndpointHit::onDelete($request, "Deleted report schedule [{$reportSchedule->id}]", $reportSchedule));
 
             $reportSchedule->delete();
 

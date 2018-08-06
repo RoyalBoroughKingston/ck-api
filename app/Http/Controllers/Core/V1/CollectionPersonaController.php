@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\CollectionPersona\CollectionPersonaCreated;
-use App\Events\CollectionPersona\CollectionPersonasListed;
-use App\Events\CollectionPersona\CollectionPersonaDeleted;
-use App\Events\CollectionPersona\CollectionPersonaRead;
-use App\Events\CollectionPersona\CollectionPersonaUpdated;
+use App\Events\EndpointHit;
 use App\Http\Requests\CollectionPersona\DestroyRequest;
 use App\Http\Requests\CollectionPersona\IndexRequest;
 use App\Http\Requests\CollectionPersona\ShowRequest;
@@ -42,7 +38,7 @@ class CollectionPersonaController extends Controller
             ->with('taxonomies')
             ->paginate();
 
-        event(new CollectionPersonasListed($request));
+        event(EndpointHit::onRead($request, 'Viewed all collection personas'));
 
         return CollectionPersonaResource::collection($personas);
     }
@@ -79,7 +75,7 @@ class CollectionPersonaController extends Controller
             // Reload the newly created pivot records.
             $persona->load('taxonomies');
 
-            event(new CollectionPersonaCreated($request, $persona));
+            event(EndpointHit::onCreate($request, "Created collection persona [{$persona->id}]", $persona));
 
             return new CollectionPersonaResource($persona);
         });
@@ -94,7 +90,7 @@ class CollectionPersonaController extends Controller
      */
     public function show(ShowRequest $request, Collection $persona)
     {
-        event(new CollectionPersonaRead($request, $persona));
+        event(EndpointHit::onRead($request, "Viewed collection persona [{$persona->id}]", $persona));
 
         return new CollectionPersonaResource($persona);
     }
@@ -132,7 +128,7 @@ class CollectionPersonaController extends Controller
                 ->whereNotIn('taxonomy_id', $request->category_taxonomies)
                 ->delete();
 
-            event(new CollectionPersonaUpdated($request, $persona));
+            event(EndpointHit::onUpdate($request, "Updated collection persona [{$persona->id}]", $persona));
 
             return new CollectionPersonaResource($persona);
         });
@@ -148,7 +144,7 @@ class CollectionPersonaController extends Controller
     public function destroy(DestroyRequest $request, Collection $persona)
     {
         return DB::transaction(function () use ($request, $persona) {
-            event(new CollectionPersonaDeleted($request, $persona));
+            event(EndpointHit::onDelete($request, "Deleted collection persona [{$persona->id}]", $persona));
 
             $persona->delete();
 
