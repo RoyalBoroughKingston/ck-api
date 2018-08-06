@@ -51,5 +51,5 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::delete('/organisations/{organisation}/logo', 'Organisation\\ImageController@destroy')->name('organisations.logo.destroy');
 
     // Page Feedbacks.
-    Route::apiResource('/page-feedbacks', 'PageFeedbackController')->only('index', 'store', 'create');
+    Route::apiResource('/page-feedbacks', 'PageFeedbackController')->only('index', 'store', 'show');
 });

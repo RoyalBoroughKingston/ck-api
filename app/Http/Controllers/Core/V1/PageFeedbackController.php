@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\PageFeedback\PageFeedbackCreated;
+use App\Events\PageFeedback\PageFeedbackRead;
 use App\Events\PageFeedback\PageFeedbacksListed;
 use App\Http\Requests\PageFeedback\IndexRequest;
 use App\Http\Requests\PageFeedback\ShowRequest;
@@ -62,11 +63,14 @@ class PageFeedbackController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param \App\Http\Requests\PageFeedback\ShowRequest $request
      * @param  \App\Models\PageFeedback $pageFeedback
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\PageFeedbackResource
      */
     public function show(ShowRequest $request, PageFeedback $pageFeedback)
     {
-        //
+        event(new PageFeedbackRead($request, $pageFeedback));
+
+        return new PageFeedbackResource($pageFeedback);
     }
 }
