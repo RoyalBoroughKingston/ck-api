@@ -125,7 +125,7 @@ class ServiceLocationController extends Controller
      */
     public function update(UpdateRequest $request, ServiceLocation $serviceLocation)
     {
-        return DB::transaction(function() use ($request, $serviceLocation) {
+        return DB::transaction(function () use ($request, $serviceLocation) {
             // Initialise the data array.
             $data = [
                 'name' => $request->name,
