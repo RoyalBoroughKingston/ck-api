@@ -12,4 +12,16 @@ class ServiceLocation extends Model
     use ServiceLocationRelationships;
     use ServiceLocationScopes;
     use UpdateRequests;
+
+    /**
+     * Determine if the service location is open at this point in time.
+     *
+     * @return bool
+     */
+    public function isOpenNow(): bool
+    {
+        // TODO: Work out if the service location is currently open.
+
+        return false;
+    }
 }

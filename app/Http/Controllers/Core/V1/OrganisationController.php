@@ -89,20 +89,22 @@ class OrganisationController extends Controller
     public function update(UpdateRequest $request, Organisation $organisation)
     {
         return DB::transaction(function () use ($request, $organisation) {
+            $data = [
+                'name' => $request->name,
+                'description' => $request->description,
+                'url' => $request->url,
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ];
+
             $organisation->updateRequests()->create([
                 'user_id' => $request->user()->id,
-                'data' => [
-                    'name' => $request->name,
-                    'description' => $request->description,
-                    'url' => $request->url,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
-                ]
+                'data' => $data,
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated organisation [{$organisation->id}]", $organisation));
 
-            return new UpdateRequestReceived($request->all());
+            return new UpdateRequestReceived($data);
         });
     }
 

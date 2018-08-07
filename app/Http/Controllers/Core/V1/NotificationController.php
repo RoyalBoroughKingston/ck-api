@@ -8,6 +8,7 @@ use App\Http\Requests\Notification\ShowRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use App\Http\Controllers\Controller;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class NotificationController extends Controller
@@ -29,7 +30,7 @@ class NotificationController extends Controller
     public function index(IndexRequest $request)
     {
         $notifications = QueryBuilder::for(Notification::class)
-            ->allowedFilters('user_id')
+            ->allowedFilters(Filter::exact('user_id'))
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all Notifications'));

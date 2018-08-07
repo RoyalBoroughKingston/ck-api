@@ -26,5 +26,13 @@ class RegularOpeningHour extends Model
     const FREQUENCY_WEEKLY = 'weekly';
     const FREQUENCY_MONTHLY = 'monthly';
     const FREQUENCY_FORTNIGHTLY = 'fortnightly';
-    const FREQUENCY_NTH_WEEK_OF_MONTH = 'nth_week_of_month';
+    const FREQUENCY_NTH_OCCURRENCE_OF_MONTH = 'nth_occurrence_of_month';
+
+    const WEEKDAY_MONDAY = 1;
+    const WEEKDAY_TUESDAY = 2;
+    const WEEKDAY_WEDNESDAY = 3;
+    const WEEKDAY_THURSDAY = 4;
+    const WEEKDAY_FRIDAY = 5;
+    const WEEKDAY_SATURDAY = 6;
+    const WEEKDAY_SUNDAY = 7;
 }

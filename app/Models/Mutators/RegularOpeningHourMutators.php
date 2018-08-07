@@ -16,10 +16,12 @@ trait RegularOpeningHourMutators
     }
 
     /**
-     * @param \App\Support\Time $opensAt
+     * @param \App\Support\Time|string $opensAt
      */
-    public function setOpensAtAttribute(Time $opensAt)
+    public function setOpensAtAttribute($opensAt)
     {
+        $opensAt = $opensAt instanceof Time ? $opensAt : Time::create($opensAt);
+
         $this->attributes['opens_at'] = $opensAt->toString();
     }
 
@@ -33,10 +35,12 @@ trait RegularOpeningHourMutators
     }
 
     /**
-     * @param \App\Support\Time $closesAt
+     * @param \App\Support\Time|string $closesAt
      */
-    public function setClosesAtAttribute(Time $closesAt)
+    public function setClosesAtAttribute($closesAt)
     {
+        $closesAt = $closesAt instanceof Time ? $closesAt : Time::create($closesAt);
+
         $this->attributes['closes_at'] = $closesAt->toString();
     }
 }

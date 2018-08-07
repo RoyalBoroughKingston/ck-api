@@ -3,6 +3,7 @@ store:
   required:
     - service_id
     - location_id
+    - name
     - regular_opening_hours
     - holiday_opening_hours
   properties:
@@ -14,6 +15,7 @@ store:
       format: uuid
     name:
       type: string
+      nullable: true
     regular_opening_hours:
       type: array
       items:
@@ -29,10 +31,12 @@ store:
               - weekly
               - monthly
               - fortnightly
-              - nth_week_of_month
+              - nth_occurrence_of_month
           weekday:
             type: integer
-          week_of_month:
+          day_of_month:
+            type: integer
+          occurrence_of_month:
             type: integer
           starts_at:
             type: string
@@ -72,9 +76,13 @@ store:
 update:
   type: object
   required:
+    - name
     - regular_opening_hours
     - holiday_opening_hours
   properties:
+    name:
+      type: string
+      nullable: true
     regular_opening_hours:
       type: array
       items:
@@ -90,10 +98,12 @@ update:
               - weekly
               - monthly
               - fortnightly
-              - nth_week_of_month
+              - nth_occurrence_of_mon
           weekday:
             type: integer
-          week_of_month:
+          day_of_month:
+            type: integer
+          occurrence_of_month:
             type: integer
           starts_at:
             type: string

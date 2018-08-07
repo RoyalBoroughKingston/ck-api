@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // TODO: Implement a Google API geocoder.
         $this->app->bind(Geocoder::class, StubGeocoder::class);
     }
 

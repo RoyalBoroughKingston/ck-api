@@ -8,6 +8,7 @@ use App\Http\Requests\Audit\ShowRequest;
 use App\Http\Resources\AuditResource;
 use App\Models\Audit;
 use App\Http\Controllers\Controller;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class AuditController extends Controller
@@ -29,7 +30,7 @@ class AuditController extends Controller
     public function index(IndexRequest $request)
     {
         $audits = QueryBuilder::for(Audit::class)
-            ->allowedFilters(['user_id'])
+            ->allowedFilters(Filter::exact('user_id'))
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all audits'));

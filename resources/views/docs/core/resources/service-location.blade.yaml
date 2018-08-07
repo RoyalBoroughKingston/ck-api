@@ -13,6 +13,7 @@ properties:
     type: string
   is_open_now:
     type: boolean
+    nullable: true
   regular_opening_hours:
     type: array
     items:
