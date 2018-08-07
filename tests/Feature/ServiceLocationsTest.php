@@ -101,6 +101,26 @@ class ServiceLocationsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
+    public function test_service_admin_for_another_service_cannot_create_one()
+    {
+        $location = factory(Location::class)->create();
+        $service = factory(Service::class)->create();
+        $anotherService = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($anotherService);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/service-locations', [
+            'service_id' => $service->id,
+            'location_id' => $location->id,
+            'name' => null,
+            'regular_opening_hours' => [],
+            'holiday_opening_hours' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
     public function test_service_admin_can_create_one()
     {
         $location = factory(Location::class)->create();
