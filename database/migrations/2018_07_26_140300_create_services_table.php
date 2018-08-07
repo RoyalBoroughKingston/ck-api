@@ -31,7 +31,6 @@ class CreateServicesTable extends Migration
             $table->string('contact_name');
             $table->string('contact_phone');
             $table->string('contact_email');
-            $table->json('accreditation_logos');
             $table->boolean('show_referral_disclaimer');
             $table->enum('referral_method', ['internal', 'external', 'none']);
             $table->string('referral_button_text')->nullable();
