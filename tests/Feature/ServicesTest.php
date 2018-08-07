@@ -6,9 +6,11 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
+use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -545,6 +547,50 @@ class ServicesTest extends TestCase
     /*
      * Upload a specific service's logo.
      */
+
+    public function test_guest_cannot_upload_logo()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->json('POST', "/core/v1/services/{$service->id}/logo");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_upload_logo()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/services/{$service->id}/logo");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_upload_logo()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/services/{$service->id}/logo", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'services',
+            'updateable_id' => $service->id,
+        ]);
+    }
 
     /*
      * Delete a specific service's logo.
