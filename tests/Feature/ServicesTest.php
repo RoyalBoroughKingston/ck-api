@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Service;
+use App\Models\SocialMedia;
+use App\Models\Taxonomy;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -16,6 +18,18 @@ class ServicesTest extends TestCase
     public function test_guest_can_list_them()
     {
         $service = factory(Service::class)->create();
+        $service->usefulInfos()->create([
+            'title' => 'Did You Know?',
+            'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital/'
+        ]);
+        $service->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->first()->id,
+        ]);
 
         $response = $this->json('GET', '/core/v1/services');
 
@@ -54,9 +68,28 @@ class ServicesTest extends TestCase
             ],
             'seo_title' => $service->seo_title,
             'seo_description' => $service->seo_description,
-            'useful_infos' => [],
-            'social_medias' => [],
-            'category_taxonomies' => [],
+            'useful_infos' => [
+                [
+                    'title' => 'Did You Know?',
+                    'description' => 'This is a test description',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital/'
+                ]
+            ],
+            'category_taxonomies' => [
+                [
+                    'id' => Taxonomy::category()->children()->first()->id,
+                    'parent_id' => Taxonomy::category()->children()->first()->parent_id,
+                    'name' => Taxonomy::category()->children()->first()->name,
+                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
+                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
+                ]
+            ],
             'created_at' => $service->created_at->format(Carbon::ISO8601)
         ]);
     }
