@@ -18,6 +18,7 @@ class CreateRegularOpeningHoursTable extends Migration
             $table->foreignUuid('service_location_id', 'service_locations');
             $table->enum('frequency', ['weekly', 'monthly', 'fortnightly', 'nth_occurrence_of_month']);
             $table->unsignedTinyInteger('weekday')->nullable();
+            $table->unsignedTinyInteger('day_of_month')->nullable();
             $table->unsignedTinyInteger('occurrence_of_month')->nullable();
             $table->date('starts_at')->nullable();
             $table->time('opens_at');

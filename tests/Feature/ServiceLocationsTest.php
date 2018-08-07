@@ -4,10 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\HolidayOpeningHour;
 use App\Models\Location;
+use App\Models\Organisation;
 use App\Models\RegularOpeningHour;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 class ServiceLocationsTest extends TestCase
@@ -58,8 +61,6 @@ class ServiceLocationsTest extends TestCase
                 [
                     'frequency' => $regularOpeningHour->frequency,
                     'weekday' => $regularOpeningHour->weekday,
-                    'occurrence_of_month' => null,
-                    'starts_at' => null,
                     'opens_at' => $regularOpeningHour->opens_at->toString(),
                     'closes_at' => $regularOpeningHour->closes_at->toString(),
                 ]
@@ -80,6 +81,107 @@ class ServiceLocationsTest extends TestCase
     /*
      * Create a service location.
      */
+
+    public function test_guest_cannot_create_one()
+    {
+        $response = $this->json('POST', '/core/v1/service-locations');
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_create_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/service-locations');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_create_one()
+    {
+        $location = factory(Location::class)->create();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/service-locations', [
+            'service_id' => $service->id,
+            'location_id' => $location->id,
+            'name' => null,
+            'regular_opening_hours' => [],
+            'holiday_opening_hours' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment([
+            'service_id' => $service->id,
+            'location_id' => $location->id,
+            'name' => null,
+            'regular_opening_hours' => [],
+            'holiday_opening_hours' => [],
+        ]);
+    }
+
+    public function test_service_admin_can_create_one_with_opening_hours()
+    {
+        $location = factory(Location::class)->create();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/service-locations', [
+            'service_id' => $service->id,
+            'location_id' => $location->id,
+            'name' => null,
+            'regular_opening_hours' => [
+                [
+                    'frequency' => RegularOpeningHour::FREQUENCY_WEEKLY,
+                    'weekday' => RegularOpeningHour::WEEKDAY_FRIDAY,
+                    'opens_at' => '09:00:00',
+                    'closes_at' => '17:30:00',
+                ]
+            ],
+            'holiday_opening_hours' => [
+                [
+                    'is_closed' => true,
+                    'starts_at' => '2018-12-20',
+                    'ends_at' => '2019-01-02',
+                    'opens_at' => '00:00:00',
+                    'closes_at' => '00:00:00',
+                ]
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment([
+            'service_id' => $service->id,
+            'location_id' => $location->id,
+            'name' => null,
+            'regular_opening_hours' => [
+                [
+                    'frequency' => RegularOpeningHour::FREQUENCY_WEEKLY,
+                    'weekday' => RegularOpeningHour::WEEKDAY_FRIDAY,
+                    'opens_at' => '09:00:00',
+                    'closes_at' => '17:30:00',
+                ]
+            ],
+            'holiday_opening_hours' => [
+                [
+                    'is_closed' => true,
+                    'starts_at' => '2018-12-20',
+                    'ends_at' => '2019-01-02',
+                    'opens_at' => '00:00:00',
+                    'closes_at' => '00:00:00',
+                ]
+            ],
+        ]);
+    }
 
     /*
      * Get a specific service location.

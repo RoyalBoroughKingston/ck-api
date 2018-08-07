@@ -32,6 +32,8 @@ store:
               - nth_occurrence_of_month
           weekday:
             type: integer
+          day_of_month:
+            type: integer
           occurrence_of_month:
             type: integer
           starts_at:

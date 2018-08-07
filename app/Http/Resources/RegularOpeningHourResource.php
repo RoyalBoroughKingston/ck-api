@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\RegularOpeningHour;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RegularOpeningHourResource extends JsonResource
@@ -16,9 +17,10 @@ class RegularOpeningHourResource extends JsonResource
     {
         return [
             'frequency' => $this->frequency,
-            'weekday' => $this->weekday,
-            'occurrence_of_month' => $this->occurrence_of_month,
-            'starts_at' => optional($this->starts_at)->toDateString(),
+            'weekday' => $this->when($this->frequency === RegularOpeningHour::FREQUENCY_WEEKLY, $this->weekday),
+            'day_of_month' => $this->when($this->frequency === RegularOpeningHour::FREQUENCY_MONTHLY, $this->day_of_month),
+            'occurrence_of_month' => $this->when($this->frequency === RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH, $this->occurrence_of_month),
+            'starts_at' => $this->when($this->frequency === RegularOpeningHour::FREQUENCY_FORTNIGHTLY, optional($this->starts_at)->toDateString()),
             'opens_at' => $this->opens_at->toString(),
             'closes_at' => $this->closes_at->toString(),
         ];
