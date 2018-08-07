@@ -94,6 +94,8 @@ class ServiceLocationController extends Controller
                 ]);
             }
 
+            event(EndpointHit::onCreate($request, "Created service location [{$serviceLocation->id}]", $serviceLocation));
+
             return new ServiceLocationResource($serviceLocation);
         });
     }
@@ -101,12 +103,15 @@ class ServiceLocationController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param \App\Http\Requests\ServiceLocation\ShowRequest $request
      * @param  \App\Models\ServiceLocation $serviceLocation
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\ServiceLocationResource
      */
     public function show(ShowRequest $request, ServiceLocation $serviceLocation)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed service location [{$serviceLocation->id}]", $serviceLocation));
+
+        return new ServiceLocationResource($serviceLocation);
     }
 
     /**
