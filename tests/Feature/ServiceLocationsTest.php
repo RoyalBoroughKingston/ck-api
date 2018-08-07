@@ -329,4 +329,74 @@ class ServiceLocationsTest extends TestCase
     /*
      * Delete a specific service location.
      */
+
+    public function test_guest_cannot_delete_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($serviceLocation->service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($serviceLocation->service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_delete_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($serviceLocation->service->organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_cannot_delete_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_super_admin_can_delete_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new ServiceLocation())->getTable(), ['id' => $serviceLocation->id]);
+    }
 }

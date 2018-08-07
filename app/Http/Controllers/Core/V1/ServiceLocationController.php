@@ -9,6 +9,7 @@ use App\Http\Requests\ServiceLocation\ShowRequest;
 use App\Http\Requests\ServiceLocation\StoreRequest;
 use App\Http\Requests\ServiceLocation\UpdateRequest;
 use App\Http\Resources\ServiceLocationResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
@@ -178,11 +179,18 @@ class ServiceLocationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param \App\Http\Requests\ServiceLocation\DestroyRequest $request
      * @param  \App\Models\ServiceLocation $serviceLocation
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, ServiceLocation $serviceLocation)
     {
-        //
+        return DB::transaction(function () use ($request, $serviceLocation) {
+            event(EndpointHit::onDelete($request, "Deleted service location [{$serviceLocation->id}]", $serviceLocation));
+
+            $serviceLocation->delete();
+
+            return new ResourceDeleted('service location');
+        });
     }
 }
