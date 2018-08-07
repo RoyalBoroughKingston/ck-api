@@ -9,6 +9,7 @@ use App\Http\Requests\Service\ShowRequest;
 use App\Http\Requests\Service\StoreRequest;
 use App\Http\Requests\Service\UpdateRequest;
 use App\Http\Resources\ServiceResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
@@ -213,11 +214,18 @@ class ServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param \App\Http\Requests\Service\DestroyRequest $request
      * @param  \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DestroyRequest $service)
+    public function destroy(DestroyRequest $request, Service $service)
     {
-        //
+        return DB::transaction(function () use ($request, $service) {
+            event(EndpointHit::onDelete($request, "Deleted service [{$service->id}]", $service));
+
+            $service->delete();
+
+            return new ResourceDeleted('service');
+        });
     }
 }
