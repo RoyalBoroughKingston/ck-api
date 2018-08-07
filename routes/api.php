@@ -77,4 +77,13 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Status Updates.
     Route::apiResource('/status-updates', 'StatusUpdateController');
+
+    // Taxonomy Categories.
+    Route::apiResource('/taxonomies/categories', 'TaxonomyCategoryController')->names([
+        'index' => 'taxonomy-categories.index',
+        'store' => 'taxonomy-categories.store',
+        'show' => 'taxonomy-categories.show',
+        'update' => 'taxonomy-categories.update',
+        'destroy' => 'taxonomy-categories.destroy',
+    ]);
 });

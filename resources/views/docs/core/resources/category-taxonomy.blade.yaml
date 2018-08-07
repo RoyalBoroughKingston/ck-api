@@ -9,6 +9,9 @@ properties:
     nullable: true
   name:
     type: string
+  children:
+    type: array
+    items: []
   created_at:
     type: string
     format: date-time
