@@ -32,7 +32,7 @@ class Service extends Model
      * @var array
      */
     protected $casts = [
-        'is_fee' => 'boolean',
+        'is_free' => 'boolean',
         'show_referral_disclaimer' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

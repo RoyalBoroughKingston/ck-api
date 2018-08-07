@@ -17,10 +17,24 @@ $factory->define(Service::class, function (Faker $faker) {
         'contact_name' => $faker->name,
         'contact_phone' => $faker->phoneNumber,
         'contact_email' => $faker->safeEmail,
-        'accreditation_logos' => [],
         'show_referral_disclaimer' => false,
         'referral_method' => Service::REFERRAL_METHOD_NONE,
         'seo_title' => 'Preventing Homelessness',
         'seo_description' => 'This service prevents homelessness.',
     ];
+});
+
+
+$factory->afterCreating(Service::class, function (Service $service, Faker $faker) {
+    \App\Models\ServiceCriterion::create([
+        'service_id' => $service->id,
+        'age_group' => null,
+        'disability' => null,
+        'employment' => null,
+        'gender' => null,
+        'housing' => null,
+        'income' => null,
+        'language' => null,
+        'other' => null,
+    ]);
 });

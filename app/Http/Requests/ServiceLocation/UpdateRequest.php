@@ -3,7 +3,6 @@
 namespace App\Http\Requests\ServiceLocation;
 
 use App\Models\RegularOpeningHour;
-use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

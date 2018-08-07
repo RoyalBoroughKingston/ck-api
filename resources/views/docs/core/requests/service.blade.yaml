@@ -20,7 +20,6 @@ update:
     - contact_name
     - contact_phone
     - contact_email
-    - accreditation_logos
     - show_referral_disclaimer
     - referral_method
     - criteria
@@ -72,10 +71,6 @@ update:
       type: string
     contact_email:
       type: string
-    accreditation_logos:
-      type: array
-      items:
-        type: string
     show_referral_disclaimer:
       type: boolean
     referral_method:

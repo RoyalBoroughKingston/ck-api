@@ -26,3 +26,17 @@ if (!function_exists('array_filter_null')) {
         });
     }
 }
+
+if (!function_exists('array_pluck_multi')) {
+    /**
+     * Plucks a key from a multidimensional array.
+     *
+     * @param array $array
+     * @param string $value
+     * @return array
+     */
+    function array_pluck_multi(array $array, string $value): array
+    {
+        return collect($array)->pluck($value)->toArray();
+    }
+}

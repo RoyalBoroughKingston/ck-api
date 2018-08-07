@@ -17,4 +17,11 @@ class SocialMedia extends Model
     const TYPE_INSTAGRAM = 'instagram';
     const TYPE_YOUTUBE = 'youtube';
     const TYPE_OTHER = 'other';
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'social_medias';
 }

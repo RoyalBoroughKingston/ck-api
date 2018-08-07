@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Organisation\Image;
+namespace App\Http\Requests\Organisation\Logo;
 
-use App\Rules\Base64EncodedPng;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class DestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,7 +30,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => ['required', 'string', new Base64EncodedPng()],
+            //
         ];
     }
 }
