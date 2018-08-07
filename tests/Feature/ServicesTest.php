@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\SocialMedia;
@@ -595,6 +596,52 @@ class ServicesTest extends TestCase
     /*
      * Delete a specific service's logo.
      */
+
+    public function test_guest_cannot_delete_logo()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}/logo");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_logo()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}/logo");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_delete_logo()
+    {
+        $file = File::create([
+            'filename' => 'test/png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ]);
+        $service = factory(Service::class)->create(['logo_file_id' => $file->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}/logo");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'services',
+            'updateable_id' => $service->id,
+        ]);
+    }
 
     /*
      * Get a specific service's SEO image.
