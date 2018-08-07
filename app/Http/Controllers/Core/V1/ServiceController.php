@@ -113,6 +113,8 @@ class ServiceController extends Controller
                 $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy]);
             }
 
+            event(EndpointHit::onCreate($request, "Created service [{$service->id}]", $service));
+
             return new ServiceResource($service);
         });
     }
@@ -120,12 +122,15 @@ class ServiceController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param \App\Http\Requests\Service\ShowRequest $request
      * @param  \App\Models\Service $service
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\ServiceResource
      */
-    public function show(ShowRequest $service)
+    public function show(ShowRequest $request, Service $service)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed service [{$service->id}]", $service));
+
+        return new ServiceResource($service);
     }
 
     /**
