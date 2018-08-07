@@ -62,4 +62,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     // Reports.
     Route::apiResource('/reports', 'ReportController')->only('index', 'store', 'show', 'destroy');
     Route::get('/reports/{report}/download', 'Report\\DownloadController@show')->name('reports.download.show');
+
+    // Service Locations.
+    Route::apiResource('/service-locations', 'ServiceLocationController');
 });
