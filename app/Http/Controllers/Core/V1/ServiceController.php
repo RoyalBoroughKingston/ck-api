@@ -9,6 +9,7 @@ use App\Http\Requests\Service\ShowRequest;
 use App\Http\Requests\Service\StoreRequest;
 use App\Http\Requests\Service\UpdateRequest;
 use App\Http\Resources\ServiceResource;
+use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -136,13 +137,77 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\Service\UpdateRequest $request
      * @param  \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Service $service)
     {
-        //
+        return DB::transaction(function () use ($request, $service) {
+            // Initialise the data array.
+            $data = [
+                'name' => $request->name,
+                'status' => $request->status,
+                'intro' => $request->intro,
+                'description' => $request->description,
+                'wait_time' => $request->wait_time,
+                'is_free' => $request->is_free,
+                'fees_text' => $request->fees_text,
+                'fees_url' => $request->fees_url,
+                'testimonial' => $request->testimonial,
+                'video_embed' => $request->video_embed,
+                'url' => $request->url,
+                'contact_name' => $request->contact_name,
+                'contact_phone' => $request->contact_phone,
+                'contact_email' => $request->contact_email,
+                'show_referral_disclaimer' => $request->show_referral_disclaimer,
+                'referral_method' => $request->referral_method,
+                'referral_button_text' => $request->referral_button_text,
+                'referral_email' => $request->referral_email,
+                'referral_url' => $request->referral_url,
+                'criteria' => [
+                    'age_group' => $request->criteria['age_group'],
+                    'disability' => $request->criteria['disability'],
+                    'employment' => $request->criteria['employment'],
+                    'gender' => $request->criteria['gender'],
+                    'housing' => $request->criteria['housing'],
+                    'income' => $request->criteria['income'],
+                    'language' => $request->criteria['language'],
+                    'other' => $request->criteria['other'],
+                ],
+                'seo_title' => $request->seo_title,
+                'seo_description' => $request->seo_description,
+                'useful_infos' => [],
+                'social_medias' => [],
+                'category_taxonomies' => $request->category_taxonomies,
+            ];
+
+            // Loop through each useful info.
+            foreach ($request->useful_infos as $usefulInfo) {
+                $data['useful_infos'][] = [
+                    'title' => $usefulInfo['title'],
+                    'description' => $usefulInfo['description'],
+                    'order' => $usefulInfo['order'],
+                ];
+            }
+
+            // Loop through each social media.
+            foreach ($request->social_medias as $socialMedia) {
+                $data['social_medias'][] = [
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ];
+            }
+
+            $service->updateRequests()->create([
+                'user_id' => $request->user()->id,
+                'data' => $data,
+            ]);
+
+            event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
+
+            return new UpdateRequestReceived($data);
+        });
     }
 
     /**
