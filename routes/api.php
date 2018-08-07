@@ -74,4 +74,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::post('/services/{service}/seo-image', 'Service\\SeoImageController@store')->name('services.seo-image.store');
     Route::get('/services/{service}/seo-image', 'Service\\SeoImageController@show')->name('services.seo-image.show');
     Route::delete('/services/{service}/seo-image', 'Service\\SeoImageController@destroy')->name('services.seo-image.destroy');
+
+    // Status Updates.
+    Route::apiResource('/status-updates', 'StatusUpdateController');
 });
