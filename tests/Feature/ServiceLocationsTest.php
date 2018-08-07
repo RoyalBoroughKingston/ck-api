@@ -40,6 +40,42 @@ class ServiceLocationsTest extends TestCase
         ]);
     }
 
+    public function test_guest_can_list_them_for_service()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $anotherServiceLocation = factory(ServiceLocation::class)->create();
+
+        $response = $this->json('GET', "/core/v1/service-locations?filter[service_id]={$serviceLocation->service_id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $serviceLocation->id,
+                'service_id' => $serviceLocation->service_id,
+                'location_id' => $serviceLocation->location_id,
+                'name' => null,
+                'is_open_now' => false,
+                'regular_opening_hours' => [],
+                'holiday_opening_hours' => [],
+                'created_at' => $serviceLocation->created_at->format(Carbon::ISO8601),
+                'updated_at' => $serviceLocation->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+        $response->assertJsonMissing([
+            [
+                'id' => $anotherServiceLocation->id,
+                'service_id' => $anotherServiceLocation->service_id,
+                'location_id' => $anotherServiceLocation->location_id,
+                'name' => null,
+                'is_open_now' => false,
+                'regular_opening_hours' => [],
+                'holiday_opening_hours' => [],
+                'created_at' => $anotherServiceLocation->created_at->format(Carbon::ISO8601),
+                'updated_at' => $anotherServiceLocation->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     public function test_guest_can_list_them_with_opening_hours()
     {
         $location = factory(Location::class)->create();
