@@ -9,6 +9,7 @@ use App\Http\Requests\ServiceLocation\ShowRequest;
 use App\Http\Requests\ServiceLocation\StoreRequest;
 use App\Http\Requests\ServiceLocation\UpdateRequest;
 use App\Http\Resources\ServiceLocationResource;
+use App\Http\Responses\UpdateRequestReceived;
 use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
 use App\Http\Controllers\Controller;
@@ -117,13 +118,61 @@ class ServiceLocationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\ServiceLocation\UpdateRequest $request
      * @param  \App\Models\ServiceLocation $serviceLocation
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, ServiceLocation $serviceLocation)
     {
-        //
+        return DB::transaction(function() use ($request, $serviceLocation) {
+            // Initialise the data array.
+            $data = [
+                'name' => $request->name,
+                'regular_opening_hours' => [],
+                'holiday_opening_hours' => [],
+            ];
+
+            // Loop through each regular opening hour to normalise and then append to the array.
+            foreach ($request->regular_opening_hours as $regularOpeningHour) {
+                $data['regular_opening_hours'][] = array_filter_null([
+                    'frequency' => $regularOpeningHour['frequency'],
+                    'weekday' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_WEEKLY)
+                        ? $regularOpeningHour['weekday']
+                        : null,
+                    'day_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_MONTHLY)
+                        ? $regularOpeningHour['day_of_month']
+                        : null,
+                    'occurrence_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH)
+                        ? $regularOpeningHour['occurrence_of_month']
+                        : null,
+                    'starts_at' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_FORTNIGHTLY)
+                        ? $regularOpeningHour['starts_at']
+                        : null,
+                    'opens_at' => $regularOpeningHour['opens_at'],
+                    'closes_at' => $regularOpeningHour['closes_at'],
+                ]);
+            }
+
+            // Loop through each holiday opening hour to normalise and then append to the array.
+            foreach ($request->holiday_opening_hours as $holidayOpeningHour) {
+                $data['holiday_opening_hours'][] = [
+                    'is_closed' => $holidayOpeningHour['is_closed'],
+                    'starts_at' => $holidayOpeningHour['starts_at'],
+                    'ends_at' => $holidayOpeningHour['ends_at'],
+                    'opens_at' => $holidayOpeningHour['opens_at'],
+                    'closes_at' => $holidayOpeningHour['closes_at'],
+                ];
+            }
+
+            $serviceLocation->updateRequests()->create([
+                'user_id' => $request->user()->id,
+                'data' => $data,
+            ]);
+
+            event(EndpointHit::onUpdate($request, "Updated service location [{$serviceLocation->id}]", $serviceLocation));
+
+            return new UpdateRequestReceived($data);
+        });
     }
 
     /**

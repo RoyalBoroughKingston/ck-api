@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\HolidayOpeningHour;
 use App\Models\Location;
-use App\Models\Organisation;
 use App\Models\RegularOpeningHour;
 use App\Models\Service;
+use App\Models\ServiceLocation;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -269,6 +269,62 @@ class ServiceLocationsTest extends TestCase
     /*
      * Update a specific service location.
      */
+
+    public function test_guest_cannot_update_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+
+        $response = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_update_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($serviceLocation->service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_update_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($serviceLocation->service);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'name' => 'New Company Name',
+            'regular_opening_hours' => [
+                [
+                    'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
+                    'day_of_month' => 10,
+                    'opens_at' => '10:00:00',
+                    'closes_at' => '14:00:00',
+                ]
+            ],
+            'holiday_opening_hours' => [
+                [
+                    'is_closed' => true,
+                    'starts_at' => '2018-01-01',
+                    'ends_at' => '2018-01-01',
+                    'opens_at' => '00:00:00',
+                    'closes_at' => '00:00:00',
+                ]
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $data = $serviceLocation->updateRequests()->firstOrFail()->data;
+        $this->assertEquals($data, $payload);
+    }
 
     /*
      * Delete a specific service location.
