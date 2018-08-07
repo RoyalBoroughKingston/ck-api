@@ -532,6 +532,16 @@ class ServicesTest extends TestCase
      * Get a specific service's logo.
      */
 
+    public function test_guest_can_view_logo()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->get("/core/v1/services/{$service->id}/logo");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
+    }
+
     /*
      * Upload a specific service's logo.
      */

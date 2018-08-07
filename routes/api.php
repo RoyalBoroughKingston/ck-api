@@ -68,4 +68,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Services.
     Route::apiResource('/services', 'ServiceController');
+    Route::post('/services/{service}/logo', 'Service\\LogoController@store')->name('services.logo.store');
+    Route::get('/services/{service}/logo', 'Service\\LogoController@show')->name('services.logo.show');
+    Route::delete('/services/{service}/logo', 'Service\\LogoController@destroy')->name('services.logo.destroy');
 });
