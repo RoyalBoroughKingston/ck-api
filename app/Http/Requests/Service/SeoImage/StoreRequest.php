@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Service\Image;
+namespace App\Http\Requests\Service\SeoImage;
 
+use App\Rules\Base64EncodedPng;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ShowRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,13 @@ class ShowRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $service = $this->route('service');
+
+        if ($this->user()->isServiceAdmin($service)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -24,7 +31,7 @@ class ShowRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'file' => ['required', 'string', new Base64EncodedPng()],
         ];
     }
 }

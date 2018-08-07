@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Service\Image;
+namespace App\Http\Requests\Organisation\Logo;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DestroyRequest extends FormRequest
+class ShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,13 +13,7 @@ class DestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        $service = $this->route('service');
-
-        if ($this->user()->isServiceAdmin($service)) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**

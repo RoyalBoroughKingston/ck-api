@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Core\V1\Organisation;
 
 use App\Events\EndpointHit;
-use App\Http\Requests\Organisation\Image\DestroyRequest;
-use App\Http\Requests\Organisation\Image\ShowRequest;
-use App\Http\Requests\Organisation\Image\StoreRequest;
+use App\Http\Requests\Organisation\Logo\DestroyRequest;
+use App\Http\Requests\Organisation\Logo\ShowRequest;
+use App\Http\Requests\Organisation\Logo\StoreRequest;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Organisation;
 use App\Models\File;
@@ -27,7 +27,7 @@ class LogoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Organisation\Image\StoreRequest $request
+     * @param \App\Http\Requests\Organisation\Logo\StoreRequest $request
      * @param  \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
@@ -61,7 +61,7 @@ class LogoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Organisation\Image\ShowRequest $request
+     * @param \App\Http\Requests\Organisation\Logo\ShowRequest $request
      * @param  \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
@@ -70,9 +70,7 @@ class LogoController extends Controller
     {
         event(EndpointHit::onRead($request, "Viewed logo for organisation [{$organisation->id}]", $organisation));
 
-        $image = $organisation->logoFile;
-
-        return $image ?? response()->make(
+        return $organisation->logoFile ?? response()->make(
             Storage::disk('local')->get('/placeholders/image.png'),
             Response::HTTP_OK,
             ['Content-Type' => 'image/png']
@@ -82,7 +80,7 @@ class LogoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\Organisation\Image\DestroyRequest $request
+     * @param \App\Http\Requests\Organisation\Logo\DestroyRequest $request
      * @param  \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */

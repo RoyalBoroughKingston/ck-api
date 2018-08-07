@@ -647,11 +647,111 @@ class ServicesTest extends TestCase
      * Get a specific service's SEO image.
      */
 
+    public function test_guest_can_view_seo_image()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->get("/core/v1/services/{$service->id}/seo-image");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
+    }
+
     /*
      * Upload a specific service's SEO image.
      */
 
+    public function test_guest_cannot_upload_seo_image()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->json('POST', "/core/v1/services/{$service->id}/seo-image");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_upload_seo_image()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/services/{$service->id}/seo-image");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_upload_seo_image()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/services/{$service->id}/seo-image", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'services',
+            'updateable_id' => $service->id,
+        ]);
+    }
+
     /*
      * Delete a specific service's SEO image.
      */
+
+    public function test_guest_cannot_delete_seo_image()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}/seo-image");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_seo_image()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}/seo-image");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_delete_seo_image()
+    {
+        $file = File::create([
+            'filename' => 'test/png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ]);
+        $service = factory(Service::class)->create(['seo_image_file_id' => $file->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}/seo-image");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'services',
+            'updateable_id' => $service->id,
+        ]);
+    }
 }

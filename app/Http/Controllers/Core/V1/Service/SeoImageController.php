@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Core\V1\Service;
 
 use App\Events\EndpointHit;
-use App\Http\Requests\Service\Logo\DestroyRequest;
-use App\Http\Requests\Service\Logo\ShowRequest;
-use App\Http\Requests\Service\Logo\StoreRequest;
+use App\Http\Requests\Service\SeoImage\DestroyRequest;
+use App\Http\Requests\Service\SeoImage\ShowRequest;
+use App\Http\Requests\Service\SeoImage\StoreRequest;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Service;
 use App\Models\File;
@@ -14,10 +14,10 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class LogoController extends Controller
+class SeoImageController extends Controller
 {
     /**
-     * LogoController constructor.
+     * SeoImageController constructor.
      */
     public function __construct()
     {
@@ -27,7 +27,7 @@ class LogoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Service\Logo\StoreRequest $request
+     * @param \App\Http\Requests\Service\SeoImage\StoreRequest $request
      * @param  \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
@@ -45,14 +45,14 @@ class LogoController extends Controller
             $service->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => [
-                    'logo_file_id' => $file->id,
+                    'seo_image_file_id' => $file->id,
                 ]
             ]);
 
             // Upload the file.
             $file->uploadBase64EncodedPng($request->input('file'));
 
-            event(EndpointHit::onCreate($request, "Created logo for service [{$service->id}]", $service));
+            event(EndpointHit::onCreate($request, "Created SEO image for service [{$service->id}]", $service));
 
             return new UpdateRequestReceived([], Response::HTTP_CREATED);
         });
@@ -61,16 +61,16 @@ class LogoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Service\Logo\ShowRequest $request
+     * @param \App\Http\Requests\Service\SeoImage\ShowRequest $request
      * @param  \App\Models\Service $service
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function show(ShowRequest $request, Service $service)
     {
-        event(EndpointHit::onRead($request, "Viewed logo for service [{$service->id}]", $service));
+        event(EndpointHit::onRead($request, "Viewed SEO image for service [{$service->id}]", $service));
 
-        return $service->logoFile ?? response()->make(
+        return $service->seoImageFile ?? response()->make(
             Storage::disk('local')->get('/placeholders/image.png'),
             Response::HTTP_OK,
             ['Content-Type' => 'image/png']
@@ -80,13 +80,13 @@ class LogoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\Service\Logo\DestroyRequest $request
+     * @param \App\Http\Requests\Service\SeoImage\DestroyRequest $request
      * @param  \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Service $service)
     {
-        if ($service->logo_file_id === null) {
+        if ($service->seo_image_file_id === null) {
             abort(Response::HTTP_NOT_FOUND);
         }
 
@@ -95,11 +95,11 @@ class LogoController extends Controller
             $service->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => [
-                    'logo_file_id' => null,
+                    'seo_image_file_id' => null,
                 ]
             ]);
 
-            event(EndpointHit::onDelete($request, "Deleted logo for service [{$service->id}]", $service));
+            event(EndpointHit::onDelete($request, "Deleted SEO image for service [{$service->id}]", $service));
 
             return new UpdateRequestReceived();
         });
