@@ -95,4 +95,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         'update' => 'taxonomy-organisations.update',
         'destroy' => 'taxonomy-organisations.destroy',
     ]);
+
+    // Update Requests.
+    Route::apiResource('/update-requests', 'UpdateRequestController')->only('index', 'show', 'destroy');
 });

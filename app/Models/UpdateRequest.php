@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Mutators\UpdateRequestMutators;
 use App\Models\Relationships\UpdateRequestRelationships;
 use App\Models\Scopes\UpdateRequestScopes;
+use App\UpdateRequest\AppliesUpdateRequests;
+use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UpdateRequest extends Model
@@ -24,4 +26,33 @@ class UpdateRequest extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function validate(): bool
+    {
+        if (!$this->updateable instanceof AppliesUpdateRequests) {
+            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+        }
+
+        return $this->updateable->validateUpdateRequest($this);
+    }
+
+    /**
+     * @return \App\Models\UpdateRequest
+     * @throws \Exception
+     */
+    public function apply(): self
+    {
+        if (!$this->updateable instanceof AppliesUpdateRequests) {
+            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+        }
+
+        $this->updateable->applyUpdateRequest($this);
+        $this->update(['approved_at' => now()]);
+
+        return $this;
+    }
 }
