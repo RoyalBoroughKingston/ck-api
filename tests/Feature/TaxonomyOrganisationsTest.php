@@ -237,6 +237,170 @@ class TaxonomyOrganisationsTest extends TestCase
      * Update a specific organisation taxonomy.
      */
 
+    public function test_guest_cannot_update_one()
+    {
+        $organisation = $this->createTaxonomyOrganisation();
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $organisation = $this->createTaxonomyOrganisation();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $organisation = $this->createTaxonomyOrganisation();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_update_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $organisation = $this->createTaxonomyOrganisation();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_cannot_update_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $organisation = $this->createTaxonomyOrganisation();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_super_admin_can_update_one()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $organisation = $this->createTaxonomyOrganisation();
+        $payload = [
+            'name' => 'PHPUnit Test Organisation',
+            'order' => $organisation->order,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    public function test_order_is_updated_when_updated_to_beginning()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $organisationOne = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
+        $organisationTwo = $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
+        $organisationThree = $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisationTwo->id}", [
+            'name' => $organisationTwo->name,
+            'order' => 1,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationOne->id, 'order' => 2]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationTwo->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationThree->id, 'order' => 3]);
+    }
+
+    public function test_order_is_updated_when_updated_to_middle()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $organisationOne = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
+        $organisationTwo = $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
+        $organisationThree = $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisationOne->id}", [
+            'name' => $organisationOne->name,
+            'order' => 2,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationOne->id, 'order' => 2]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationTwo->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationThree->id, 'order' => 3]);
+    }
+
+    public function test_order_is_updated_when_updated_to_end()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $organisationOne = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
+        $organisationTwo = $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
+        $organisationThree = $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisationTwo->id}", [
+            'name' => $organisationTwo->name,
+            'order' => 3,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationOne->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationTwo->id, 'order' => 3]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisationThree->id, 'order' => 2]);
+    }
+
+    public function test_order_cannot_be_less_than_1_when_updated()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $organisation = $this->createTaxonomyOrganisation();
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}", [
+            'name' => $organisation->name,
+            'order' => 0,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_order_cannot_be_greater_than_count_plus_1_when_updated()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $organisation = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
+        $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
+        $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}", [
+            'name' => $organisation->name,
+            'order' => 4,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /*
      * Delete a specific organisation taxonomy.
      */
@@ -245,13 +409,13 @@ class TaxonomyOrganisationsTest extends TestCase
      * Helpers.
      */
 
-    protected function createTaxonomyOrganisation(): Taxonomy
+    protected function createTaxonomyOrganisation(array $data = []): Taxonomy
     {
         $count = Taxonomy::organisation()->children()->count();
 
-        return Taxonomy::organisation()->children()->create([
+        return Taxonomy::organisation()->children()->create(array_merge([
             'name' => 'PHPUnit Organisation',
             'order' => $count + 1,
-        ]);
+        ], $data));
     }
 }

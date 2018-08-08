@@ -77,13 +77,22 @@ class TaxonomyOrganisationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\TaxonomyOrganisation\UpdateRequest $request
      * @param  \App\Models\Taxonomy $organisation
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Taxonomy $organisation)
     {
-        //
+        return DB::transaction(function () use ($request, $organisation) {
+            $organisation->update([
+                'name' => $request->name,
+                'order' => $request->order,
+            ]);
+
+            event(EndpointHit::onUpdate($request, "Updated taxonomy organisation [{$organisation->id}]", $organisation));
+
+            return new TaxonomyOrganisationResource($organisation);
+        });
     }
 
     /**
