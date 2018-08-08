@@ -215,6 +215,24 @@ class TaxonomyOrganisationsTest extends TestCase
      * Get a specific organisation taxonomy.
      */
 
+    public function test_guest_can_view_one()
+    {
+        $taxonomy = $this->createTaxonomyOrganisation();
+
+        $response = $this->json('GET', "/core/v1/taxonomies/organisations/{$taxonomy->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                'id' => $taxonomy->id,
+                'name' => $taxonomy->name,
+                'order' => $taxonomy->order,
+                'created_at' => $taxonomy->created_at->format(Carbon::ISO8601),
+                'updated_at' => $taxonomy->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     /*
      * Update a specific organisation taxonomy.
      */

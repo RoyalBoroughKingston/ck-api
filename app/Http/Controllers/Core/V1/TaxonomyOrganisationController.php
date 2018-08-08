@@ -63,12 +63,15 @@ class TaxonomyOrganisationController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param \App\Http\Requests\TaxonomyOrganisation\ShowRequest $request
      * @param  \App\Models\Taxonomy $organisation
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\TaxonomyOrganisationResource
      */
     public function show(ShowRequest $request, Taxonomy $organisation)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed taxonomy organisation [{$organisation->id}]", $organisation));
+
+        return new TaxonomyOrganisationResource($organisation);
     }
 
     /**
