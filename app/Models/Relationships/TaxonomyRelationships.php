@@ -22,7 +22,7 @@ trait TaxonomyRelationships
      */
     public function children()
     {
-        return $this->hasMany(Taxonomy::class, 'parent_id');
+        return $this->hasMany(Taxonomy::class, 'parent_id')->orderBy('order');
     }
 
     /**

@@ -220,6 +220,34 @@ class TaxonomyCategoriesTest extends TestCase
      * Get a specific category taxonomy
      */
 
+    public function test_guest_can_view_one()
+    {
+        $randomTaxonomy = null;
+        Taxonomy::chunk(200, function (Collection $taxonomies) use (&$randomTaxonomy) {
+            foreach ($taxonomies as $taxonomy) {
+                if ($taxonomy->children()->count() === 0) {
+                    $randomTaxonomy = $taxonomy;
+                    return false;
+                }
+            }
+        });
+
+        $response = $this->json('GET', "/core/v1/taxonomies/categories/{$randomTaxonomy->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $randomTaxonomy->id,
+                'parent_id' => $randomTaxonomy->parent_id,
+                'name' => $randomTaxonomy->name,
+                'order' => $randomTaxonomy->order,
+                'children' => [],
+                'created_at' => $randomTaxonomy->created_at->format(Carbon::ISO8601),
+                'updated_at' => $randomTaxonomy->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     /*
      * Update a specific category taxonomy.
      */

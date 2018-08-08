@@ -32,10 +32,11 @@ class TaxonomyCategoryController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Taxonomy::topLevelCategories();
-        $categories = QueryBuilder::for($baseQuery)
-            ->with('children.children.children.children.children')
-            ->get();
+        $baseQuery = Taxonomy::query()
+            ->topLevelCategories()
+            ->orderBy('order')
+            ->with('children.children.children.children.children');
+        $categories = QueryBuilder::for($baseQuery)->get();
 
         event(EndpointHit::onRead($request, 'Viewed all taxonomy categories'));
 
@@ -66,12 +67,15 @@ class TaxonomyCategoryController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param \App\Http\Requests\TaxonomyCategory\ShowRequest $request
      * @param  \App\Models\Taxonomy $category
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\TaxonomyCategoryResource
      */
     public function show(ShowRequest $request, Taxonomy $category)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed taxonomy category [{$category->id}]", $category));
+
+        return new TaxonomyCategoryResource($category->load('children.children.children.children.children'));
     }
 
     /**
