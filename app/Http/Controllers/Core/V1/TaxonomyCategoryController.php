@@ -9,8 +9,10 @@ use App\Http\Requests\TaxonomyCategory\ShowRequest;
 use App\Http\Requests\TaxonomyCategory\StoreRequest;
 use App\Http\Requests\TaxonomyCategory\UpdateRequest;
 use App\Http\Resources\TaxonomyCategoryResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Models\Taxonomy;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class TaxonomyCategoryController extends Controller
@@ -31,10 +33,11 @@ class TaxonomyCategoryController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Taxonomy::topLevelCategories();
-        $categories = QueryBuilder::for($baseQuery)
-            ->with('children.children.children.children.children')
-            ->get();
+        $baseQuery = Taxonomy::query()
+            ->topLevelCategories()
+            ->orderBy('order')
+            ->with('children.children.children.children.children');
+        $categories = QueryBuilder::for($baseQuery)->get();
 
         event(EndpointHit::onRead($request, 'Viewed all taxonomy categories'));
 
@@ -44,45 +47,75 @@ class TaxonomyCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\TaxonomyCategory\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            $category = Taxonomy::create([
+                'parent_id' => $request->parent_id ?? Taxonomy::category()->id,
+                'name' => $request->name,
+                'order' => $request->order,
+            ]);
+
+            event(EndpointHit::onCreate($request, "Created taxonomy category [{$category->id}]", $category));
+
+            return new TaxonomyCategoryResource($category);
+        });
     }
 
     /**
      * Display the specified resource.
      *
+     * @param \App\Http\Requests\TaxonomyCategory\ShowRequest $request
      * @param  \App\Models\Taxonomy $category
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\TaxonomyCategoryResource
      */
     public function show(ShowRequest $request, Taxonomy $category)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed taxonomy category [{$category->id}]", $category));
+
+        return new TaxonomyCategoryResource($category->load('children.children.children.children.children'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\TaxonomyCategory\UpdateRequest $request
      * @param  \App\Models\Taxonomy $category
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Taxonomy $category)
     {
-        //
+        return DB::transaction(function () use ($request, $category) {
+            $category->update([
+                'parent_id' => $request->parent_id ?? Taxonomy::category()->id,
+                'name' => $request->name,
+                'order' => $request->order,
+            ]);
+
+            event(EndpointHit::onUpdate($request, "Updated taxonomy category [{$category->id}]", $category));
+
+            return new TaxonomyCategoryResource($category);
+        });
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param \App\Http\Requests\TaxonomyCategory\DestroyRequest $request
      * @param  \App\Models\Taxonomy $category
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Taxonomy $category)
     {
-        //
+        return DB::transaction(function () use ($request, $category) {
+            event(EndpointHit::onDelete($request, "Deleted taxonomy category [{$category->id}]", $category));
+
+            $category->delete();
+
+            return new ResourceDeleted('taxonomy category');
+        });
     }
 }
