@@ -7,8 +7,9 @@ use App\Models\Relationships\ServiceLocationRelationships;
 use App\Models\Scopes\ServiceLocationScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 
 class ServiceLocation extends Model implements AppliesUpdateRequests
 {
@@ -33,9 +34,9 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      * Check if the update request is valid.
      *
      * @param \App\Models\UpdateRequest $updateRequest
-     * @return bool
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateUpdateRequest(UpdateRequest $updateRequest): bool
+    public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = [
             'name' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
@@ -64,7 +65,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
             'holiday_opening_hours.*.closes_at' => ['required_with:holiday_opening_hours.*', 'date_format:H:i:s'],
         ];
 
-        return Validator::make($updateRequest->data, $rules)->fails() === false;
+        return ValidatorFacade::make($updateRequest->data, $rules);
     }
 
     /**

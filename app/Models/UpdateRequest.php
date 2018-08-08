@@ -8,6 +8,7 @@ use App\Models\Scopes\UpdateRequestScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\MessageBag;
 
 class UpdateRequest extends Model
 {
@@ -28,6 +29,19 @@ class UpdateRequest extends Model
     ];
 
     /**
+     * @return \Illuminate\Support\MessageBag
+     * @throws \Exception
+     */
+    public function getValidationErrors(): MessageBag
+    {
+        if (!$this->updateable instanceof AppliesUpdateRequests) {
+            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+        }
+
+        return $this->updateable->validateUpdateRequest($this)->errors();
+    }
+
+    /**
      * @return bool
      * @throws \Exception
      */
@@ -37,7 +51,7 @@ class UpdateRequest extends Model
             throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
         }
 
-        return $this->updateable->validateUpdateRequest($this);
+        return $this->updateable->validateUpdateRequest($this)->fails() === false;
     }
 
     /**

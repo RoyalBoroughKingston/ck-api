@@ -9,7 +9,8 @@ use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\Rule;
 
 class Service extends Model implements AppliesUpdateRequests
@@ -48,12 +49,11 @@ class Service extends Model implements AppliesUpdateRequests
      * Check if the update request is valid.
      *
      * @param \App\Models\UpdateRequest $updateRequest
-     * @return bool
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateUpdateRequest(UpdateRequest $updateRequest): bool
+    public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = [
-            'organisation_id' => ['required', 'exists:organisations,id'],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'status' => ['required', Rule::in([
                 Service::STATUS_ACTIVE,
@@ -102,7 +102,7 @@ class Service extends Model implements AppliesUpdateRequests
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
             'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:10000'],
-            'useful_infos.*.order' => ['required_with:useful_infos.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->useful_infos, 'order'))],
+            'useful_infos.*.order' => ['required_with:useful_infos.*', 'integer', 'min:1', new InOrder(array_pluck_multi($updateRequest->data['useful_infos'], 'order'))],
 
             'social_medias' => ['present', 'array'],
             'social_medias.*' => ['array'],
@@ -119,7 +119,7 @@ class Service extends Model implements AppliesUpdateRequests
             'category_taxonomies.*' => ['required', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
         ];
 
-        return Validator::make($updateRequest->data, $rules)->fails() === false;
+        return ValidatorFacade::make($updateRequest->data, $rules);
     }
 
     /**
@@ -132,7 +132,6 @@ class Service extends Model implements AppliesUpdateRequests
     {
         // Update the service record.
         $this->update([
-            'organisation_id' => $updateRequest->data['organisation_id'],
             'name' => $updateRequest->data['name'],
             'status' => $updateRequest->data['status'],
             'intro' => $updateRequest->data['intro'],

@@ -8,7 +8,8 @@ use App\Models\Relationships\LocationRelationships;
 use App\Models\Scopes\LocationScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class Location extends Model implements AppliesUpdateRequests
 {
@@ -51,9 +52,9 @@ class Location extends Model implements AppliesUpdateRequests
      * Check if the update request is valid.
      *
      * @param \App\Models\UpdateRequest $updateRequest
-     * @return bool
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateUpdateRequest(UpdateRequest $updateRequest): bool
+    public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = [
             'address_line_1' => ['required', 'string', 'min:1', 'max:255'],
@@ -66,7 +67,7 @@ class Location extends Model implements AppliesUpdateRequests
             'accessibility_info' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
         ];
 
-        return Validator::make($updateRequest->data, $rules)->fails() === false;
+        return ValidatorFacade::make($updateRequest->data, $rules);
     }
 
     /**

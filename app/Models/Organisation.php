@@ -7,7 +7,8 @@ use App\Models\Relationships\OrganisationRelationships;
 use App\Models\Scopes\OrganisationScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class Organisation extends Model implements AppliesUpdateRequests
 {
@@ -20,9 +21,9 @@ class Organisation extends Model implements AppliesUpdateRequests
      * Check if the update request is valid.
      *
      * @param \App\Models\UpdateRequest $updateRequest
-     * @return bool
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateUpdateRequest(UpdateRequest $updateRequest): bool
+    public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = [
             'name' => ['required', 'string', 'min:1', 'max:255'],
@@ -32,7 +33,7 @@ class Organisation extends Model implements AppliesUpdateRequests
             'phone' => ['required', 'string', 'min:1', 'max:255'],
         ];
 
-        return Validator::make($updateRequest->data, $rules)->fails() === false;
+        return ValidatorFacade::make($updateRequest->data, $rules);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\UpdateRequest;
 
 use App\Models\UpdateRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 interface AppliesUpdateRequests
 {
@@ -10,9 +11,9 @@ interface AppliesUpdateRequests
      * Check if the update request is valid.
      *
      * @param \App\Models\UpdateRequest $updateRequest
-     * @return bool
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateUpdateRequest(UpdateRequest $updateRequest): bool;
+    public function validateUpdateRequest(UpdateRequest $updateRequest): Validator;
 
     /**
      * Apply the update request.
