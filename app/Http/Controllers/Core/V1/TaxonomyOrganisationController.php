@@ -9,6 +9,7 @@ use App\Http\Requests\TaxonomyOrganisation\ShowRequest;
 use App\Http\Requests\TaxonomyOrganisation\StoreRequest;
 use App\Http\Requests\TaxonomyOrganisation\UpdateRequest;
 use App\Http\Resources\TaxonomyOrganisationResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Models\Taxonomy;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -98,11 +99,18 @@ class TaxonomyOrganisationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param \App\Http\Requests\TaxonomyOrganisation\DestroyRequest $request
      * @param  \App\Models\Taxonomy $organisation
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Taxonomy $organisation)
     {
-        //
+        return DB::transaction(function () use ($request, $organisation) {
+            event(EndpointHit::onDelete($request, "Deleted taxonomy organisation [{$organisation->id}]", $organisation));
+
+            $organisation->delete();
+
+            return new ResourceDeleted('taxonomy organisation');
+        });
     }
 }
