@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\Collection;
-use Exception;
 
 class CollectionObserver
 {

@@ -2,10 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Models\Organisation;
+use App\Models\Service;
 use App\Models\Taxonomy;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 class TaxonomyCategoriesTest extends TestCase
@@ -34,6 +38,7 @@ class TaxonomyCategoriesTest extends TestCase
                 'id' => $randomTaxonomy->id,
                 'parent_id' => $randomTaxonomy->parent_id,
                 'name' => $randomTaxonomy->name,
+                'order' => $randomTaxonomy->order,
                 'children' => [],
                 'created_at' => $randomTaxonomy->created_at->format(Carbon::ISO8601),
                 'updated_at' => $randomTaxonomy->updated_at->format(Carbon::ISO8601),
@@ -44,6 +49,77 @@ class TaxonomyCategoriesTest extends TestCase
     /*
      * Create a category taxonomy.
      */
+
+    public function test_guest_cannot_create_one()
+    {
+        $response = $this->json('POST', '/core/v1/taxonomies/categories');
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_create_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/taxonomies/categories');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_create_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/taxonomies/categories');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_create_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/taxonomies/categories');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_cannot_create_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/taxonomies/categories');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_super_admin_can_create_one()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $siblingCount = Taxonomy::category()->children()->count();
+        $payload = [
+            'parent_id' => null,
+            'name' => 'PHPUnit Taxonomy Category Test',
+            'order' => $siblingCount + 1,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/categories', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($payload);
+    }
 
     /*
      * Get a specific category taxonomy

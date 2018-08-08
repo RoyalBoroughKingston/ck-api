@@ -11,6 +11,7 @@ use App\Http\Requests\TaxonomyCategory\UpdateRequest;
 use App\Http\Resources\TaxonomyCategoryResource;
 use App\Models\Taxonomy;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class TaxonomyCategoryController extends Controller
@@ -44,12 +45,22 @@ class TaxonomyCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\TaxonomyCategory\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            $category = Taxonomy::create([
+                'parent_id' => $request->parent_id ?? Taxonomy::category()->id,
+                'name' => $request->name,
+                'order' => $request->order,
+            ]);
+
+            event(EndpointHit::onCreate($request, "Created taxonomy category [{$category->id}]", $category));
+
+            return new TaxonomyCategoryResource($category);
+        });
     }
 
     /**
