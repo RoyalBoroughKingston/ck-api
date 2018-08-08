@@ -5,6 +5,8 @@ properties:
     format: uuid
   name:
     type: string
+  order:
+    type: integer
   created_at:
     type: string
     format: date-time
