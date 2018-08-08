@@ -252,7 +252,86 @@ class TaxonomyCategoriesTest extends TestCase
      * Update a specific category taxonomy.
      */
 
+    public function test_guest_cannot_update_one()
+    {
+        $category = $this->getRandomCategory();
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $category = $this->getRandomCategory();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $category = $this->getRandomCategory();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_update_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $category = $this->getRandomCategory();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_cannot_update_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $category = $this->getRandomCategory();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
     /*
      * Delete a specific category taxonomy.
      */
+
+    /*
+     * Helpers.
+     */
+
+    /**
+     * @return \App\Models\Taxonomy
+     */
+    protected function getRandomCategory(): Taxonomy
+    {
+        $randomTaxonomy = null;
+
+        Taxonomy::chunk(200, function (Collection $taxonomies) use (&$randomTaxonomy) {
+            foreach ($taxonomies as $taxonomy) {
+                if ($taxonomy->children()->count() === 0) {
+                    $randomTaxonomy = $taxonomy;
+                    return false;
+                }
+            }
+        });
+
+        return $randomTaxonomy;
+    }
 }

@@ -25,6 +25,7 @@ class TaxonomyObserver
 
     /**
      * Handle the collection "updated" event.
+     * TODO: Handle moving from one parent to another.
      *
      * @param  \App\Models\Taxonomy $taxonomy
      * @return void
