@@ -45,7 +45,7 @@ class ModelServiceProvider extends ServiceProvider
         Relation::morphMap([
             'locations' => Location::class,
             'services' => Service::class,
-            'service-locations' => ServiceLocation::class,
+            'service_locations' => ServiceLocation::class,
             'organisations' => Organisation::class,
         ]);
     }

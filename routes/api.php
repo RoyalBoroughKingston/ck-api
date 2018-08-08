@@ -61,7 +61,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Reports.
     Route::apiResource('/reports', 'ReportController')->only('index', 'store', 'show', 'destroy');
-    Route::get('/reports/{report}/download', 'Report\\DownloadController@show')->name('reports.download.show');
+    Route::get('/reports/{report}/download', 'Report\\DownloadController@show')->name('reports.download');
 
     // Service Locations.
     Route::apiResource('/service-locations', 'ServiceLocationController');
@@ -95,4 +95,8 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         'update' => 'taxonomy-organisations.update',
         'destroy' => 'taxonomy-organisations.destroy',
     ]);
+
+    // Update Requests.
+    Route::apiResource('/update-requests', 'UpdateRequestController')->only('index', 'show', 'destroy');
+    Route::put('/update-requests/{update_request}/approve', 'UpdateRequest\\ApproveController@update')->name('update-requests.approve');
 });

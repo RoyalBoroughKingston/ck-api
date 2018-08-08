@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\UpdateRequest;
+
+use App\Models\UpdateRequest;
 
 trait UpdateRequests
 {
