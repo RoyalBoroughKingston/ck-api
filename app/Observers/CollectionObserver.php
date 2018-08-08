@@ -24,36 +24,19 @@ class CollectionObserver
     }
 
     /**
-     * Handle the collection "updated" event.
+     * Handle the collection "updating" event.
      *
      * @param  \App\Models\Collection $collection
      * @return void
      * @throws \Exception
      */
-    public function updated(Collection $collection)
+    public function updating(Collection $collection)
     {
-        // Updates the order for all other collections of the same type.
-        // Get all the ID's for the collection type.
-        $collectionOrders = Collection::query()
-            ->where('type', $collection->type)
-            ->pluck('order');
-
-        // Set the original order to null.
-        $originalOrder = null;
-
-        // Get the total number of collections.
-        $collectionCount = $collectionOrders->count();
-
-        // Loop through the number of collections until the missing ID is found, as this must be the original order.
-        foreach (range(1, $collectionCount) as $order) {
-            if (!$collectionOrders->contains($order)) {
-                $originalOrder = $order;
-                break;
-            }
-        }
+        // Get the original order.
+        $originalOrder = $collection->getOriginal('order');
 
         // If the order number was not updated.
-        if ($originalOrder === null) {
+        if ($originalOrder === $collection->order) {
             return;
         }
 

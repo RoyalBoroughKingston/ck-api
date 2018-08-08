@@ -325,6 +325,291 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
+    public function test_order_is_updated_when_updated_to_beginning()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $parentCategory = $this->createTopLevelCategory();
+        $categoryOne = $parentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $categoryTwo = $parentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $categoryThree = $parentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$categoryTwo->id}", [
+            'parent_id' => $categoryTwo->parent_id,
+            'name' => $categoryTwo->name,
+            'order' => 1,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryOne->id, 'order' => 2]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryTwo->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryThree->id, 'order' => 3]);
+    }
+
+    public function test_order_is_updated_when_updated_to_middle()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $parentCategory = $this->createTopLevelCategory();
+        $categoryOne = $parentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $categoryTwo = $parentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $categoryThree = $parentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$categoryOne->id}", [
+            'parent_id' => $categoryOne->parent_id,
+            'name' => $categoryOne->name,
+            'order' => 2,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryOne->id, 'order' => 2]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryTwo->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryThree->id, 'order' => 3]);
+    }
+
+    public function test_order_is_updated_when_updated_to_end()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $parentCategory = $this->createTopLevelCategory();
+        $categoryOne = $parentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $categoryTwo = $parentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $categoryThree = $parentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$categoryTwo->id}", [
+            'parent_id' => $categoryTwo->parent_id,
+            'name' => $categoryTwo->name,
+            'order' => 3,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryOne->id, 'order' => 1]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryTwo->id, 'order' => 3]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $categoryThree->id, 'order' => 2]);
+    }
+
+    public function test_order_is_updated_when_updated_to_beginning_of_another_parent()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $oldParentCategory = $this->createTopLevelCategory();
+        $oldCategoryOne = $oldParentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $oldCategoryTwo = $oldParentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $oldCategoryThree = $oldParentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $newParentCategory = $this->createTopLevelCategory();
+        $newCategoryOne = $newParentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $newCategoryTwo = $newParentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $newCategoryThree = $newParentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$oldCategoryTwo->id}", [
+            'parent_id' => $newParentCategory->id,
+            'name' => $oldCategoryTwo->name,
+            'order' => 1,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        /*
+         * Old parent.
+         */
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $oldParentCategory->id,
+            'id' => $oldCategoryOne->id,
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $oldParentCategory->id,
+            'id' => $oldCategoryThree->id,
+            'order' => 2,
+        ]);
+
+        /*
+         * New parent.
+         */
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $oldCategoryTwo->id,
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryOne->id,
+            'order' => 2,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryTwo->id,
+            'order' => 3,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryThree->id,
+            'order' => 4,
+        ]);
+    }
+
+    public function test_order_is_updated_when_updated_to_middle_of_another_parent()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $oldParentCategory = $this->createTopLevelCategory();
+        $oldCategoryOne = $oldParentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $oldCategoryTwo = $oldParentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $oldCategoryThree = $oldParentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $newParentCategory = $this->createTopLevelCategory();
+        $newCategoryOne = $newParentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $newCategoryTwo = $newParentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $newCategoryThree = $newParentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$oldCategoryOne->id}", [
+            'parent_id' => $newParentCategory->id,
+            'name' => $oldCategoryOne->name,
+            'order' => 2,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        /*
+         * Old parent.
+         */
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $oldParentCategory->id,
+            'id' => $oldCategoryTwo->id,
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $oldParentCategory->id,
+            'id' => $oldCategoryThree->id,
+            'order' => 2,
+        ]);
+
+        /*
+         * New parent.
+         */
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryOne->id,
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $oldCategoryOne->id,
+            'order' => 2,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryTwo->id,
+            'order' => 3,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryThree->id,
+            'order' => 4,
+        ]);
+    }
+
+    public function test_order_is_updated_when_updated_to_end_of_another_parent()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $oldParentCategory = $this->createTopLevelCategory();
+        $oldCategoryOne = $oldParentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $oldCategoryTwo = $oldParentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $oldCategoryThree = $oldParentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $newParentCategory = $this->createTopLevelCategory();
+        $newCategoryOne = $newParentCategory->children()->create(['name' => 'One', 'order' => 1]);
+        $newCategoryTwo = $newParentCategory->children()->create(['name' => 'Two', 'order' => 2]);
+        $newCategoryThree = $newParentCategory->children()->create(['name' => 'Three', 'order' => 3]);
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$oldCategoryTwo->id}", [
+            'parent_id' => $newParentCategory->id,
+            'name' => $oldCategoryTwo->name,
+            'order' => 4,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        /*
+         * Old parent.
+         */
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $oldParentCategory->id,
+            'id' => $oldCategoryOne->id,
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $oldParentCategory->id,
+            'id' => $oldCategoryThree->id,
+            'order' => 2,
+        ]);
+
+        /*
+         * New parent.
+         */
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryOne->id,
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryTwo->id,
+            'order' => 2,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $newCategoryThree->id,
+            'order' => 3,
+        ]);
+        $this->assertDatabaseHas((new Taxonomy())->getTable(), [
+            'parent_id' => $newParentCategory->id,
+            'id' => $oldCategoryTwo->id,
+            'order' => 4,
+        ]);
+    }
+
+    public function test_order_cannot_be_less_than_1_when_updated()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $category = $this->createTopLevelCategory();
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}", [
+            'parent_id' => $category->parent_id,
+            'name' => $category->name,
+            'order' => 0,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_order_cannot_be_greater_than_count_plus_1_when_updated()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $category = $this->createTopLevelCategory();
+        $siblingCount = Taxonomy::where('parent_id', $category->parent_id)->count();
+
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}", [
+            'parent_id' => $category->parent_id,
+            'name' => $category->name,
+            'order' => $siblingCount + 1,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /*
      * Delete a specific category taxonomy.
      */
@@ -350,5 +635,18 @@ class TaxonomyCategoriesTest extends TestCase
         });
 
         return $randomTaxonomy;
+    }
+
+    /**
+     * @return \App\Models\Taxonomy
+     */
+    protected function createTopLevelCategory(): Taxonomy
+    {
+        $topLevelCount = Taxonomy::category()->children()->count();
+
+        return Taxonomy::category()->children()->create([
+            'name' => 'PHPUnit Category',
+            'order' => $topLevelCount + 1,
+        ]);
     }
 }
