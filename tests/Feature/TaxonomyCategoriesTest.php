@@ -121,6 +121,101 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
+    public function test_order_is_updated_when_created_at_beginning()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $topLevelCategories = Taxonomy::category()->children()->orderBy('order')->get();
+        $payload = [
+            'parent_id' => null,
+            'name' => 'PHPUnit Taxonomy Category Test',
+            'order' => 1,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/categories', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($payload);
+        foreach ($topLevelCategories as $category) {
+            $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order + 1]);
+        }
+    }
+
+    public function test_order_is_updated_when_created_at_middle()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $topLevelCategories = Taxonomy::category()->children()->orderBy('order')->get();
+        $payload = [
+            'parent_id' => null,
+            'name' => 'PHPUnit Taxonomy Category Test',
+            'order' => 2,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/categories', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($payload);
+        foreach ($topLevelCategories as $category) {
+            if ($category->order < 2) {
+                $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order]);
+            } else {
+                $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order + 1]);
+            }
+        }
+    }
+
+    public function test_order_is_updated_when_created_at_end()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $topLevelCategories = Taxonomy::category()->children()->orderBy('order')->get();
+        $payload = [
+            'parent_id' => null,
+            'name' => 'PHPUnit Taxonomy Category Test',
+            'order' => $topLevelCategories->count() + 1,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/categories', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($payload);
+        foreach ($topLevelCategories as $category) {
+            $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order]);
+        }
+    }
+
+    public function test_order_cannot_be_less_than_1_when_created()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $payload = [
+            'parent_id' => null,
+            'name' => 'PHPUnit Taxonomy Category Test',
+            'order' => 0,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/categories', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_order_cannot_be_greater_than_count_plus_1_when_created()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $siblingCount = Taxonomy::category()->children()->count();
+        $payload = [
+            'parent_id' => null,
+            'name' => 'PHPUnit Taxonomy Category Test',
+            'order' => $siblingCount + 2,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/categories', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /*
      * Get a specific category taxonomy
      */
