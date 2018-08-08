@@ -308,6 +308,23 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
+    public function test_super_admin_can_update_one()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $category = $this->getRandomCategory();
+        $payload = [
+            'parent_id' => $category->parent_id,
+            'name' => 'PHPUnit Test Cateegory',
+            'order' => $category->order,
+        ];
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
     /*
      * Delete a specific category taxonomy.
      */

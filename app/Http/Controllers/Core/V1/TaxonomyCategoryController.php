@@ -81,13 +81,23 @@ class TaxonomyCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\TaxonomyCategory\UpdateRequest $request
      * @param  \App\Models\Taxonomy $category
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Taxonomy $category)
     {
-        //
+        return DB::transaction(function () use ($request, $category) {
+            $category->update([
+                'parent_id' => $request->parent_id ?? Taxonomy::category()->id,
+                'name' => $request->name,
+                'order' => $request->order,
+            ]);
+
+            event(EndpointHit::onUpdate($request, "Updated taxonomy category [{$category->id}]", $category));
+
+            return new TaxonomyCategoryResource($category);
+        });
     }
 
     /**
