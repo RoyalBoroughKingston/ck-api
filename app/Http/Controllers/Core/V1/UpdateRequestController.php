@@ -48,12 +48,15 @@ class UpdateRequestController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\UpdateRequest\ShowRequest $request
+     * @param  \App\Models\UpdateRequest $updateRequest
+     * @return \App\Http\Resources\UpdateRequestResource
      */
     public function show(ShowRequest $request, UpdateRequest $updateRequest)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed update request [{$updateRequest->id}]", $updateRequest));
+
+        return new UpdateRequestResource($updateRequest);
     }
 
     /**

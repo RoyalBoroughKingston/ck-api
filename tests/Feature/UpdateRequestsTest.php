@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
+use App\Models\ServiceLocation;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Laravel\Passport\Passport;
@@ -136,6 +137,93 @@ class UpdateRequestsTest extends TestCase
     /*
      * Get a specific update request.
      */
+
+    public function test_guest_cannot_view_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_view_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_view_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_view_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_view_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $updateRequest->id,
+            'user_id' => $updateRequest->user_id,
+            'updateable_type' => 'service_locations',
+            'updateable_id' => $serviceLocation->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+    }
 
     /*
      * Delete a specific update request.
