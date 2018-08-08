@@ -11,6 +11,7 @@ use App\Http\Requests\TaxonomyOrganisation\UpdateRequest;
 use App\Http\Resources\TaxonomyOrganisationResource;
 use App\Models\Taxonomy;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class TaxonomyOrganisationController extends Controller
@@ -42,18 +43,27 @@ class TaxonomyOrganisationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\TaxonomyOrganisation\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            $organisation = Taxonomy::organisation()->children()->create([
+                'name' => $request->name,
+                'order' => $request->order,
+            ]);
+
+            event(EndpointHit::onCreate($request, "Created taxonomy organisation [{$organisation->id}]", $organisation));
+
+            return new TaxonomyOrganisationResource($organisation);
+        });
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Taxonomy  $organisation
+     * @param  \App\Models\Taxonomy $organisation
      * @return \Illuminate\Http\Response
      */
     public function show(ShowRequest $request, Taxonomy $organisation)
@@ -64,8 +74,8 @@ class TaxonomyOrganisationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Taxonomy  $organisation
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Taxonomy $organisation
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Taxonomy $organisation)
@@ -76,7 +86,7 @@ class TaxonomyOrganisationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Taxonomy  $organisation
+     * @param  \App\Models\Taxonomy $organisation
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Taxonomy $organisation)

@@ -28,7 +28,7 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $count = Taxonomy::category()->children()->count();
+        $count = Taxonomy::organisation()->children()->count();
 
         return [
             'name' => ['required', 'string', 'min:1', 'max:255'],

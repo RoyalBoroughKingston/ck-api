@@ -28,7 +28,7 @@ class StoreRequest extends FormRequest
      */
     public function rules()
     {
-        $count = Taxonomy::category()->children()->count() + 1;
+        $count = Taxonomy::organisation()->children()->count() + 1;
 
         return [
             'name' => ['required', 'string', 'min:1', 'max:255'],
