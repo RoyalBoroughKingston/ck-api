@@ -314,4 +314,90 @@ class UpdateRequestsTest extends TestCase
     /*
      * Approve a specific update request.
      */
+
+    public function test_guest_cannot_approve_one()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_approve_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_approve_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_approve_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_approve_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => [
+                'name' => 'Test Name',
+                'regular_opening_hours' => [],
+                'holiday_opening_hours' => [],
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new ServiceLocation())->getTable(), ['id' => $serviceLocation->id, 'name' => 'Test Name']);
+    }
 }

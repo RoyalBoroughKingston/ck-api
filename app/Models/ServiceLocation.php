@@ -102,7 +102,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
 
         // Attach the holiday opening hours.
         $this->holidayOpeningHours()->delete();
-        foreach ($updateRequest['holiday_opening_hours'] as $holidayOpeningHour) {
+        foreach ($updateRequest->data['holiday_opening_hours'] as $holidayOpeningHour) {
             $this->holidayOpeningHours()->create([
                 'is_closed' => $holidayOpeningHour['is_closed'],
                 'starts_at' => $holidayOpeningHour['starts_at'],
