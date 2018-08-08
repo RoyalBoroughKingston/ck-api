@@ -14,4 +14,13 @@ trait TaxonomyScopes
     {
         return $query->where('parent_id', static::category()->id);
     }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOrganisations(Builder $query): Builder
+    {
+        return $query->where('parent_id', static::organisation()->id);
+    }
 }

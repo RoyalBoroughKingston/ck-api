@@ -86,4 +86,13 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         'update' => 'taxonomy-categories.update',
         'destroy' => 'taxonomy-categories.destroy',
     ]);
+
+    // Taxonomy Organisations.
+    Route::apiResource('/taxonomies/organisations', 'TaxonomyOrganisationController')->names([
+        'index' => 'taxonomy-organisations.index',
+        'store' => 'taxonomy-organisations.store',
+        'show' => 'taxonomy-organisations.show',
+        'update' => 'taxonomy-organisations.update',
+        'destroy' => 'taxonomy-organisations.destroy',
+    ]);
 });

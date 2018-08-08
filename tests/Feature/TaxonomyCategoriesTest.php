@@ -314,7 +314,7 @@ class TaxonomyCategoriesTest extends TestCase
         $category = $this->getRandomCategoryWithoutChildren();
         $payload = [
             'parent_id' => $category->parent_id,
-            'name' => 'PHPUnit Test Cateegory',
+            'name' => 'PHPUnit Test Category',
             'order' => $category->order,
         ];
 

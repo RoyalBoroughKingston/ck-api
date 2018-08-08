@@ -2,9 +2,12 @@ store:
   type: object
   required:
     - name
+    - order
   properties:
     name:
       type: string
+    order:
+      type: integer
 
 update:
   allOf:
