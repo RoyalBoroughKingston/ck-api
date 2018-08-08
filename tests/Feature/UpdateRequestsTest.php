@@ -96,6 +96,43 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
+    public function test_can_list_them_for_location()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $location = factory(Location::class)->create();
+        $locationUpdateRequest = $location->updateRequests()->create([
+            'user_id' => $user->id,
+            'data' => [
+                'address_line_1' => $this->faker->streetAddress,
+                'address_line_2' => null,
+                'address_line_3' => null,
+                'city' => $this->faker->city,
+                'county' => 'West Yorkshire',
+                'postcode' => $this->faker->postcode,
+                'country' => 'United Kingdom',
+                'accessibility_info' => null,
+            ]
+        ]);
+        $organisation = factory(Organisation::class)->create();
+        $organisationUpdateRequest = $organisation->updateRequests()->create([
+            'user_id' => $user->id,
+            'data' => [
+                'name' => 'Test Name',
+                'description' => 'Lorem ipsum',
+                'url' => 'https://example.com',
+                'email' => 'phpunit@example.com',
+                'phone' => '07700000000',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+        $response = $this->json('GET', "/core/v1/update-requests?filter[location_id]={$location->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $locationUpdateRequest->id]);
+        $response->assertJsonMissing(['id' => $organisationUpdateRequest->id]);
+    }
+
     /*
      * Get a specific update request.
      */

@@ -33,10 +33,10 @@ class UpdateRequestController extends Controller
         $baseQuery = UpdateRequest::query();
         $updateRequests = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('service_id'),
-                Filter::exact('service_location_id'),
-                Filter::exact('location_id'),
-                Filter::exact('organisation_id'),
+                Filter::scope('service_id'),
+                Filter::scope('service_location_id'),
+                Filter::scope('location_id'),
+                Filter::scope('organisation_id'),
             ])
             ->paginate();
 
