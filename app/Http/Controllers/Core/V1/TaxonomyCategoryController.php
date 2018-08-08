@@ -9,6 +9,7 @@ use App\Http\Requests\TaxonomyCategory\ShowRequest;
 use App\Http\Requests\TaxonomyCategory\StoreRequest;
 use App\Http\Requests\TaxonomyCategory\UpdateRequest;
 use App\Http\Resources\TaxonomyCategoryResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Models\Taxonomy;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -103,11 +104,18 @@ class TaxonomyCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param \App\Http\Requests\TaxonomyCategory\DestroyRequest $request
      * @param  \App\Models\Taxonomy $category
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Taxonomy $category)
     {
-        //
+        return DB::transaction(function () use ($request, $category) {
+            event(EndpointHit::onDelete($request, "Deleted taxonomy category [{$category->id}]", $category));
+
+            $category->delete();
+
+            return new ResourceDeleted('taxonomy category');
+        });
     }
 }

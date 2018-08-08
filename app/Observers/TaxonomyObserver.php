@@ -103,6 +103,11 @@ class TaxonomyObserver
     {
         $taxonomy->collectionTaxonomies()->delete();
         $taxonomy->serviceTaxonomies()->delete();
+
+        // Set the parent ID to null for all children before deleting them.
+        $children = $taxonomy->children;
+        $taxonomy->children()->update(['parent_id' => null]);
+        $children->each->delete();
     }
 
     /**

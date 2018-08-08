@@ -254,7 +254,7 @@ class TaxonomyCategoriesTest extends TestCase
 
     public function test_guest_cannot_update_one()
     {
-        $category = $this->getRandomCategory();
+        $category = $this->getRandomCategoryWithoutChildren();
 
         $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
 
@@ -265,7 +265,7 @@ class TaxonomyCategoriesTest extends TestCase
     {
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create()->makeServiceWorker($service);
-        $category = $this->getRandomCategory();
+        $category = $this->getRandomCategoryWithoutChildren();
 
         Passport::actingAs($user);
         $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
@@ -277,7 +277,7 @@ class TaxonomyCategoriesTest extends TestCase
     {
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create()->makeServiceAdmin($service);
-        $category = $this->getRandomCategory();
+        $category = $this->getRandomCategoryWithoutChildren();
 
         Passport::actingAs($user);
         $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
@@ -289,7 +289,7 @@ class TaxonomyCategoriesTest extends TestCase
     {
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
-        $category = $this->getRandomCategory();
+        $category = $this->getRandomCategoryWithoutChildren();
 
         Passport::actingAs($user);
         $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
@@ -300,7 +300,7 @@ class TaxonomyCategoriesTest extends TestCase
     public function test_global_admin_cannot_update_one()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $category = $this->getRandomCategory();
+        $category = $this->getRandomCategoryWithoutChildren();
 
         Passport::actingAs($user);
         $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
@@ -311,7 +311,7 @@ class TaxonomyCategoriesTest extends TestCase
     public function test_super_admin_can_update_one()
     {
         $user = factory(User::class)->create()->makeSuperAdmin();
-        $category = $this->getRandomCategory();
+        $category = $this->getRandomCategoryWithoutChildren();
         $payload = [
             'parent_id' => $category->parent_id,
             'name' => 'PHPUnit Test Cateegory',
@@ -614,6 +614,74 @@ class TaxonomyCategoriesTest extends TestCase
      * Delete a specific category taxonomy.
      */
 
+    public function test_guest_cannot_delete_one()
+    {
+        $category = $this->getRandomCategoryWithoutChildren();
+
+        $response = $this->json('DELETE', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        $category = $this->getRandomCategoryWithoutChildren();
+
+        Passport::actingAs($user);
+        $response = $this->json('DELETE', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        $category = $this->getRandomCategoryWithoutChildren();
+
+        Passport::actingAs($user);
+        $response = $this->json('DELETE', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_delete_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $category = $this->getRandomCategoryWithoutChildren();
+
+        Passport::actingAs($user);
+        $response = $this->json('DELETE', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_cannot_delete_one()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $category = $this->getRandomCategoryWithoutChildren();
+
+        Passport::actingAs($user);
+        $response = $this->json('DELETE', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_super_admin_can_delete_one()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $category = $this->getRandomCategoryWithChildren();
+
+        Passport::actingAs($user);
+        $response = $this->json('DELETE', "/core/v1/taxonomies/categories/{$category->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Taxonomy())->getTable(), ['id' => $category->id]);
+    }
+
     /*
      * Helpers.
      */
@@ -621,7 +689,7 @@ class TaxonomyCategoriesTest extends TestCase
     /**
      * @return \App\Models\Taxonomy
      */
-    protected function getRandomCategory(): Taxonomy
+    protected function getRandomCategoryWithoutChildren(): Taxonomy
     {
         $randomTaxonomy = null;
 
@@ -635,6 +703,14 @@ class TaxonomyCategoriesTest extends TestCase
         });
 
         return $randomTaxonomy;
+    }
+
+    /**
+     * @return \App\Models\Taxonomy
+     */
+    protected function getRandomCategoryWithChildren(): Taxonomy
+    {
+        return Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
     }
 
     /**
