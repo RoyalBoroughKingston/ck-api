@@ -315,7 +315,7 @@ class UpdateRequestsTest extends TestCase
      * Approve a specific update request.
      */
 
-    public function test_guest_cannot_approve_one()
+    public function test_guest_cannot_approve_one_for_service_location()
     {
         $serviceLocation = factory(ServiceLocation::class)->create();
         $updateRequest = $serviceLocation->updateRequests()->create([
@@ -328,7 +328,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_approve_one()
+    public function test_service_worker_cannot_approve_one_for_service_location()
     {
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create()->makeServiceWorker($service);
@@ -345,7 +345,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_approve_one()
+    public function test_service_admin_cannot_approve_one_for_service_location()
     {
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create()->makeServiceAdmin($service);
@@ -362,7 +362,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_approve_one()
+    public function test_organisation_admin_cannot_approve_one_for_service_location()
     {
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
@@ -379,7 +379,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_can_approve_one()
+    public function test_global_admin_can_approve_one_for_service_location()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
@@ -399,5 +399,36 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new ServiceLocation())->getTable(), ['id' => $serviceLocation->id, 'name' => 'Test Name']);
+    }
+
+    public function test_global_admin_can_approve_one_for_organisation()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $organisation = factory(Organisation::class)->create();
+        $updateRequest = $organisation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => [
+                'name' => $this->faker->name,
+                'description' => $this->faker->paragraph,
+                'url' => $this->faker->url,
+                'email' => $this->faker->safeEmail,
+                'phone' => $this->faker->phoneNumber,
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new Organisation())->getTable(), [
+            'id' => $organisation->id,
+            'name' => $updateRequest->data['name'],
+            'description' => $updateRequest->data['description'],
+            'url' => $updateRequest->data['url'],
+            'email' => $updateRequest->data['email'],
+            'phone' => $updateRequest->data['phone'],
+        ]);
     }
 }
