@@ -99,4 +99,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     // Update Requests.
     Route::apiResource('/update-requests', 'UpdateRequestController')->only('index', 'show', 'destroy');
     Route::put('/update-requests/{update_request}/approve', 'UpdateRequest\\ApproveController@update')->name('update-requests.approve');
+
+    // Users.
+    Route::apiResource('/users', 'UserController');
 });
