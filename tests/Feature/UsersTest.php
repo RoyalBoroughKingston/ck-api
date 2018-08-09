@@ -555,6 +555,79 @@ class UsersTest extends TestCase
      */
 
     /*
+     * Guest Invoked.
+     */
+    public function test_guest_cannot_update_one()
+    {
+        factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", $this->getCreateUserPayload([
+            ['role' => Role::NAME_SERVICE_ADMIN]
+        ]));
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /*
+     * Service Worker Invoked.
+     */
+    public function test_service_worker_cannot_update_one()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($invoker);
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", $this->getCreateUserPayload([
+            ['role' => Role::NAME_SUPER_ADMIN]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /*
+     * Service Admin Invoked.
+     */
+    public function test_service_admin_can_update_service_worker()
+    {
+        $invoker = factory(User::class)->create()->makeServiceAdmin(factory(Service::class)->create());
+        Passport::actingAs($invoker);
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+    }
+
+    /*
      * ==================================================
      * Delete a specific user.
      * ==================================================
@@ -578,6 +651,21 @@ class UsersTest extends TestCase
             'email' => $this->faker->safeEmail,
             'phone' => $this->faker->phoneNumber,
             'password' => 'password',
+            'roles' => $roles,
+        ];
+    }
+
+    /**
+     * @param array $roles
+     * @return array
+     */
+    protected function getUpdateUserPayload(array $roles): array
+    {
+        return [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => $this->faker->phoneNumber,
             'roles' => $roles,
         ];
     }

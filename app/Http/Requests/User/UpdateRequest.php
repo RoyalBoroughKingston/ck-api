@@ -18,17 +18,11 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        // Get the existing roles and normalize to match the post payload.
-        $exitingRoles = $this->getExistingRoles();
+        $canUpdate = $this->user()->canUpdate($this->route('user'));
+        $canAddNewRoles = $this->canAddNewRoles($this->getNewRoles());
+        $canRevokeDeletedRoles = $this->canRevokeDeletedRoles($this->getDeletedRoles());
 
-        // Diff the posted roles with the existing roles to get the new and deleted roles.
-        $newRoles = array_diff_multi($this->roles, $exitingRoles);
-        $deletedRoles = array_diff_multi($exitingRoles, $this->roles);
-
-        $canAddNewRoles = $this->canAddNewRoles($newRoles);
-        $canRevokeDeletedRoles = $this->canRevokeDeletedRoles($deletedRoles);
-
-        if ($canAddNewRoles && $canRevokeDeletedRoles) {
+        if ($canUpdate && $canAddNewRoles && $canRevokeDeletedRoles) {
             return true;
         }
 
@@ -54,6 +48,22 @@ class UpdateRequest extends FormRequest
         })->toArray();
 
         return $existingRolesArray;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNewRoles(): array
+    {
+        return array_diff_multi($this->roles, $this->getExistingRoles());
+    }
+
+    /**
+     * @return array
+     */
+    public function getDeletedRoles(): array
+    {
+        return array_diff_multi($this->getExistingRoles(), $this->roles);
     }
 
     /**
@@ -161,7 +171,7 @@ class UpdateRequest extends FormRequest
             'last_name' => ['required', 'string', 'min:1', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignoreModel($this->route('user'))],
             'phone' => ['required', 'string', 'min:1', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'password' => ['string', 'min:8', 'max:255'],
 
             'roles' => ['required', 'array'],
             'roles.*' => ['required', 'array'],

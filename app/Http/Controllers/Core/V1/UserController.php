@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Exceptions\CannotRevokeRoleException;
 use App\Http\Requests\User\DestroyRequest;
 use App\Http\Requests\User\IndexRequest;
 use App\Http\Requests\User\ShowRequest;
@@ -111,13 +112,82 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param \App\Http\Requests\User\UpdateRequest $request
+     * @param  \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, User $user)
     {
-        //
+        return DB::transaction(function () use ($request, $user) {
+            // Update the user record.
+            $user->update([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ]);
+
+            // Update the users password if provided in the request.
+            if ($request->has('password')) {
+                $user->update(['password' => bcrypt($request->password)]);
+            }
+
+            // Revoke the deleted roles.
+            foreach ($request->getDeletedRoles() as $role) {
+                try {
+                    $service = isset($role['service_id']) ? Service::findOrFail($role['service_id']) : null;
+                    $organisation = isset($role['organisation_id']) ? Organisation::findOrFail($role['organisation_id']) : null;
+
+                    switch ($role['role']) {
+                        case Role::NAME_SERVICE_WORKER:
+                            $user->revokeServiceWorker($service);
+                            break;
+                        case Role::NAME_SERVICE_ADMIN:
+                            $user->revokeServiceAdmin($service);
+                            break;
+                        case Role::NAME_ORGANISATION_ADMIN:
+                            $user->revokeOrganisationAdmin($organisation);
+                            break;
+                        case Role::NAME_GLOBAL_ADMIN:
+                            $user->revokeGlobalAdmin();
+                            break;
+                        case Role::NAME_SUPER_ADMIN:
+                            $user->revokeSuperAdmin();
+                            break;
+                    }
+                } catch (CannotRevokeRoleException $exception) {
+                    // Do nothing.
+                }
+            }
+
+            // Add the new roles.
+            foreach ($request->getNewRoles() as $role) {
+                $service = isset($role['service_id']) ? Service::findOrFail($role['service_id']) : null;
+                $organisation = isset($role['organisation_id']) ? Organisation::findOrFail($role['organisation_id']) : null;
+
+                switch ($role['role']) {
+                    case Role::NAME_SERVICE_WORKER:
+                        $user->makeServiceWorker($service);
+                        break;
+                    case Role::NAME_SERVICE_ADMIN:
+                        $user->makeServiceAdmin($service);
+                        break;
+                    case Role::NAME_ORGANISATION_ADMIN:
+                        $user->makeOrganisationAdmin($organisation);
+                        break;
+                    case Role::NAME_GLOBAL_ADMIN:
+                        $user->makeGlobalAdmin();
+                        break;
+                    case Role::NAME_SUPER_ADMIN:
+                        $user->makeSuperAdmin();
+                        break;
+                }
+            }
+
+            event(EndpointHit::onUpdate($request, "Updated user [{$user->id}]", $user));
+
+            return new UserResource($user);
+        });
     }
 
     /**

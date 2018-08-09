@@ -186,6 +186,50 @@ class User extends Authenticatable
     }
 
     /**
+     * Performs a check to see if the current user instance (invoker) can update the subject.
+     * This is an extremely important algorithm for user management.
+     *
+     * This algorithm does not care about the exact role the invoker is trying to revoke on the subject.
+     * All that matters is that the subject is not higher up than the invoker in the ACL hierarchy.
+     *
+     * @param \App\Models\User $subject
+     * @return bool
+     */
+    public function canUpdate(User $subject): bool
+    {
+        // If the invoker is a super admin.
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        /*
+         * If the invoker is a global admin,
+         * and the subject is not a super admin.
+         */
+        if ($this->isGlobalAdmin() && !$subject->isSuperAdmin()) {
+            return true;
+        }
+
+        /*
+         * If the invoker is an organisation admin for the organisation,
+         * and the subject is not a global admin.
+         */
+        if ($this->isOrganisationAdmin() && !$subject->isGlobalAdmin()) {
+            return true;
+        }
+
+        /*
+         * If the invoker is a service admin for the service,
+         * and the subject is not a organisation admin for the organisation.
+         */
+        if ($this->isServiceAdmin() && !$subject->isOrganisationAdmin()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param null|\App\Models\Service $service
      * @return bool
      */
