@@ -25,27 +25,27 @@ class StoreRequest extends FormRequest
 
             switch ($role['role']) {
                 case Role::NAME_SERVICE_WORKER:
-                    if (!$user->isServiceAdmin($service)) {
+                    if (!$user->canMakeServiceWorker($service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_SERVICE_ADMIN:
-                    if (!$user->isServiceAdmin($service)) {
+                    if (!$user->canMakeServiceAdmin($service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_ORGANISATION_ADMIN:
-                    if (!$user->isOrganisationAdmin($organisation)) {
+                    if (!$user->canMakeOrganisationAdmin($organisation)) {
                         return false;
                     }
                     break;
                 case Role::NAME_GLOBAL_ADMIN:
-                    if (!$user->isGlobalAdmin()) {
+                    if (!$user->canMakeGlobalAdmin()) {
                         return false;
                     }
                     break;
                 case Role::NAME_SUPER_ADMIN:
-                    if (!$user->isSuperAdmin()) {
+                    if (!$user->canMakeSuperAdmin()) {
                         return false;
                     }
                     break;
@@ -65,7 +65,7 @@ class StoreRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'min:1', 'max:255'],
             'last_name' => ['required', 'string', 'min:1', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'string', 'min:1', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'max:255'],
 

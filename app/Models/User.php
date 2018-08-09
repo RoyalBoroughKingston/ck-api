@@ -140,6 +140,52 @@ class User extends Authenticatable
     }
 
     /**
+     * Performs a check to see if the current user instance (invoker) can revoke a role on the subject.
+     * This is an extremely important algorithm for user management.
+     *
+     * This algorithm does not care about the exact role the invoker is trying to revoke on the subject.
+     * All that matters is that the subject is not higher up than the invoker in the ACL hierarchy.
+     *
+     * @param \App\Models\User $subject
+     * @param \App\Models\Organisation|null $organisation
+     * @param \App\Models\Service|null $service
+     * @return bool
+     */
+    protected function canRevokeRole(User $subject, Organisation $organisation = null, Service $service = null): bool
+    {
+        // If the invoker is a super admin.
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        /*
+         * If the invoker is a global admin,
+         * and the subject is not a super admin.
+         */
+        if ($this->isGlobalAdmin() && !$subject->isSuperAdmin()) {
+            return true;
+        }
+
+        /*
+         * If the invoker is an organisation admin for the organisation,
+         * and the subject is not a global admin.
+         */
+        if ($organisation && $this->isOrganisationAdmin($organisation) && !$subject->isGlobalAdmin()) {
+            return true;
+        }
+
+        /*
+         * If the invoker is a service admin for the service,
+         * and the subject is not a organisation admin for the organisation.
+         */
+        if ($service && $this->isServiceAdmin($service) && !$subject->isOrganisationAdmin($organisation)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param null|\App\Models\Service $service
      * @return bool
      */
@@ -324,5 +370,96 @@ class User extends Authenticatable
         $this->removeRoll(Role::superAdmin());
 
         return $this;
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return bool
+     */
+    public function canMakeServiceWorker(Service $service): bool
+    {
+        return $this->isServiceWorker($service);
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return bool
+     */
+    public function canMakeServiceAdmin(Service $service): bool
+    {
+        return $this->isServiceAdmin($service);
+    }
+
+    /**
+     * @param \App\Models\Organisation $organisation
+     * @return bool
+     */
+    public function canMakeOrganisationAdmin(Organisation $organisation): bool
+    {
+        return $this->isOrganisationAdmin($organisation);
+    }
+
+    /**
+     * @return bool
+     */
+    public function canMakeGlobalAdmin(): bool
+    {
+        return $this->isGlobalAdmin();
+    }
+
+    /**
+     * @return bool
+     */
+    public function canMakeSuperAdmin(): bool
+    {
+        return $this->isSuperAdmin();
+    }
+
+    /**
+     * @param \App\Models\User $subject
+     * @param \App\Models\Service $service
+     * @return bool
+     */
+    public function canRevokeServiceWorker(User $subject, Service $service): bool
+    {
+        return $this->canRevokeRole($subject, $service->organisation, $service);
+    }
+
+    /**
+     * @param \App\Models\User $subject
+     * @param \App\Models\Service $service
+     * @return bool
+     */
+    public function canRevokeServiceAdmin(User $subject, Service $service): bool
+    {
+        return $this->canRevokeRole($subject, $service->organisation, $service);
+    }
+
+    /**
+     * @param \App\Models\User $subject
+     * @param \App\Models\Organisation $organisation
+     * @return bool
+     */
+    public function canRevokeOrganisationAdmin(User $subject, Organisation $organisation): bool
+    {
+        return $this->canRevokeRole($subject, $organisation);
+    }
+
+    /**
+     * @param \App\Models\User $subject
+     * @return bool
+     */
+    public function canRevokeGlobalAdmin(User $subject): bool
+    {
+        return $this->canRevokeRole($subject);
+    }
+
+    /**
+     * @param \App\Models\User $subject
+     * @return bool
+     */
+    public function canRevokeSuperAdmin(User $subject): bool
+    {
+        return $this->canRevokeRole($subject);
     }
 }
