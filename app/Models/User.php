@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Exceptions\CannotRevokeRoleException;
 use App\Models\Mutators\UserMutators;
 use App\Models\Relationships\UserRelationships;
 use App\Models\Scopes\UserScopes;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -249,12 +249,12 @@ class User extends Authenticatable
     /**
      * @param \App\Models\Service $service
      * @return \App\Models\User
-     * @throws \Exception
+     * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeServiceWorker(Service $service)
     {
         if ($this->hasRole(Role::serviceAdmin(), $service)) {
-            throw new Exception('Cannot revoke service worker role when user is a service admin');
+            throw new CannotRevokeRoleException('Cannot revoke service worker role when user is a service admin');
         }
 
         return $this->removeRoll(Role::serviceWorker(), $service);
@@ -263,12 +263,12 @@ class User extends Authenticatable
     /**
      * @param \App\Models\Service $service
      * @return \App\Models\User
-     * @throws \Exception
+     * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeServiceAdmin(Service $service)
     {
         if ($this->hasRole(Role::organisationAdmin(), $service->organisation)) {
-            throw new Exception('Cannot revoke service admin role when user is an organisation admin');
+            throw new CannotRevokeRoleException('Cannot revoke service admin role when user is an organisation admin');
         }
 
         $this->revokeServiceWorker($service);
@@ -280,12 +280,12 @@ class User extends Authenticatable
     /**
      * @param \App\Models\Organisation $organisation
      * @return \App\Models\User
-     * @throws \Exception
+     * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeOrganisationAdmin(Organisation $organisation)
     {
         if ($this->hasRole(Role::globalAdmin())) {
-            throw new Exception('Cannot revoke organisation admin role when user is an global admin');
+            throw new CannotRevokeRoleException('Cannot revoke organisation admin role when user is an global admin');
         }
 
         foreach ($organisation->services as $service) {
@@ -298,12 +298,12 @@ class User extends Authenticatable
 
     /**
      * @return \App\Models\User
-     * @throws \Exception
+     * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeGlobalAdmin()
     {
         if ($this->hasRole(Role::superAdmin())) {
-            throw new Exception('Cannot revoke global admin role when user is an super admin');
+            throw new CannotRevokeRoleException('Cannot revoke global admin role when user is an super admin');
         }
 
         foreach (Organisation::all() as $organisation) {
@@ -316,7 +316,7 @@ class User extends Authenticatable
 
     /**
      * @return \App\Models\User
-     * @throws \Exception
+     * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeSuperAdmin()
     {
