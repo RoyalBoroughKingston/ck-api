@@ -514,6 +514,40 @@ class UsersTest extends TestCase
      * ==================================================
      */
 
+    public function test_guest_cannot_view_one()
+    {
+        factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        $response = $this->json('GET', "/core/v1/users/{$user->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_can_view_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/users/{$user->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+    }
+
     /*
      * ==================================================
      * Update a specific user.

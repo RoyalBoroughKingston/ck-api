@@ -88,6 +88,8 @@ class UserController extends Controller
                 }
             }
 
+            event(EndpointHit::onCreate($request, "Created user [{$user->id}]", $user));
+
             return new UserResource($user);
         });
     }
@@ -95,12 +97,15 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\User\ShowRequest $request
+     * @param  \App\Models\User $user
+     * @return \App\Http\Resources\UserResource
      */
     public function show(ShowRequest $request, User $user)
     {
-        //
+        event(EndpointHit::onRead($request, "Viewed user [{$user->id}]", $user));
+
+        return new UserResource($user->load('userRoles.service', 'userRoles.organisation'));
     }
 
     /**

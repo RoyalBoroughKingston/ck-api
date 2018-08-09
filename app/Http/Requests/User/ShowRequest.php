@@ -13,6 +13,10 @@ class ShowRequest extends FormRequest
      */
     public function authorize()
     {
+        if ($this->user()->isServiceWorker()) {
+            return true;
+        }
+
         return false;
     }
 
