@@ -5,7 +5,7 @@ properties:
     format: uuid
   first_name:
     type: string
-  last_nane:
+  last_name:
     type: string
   email:
     type: string
