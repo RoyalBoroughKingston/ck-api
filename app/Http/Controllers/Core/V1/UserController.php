@@ -9,8 +9,12 @@ use App\Http\Requests\User\ShowRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Organisation;
+use App\Models\Role;
+use App\Models\Service;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -42,12 +46,50 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\User\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            /** @var \App\Models\User $user */
+            $user = User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => bcrypt($request->password),
+            ]);
+
+            foreach ($request->roles as $role) {
+                $service = isset($role['service_id'])
+                    ? Service::findOrFail($role['service_id'])
+                    : null;
+                $organisation = isset($role['organisation_id'])
+                    ? Organisation::findOrFail($role['organisation_id'])
+                    : null;
+
+                switch ($role['role']) {
+                    case Role::NAME_SERVICE_WORKER:
+                        $user->makeServiceWorker($service);
+                        break;
+                    case Role::NAME_SERVICE_ADMIN:
+                        $user->makeServiceAdmin($service);
+                        break;
+                    case Role::NAME_ORGANISATION_ADMIN:
+                        $user->makeOrganisationAdmin($organisation);
+                        break;
+                    case Role::NAME_GLOBAL_ADMIN:
+                        $user->makeGlobalAdmin();
+                        break;
+                    case Role::NAME_SUPER_ADMIN:
+                        $user->makeSuperAdmin();
+                        break;
+                }
+            }
+
+            return new UserResource($user);
+        });
     }
 
     /**

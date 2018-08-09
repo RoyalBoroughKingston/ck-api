@@ -59,7 +59,13 @@ class UsersTest extends TestCase
      */
     public function test_guest_cannot_create_one()
     {
-        $this->markTestIncomplete();
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SUPER_ADMIN,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /*
@@ -67,7 +73,17 @@ class UsersTest extends TestCase
      */
     public function test_service_worker_cannot_create_one()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SUPER_ADMIN,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /*
@@ -75,27 +91,88 @@ class UsersTest extends TestCase
      */
     public function test_service_admin_cannot_create_service_worker_for_another_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => factory(Service::class)->create()->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_service_admin_can_create_service_worker_for_their_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => $service->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $createdUserId = json_decode($response->getContent(), true)['data']['id'];
+        $createdUser = User::findOrFail($createdUserId);
+        $this->assertTrue($createdUser->isServiceWorker($service));
+        $this->assertEquals(1, $createdUser->roles()->count());
     }
 
     public function test_service_admin_cannot_create_service_admin_for_another_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_ADMIN,
+                'service_id' => factory(Service::class)->create()->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_service_admin_can_create_service_admin_for_their_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_ADMIN,
+                'service_id' => $service->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $createdUserId = json_decode($response->getContent(), true)['data']['id'];
+        $createdUser = User::findOrFail($createdUserId);
+        $this->assertTrue($createdUser->isServiceWorker($service));
+        $this->assertTrue($createdUser->isServiceAdmin($service));
+        $this->assertEquals(2, $createdUser->roles()->count());
     }
 
     public function test_service_admin_cannot_create_organisation_admin()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            ['role' => Role::NAME_ORGANISATION_ADMIN]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /*
@@ -210,4 +287,26 @@ class UsersTest extends TestCase
      * Delete a specific user.
      * ==================================================
      */
+
+    /*
+     * ==================================================
+     * Helpers.
+     * ==================================================
+     */
+
+    /**
+     * @param array $roles
+     * @return array
+     */
+    protected function getCreateUserPayload(array $roles): array
+    {
+        return [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => $this->faker->phoneNumber,
+            'password' => 'password',
+            'roles' => $roles,
+        ];
+    }
 }
