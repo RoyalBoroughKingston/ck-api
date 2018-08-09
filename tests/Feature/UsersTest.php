@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
@@ -169,7 +170,10 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_ORGANISATION_ADMIN]
+            [
+                'role' => Role::NAME_ORGANISATION_ADMIN,
+                'organisation_id' => $service->organisation->id,
+            ]
         ]));
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
@@ -180,37 +184,126 @@ class UsersTest extends TestCase
      */
     public function test_organisation_admin_cannot_create_service_worker_for_another_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => factory(Service::class)->create()->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_organisation_admin_can_create_service_worker_for_their_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => $service->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $createdUserId = json_decode($response->getContent(), true)['data']['id'];
+        $createdUser = User::findOrFail($createdUserId);
+        $this->assertTrue($createdUser->isServiceWorker($service));
+        $this->assertEquals(1, $createdUser->roles()->count());
     }
 
     public function test_organisation_admin_cannot_create_service_admin_for_another_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_ADMIN,
+                'service_id' => factory(Service::class)->create()->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_organisation_admin_can_create_service_admin_for_their_service()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_ADMIN,
+                'service_id' => $service->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $createdUserId = json_decode($response->getContent(), true)['data']['id'];
+        $createdUser = User::findOrFail($createdUserId);
+        $this->assertTrue($createdUser->isServiceWorker($service));
+        $this->assertTrue($createdUser->isServiceAdmin($service));
+        $this->assertEquals(2, $createdUser->roles()->count());
     }
 
     public function test_organisation_admin_cannot_create_organisation_admin_for_another_organisation()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_ORGANISATION_ADMIN,
+                'organisation_id' => factory(Organisation::class)->create()->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_organisation_admin_can_create_organisation_admin_for_their_organisation()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_ORGANISATION_ADMIN,
+                'organisation_id' => $service->organisation->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $createdUserId = json_decode($response->getContent(), true)['data']['id'];
+        $createdUser = User::findOrFail($createdUserId);
+        $this->assertTrue($createdUser->isServiceWorker($service));
+        $this->assertTrue($createdUser->isServiceAdmin($service));
+        $this->assertTrue($createdUser->isOrganisationAdmin($service->organisation));
+        $this->assertEquals(3, $createdUser->roles()->count());
     }
 
     public function test_organisation_admin_cannot_create_global_admin()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            ['role' => Role::NAME_GLOBAL_ADMIN]
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /*
