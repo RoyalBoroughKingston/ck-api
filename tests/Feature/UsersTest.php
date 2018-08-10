@@ -1467,6 +1467,53 @@ class UsersTest extends TestCase
         $this->assertSoftDeleted((new User())->getTable(), ['id' => $subject->id]);
     }
 
+    public function test_guest_cannot_delete_organisation_admin()
+    {
+        $service = factory(Service::class)->create();
+        $subject = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        $response = $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_organisation_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceWorker($service);
+        $subject = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($invoker);
+
+        $response = $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_delete_organisation_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceAdmin($service);
+        $subject = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($invoker);
+
+        $response = $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_can_delete_organisation_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        $subject = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($invoker);
+
+        $response = $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertSoftDeleted((new User())->getTable(), ['id' => $subject->id]);
+    }
+
     /*
      * ==================================================
      * Helpers.
