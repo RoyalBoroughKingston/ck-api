@@ -1432,6 +1432,41 @@ class UsersTest extends TestCase
         $this->assertSoftDeleted((new User())->getTable(), ['id' => $subject->id]);
     }
 
+    public function test_guest_cannot_delete_service_admin()
+    {
+        $service = factory(Service::class)->create();
+        $subject = factory(User::class)->create()->makeServiceAdmin($service);
+
+        $response = $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_service_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceWorker($service);
+        $subject = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($invoker);
+
+        $response = $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_can_delete_service_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceAdmin($service);
+        $subject = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($invoker);
+
+        $response = $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertSoftDeleted((new User())->getTable(), ['id' => $subject->id]);
+    }
+
     /*
      * ==================================================
      * Helpers.
