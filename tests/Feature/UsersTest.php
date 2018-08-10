@@ -884,6 +884,245 @@ class UsersTest extends TestCase
     }
 
     /*
+     * Global Admin Invoked.
+     */
+
+    public function test_global_admin_can_update_service_worker()
+    {
+        $invoker = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($invoker);
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+    }
+
+    public function test_global_admin_can_update_service_admin()
+    {
+        $invoker = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($invoker);
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+            ],
+        ]);
+    }
+
+    public function test_global_admin_can_update_organisation_admin()
+    {
+        $invoker = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($invoker);
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_ORGANISATION_ADMIN,
+                    'organisation_id' => $service->organisation->id,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => $service->id,
+            ]
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_SERVICE_ADMIN,
+                'service_id' => $service->id,
+            ]
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_ORGANISATION_ADMIN,
+                'organisation_id' => $service->organisation->id,
+            ]
+        ]);
+    }
+
+    public function test_global_admin_can_update_global_admin()
+    {
+        $invoker = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($invoker);
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_ORGANISATION_ADMIN,
+                    'organisation_id' => $service->organisation->id,
+                ],
+                ['role' => Role::NAME_GLOBAL_ADMIN],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => $service->id,
+            ]
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_SERVICE_ADMIN,
+                'service_id' => $service->id,
+            ]
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_ORGANISATION_ADMIN,
+                'organisation_id' => $service->organisation->id,
+            ]
+        ]);
+        $response->assertJsonFragment([
+            ['role' => Role::NAME_GLOBAL_ADMIN]
+        ]);
+    }
+
+    public function test_global_admin_cannot_update_super_admin()
+    {
+        $invoker = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($invoker);
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_ORGANISATION_ADMIN,
+                    'organisation_id' => $service->organisation->id,
+                ],
+                ['role' => Role::NAME_GLOBAL_ADMIN],
+                ['role' => Role::NAME_SUPER_ADMIN],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /*
      * ==================================================
      * Delete a specific user.
      * ==================================================
