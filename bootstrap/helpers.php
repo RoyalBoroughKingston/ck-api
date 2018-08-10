@@ -40,3 +40,19 @@ if (!function_exists('array_pluck_multi')) {
         return collect($array)->pluck($value)->toArray();
     }
 }
+
+if (!function_exists('array_diff_multi')) {
+    /**
+     * Diffs an array from a multidimensional array.
+     *
+     * @param array $arrayA
+     * @param array $arrayB
+     * @return array
+     */
+    function array_diff_multi(array $arrayA, array $arrayB): array
+    {
+        return array_udiff($arrayA, $arrayB, function ($arrayA, $arrayB): int {
+            return count(array_diff_assoc($arrayA, $arrayB));
+        });
+    }
+}

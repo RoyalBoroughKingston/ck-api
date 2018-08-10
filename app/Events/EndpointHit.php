@@ -3,8 +3,8 @@
 namespace App\Events;
 
 use App\Models\Audit;
-use App\Models\Model;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -56,7 +56,7 @@ class EndpointHit
      * @param \Illuminate\Http\Request $request
      * @param string $action
      * @param string $description
-     * @param \App\Models\Model|null $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      */
     protected function __construct(Request $request, string $action, string $description, Model $model = null)
     {
@@ -73,7 +73,7 @@ class EndpointHit
     /**
      * @param \Illuminate\Http\Request $request
      * @param string $message
-     * @param \App\Models\Model|null $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onCreate(Request $request, string $message, Model $model = null): self
@@ -84,7 +84,7 @@ class EndpointHit
     /**
      * @param \Illuminate\Http\Request $request
      * @param string $message
-     * @param \App\Models\Model|null $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onRead(Request $request, string $message, Model $model = null): self
@@ -95,7 +95,7 @@ class EndpointHit
     /**
      * @param \Illuminate\Http\Request $request
      * @param string $message
-     * @param \App\Models\Model|null $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onUpdate(Request $request, string $message, Model $model = null): self
@@ -106,7 +106,7 @@ class EndpointHit
     /**
      * @param \Illuminate\Http\Request $request
      * @param string $message
-     * @param \App\Models\Model|null $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onDelete(Request $request, string $message, Model $model = null): self

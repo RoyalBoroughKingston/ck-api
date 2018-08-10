@@ -12,12 +12,18 @@ class Role extends Model
     use RoleRelationships;
     use RoleScopes;
 
+    const NAME_SERVICE_WORKER = 'Service Worker';
+    const NAME_SERVICE_ADMIN = 'Service Admin';
+    const NAME_ORGANISATION_ADMIN = 'Organisation Admin';
+    const NAME_GLOBAL_ADMIN = 'Global Admin';
+    const NAME_SUPER_ADMIN = 'Super Admin';
+
     /**
      * @return \App\Models\Role
      */
     public static function serviceWorker(): self
     {
-        return static::where('name', 'Service Worker')->firstOrFail();
+        return static::where('name', static::NAME_SERVICE_WORKER)->firstOrFail();
     }
 
     /**
@@ -25,7 +31,7 @@ class Role extends Model
      */
     public static function serviceAdmin(): self
     {
-        return static::where('name', 'Service Admin')->firstOrFail();
+        return static::where('name', static::NAME_SERVICE_ADMIN)->firstOrFail();
     }
 
     /**
@@ -33,7 +39,7 @@ class Role extends Model
      */
     public static function organisationAdmin(): self
     {
-        return static::where('name', 'Organisation Admin')->firstOrFail();
+        return static::where('name', static::NAME_ORGANISATION_ADMIN)->firstOrFail();
     }
 
     /**
@@ -41,7 +47,7 @@ class Role extends Model
      */
     public static function globalAdmin(): self
     {
-        return static::where('name', 'Global Admin')->firstOrFail();
+        return static::where('name', static::NAME_GLOBAL_ADMIN)->firstOrFail();
     }
 
     /**
@@ -49,6 +55,6 @@ class Role extends Model
      */
     public static function superAdmin(): self
     {
-        return static::where('name', 'Super Admin')->firstOrFail();
+        return static::where('name', static::NAME_SUPER_ADMIN)->firstOrFail();
     }
 }
