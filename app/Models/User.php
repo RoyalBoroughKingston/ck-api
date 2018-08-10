@@ -74,12 +74,12 @@ class User extends Authenticatable
         }
 
         return $this->userRoles()
-            ->where('user_roles.role_id', $role->id)
+            ->where('role_id', $role->id)
             ->when($service, function (Builder $query) use ($service) {
-                return $query->where('user_roles.service_id', $service->id);
+                return $query->where('service_id', $service->id);
             })
             ->when($organisation, function (Builder $query) use ($organisation) {
-                return $query->where('user_roles.organisation_id', $organisation->id);
+                return $query->where('organisation_id', $organisation->id);
             })
             ->exists();
     }
@@ -357,7 +357,7 @@ class User extends Authenticatable
      */
     public function revokeServiceAdmin(Service $service)
     {
-        if ($this->hasRole(Role::organisationAdmin(), $service->organisation)) {
+        if ($this->hasRole(Role::organisationAdmin(), null, $service->organisation)) {
             throw new CannotRevokeRoleException('Cannot revoke service admin role when user is an organisation admin');
         }
 

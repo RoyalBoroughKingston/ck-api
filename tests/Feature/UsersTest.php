@@ -627,6 +627,262 @@ class UsersTest extends TestCase
         ]);
     }
 
+    public function test_service_admin_can_update_service_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($invoker);
+
+        $subject = factory(User::class)->create()->makeServiceAdmin($service);
+
+        $response = $this->json('PUT', "/core/v1/users/{$subject->id}", [
+            'first_name' => $subject->first_name,
+            'last_name' => $subject->last_name,
+            'email' => $subject->email,
+            'phone' => $subject->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $subject->first_name,
+            'last_name' => $subject->last_name,
+            'email' => $subject->email,
+            'phone' => $subject->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+            ],
+        ]);
+    }
+
+    public function test_service_admin_cannot_update_organisation_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceAdmin($service);
+        Passport::actingAs($invoker);
+
+        $subject = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        $response = $this->json('PUT', "/core/v1/users/{$subject->id}", [
+            'first_name' => $subject->first_name,
+            'last_name' => $subject->last_name,
+            'email' => $subject->email,
+            'phone' => $subject->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_ORGANISATION_ADMIN,
+                    'organisation_id' => $service->organisation->id,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /*
+     * Organisation Admin Invoked.
+     */
+    public function test_organisation_admin_can_update_service_worker()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($invoker);
+
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+    }
+
+    public function test_organisation_admin_can_update_service_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($invoker);
+
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+            ],
+        ]);
+    }
+
+    public function test_organisation_admin_can_update_organisation_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($invoker);
+
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_ORGANISATION_ADMIN,
+                    'organisation_id' => $service->organisation->id,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => $service->id,
+            ]
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_SERVICE_ADMIN,
+                'service_id' => $service->id,
+            ]
+        ]);
+        $response->assertJsonFragment([
+            [
+                'role' => Role::NAME_ORGANISATION_ADMIN,
+                'organisation_id' => $service->organisation->id,
+            ]
+        ]);
+    }
+
+    public function test_organisation_admin_cannot_update_global_admin()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        Passport::actingAs($invoker);
+
+        $user = factory(User::class)->create()->makeGlobalAdmin($service->organisation);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_ORGANISATION_ADMIN,
+                    'organisation_id' => $service->organisation->id,
+                ],
+                [
+                    'role' => Role::NAME_GLOBAL_ADMIN,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
     /*
      * ==================================================
      * Delete a specific user.

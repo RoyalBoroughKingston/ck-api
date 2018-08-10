@@ -81,7 +81,7 @@ class UpdateRequest extends FormRequest
 
             switch ($newRole['role']) {
                 case Role::NAME_SERVICE_WORKER:
-                    if (!$user->canMakeServiceAdmin($service)) {
+                    if (!$user->canMakeServiceWorker($service)) {
                         return false;
                     }
                     break;
