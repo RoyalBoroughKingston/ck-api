@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class RolesTableSeeder extends Seeder
+class SeedDefaultRoleData extends Migration
 {
     /**
-     * Run the database seeds.
+     * Run the migrations.
      *
      * @return void
      */
-    public function run()
+    public function up()
     {
         $now = now();
 
@@ -48,5 +48,15 @@ class RolesTableSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        DB::table('roles')->truncate();
     }
 }

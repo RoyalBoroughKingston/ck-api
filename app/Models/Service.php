@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
@@ -12,9 +13,11 @@ use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\Rule;
+use ScoutElastic\Searchable;
 
 class Service extends Model implements AppliesUpdateRequests
 {
+    use Searchable;
     use ServiceMutators;
     use ServiceRelationships;
     use ServiceScopes;
@@ -44,6 +47,89 @@ class Service extends Model implements AppliesUpdateRequests
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * The Elasticsearch index configuration class.
+     *
+     * @var string
+     */
+    protected $indexConfigurator = ServicesIndexConfigurator::class;
+
+    /**
+     * Allows you to set different search algorithms.
+     *
+     * @var array
+     */
+    protected $searchRules = [
+        //
+    ];
+
+    /**
+     * The mapping for the fields.
+     *
+     * @var array
+     */
+    protected $mapping = [
+        'properties' => [
+            'name' => [
+                'type' => 'text',
+                'fields' => [
+                    'keyword' => [
+                        'type' => 'keyword',
+                    ],
+                ],
+            ],
+            'description' => [
+                'type' => 'text',
+            ],
+            'is_free' => [
+                'type' => 'boolean',
+            ],
+            'status' => [
+                'type' => 'keyword',
+            ],
+            'organisation_name' => [
+                'type' => 'text',
+                'fields' => [
+                    'keyword' => [
+                        'type' => 'keyword',
+                    ],
+                ],
+            ],
+            'taxonomy_categories' => [
+                'type' => 'keyword',
+            ],
+            'collection_categories' => [
+                'type' => 'keyword',
+            ],
+            'collection_personas' => [
+                'type' => 'keyword',
+            ],
+            'locations' => [
+                'type' => 'geo_point',
+            ],
+        ]
+    ];
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+            'description' => $this->description,
+            'is_free' => $this->is_free,
+            'status' => $this->status,
+            'organisation_name' => $this->organisation->name,
+            'taxonomy_categories' => $this->taxonomies->pluck('name')->toArray(),
+            'collection_categories' => null, // TODO
+            'collection_personas' => null, // TODO
+            'locations' => $this->locations->map->only('lat', 'lon')->toArray(),
+        ];
+    }
 
     /**
      * Check if the update request is valid.

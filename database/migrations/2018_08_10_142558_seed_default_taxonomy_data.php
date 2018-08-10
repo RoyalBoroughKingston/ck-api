@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Storage;
 
-class TaxonomiesTableSeeder extends Seeder
+class SeedDefaultTaxonomyData extends Migration
 {
     /**
      * @var \Illuminate\Support\Carbon
@@ -12,23 +12,26 @@ class TaxonomiesTableSeeder extends Seeder
     protected $now;
 
     /**
-     * TaxonomiesTableSeeder constructor.
-     */
-    public function __construct()
-    {
-        $this->now = now();
-    }
-
-    /**
-     * Run the database seeds.
+     * Run the migrations.
      *
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function run()
+    public function up()
     {
+        $this->now = now();
         $this->seedCategoryTaxonomies();
         $this->seedOrganisationTaxonomies();
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        DB::table('taxonomies')->truncate();
     }
 
     /**

@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class ReportTypesTableSeeder extends Seeder
+class SeedDefaultReportTypeData extends Migration
 {
     /**
-     * Run the database seeds.
+     * Run the migrations.
      *
      * @return void
      */
-    public function run()
+    public function up()
     {
         $now = now();
 
@@ -20,5 +20,15 @@ class ReportTypesTableSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        DB::table('report_types')->truncate();
     }
 }
