@@ -10,6 +10,7 @@ use App\Http\Requests\User\ShowRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
@@ -193,11 +194,18 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Http\Requests\User\DestroyRequest $request
+     * @param  \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, User $user)
     {
-        //
+        return DB::transaction(function () use ($request, $user) {
+            event(EndpointHit::onDelete($request, "Deleted use [{$user->id}]", $user));
+
+            $user->delete();
+
+            return new ResourceDeleted('user');
+        });
     }
 }

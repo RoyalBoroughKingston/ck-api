@@ -230,6 +230,15 @@ class User extends Authenticatable
     }
 
     /**
+     * @param \App\Models\User $subject
+     * @return bool
+     */
+    public function canDelete(User $subject): bool
+    {
+        return $this->canUpdate($subject);
+    }
+
+    /**
      * @param null|\App\Models\Service $service
      * @return bool
      */
