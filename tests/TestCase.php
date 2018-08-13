@@ -87,6 +87,5 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->artisan('scout:flush', ['model' => Service::class]);
-        $this->artisan('scout:import', ['model' => Service::class]);
     }
 }

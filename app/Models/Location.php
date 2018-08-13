@@ -97,7 +97,7 @@ class Location extends Model implements AppliesUpdateRequests
      */
     public function touchServices(): Location
     {
-        $this->services()->toBase()->update(['services.updated_at' => now()]);
+        $this->services()->get()->each->save();
 
         return $this;
     }

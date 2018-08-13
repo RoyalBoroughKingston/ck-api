@@ -60,7 +60,7 @@ class Taxonomy extends Model
      */
     public function touchServices(): Taxonomy
     {
-        $this->services()->toBase()->update(['services.updated_at' => now()]);
+        $this->services()->get()->each->save();
 
         return $this;
     }

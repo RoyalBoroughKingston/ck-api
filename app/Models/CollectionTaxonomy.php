@@ -17,7 +17,7 @@ class CollectionTaxonomy extends Model
      */
     public function touchServices(): CollectionTaxonomy
     {
-        static::services($this)->toBase()->update(['services.updated_at' => now()]);
+        static::services($this)->get()->each->save();
 
         return $this;
     }

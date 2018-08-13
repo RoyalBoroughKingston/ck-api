@@ -17,7 +17,7 @@ class ServiceTaxonomy extends Model
      */
     public function touchService(): ServiceTaxonomy
     {
-        $this->service()->toBase()->update(['services.updated_at' => now()]);
+        $this->service->save();
 
         return $this;
     }

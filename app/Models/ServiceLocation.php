@@ -121,7 +121,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      */
     public function touchService(): ServiceLocation
     {
-        $this->service()->toBase()->update(['services.updated_at' => now()]);
+        $this->service->save();
 
         return $this;
     }

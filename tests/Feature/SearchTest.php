@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Organisation;
 use App\Models\Service;
+use App\Models\Taxonomy;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
@@ -50,5 +51,19 @@ class SearchTest extends TestCase
         $results = json_decode($response->getContent(), true)['data'];
         $this->assertEquals($serviceWithRelevantServiceName->id, $results[0]['id']);
         $this->assertEquals($serviceWithRelevantOrganisationName->id, $results[1]['id']);
+    }
+
+    public function test_query_matches_taxonomy_name()
+    {
+        $service = factory(Service::class)->create();
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => $taxonomy->name,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service->id]);
     }
 }

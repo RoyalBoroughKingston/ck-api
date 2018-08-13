@@ -20,7 +20,7 @@ class Collection extends Model
      */
     public function touchServices(): Collection
     {
-        static::services($this)->toBase()->update(['services.updated_at' => now()]);
+        static::services($this)->get()->each->save();
 
         return $this;
     }
