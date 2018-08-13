@@ -37,20 +37,18 @@ class SearchTest extends TestCase
         ]);
     }
 
-    public function test_query_ranks_service_name_above_organisation_name()
+    public function test_query_matches_service_description()
     {
-        $organisation = factory(Organisation::class)->create(['name' => 'Test Name']);
-        $serviceWithRelevantOrganisationName = factory(Service::class)->create(['organisation_id' => $organisation->id]);
-        $serviceWithRelevantServiceName = factory(Service::class)->create(['name' => 'Test Name']);
+        $service = factory(Service::class)->create();
 
         $response = $this->json('POST', '/core/v1/search', [
-            'query' => 'Test Name',
+            'query' => $service->description,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $results = json_decode($response->getContent(), true)['data'];
-        $this->assertEquals($serviceWithRelevantServiceName->id, $results[0]['id']);
-        $this->assertEquals($serviceWithRelevantOrganisationName->id, $results[1]['id']);
+        $response->assertJsonFragment([
+            'id' => $service->id,
+        ]);
     }
 
     public function test_query_matches_taxonomy_name()
@@ -65,5 +63,35 @@ class SearchTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $service->id]);
+    }
+
+    public function test_query_matches_organisation_name()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => $service->organisation->name,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $service->id,
+        ]);
+    }
+
+    public function test_query_ranks_service_name_above_organisation_name()
+    {
+        $organisation = factory(Organisation::class)->create(['name' => 'Test Name']);
+        $serviceWithRelevantOrganisationName = factory(Service::class)->create(['organisation_id' => $organisation->id]);
+        $serviceWithRelevantServiceName = factory(Service::class)->create(['name' => 'Test Name']);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'Test Name',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $results = json_decode($response->getContent(), true)['data'];
+        $this->assertEquals($serviceWithRelevantServiceName->id, $results[0]['id']);
+        $this->assertEquals($serviceWithRelevantOrganisationName->id, $results[1]['id']);
     }
 }
