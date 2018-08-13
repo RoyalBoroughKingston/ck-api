@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Collection;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
@@ -103,6 +104,22 @@ class SearchTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'homeless',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service->id]);
+    }
+
+    public function test_filter_by_category_works()
+    {
+        $service = factory(Service::class)->create();
+        $collection = Collection::categories()->firstOrFail();
+        $taxonomy = $collection->taxonomies()->firstOrFail();
+        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
+        $service->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'category' => $collection->name,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);

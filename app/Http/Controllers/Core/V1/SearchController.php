@@ -21,7 +21,11 @@ class SearchController extends Controller
      */
     public function __construct()
     {
-        $this->query = [];
+        $this->query = [
+            'query' => [
+                'bool' => []
+            ]
+        ];
     }
 
     /**
@@ -66,28 +70,20 @@ class SearchController extends Controller
      */
     protected function applyQuery(string $term)
     {
-        // TODO
-
-        $this->query = [
-            'query' => [
-                'bool' => [
-                    'should' => [
-                        ['match' => ['name' => [
-                            'query' => $term,
-                            'boost' => 4,
-                        ]]],
-                        ['match' => ['description' => [
-                            'query' => $term,
-                            'boost' => 3,
-                        ]]],
-                        ['match' => ['taxonomy_categories' => [
-                            'query' => $term,
-                            'boost' => 2,
-                        ]]],
-                        ['match' => ['organisation_name' => $term]],
-                    ]
-                ]
-            ]
+        $this->query['query']['bool']['should'] = [
+            ['match' => ['name' => [
+                'query' => $term,
+                'boost' => 4,
+            ]]],
+            ['match' => ['description' => [
+                'query' => $term,
+                'boost' => 3,
+            ]]],
+            ['match' => ['taxonomy_categories' => [
+                'query' => $term,
+                'boost' => 2,
+            ]]],
+            ['match' => ['organisation_name' => $term]],
         ];
     }
 
@@ -96,7 +92,11 @@ class SearchController extends Controller
      */
     protected function applyCategory(string $category)
     {
-        // TODO
+        $this->query['query']['bool']['filter'] = [
+            'term' => [
+                'collection_categories' => $category,
+            ]
+        ];
     }
 
     /**
@@ -104,7 +104,11 @@ class SearchController extends Controller
      */
     protected function applyPersona(string $persona)
     {
-        // TODO
+        $this->query['query']['bool']['filter'] = [
+            'term' => [
+                'collection_personas' => $persona,
+            ]
+        ];
     }
 
     /**
