@@ -71,19 +71,35 @@ class SearchController extends Controller
     protected function applyQuery(string $term)
     {
         $this->query['query']['bool']['should'] = [
-            ['match' => ['name' => [
-                'query' => $term,
-                'boost' => 4,
-            ]]],
-            ['match' => ['description' => [
-                'query' => $term,
-                'boost' => 3,
-            ]]],
-            ['match' => ['taxonomy_categories' => [
-                'query' => $term,
-                'boost' => 2,
-            ]]],
-            ['match' => ['organisation_name' => $term]],
+            [
+                'match' => [
+                    'name' => [
+                        'query' => $term,
+                        'boost' => 4,
+                    ]
+                ]
+            ],
+            [
+                'match' => [
+                    'description' => [
+                        'query' => $term,
+                        'boost' => 3,
+                    ]
+                ]
+            ],
+            [
+                'match' => [
+                    'taxonomy_categories' => [
+                        'query' => $term,
+                        'boost' => 2,
+                    ]
+                ]
+            ],
+            [
+                'match' => [
+                    'organisation_name' => $term,
+                ]
+            ],
         ];
     }
 
@@ -94,7 +110,7 @@ class SearchController extends Controller
     {
         $this->query['query']['bool']['filter'] = [
             'term' => [
-                'collection_categories' => $category,
+                'collection_categories' => $category
             ]
         ];
     }
@@ -106,7 +122,7 @@ class SearchController extends Controller
     {
         $this->query['query']['bool']['filter'] = [
             'term' => [
-                'collection_personas' => $persona,
+                'collection_personas' => $persona
             ]
         ];
     }

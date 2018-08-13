@@ -125,4 +125,20 @@ class SearchTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $service->id]);
     }
+
+    public function test_filter_by_persona_works()
+    {
+        $service = factory(Service::class)->create();
+        $collection = Collection::personas()->firstOrFail();
+        $taxonomy = $collection->taxonomies()->firstOrFail();
+        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
+        $service->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'persona' => $collection->name,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service->id]);
+    }
 }
