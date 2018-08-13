@@ -5,6 +5,7 @@ php:
 
 services:
   - redis-server
+  - elasticsearch
 
 addons:
   apt:
@@ -37,6 +38,7 @@ install:
   - npm run dev
 
 before_script:
+  - sleep 10 # Needed to give Elasticsearch time to setup
   - mysql -e 'create database ck_testing;'
   - php artisan migrate --force --seed
   - php artisan passport:keys
