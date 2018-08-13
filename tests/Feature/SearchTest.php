@@ -94,4 +94,18 @@ class SearchTest extends TestCase
         $this->assertEquals($serviceWithRelevantServiceName->id, $results[0]['id']);
         $this->assertEquals($serviceWithRelevantOrganisationName->id, $results[1]['id']);
     }
+
+    public function test_query_matches_word_from_service_description()
+    {
+        $service = factory(Service::class)->create([
+            'description' => 'This is a service that helps to homeless find temporary housing.',
+        ]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'homeless',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service->id]);
+    }
 }
