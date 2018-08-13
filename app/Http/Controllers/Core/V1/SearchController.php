@@ -6,6 +6,7 @@ use App\Geocode\Coordinate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Search\Request;
 use App\Http\Resources\ServiceResource;
+use App\Models\SearchHistory;
 use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 
@@ -53,6 +54,9 @@ class SearchController extends Controller
 
         // Perform the search.
         $services = Service::searchRaw($this->query);
+
+        // Log the metrics.
+        $this->logMetrics($services);
 
         return $this->parseToResource($services);
     }
@@ -147,6 +151,17 @@ class SearchController extends Controller
                 ]
             ];
         }
+    }
+
+    /**
+     * @param array $response
+     */
+    protected function logMetrics(array $response)
+    {
+        SearchHistory::create([
+            'query' => $this->query,
+            'count' => $response['hits']['total'],
+        ]);
     }
 
     /**
