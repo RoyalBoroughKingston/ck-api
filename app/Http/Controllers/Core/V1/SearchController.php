@@ -52,9 +52,6 @@ class SearchController extends Controller
         // Apply order.
         $this->applyOrder($request->order ?? 'relevance', $location ?? null);
 
-        // Apply pagination.
-        $this->applyPagination(15, $request->page ?? 1);
-
         // Perform the search.
         $services = Service::searchRaw($this->query);
 
@@ -151,15 +148,6 @@ class SearchController extends Controller
                 ]
             ];
         }
-    }
-
-    /**
-     * @param int $perPage
-     * @param int $page
-     */
-    protected function applyPagination(int $perPage, int $page)
-    {
-        // TODO
     }
 
     /**
