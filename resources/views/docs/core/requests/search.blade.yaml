@@ -16,5 +16,14 @@ properties:
       - relevance
       - distance
   location:
-    type: string
-    example: 5.78263,-52.12710
+    type: object
+    required:
+      - lat
+      - lon
+    properties:
+      lat:
+        type: float
+        example: 5.78263
+      lon:
+        type: float
+        example: -52.12710

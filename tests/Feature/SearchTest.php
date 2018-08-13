@@ -163,7 +163,10 @@ class SearchTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/search', [
             'order' => 'distance',
-            'location' => '20,20',
+            'location' => [
+                'lat' => 20,
+                'lon' => 20,
+            ],
         ]);
 
         $response->assertStatus(Response::HTTP_OK);

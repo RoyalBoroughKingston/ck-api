@@ -45,8 +45,7 @@ class SearchController extends Controller
 
         // If ordering by distance, then parse the location.
         if ($request->order === 'distance') {
-            list($lat, $lon) = explode(',', $request->location);
-            $location = new Coordinate($lat, $lon);
+            $location = new Coordinate($request->location['lat'], $request->location['lon']);
         }
 
         // Apply order.
