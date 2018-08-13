@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Models\Collection;
 use App\Models\Organisation;
 use App\Models\Service;
+use App\Models\ServiceLocation;
 use App\Models\Taxonomy;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class SearchTest extends TestCase
@@ -140,5 +142,35 @@ class SearchTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $service->id]);
+    }
+
+    public function test_order_by_location_works()
+    {
+        $service = factory(Service::class)->create();
+        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service->id]);
+        DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 15, 'lon' => 15]);
+        $service->save();
+
+        $service2 = factory(Service::class)->create();
+        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 20, 'lon' => 20]);
+        $service2->save();
+
+        $service3 = factory(Service::class)->create();
+        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 30, 'lon' => 30]);
+        $service3->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'order' => 'distance',
+            'location' => '20,20',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service2->id]);
+        $hits = json_decode($response->getContent(), true)['data'];
+        $this->assertEquals($service2->id, $hits[0]['id']);
+        $this->assertEquals($service->id, $hits[1]['id']);
+        $this->assertEquals($service3->id, $hits[2]['id']);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Geocode;
 
-class Coordinate
+use Illuminate\Contracts\Support\Arrayable;
+
+class Coordinate implements Arrayable
 {
     /**
      * @var float
@@ -40,5 +42,15 @@ class Coordinate
     public function lon(): float
     {
         return $this->lon;
+    }
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return [$this->lat, $this->lon];
     }
 }

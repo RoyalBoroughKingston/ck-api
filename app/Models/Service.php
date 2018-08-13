@@ -135,7 +135,7 @@ class Service extends Model implements AppliesUpdateRequests
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => static::collections($this)->where('type', Collection::TYPE_CATEGORY)->pluck('name')->toArray(),
             'collection_personas' => static::collections($this)->where('type', Collection::TYPE_PERSONA)->pluck('name')->toArray(),
-            'locations' => $this->locations->map->only('lat', 'lon')->toArray(),
+            'locations' => $this->locations()->get()->map->only('lat', 'lon')->toArray(),
         ];
     }
 

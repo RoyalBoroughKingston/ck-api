@@ -21,11 +21,7 @@ class SearchController extends Controller
      */
     public function __construct()
     {
-        $this->query = [
-            'query' => [
-                'bool' => []
-            ]
-        ];
+        $this->query = [];
     }
 
     /**
@@ -47,14 +43,14 @@ class SearchController extends Controller
             $this->applyPersona($request->persona);
         }
 
-        if ($request->order === 'location') {
-            // If order given then apply order (including location).
-            list($lat, $lon) = $request->location;
-            $this->applyOrder($request->order, new Coordinate($lat, $lon));
-        } else {
-            // Default to ordering by relevance.
-            $this->applyOrder();
+        // If ordering by distance, then parse the location.
+        if ($request->order === 'distance') {
+            list($lat, $lon) = explode(',', $request->location);
+            $location = new Coordinate($lat, $lon);
         }
+
+        // Apply order.
+        $this->applyOrder($request->order ?? 'relevance', $location ?? null);
 
         // Apply pagination.
         $this->applyPagination(15, $request->page ?? 1);
@@ -70,6 +66,10 @@ class SearchController extends Controller
      */
     protected function applyQuery(string $term)
     {
+        if (!isset($this->query['query'])) {
+            $this->query = ['query' => ['bool' => []]];
+        }
+
         $this->query['query']['bool']['should'] = [
             [
                 'match' => [
@@ -108,6 +108,10 @@ class SearchController extends Controller
      */
     protected function applyCategory(string $category)
     {
+        if (!isset($this->query['query'])) {
+            $this->query = ['query' => ['bool' => []]];
+        }
+
         $this->query['query']['bool']['filter'] = [
             'term' => [
                 'collection_categories' => $category
@@ -120,6 +124,10 @@ class SearchController extends Controller
      */
     protected function applyPersona(string $persona)
     {
+        if (!isset($this->query['query'])) {
+            $this->query = ['query' => ['bool' => []]];
+        }
+
         $this->query['query']['bool']['filter'] = [
             'term' => [
                 'collection_personas' => $persona
@@ -131,9 +139,18 @@ class SearchController extends Controller
      * @param string $order
      * @param \App\Geocode\Coordinate|null $location
      */
-    protected function applyOrder(string $order = 'relevance', Coordinate $location = null)
+    protected function applyOrder(string $order, Coordinate $location = null)
     {
-        // TODO
+        if ($order === 'distance') {
+            $this->query['sort'] = [
+                [
+                    '_geo_distance' => [
+                        'locations' => $location->toArray(),
+                        'distance_type' => 'plane',
+                    ]
+                ]
+            ];
+        }
     }
 
     /**
@@ -165,6 +182,7 @@ class SearchController extends Controller
 
         // Paginate all the services returned.
         $services = Service::query()
+            ->with('locations')
             ->whereIn('id', $serviceIds)
             ->orderByRaw(DB::raw("FIELD(id,$serviceIdsImploded)"))
             ->paginate();
