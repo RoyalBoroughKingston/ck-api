@@ -112,6 +112,14 @@ class Service extends Model implements AppliesUpdateRequests
     ];
 
     /**
+     * Overridden to always boot searchable.
+     */
+    public static function bootSearchable()
+    {
+        self::bootScoutSearchable();
+    }
+
+    /**
      * Get the indexable data array for the model.
      *
      * @return array
@@ -125,8 +133,8 @@ class Service extends Model implements AppliesUpdateRequests
             'status' => $this->status,
             'organisation_name' => $this->organisation->name,
             'taxonomy_categories' => $this->taxonomies->pluck('name')->toArray(),
-            'collection_categories' => null, // TODO
-            'collection_personas' => null, // TODO
+            'collection_categories' => static::collections($this)->where('type', Collection::TYPE_CATEGORY)->pluck('name'),
+            'collection_personas' => static::collections($this)->where('type', Collection::TYPE_PERSONA)->pluck('name'),
             'locations' => $this->locations->map->only('lat', 'lon')->toArray(),
         ];
     }

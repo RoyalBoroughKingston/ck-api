@@ -515,7 +515,7 @@ class UpdateRequestsTest extends TestCase
                 'seo_description' => $service->seo_description,
                 'useful_infos' => [],
                 'social_medias' => [],
-                'category_taxonomies' => $service->taxonomies->pluck('id')->toArray(),
+                'category_taxonomies' => $service->taxonomies()->pluck('taxonomies.id')->toArray(),
             ],
         ]);
 

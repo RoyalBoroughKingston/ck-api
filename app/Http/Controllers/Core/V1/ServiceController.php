@@ -94,7 +94,6 @@ class ServiceController extends Controller
             ]);
 
             // Create the useful info records.
-            // TODO: Add parent taxonomies.
             foreach ($request->useful_infos as $usefulInfo) {
                 $service->usefulInfos()->create([
                     'title' => $usefulInfo['title'],
@@ -112,11 +111,14 @@ class ServiceController extends Controller
             }
 
             // Create the category taxonomy records.
+            // TODO: Add parent taxonomies.
             foreach ($request->category_taxonomies as $taxonomy) {
                 $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy]);
             }
 
             event(EndpointHit::onCreate($request, "Created service [{$service->id}]", $service));
+
+            $service->load('usefulInfos', 'socialMedias', 'taxonomies');
 
             return new ServiceResource($service);
         });
