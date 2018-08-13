@@ -54,4 +54,14 @@ class Organisation extends Model implements AppliesUpdateRequests
 
         return $updateRequest;
     }
+
+    /**
+     * @return \App\Models\Organisation
+     */
+    public function touchServices(): Organisation
+    {
+        $this->services()->toBase()->update(['services.updated_at' => now()]);
+
+        return $this;
+    }
 }

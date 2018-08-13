@@ -54,4 +54,14 @@ class Taxonomy extends Model
     {
         return $this->getRootTaxonomy()->name === $name;
     }
+
+    /**
+     * @return \App\Models\Taxonomy
+     */
+    public function touchServices(): Taxonomy
+    {
+        $this->services()->toBase()->update(['services.updated_at' => now()]);
+
+        return $this;
+    }
 }

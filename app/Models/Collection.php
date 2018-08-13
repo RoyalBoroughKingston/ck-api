@@ -14,4 +14,14 @@ class Collection extends Model
 
     const TYPE_CATEGORY = 'category';
     const TYPE_PERSONA = 'persona';
+
+    /**
+     * @return \App\Models\Collection
+     */
+    public function touchServices(): Collection
+    {
+        static::services($this)->toBase()->update(['services.updated_at' => now()]);
+
+        return $this;
+    }
 }

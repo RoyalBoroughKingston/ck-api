@@ -94,6 +94,7 @@ class ServiceController extends Controller
             ]);
 
             // Create the useful info records.
+            // TODO: Add parent taxonomies.
             foreach ($request->useful_infos as $usefulInfo) {
                 $service->usefulInfos()->create([
                     'title' => $usefulInfo['title'],

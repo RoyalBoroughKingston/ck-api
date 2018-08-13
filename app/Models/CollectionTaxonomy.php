@@ -11,4 +11,14 @@ class CollectionTaxonomy extends Model
     use CollectionTaxonomyMutators;
     use CollectionTaxonomyRelationships;
     use CollectionTaxonomyScopes;
+
+    /**
+     * @return \App\Models\CollectionTaxonomy
+     */
+    public function touchServices(): CollectionTaxonomy
+    {
+        static::services($this)->toBase()->update(['services.updated_at' => now()]);
+
+        return $this;
+    }
 }

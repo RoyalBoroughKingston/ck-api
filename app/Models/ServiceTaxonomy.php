@@ -11,4 +11,14 @@ class ServiceTaxonomy extends Model
     use ServiceTaxonomyMutators;
     use ServiceTaxonomyRelationships;
     use ServiceTaxonomyScopes;
+
+    /**
+     * @return \App\Models\ServiceTaxonomy
+     */
+    public function touchService(): ServiceTaxonomy
+    {
+        $this->service()->toBase()->update(['services.updated_at' => now()]);
+
+        return $this;
+    }
 }

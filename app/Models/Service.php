@@ -273,6 +273,7 @@ class Service extends Model implements AppliesUpdateRequests
         }
 
         // Update the category taxonomy records.
+        // TODO: Add parent taxonomies.
         $this->serviceTaxonomies()->delete();
         foreach ($updateRequest->data['category_taxonomies'] as $taxonomy) {
             $this->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy]);

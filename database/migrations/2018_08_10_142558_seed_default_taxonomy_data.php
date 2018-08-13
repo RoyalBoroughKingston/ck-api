@@ -20,8 +20,10 @@ class SeedDefaultTaxonomyData extends Migration
     public function up()
     {
         $this->now = now();
-        $this->seedCategoryTaxonomies();
-        $this->seedOrganisationTaxonomies();
+        $taxonomies = $this->loadOpenEligibilityTaxonomies();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('taxonomies')->insert($taxonomies);
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**
@@ -32,29 +34,6 @@ class SeedDefaultTaxonomyData extends Migration
     public function down()
     {
         DB::table('taxonomies')->truncate();
-    }
-
-    /**
-     * Seed the category taxonomies.
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    protected function seedCategoryTaxonomies()
-    {
-        $categoryId = uuid();
-
-        DB::table('taxonomies')->insert([
-            'id' => $categoryId,
-            'name' => 'Category',
-            'order' => 0,
-            'created_at' => $this->now,
-            'updated_at' => $this->now,
-        ]);
-
-        $taxonomies = $this->loadOpenEligibilityTaxonomies();
-        $taxonomies = $this->normaliseOpenEligibilityTaxonomies($categoryId, $taxonomies);
-
-        DB::table('taxonomies')->insert($taxonomies);
     }
 
     /**
@@ -70,73 +49,5 @@ class SeedDefaultTaxonomyData extends Migration
         $taxonomies = json_decode($fileContents, true);
 
         return $taxonomies;
-    }
-
-    /**
-     * Normalise the taxonomies so they can be easily inserted into the database.
-     *
-     * @param string $categoryId
-     * @param array $taxonomies
-     * @return array
-     */
-    protected function normaliseOpenEligibilityTaxonomies(string $categoryId, array $taxonomies): array
-    {
-        /**
-         * A mapping from the original key to the UUID.
-         *
-         * original_key => uuid
-         */
-        $idMap = [];
-
-        /**
-         * The order mapping for a taxonomy. Stores how many children it contains.
-         * Includes a default entry for the parent/top-level taxonomies with no parent.
-         *
-         * parent_id => count
-         */
-        $orderMap = ['0' => 0];
-
-        // Assign a UUID to each taxonomy.
-        foreach ($taxonomies as $taxonomy) {
-            $id = $taxonomy['id'];
-
-            if (!in_array($id, $idMap)) {
-                $idMap[$id] = uuid();
-                $orderMap[$id] = 0;
-            }
-        }
-
-        // Normalise the taxonomies.
-        $normalised = array_map(function (array $taxonomy) use ($categoryId, $idMap, &$orderMap) {
-            $id = $taxonomy['id'];
-            $parentId = $taxonomy['parent_id'] === '0' ? '0' : $taxonomy['parent_id'];
-            $name = $taxonomy['name'];
-            $order = ++$orderMap[$parentId];
-
-            return [
-                'id' => $idMap[$id],
-                'parent_id' => $parentId === '0' ? $categoryId : $idMap[$parentId],
-                'name' => $name,
-                'order' => $order,
-                'created_at' => $this->now,
-                'updated_at' => $this->now,
-            ];
-        }, $taxonomies);
-
-        return $normalised;
-    }
-
-    /**
-     * Seed the organisation taxonomies.
-     */
-    protected function seedOrganisationTaxonomies()
-    {
-        DB::table('taxonomies')->insert([
-            'id' => uuid(),
-            'name' => 'Organisation',
-            'order' => 0,
-            'created_at' => $this->now,
-            'updated_at' => $this->now,
-        ]);
     }
 }

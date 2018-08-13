@@ -11,7 +11,7 @@ class OrganisationObserver
     /**
      * Handle the organisation "created" event.
      *
-     * @param  \App\Models\Organisation  $organisation
+     * @param  \App\Models\Organisation $organisation
      * @return void
      */
     public function created(Organisation $organisation)
@@ -22,9 +22,20 @@ class OrganisationObserver
     }
 
     /**
+     * Handle the organisation "updated" event.
+     *
+     * @param  \App\Models\Organisation $organisation
+     * @return void
+     */
+    public function updated(Organisation $organisation)
+    {
+        $organisation->touchServices();
+    }
+
+    /**
      * Handle the organisation "deleting" event.
      *
-     * @param  \App\Models\Organisation  $organisation
+     * @param  \App\Models\Organisation $organisation
      * @return void
      */
     public function deleting(Organisation $organisation)
