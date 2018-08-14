@@ -29,10 +29,13 @@ branches:
 cache:
   directories:
     - vendor
+    - node_modules
 
 install:
   - composer self-update
   - composer install --no-interaction
+  - npm install
+  - npm run dev
 
 before_script:
   - sleep 10 # Needed to give Elasticsearch time to setup
