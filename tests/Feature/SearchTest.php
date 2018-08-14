@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Collection;
+use App\Models\CollectionTaxonomy;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;
@@ -199,5 +200,59 @@ class SearchTest extends TestCase
         $this->assertEquals($service2->id, $hits[0]['id']);
         $this->assertEquals($service->id, $hits[1]['id']);
         $this->assertEquals($service3->id, $hits[2]['id']);
+    }
+
+    public function test_query_and_filter_works()
+    {
+        $service = factory(Service::class)->create();
+        $collectionTaxonomy = $this->exclusiveCategoryTaxonomy();
+        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $collectionTaxonomy->taxonomy_id]);
+        $service->save();
+
+        $differentService = factory(Service::class)->create();
+        $differentCollectionTaxonomy = $this->exclusivePersonaTaxonomy();
+        $differentService->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $differentCollectionTaxonomy->taxonomy_id]);
+        $differentService->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => $service->name,
+            'category' => $collectionTaxonomy->collection->name,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service->id]);
+        $response->assertJsonMissing(['id' => $differentService->id]);
+    }
+
+    /*
+     * Helpers.
+     */
+
+    /**
+     * @return \App\Models\CollectionTaxonomy
+     */
+    protected function exclusiveCategoryTaxonomy(): CollectionTaxonomy
+    {
+        $collectionCategoryIds = Collection::categories()->pluck('id')->toArray();
+        $collectionPersonaIds = Collection::personas()->pluck('id')->toArray();
+
+        return CollectionTaxonomy::query()
+            ->whereIn('collection_id', $collectionCategoryIds)
+            ->whereNotIn('collection_id', $collectionPersonaIds)
+            ->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\CollectionTaxonomy
+     */
+    protected function exclusivePersonaTaxonomy(): CollectionTaxonomy
+    {
+        $collectionPersonaIds = Collection::personas()->pluck('id')->toArray();
+        $collectionCategoryIds = Collection::categories()->pluck('id')->toArray();
+
+        return CollectionTaxonomy::query()
+            ->whereIn('collection_id', $collectionPersonaIds)
+            ->whereNotIn('collection_id', $collectionCategoryIds)
+            ->firstOrFail();
     }
 }

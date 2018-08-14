@@ -7,6 +7,7 @@ use App\Models\Collection;
 use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Config;
 use Throwable;
@@ -91,5 +92,13 @@ abstract class TestCase extends BaseTestCase
     protected function tearDownElasticsearch()
     {
         $this->artisan('scout:flush', ['model' => Service::class]);
+    }
+
+    /**
+     * @param \Illuminate\Foundation\Testing\TestResponse $response
+     */
+    protected function dumpResponse(TestResponse $response)
+    {
+        dump(json_decode($response->getContent(), true));
     }
 }
