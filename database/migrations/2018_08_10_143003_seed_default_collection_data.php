@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class CollectionsTableSeeder extends Seeder
+class SeedDefaultCollectionData extends Migration
 {
     /**
      * @var \Illuminate\Support\Carbon
@@ -11,31 +11,31 @@ class CollectionsTableSeeder extends Seeder
     protected $now;
 
     /**
-     * @var \stdClass
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected $categoryTaxonomy;
-
-    /**
-     * TaxonomiesTableSeeder constructor.
-     */
-    public function __construct()
+    public function up()
     {
         $this->now = now();
         $this->categoryTaxonomy = DB::table('taxonomies')
             ->whereNull('parent_id')
             ->where('name', 'Category')
             ->first();
+
+        $this->seedCategoryCollections();
+        $this->seedPersonaCollections();
     }
 
     /**
-     * Run the database seeds.
+     * Reverse the migrations.
      *
      * @return void
      */
-    public function run()
+    public function down()
     {
-        $this->seedCategoryCollections();
-        $this->seedPersonaCollections();
+        DB::table('collection_taxonomies')->truncate();
+        DB::table('collections')->truncate();
     }
 
     /**

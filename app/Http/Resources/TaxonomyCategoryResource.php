@@ -21,7 +21,7 @@ class TaxonomyCategoryResource extends JsonResource
             'parent_id' => $this->parent_id !== Taxonomy::category()->id ? $this->parent_id : null,
             'name' => $this->name,
             'order' => $this->order,
-            'children' => $this->whenLoaded('children', static::collection($this->children), []),
+            'children' => static::collection($this->whenLoaded('children')),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
         ];

@@ -91,4 +91,14 @@ class Location extends Model implements AppliesUpdateRequests
 
         return $updateRequest;
     }
+
+    /**
+     * @return \App\Models\Location
+     */
+    public function touchServices(): Location
+    {
+        $this->services()->get()->each->save();
+
+        return $this;
+    }
 }

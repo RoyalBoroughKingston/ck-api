@@ -1,0 +1,29 @@
+type: object
+required:
+properties:
+  query:
+    type: string
+    example: Health and Social
+  category:
+    type: string
+    example: Self Help
+  persona:
+    type: string
+    example: Refugees
+  order:
+    type: string
+    enum:
+      - relevance
+      - distance
+  location:
+    type: object
+    required:
+      - lat
+      - lon
+    properties:
+      lat:
+        type: float
+        example: 5.78263
+      lon:
+        type: float
+        example: -52.12710

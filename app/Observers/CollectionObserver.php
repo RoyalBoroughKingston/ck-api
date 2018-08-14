@@ -60,6 +60,18 @@ class CollectionObserver
     }
 
     /**
+     * Handle the collection "updated" event.
+     *
+     * @param  \App\Models\Collection $collection
+     * @return void
+     * @throws \Exception
+     */
+    public function updated(Collection $collection)
+    {
+        $collection->touchServices();
+    }
+
+    /**
      * Handle the organisation "deleting" event.
      *
      * @param  \App\Models\Collection $collection

@@ -3,6 +3,7 @@
 namespace App\Models\Relationships;
 
 use App\Models\File;
+use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\ServiceCriterion;
@@ -53,6 +54,14 @@ trait ServiceRelationships
     public function serviceLocations()
     {
         return $this->hasMany(ServiceLocation::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function locations()
+    {
+        return $this->belongsToMany(Location::class, (new ServiceLocation())->getTable());
     }
 
     /**

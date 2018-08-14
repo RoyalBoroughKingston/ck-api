@@ -4,6 +4,7 @@ namespace App\Models\Relationships;
 
 use App\Models\CollectionTaxonomy;
 use App\Models\Referral;
+use App\Models\Service;
 use App\Models\ServiceTaxonomy;
 use App\Models\Taxonomy;
 
@@ -47,5 +48,13 @@ trait TaxonomyRelationships
     public function referrals()
     {
         return $this->hasMany(Referral::class, 'organisation_taxonomy_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, (new ServiceTaxonomy())->getTable());
     }
 }

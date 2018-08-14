@@ -45,6 +45,9 @@ class ServiceResource extends JsonResource
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+
+            // Relationships.
+            'service_locations' => ServiceLocationResource::collection($this->whenLoaded('serviceLocations')),
         ];
     }
 }

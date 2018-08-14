@@ -27,7 +27,6 @@ class LocationsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCollection([
             'id',
-            'service_id',
             'address_line_1',
             'address_line_2',
             'address_line_3',
@@ -43,7 +42,6 @@ class LocationsTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $location->id,
-            'service_id' => $location->service_id,
             'address_line_1' => $location->address_line_1,
             'address_line_2' => $location->address_line_2,
             'address_line_3' => $location->address_line_3,

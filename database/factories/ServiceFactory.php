@@ -8,9 +8,9 @@ $factory->define(Service::class, function (Faker $faker) {
         'organisation_id' => function () {
             return factory(\App\Models\Organisation::class)->create()->id;
         },
-        'name' => 'Preventing Homelessness',
+        'name' => $faker->company,
         'status' => Service::STATUS_ACTIVE,
-        'intro' => 'This service prevents homelessness.',
+        'intro' => $faker->sentence,
         'description' => $faker->paragraph,
         'is_free' => true,
         'url' => $faker->url,
@@ -19,8 +19,8 @@ $factory->define(Service::class, function (Faker $faker) {
         'contact_email' => $faker->safeEmail,
         'show_referral_disclaimer' => false,
         'referral_method' => Service::REFERRAL_METHOD_NONE,
-        'seo_title' => 'Preventing Homelessness',
-        'seo_description' => 'This service prevents homelessness.',
+        'seo_title' => $faker->sentence,
+        'seo_description' => $faker->sentence,
     ];
 });
 

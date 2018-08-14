@@ -7,7 +7,7 @@ use App\Models\Taxonomy;
 class TaxonomyObserver
 {
     /**
-     * Handle the collection "created" event.
+     * Handle the taxonomy "created" event.
      *
      * @param  \App\Models\Taxonomy $taxonomy
      * @return void
@@ -24,7 +24,7 @@ class TaxonomyObserver
     }
 
     /**
-     * Handle the collection "updating" event.
+     * Handle the taxonomy "updating" event.
      *
      * @param  \App\Models\Taxonomy $taxonomy
      * @return void
@@ -94,6 +94,17 @@ class TaxonomyObserver
     }
 
     /**
+     * Handle the taxonomy "updating" event.
+     *
+     * @param  \App\Models\Taxonomy $taxonomy
+     * @return void
+     */
+    public function updated(Taxonomy $taxonomy)
+    {
+        $taxonomy->touchServices();
+    }
+
+    /**
      * Handle the organisation "deleting" event.
      *
      * @param  \App\Models\Taxonomy $taxonomy
@@ -111,7 +122,7 @@ class TaxonomyObserver
     }
 
     /**
-     * Handle the collection "deleted" event.
+     * Handle the taxonomy "deleted" event.
      *
      * @param  \App\Models\Taxonomy $taxonomy
      * @return void

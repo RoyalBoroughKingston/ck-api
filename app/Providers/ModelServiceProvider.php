@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Collection;
+use App\Models\CollectionTaxonomy;
 use App\Models\File;
 use App\Models\Location;
 use App\Models\Organisation;
@@ -10,8 +11,10 @@ use App\Models\Referral;
 use App\Models\Report;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\ServiceTaxonomy;
 use App\Models\Taxonomy;
 use App\Observers\CollectionObserver;
+use App\Observers\CollectionTaxonomyObserver;
 use App\Observers\FileObserver;
 use App\Observers\LocationObserver;
 use App\Observers\OrganisationObserver;
@@ -19,6 +22,7 @@ use App\Observers\ReferralObserver;
 use App\Observers\ReportObserver;
 use App\Observers\ServiceLocationObserver;
 use App\Observers\ServiceObserver;
+use App\Observers\ServiceTaxonomyObserver;
 use App\Observers\TaxonomyObserver;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
@@ -33,6 +37,7 @@ class ModelServiceProvider extends ServiceProvider
     public function boot()
     {
         Collection::observe(CollectionObserver::class);
+        CollectionTaxonomy::observe(CollectionTaxonomyObserver::class);
         File::observe(FileObserver::class);
         Location::observe(LocationObserver::class);
         Organisation::observe(OrganisationObserver::class);
@@ -40,6 +45,7 @@ class ModelServiceProvider extends ServiceProvider
         Report::observe(ReportObserver::class);
         ServiceLocation::observe(ServiceLocationObserver::class);
         Service::observe(ServiceObserver::class);
+        ServiceTaxonomy::observe(ServiceTaxonomyObserver::class);
         Taxonomy::observe(TaxonomyObserver::class);
 
         Relation::morphMap([
