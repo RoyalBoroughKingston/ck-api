@@ -14,30 +14,6 @@ use Tests\TestCase;
 
 class SearchTest extends TestCase
 {
-    /**
-     * Setup the test environment.
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->setUpElasticsearch();
-    }
-
-    /**
-     * Clean up the testing environment before the next test.
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        $this->tearDownElasticsearch();
-
-        parent::tearDown();
-    }
-
     /*
      * Perform a search for services.
      */
