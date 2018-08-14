@@ -27,7 +27,7 @@ class ServiceLocationResource extends JsonResource
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
 
             // Relationships.
-            'location' => $this->whenLoaded('location', new LocationResource($this->location)),
+            'location' => new LocationResource($this->whenLoaded('location')),
         ];
     }
 }

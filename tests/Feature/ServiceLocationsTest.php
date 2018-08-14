@@ -46,6 +46,7 @@ class ServiceLocationsTest extends TestCase
         $anotherServiceLocation = factory(ServiceLocation::class)->create();
 
         $response = $this->json('GET', "/core/v1/service-locations?filter[service_id]={$serviceLocation->service_id}");
+        $serviceLocation = $serviceLocation->fresh();
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([

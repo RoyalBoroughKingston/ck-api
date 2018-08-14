@@ -42,19 +42,7 @@ abstract class TestCase extends BaseTestCase
         // Disable the API throttle middleware.
         $this->withoutMiddleware('throttle');
 
-        $this->setUpElasticsearch();
-
         $this->now = now();
-    }
-
-    /**
-     * Clean up the testing environment before the next test.
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        $this->artisan('scout:flush', ['model' => Service::class]);
     }
 
     /**
@@ -95,5 +83,13 @@ abstract class TestCase extends BaseTestCase
 
             static::$elasticsearchInitialised = true;
         }
+    }
+
+    /**
+     * Tears down the Elasticsearch indices.
+     */
+    protected function tearDownElasticsearch()
+    {
+        $this->artisan('scout:flush', ['model' => Service::class]);
     }
 }
