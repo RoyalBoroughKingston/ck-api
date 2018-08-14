@@ -24,6 +24,7 @@ defaults: &defaults
     MAIL_USERNAME: ((MAIL_USERNAME))
     QUEUE_DRIVER: redis
     REDIS_SCHEME: tls
+    SCOUT_ELASTIC_DOCUMENT_REFRESH: null
     SESSION_DRIVER: redis
 
 applications:
