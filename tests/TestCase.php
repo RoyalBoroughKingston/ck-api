@@ -48,6 +48,16 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Clean up the testing environment before the next test.
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        $this->artisan('scout:flush', ['model' => Service::class]);
+    }
+
+    /**
      * Delete all the collection categories and pivot records.
      */
     protected function truncateCollectionCategories()
@@ -85,7 +95,5 @@ abstract class TestCase extends BaseTestCase
 
             static::$elasticsearchInitialised = true;
         }
-
-        $this->artisan('scout:flush', ['model' => Service::class]);
     }
 }

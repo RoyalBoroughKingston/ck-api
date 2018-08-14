@@ -7,6 +7,8 @@ use App\Http\Resources\ServiceResource;
 use App\Models\SearchHistory;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 
 class Search
@@ -21,7 +23,7 @@ class Search
      */
     public function __construct()
     {
-        $this->query = [];
+        $this->query = ['size' => config('ck.pagination_results')];
     }
 
     /**
@@ -31,7 +33,7 @@ class Search
     public function applyQuery(string $term): Search
     {
         if (!isset($this->query['query'])) {
-            $this->query = ['query' => ['bool' => []]];
+            $this->query['query'] = ['bool' => []];
         }
 
         $this->query['query']['bool']['should'] = [
@@ -76,7 +78,7 @@ class Search
     public function applyCategory(string $category): Search
     {
         if (!isset($this->query['query'])) {
-            $this->query = ['query' => ['bool' => []]];
+            $this->query['query'] = ['bool' => []];
         }
 
         $this->query['query']['bool']['filter'] = [
@@ -95,7 +97,7 @@ class Search
     public function applyPersona(string $persona): Search
     {
         if (!isset($this->query['query'])) {
-            $this->query = ['query' => ['bool' => []]];
+            $this->query['query'] = ['bool' => []];
         }
 
         $this->query['query']['bool']['filter'] = [
@@ -161,10 +163,10 @@ class Search
         // Extract the hits from the array.
         $hits = $response['hits']['hits'];
 
-        // Get all of the ID's for the service from the hits.
+        // Get all of the ID's for the services from the hits.
         $serviceIds = collect($hits)->map->_id->toArray();
 
-        // Implode the ID's so we can sort by them in database.
+        // Implode the service ID's so we can sort by them in database.
         $serviceIdsImploded = implode("','", $serviceIds);
         $serviceIdsImploded = "'$serviceIdsImploded'";
 
@@ -173,21 +175,38 @@ class Search
             return $hit['_source']['service_locations'];
         })->map->id->toArray();
 
-        // Implode the ID's so we can sort by them in database.
+        // Implode the service location ID's so we can sort by them in database.
         $serviceLocationIdsImploded = implode("','", $serviceLocationIds);
         $serviceLocationIdsImploded = "'$serviceLocationIdsImploded'";
 
-        // Create the services query.
-        $servicesQuery = Service::query()
+        /*
+         * Create the query to get the services.
+         *
+         * Eager load the service locations along with the location they belong to.
+         * A constraint has been places on the service locations, to sort them by what was
+         * returned by Elasticsearch, as they have been ordered by distance.
+         *
+         * The services are also ordered by the order returned by Elasticsearch.
+         */
+        $services = Service::query()
             ->with(['serviceLocations' => function (HasMany $query) use ($serviceLocationIdsImploded) {
                 $query->with('location')
                     ->orderByRaw(DB::raw("FIELD(service_locations.id,$serviceLocationIdsImploded)"));
             }])
             ->whereIn('id', $serviceIds)
-            ->orderByRaw(DB::raw("FIELD(id,$serviceIdsImploded)"));
+            ->orderByRaw(DB::raw("FIELD(id,$serviceIdsImploded)"))
+            ->get();
 
-        // Either paginate the response or get all.
-        $services = $paginate ? $servicesQuery->paginate() : $servicesQuery->get();
+        // If paginated, then create a new pagination instance.
+        if ($paginate) {
+            $services = new LengthAwarePaginator(
+                $services,
+                $response['hits']['total'],
+                config('ck.pagination_results'),
+                null,
+                ['path' => Paginator::resolveCurrentPath()]
+            );
+        }
 
         return ServiceResource::collection($services);
     }
