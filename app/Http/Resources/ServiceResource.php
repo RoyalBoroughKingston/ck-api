@@ -46,7 +46,8 @@ class ServiceResource extends JsonResource
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
 
-            'locations' => $this->whenLoaded('locations', LocationResource::collection($this->locations)),
+            // Relationships.
+            'service_locations' => $this->whenLoaded('serviceLocations', ServiceLocationResource::collection($this->serviceLocations)),
         ];
     }
 }

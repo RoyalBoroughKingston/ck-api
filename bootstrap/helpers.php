@@ -56,3 +56,24 @@ if (!function_exists('array_diff_multi')) {
         });
     }
 }
+
+
+if (!function_exists('table')) {
+    /**
+     * Returns the table name of a model.
+     *
+     * @param string $model
+     * @param string|null $column
+     * @return string|null
+     */
+    function table(string $model, string $column = null): ?string
+    {
+        if (!is_subclass_of($model, \Illuminate\Database\Eloquent\Model::class)) {
+            throw new InvalidArgumentException("[$model] must be an instance of ".\Illuminate\Database\Eloquent\Model::class);
+        }
+
+        $table = (new $model())->getTable();
+
+        return $column ? "$table.$column" : $table;
+    }
+}

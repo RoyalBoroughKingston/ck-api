@@ -25,6 +25,9 @@ class ServiceLocationResource extends JsonResource
             'holiday_opening_hours' => HolidayOpeningHourResource::collection($this->holidayOpeningHours),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+
+            // Relationships.
+            'location' => $this->whenLoaded('location', new LocationResource($this->location)),
         ];
     }
 }

@@ -71,42 +71,31 @@ class Service extends Model implements AppliesUpdateRequests
      */
     protected $mapping = [
         'properties' => [
+            'id' => ['type' => 'keyword'],
             'name' => [
                 'type' => 'text',
                 'fields' => [
-                    'keyword' => [
-                        'type' => 'keyword',
-                    ],
+                    'keyword' => ['type' => 'keyword'],
                 ],
             ],
-            'description' => [
-                'type' => 'text',
-            ],
-            'is_free' => [
-                'type' => 'boolean',
-            ],
-            'status' => [
-                'type' => 'keyword',
-            ],
+            'description' => ['type' => 'text'],
+            'is_free' => ['type' => 'boolean'],
+            'status' => ['type' => 'keyword'],
             'organisation_name' => [
                 'type' => 'text',
                 'fields' => [
-                    'keyword' => [
-                        'type' => 'keyword',
-                    ],
+                    'keyword' => ['type' => 'keyword'],
                 ],
             ],
-            'taxonomy_categories' => [
-                'type' => 'keyword',
-            ],
-            'collection_categories' => [
-                'type' => 'keyword',
-            ],
-            'collection_personas' => [
-                'type' => 'keyword',
-            ],
-            'locations' => [
-                'type' => 'geo_point',
+            'taxonomy_categories' => ['type' => 'keyword'],
+            'collection_categories' => ['type' => 'keyword'],
+            'collection_personas' => ['type' => 'keyword'],
+            'service_locations' => [
+                'type' => 'nested',
+                'properties' => [
+                    'id' => ['type' => 'keyword'],
+                    'location' => ['type' => 'geo_point'],
+                ],
             ],
         ]
     ];
@@ -135,7 +124,15 @@ class Service extends Model implements AppliesUpdateRequests
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => static::collections($this)->where('type', Collection::TYPE_CATEGORY)->pluck('name')->toArray(),
             'collection_personas' => static::collections($this)->where('type', Collection::TYPE_PERSONA)->pluck('name')->toArray(),
-            'locations' => $this->locations()->get()->map->only('lat', 'lon')->toArray(),
+            'service_locations' => $this->serviceLocations()
+                ->with('location')
+                ->get()
+                ->map(function (ServiceLocation $serviceLocation) {
+                    return [
+                        'id' => $serviceLocation->id,
+                        'location' => [$serviceLocation->location->lat, $serviceLocation->location->lon],
+                    ];
+                })->toArray(),
         ];
     }
 

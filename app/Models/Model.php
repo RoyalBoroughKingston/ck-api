@@ -31,6 +31,19 @@ abstract class Model extends BaseModel
     ];
 
     /**
+     * Create a new Eloquent model instance.
+     *
+     * @param  array  $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->perPage = config('ck.pagination_results');
+    }
+
+    /**
      * The "booting" method of the model.
      *
      * @return void

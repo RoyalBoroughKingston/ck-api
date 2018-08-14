@@ -24,4 +24,16 @@ root:
                   data:
                     type: array
                     items:
-                      $ref: /docs/core/resources/service.yaml
+                      allOf:
+                      - $ref: /docs/core/resources/service.yaml
+                      - type: object
+                        properties:
+                          service_locations:
+                            type: array
+                            items:
+                              allOf:
+                                - $ref: /docs/core/resources/service-location.yaml
+                                - type: object
+                                  properties:
+                                    location:
+                                      $ref: /docs/core/resources/location.yaml

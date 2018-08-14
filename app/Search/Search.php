@@ -6,6 +6,7 @@ use App\Geocode\Coordinate;
 use App\Http\Resources\ServiceResource;
 use App\Models\SearchHistory;
 use App\Models\Service;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 class Search
@@ -117,7 +118,8 @@ class Search
             $this->query['sort'] = [
                 [
                     '_geo_distance' => [
-                        'locations' => $location->toArray(),
+                        'service_locations.location' => $location->toArray(),
+                        'nested_path' => 'service_locations',
                         'distance_type' => 'plane',
                     ]
                 ]
@@ -160,17 +162,27 @@ class Search
         $hits = $response['hits']['hits'];
 
         // Get all of the ID's for the service from the hits.
-        $serviceIds = array_map(function (array $hit) {
-            return $hit['_id'];
-        }, $hits);
+        $serviceIds = collect($hits)->map->_id->toArray();
 
         // Implode the ID's so we can sort by them in database.
         $serviceIdsImploded = implode("','", $serviceIds);
         $serviceIdsImploded = "'$serviceIdsImploded'";
 
+        // Get all of the ID's for the service locations from the hits.
+        $serviceLocationIds = collect($hits)->flatMap(function (array $hit) {
+            return $hit['_source']['service_locations'];
+        })->map->id->toArray();
+
+        // Implode the ID's so we can sort by them in database.
+        $serviceLocationIdsImploded = implode("','", $serviceLocationIds);
+        $serviceLocationIdsImploded = "'$serviceLocationIdsImploded'";
+
         // Create the services query.
         $servicesQuery = Service::query()
-            ->with('locations')
+            ->with(['serviceLocations' => function (HasMany $query) use ($serviceLocationIdsImploded) {
+                $query->with('location')
+                    ->orderByRaw(DB::raw("FIELD(service_locations.id,$serviceLocationIdsImploded)"));
+            }])
             ->whereIn('id', $serviceIds)
             ->orderByRaw(DB::raw("FIELD(id,$serviceIdsImploded)"));
 
