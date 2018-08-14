@@ -25,6 +25,7 @@ class CloudFoundryServiceProvider extends ServiceProvider
             $config = json_decode(env('VCAP_SERVICES'), true);
             $mysqlConfig = $config['mysql'][0]['credentials'];
             $redisConfig = $config['redis'][0]['credentials'];
+            $elasticsearchConfig = $config['elasticsearch'][0]['credentials'];
 
             // Set the MySQL config.
             Config::set('database.connections.mysql.host', $mysqlConfig['host']);
@@ -37,6 +38,9 @@ class CloudFoundryServiceProvider extends ServiceProvider
             Config::set('database.redis.clusters.default.0.host', $redisConfig['host']);
             Config::set('database.redis.clusters.default.0.password', $redisConfig['password']);
             Config::set('database.redis.clusters.default.0.port', $redisConfig['port']);
+
+            // Set the Elasticsearch config.
+            Config::set('scout_elastic.client.host.0', $elasticsearchConfig['uri']);
         }
 
         // Mark the environment as being parsed.
