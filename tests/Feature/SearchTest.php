@@ -204,23 +204,45 @@ class SearchTest extends TestCase
 
     public function test_query_and_filter_works()
     {
-        $service = factory(Service::class)->create();
+        $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
         $collectionTaxonomy = $this->exclusiveCategoryTaxonomy();
         $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $collectionTaxonomy->taxonomy_id]);
         $service->save();
 
-        $differentService = factory(Service::class)->create();
+        $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
         $differentCollectionTaxonomy = $this->exclusivePersonaTaxonomy();
         $differentService->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $differentCollectionTaxonomy->taxonomy_id]);
         $differentService->save();
 
         $response = $this->json('POST', '/core/v1/search', [
-            'query' => $service->name,
+            'query' => 'Ayup Digital',
             'category' => $collectionTaxonomy->collection->name,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $service->id]);
+        $response->assertJsonMissing(['id' => $differentService->id]);
+    }
+
+    public function test_query_and_filter_works_when_query_does_not_match()
+    {
+        $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
+        $collectionTaxonomy = $this->exclusiveCategoryTaxonomy();
+        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $collectionTaxonomy->taxonomy_id]);
+        $service->save();
+
+        $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
+        $differentCollectionTaxonomy = $this->exclusivePersonaTaxonomy();
+        $differentService->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $differentCollectionTaxonomy->taxonomy_id]);
+        $differentService->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'asfkjbadsflksbdafklhasdbflkbs',
+            'category' => $collectionTaxonomy->collection->name,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonMissing(['id' => $service->id]);
         $response->assertJsonMissing(['id' => $differentService->id]);
     }
 

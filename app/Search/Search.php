@@ -36,36 +36,40 @@ class Search
             $this->query['query'] = ['bool' => []];
         }
 
-        $this->query['query']['bool']['should'] = [
-            [
-                'match' => [
-                    'name' => [
-                        'query' => $term,
-                        'boost' => 4,
-                    ]
+        $this->query['query']['bool']['must'] = [
+            'bool' => [
+                'should' => [
+                    [
+                        'match' => [
+                            'name' => [
+                                'query' => $term,
+                                'boost' => 4,
+                            ]
+                        ]
+                    ],
+                    [
+                        'match' => [
+                            'description' => [
+                                'query' => $term,
+                                'boost' => 3,
+                            ]
+                        ]
+                    ],
+                    [
+                        'match' => [
+                            'taxonomy_categories' => [
+                                'query' => $term,
+                                'boost' => 2,
+                            ]
+                        ]
+                    ],
+                    [
+                        'match' => [
+                            'organisation_name' => $term,
+                        ]
+                    ],
                 ]
-            ],
-            [
-                'match' => [
-                    'description' => [
-                        'query' => $term,
-                        'boost' => 3,
-                    ]
-                ]
-            ],
-            [
-                'match' => [
-                    'taxonomy_categories' => [
-                        'query' => $term,
-                        'boost' => 2,
-                    ]
-                ]
-            ],
-            [
-                'match' => [
-                    'organisation_name' => $term,
-                ]
-            ],
+            ]
         ];
 
         return $this;
