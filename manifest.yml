@@ -6,6 +6,7 @@ defaults: &defaults
   services:
   - ((db-service-name))
   - ((redis-service-name))
+  - ((search-service-name))
   env:
     APP_DEBUG: ((APP_DEBUG))
     APP_ENV: ((APP_ENV))
@@ -15,6 +16,8 @@ defaults: &defaults
     CACHE_DRIVER: redis
     DB_CERT_PATH: /etc/ssl/certs
     DB_CONNECTION: mysql
+    GEOCODE_DRIVER: google
+    GOOGLE_API_KEY: ((GOOGLE_API_KEY))
     LOG_CHANNEL: errorlog
     MAIL_DRIVER: ((MAIL_DRIVER))
     MAIL_ENCRYPTION: tls

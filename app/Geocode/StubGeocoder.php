@@ -11,6 +11,7 @@ class StubGeocoder implements Geocoder
      *
      * @param string $address
      * @return \App\Geocode\Coordinate
+     * @throws \App\Geocode\AddressNotFoundException
      */
     public function geocode(string $address): Coordinate
     {
