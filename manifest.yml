@@ -16,7 +16,7 @@ defaults: &defaults
     CACHE_DRIVER: redis
     DB_CERT_PATH: /etc/ssl/certs
     DB_CONNECTION: mysql
-    GEOCODE_DRIVER: google
+    GEOCODE_DRIVER: nominatim
     GOOGLE_API_KEY: ((GOOGLE_API_KEY))
     LOG_CHANNEL: errorlog
     MAIL_DRIVER: ((MAIL_DRIVER))
