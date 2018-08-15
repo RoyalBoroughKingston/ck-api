@@ -49,11 +49,19 @@ class Time
      * @param string $time
      * @return \App\Support\Time
      */
-    public static function createFromFormat(string $format, string $time): self
+    public static function createFromFormat(string $format, string $time): Time
     {
         $carbon = Carbon::createFromFormat($format, $time);
 
         return new static($carbon->format('H:i:s'));
+    }
+
+    /**
+     * @return \App\Support\Time
+     */
+    public static function now(): Time
+    {
+        return new static(now()->format('H:i:s'));
     }
 
     /**
@@ -81,5 +89,19 @@ class Time
     public function toString(): string
     {
         return sprintf('%02d:%02d:%02d', $this->hours, $this->minutes, $this->seconds);
+    }
+
+    /**
+     * @param \App\Support\Time $time1
+     * @param \App\Support\Time $time2
+     * @return bool
+     */
+    public function between(Time $time1, Time $time2): bool
+    {
+        $now = Carbon::now()->setTime($this->hours, $this->minutes, $this->seconds);
+        $time1 = Carbon::now()->setTime($time1->hours, $time1->minutes, $time1->seconds);
+        $time2 = Carbon::now()->setTime($time2->hours, $time2->minutes, $time2->seconds);
+
+        return $now->between($time1, $time2);
     }
 }
