@@ -196,7 +196,8 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_if_lands_on_today()
     {
-        Carbon::setTestNow(Carbon::createFromTimestamp(strtotime('second tuesday of august 2018')));
+        $now = Carbon::createFromTimestamp(strtotime('second tuesday of august 2018'));
+        Carbon::setTestNow($now->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
@@ -212,7 +213,8 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_false_if_lands_on_different_day()
     {
-        Carbon::setTestNow(Carbon::createFromTimestamp(strtotime('second tuesday of august 2018')));
+        $now = Carbon::createFromTimestamp(strtotime('second tuesday of august 2018'));
+        Carbon::setTestNow($now->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
@@ -241,6 +243,23 @@ class ServiceLocationTest extends TestCase
         ]);
 
         $this->assertFalse($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_for_last_day_of_month()
+    {
+        $now = Carbon::createFromTimestamp(strtotime('last friday of september 2018'));
+        Carbon::setTestNow($now->setTime(9, 0));
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH,
+            'weekday' => RegularOpeningHour::WEEKDAY_FRIDAY,
+            'occurrence_of_month' => 5,
+            'opens_at' => '09:00:00',
+            'closes_at' => '17:00:00',
+        ]);
+
+        $this->assertTrue($serviceLocation->isOpenNow());
     }
 
     /*
