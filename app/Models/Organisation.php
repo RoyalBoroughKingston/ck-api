@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Requests\Organisation\UpdateRequest as Request;
 use App\Models\Mutators\OrganisationMutators;
 use App\Models\Relationships\OrganisationRelationships;
 use App\Models\Scopes\OrganisationScopes;
@@ -25,13 +26,7 @@ class Organisation extends Model implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        $rules = [
-            'name' => ['required', 'string', 'min:1', 'max:255'],
-            'description' => ['required', 'string', 'min:1', 'max:10000'],
-            'url' => ['required', 'url', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'phone' => ['required', 'string', 'min:1', 'max:255'],
-        ];
+        $rules = (new Request())->rules();
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }

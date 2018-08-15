@@ -5,7 +5,6 @@ php:
 
 services:
   - redis-server
-  - elasticsearch
 
 addons:
   apt:
@@ -13,9 +12,12 @@ addons:
       - mysql-5.7-trusty
       - sourceline: deb https://packages.cloudfoundry.org/debian stable main
         key_url: https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key
+      - sourceline: deb https://artifacts.elastic.co/packages/6.x/apt stable main
+        key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     packages:
       - mysql-server
       - cf-cli
+      - elasticsearch
 
 dist: trusty
 
@@ -38,6 +40,7 @@ install:
   - npm run dev
 
 before_script:
+  - sudo -i service elasticsearch start
   - sleep 10 # Needed to give Elasticsearch time to setup
   - mysql -e 'create database ck_testing;'
   - php artisan migrate --force
