@@ -189,4 +189,49 @@ class ServiceLocationTest extends TestCase
 
         $this->assertFalse($serviceLocation->isOpenNow());
     }
+
+    /*
+     * Nth Occurrence of Month.
+     */
+
+    public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_if_lands_on_today()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH,
+            'occurrence_of_month' => today()->day,
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertTrue($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_false_if_lands_on_different_day()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH,
+            'occurrence_of_month' => today()->addDay()->day,
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertFalse($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_if_lands_on_today_but_out_of_hours()
+    {
+        Carbon::setTestNow(now()->setTime(9, 0));
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH,
+            'occurrence_of_month' => today()->day,
+            'opens_at' => '10:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertFalse($serviceLocation->isOpenNow());
+    }
 }

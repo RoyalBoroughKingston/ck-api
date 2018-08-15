@@ -27,6 +27,33 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      */
     public function isOpenNow(): bool
     {
+        // First check if any holiday opening hours have been specified.
+        $hasHolidayHoursOpenNow = $this->hasHolidayHoursOpenNow();
+
+        // If holiday opening hours found, then return them.
+        if ($hasHolidayHoursOpenNow !== null) {
+            return $hasHolidayHoursOpenNow;
+        }
+
+        // If no holiday hours found, then resort to regular opening hours.
+        return $this->hasRegularHoursOpenNow();
+    }
+
+    /**
+     * Returns true if open, false if closed, or null if not specified.
+     *
+     * @return bool|null
+     */
+    protected function hasHolidayHoursOpenNow(): ?bool
+    {
+        return null;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasRegularHoursOpenNow(): bool
+    {
         foreach ($this->regularOpeningHours as $regularOpeningHour) {
             $isOpenNow = Time::now()->between($regularOpeningHour->opens_at, $regularOpeningHour->closes_at);
 
@@ -47,6 +74,11 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
                     break;
                 case RegularOpeningHour::FREQUENCY_FORTNIGHTLY:
                     if (fmod(today()->diffInDays($regularOpeningHour->starts_at) / Carbon::DAYS_PER_WEEK, 2) === 0.0) {
+                        return true;
+                    }
+                    break;
+                case RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH:
+                    if (today()->day === $regularOpeningHour->occurrence_of_month) {
                         return true;
                     }
                     break;
