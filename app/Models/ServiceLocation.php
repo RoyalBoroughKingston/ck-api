@@ -6,6 +6,7 @@ use App\Http\Requests\ServiceLocation\UpdateRequest as Request;
 use App\Models\Mutators\ServiceLocationMutators;
 use App\Models\Relationships\ServiceLocationRelationships;
 use App\Models\Scopes\ServiceLocationScopes;
+use App\Support\Time;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
@@ -25,7 +26,26 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      */
     public function isOpenNow(): bool
     {
-        // TODO: Work out if the service location is currently open.
+        foreach ($this->regularOpeningHours as $regularOpeningHour) {
+            $isOpenNow = Time::now()->between($regularOpeningHour->opens_at, $regularOpeningHour->closes_at);
+
+            if (!$isOpenNow) {
+                continue;
+            }
+
+            switch ($regularOpeningHour->frequency) {
+                case RegularOpeningHour::FREQUENCY_WEEKLY:
+                    if (today()->dayOfWeek === $regularOpeningHour->weekday) {
+                        return true;
+                    }
+                    break;
+                case RegularOpeningHour::FREQUENCY_MONTHLY:
+                    if (today()->day === $regularOpeningHour->day_of_month) {
+                        return true;
+                    }
+                    break;
+            }
+        }
 
         return false;
     }
