@@ -3,15 +3,15 @@
 namespace App\Contracts;
 
 use App\Geocode\Coordinate;
+use App\Support\Address;
 
 interface Geocoder
 {
     /**
      * Convert a a textual address into a coordinate.
      *
-     * @param string $address
+     * @param \App\Support\Address $address
      * @return \App\Geocode\Coordinate
-     * @throws \App\Geocode\AddressNotFoundException
      */
-    public function geocode(string $address): Coordinate;
+    public function geocode(Address $address): Coordinate;
 }

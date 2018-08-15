@@ -3,6 +3,7 @@
 namespace App\Geocode;
 
 use Illuminate\Contracts\Support\Arrayable;
+use InvalidArgumentException;
 
 class Coordinate implements Arrayable
 {
@@ -24,6 +25,14 @@ class Coordinate implements Arrayable
      */
     public function __construct(float $lat, float $lon)
     {
+        if ($lat < -90 || $lat > 90) {
+            throw new InvalidArgumentException("Illegal latitude value [$lat]");
+        }
+
+        if ($lon < -180 || $lon > 180) {
+            throw new InvalidArgumentException("Illegal longitude value [$lon]");
+        }
+
         $this->lat = $lat;
         $this->lon = $lon;
     }

@@ -75,6 +75,9 @@ class Time
         return $this->toString();
     }
 
+    /**
+     * @return string
+     */
     public function toString(): string
     {
         return sprintf('%02d:%02d:%02d', $this->hours, $this->minutes, $this->seconds);

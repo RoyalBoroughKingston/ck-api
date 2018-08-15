@@ -130,7 +130,10 @@ class Service extends Model implements AppliesUpdateRequests
                 ->map(function (ServiceLocation $serviceLocation) {
                     return [
                         'id' => $serviceLocation->id,
-                        'location' => [$serviceLocation->location->lat, $serviceLocation->location->lon],
+                        'location' => [
+                            'lat' => $serviceLocation->location->lat,
+                            'lon' => $serviceLocation->location->lon,
+                        ],
                     ];
                 })->toArray(),
         ];

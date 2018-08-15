@@ -10,7 +10,7 @@ $factory->define(Location::class, function (Faker $faker) {
         'county' => 'West Yorkshire',
         'postcode' => $faker->postcode,
         'country' => 'United Kingdom',
-        'lat' => $faker->latitude,
-        'lon' => $faker->longitude,
+        'lat' => rand(-90, 90),
+        'lon' => rand(-180, 180),
     ];
 });

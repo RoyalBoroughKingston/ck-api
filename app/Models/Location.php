@@ -6,6 +6,7 @@ use App\Contracts\Geocoder;
 use App\Models\Mutators\LocationMutators;
 use App\Models\Relationships\LocationRelationships;
 use App\Models\Scopes\LocationScopes;
+use App\Support\Address;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
@@ -39,8 +40,7 @@ class Location extends Model implements AppliesUpdateRequests
          * @var \App\Contracts\Geocoder $geocoder
          */
         $geocoder = resolve(Geocoder::class);
-        $address = sprintf('%s, %s, %s, %s', $this->address_line_1, $this->city, $this->postcode, $this->country);
-        $coordinate = $geocoder->geocode($address);
+        $coordinate = $geocoder->geocode($this->toAddress());
 
         $this->lat = $coordinate->lat();
         $this->lon = $coordinate->lon();
@@ -89,6 +89,8 @@ class Location extends Model implements AppliesUpdateRequests
             'accessibility_info' => $updateRequest->data['accessibility_info'],
         ]);
 
+        $this->updateCoordinate()->save();
+
         return $updateRequest;
     }
 
@@ -100,5 +102,19 @@ class Location extends Model implements AppliesUpdateRequests
         $this->services()->get()->each->save();
 
         return $this;
+    }
+
+    /**
+     * @return \App\Support\Address
+     */
+    public function toAddress(): Address
+    {
+        return Address::create(
+            [$this->address_line_1, $this->address_line_2, $this->address_line_3],
+            $this->city,
+            $this->county,
+            $this->postcode,
+            $this->country
+        );
     }
 }

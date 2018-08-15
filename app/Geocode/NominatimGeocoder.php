@@ -5,7 +5,7 @@ namespace App\Geocode;
 use App\Support\Address;
 use GuzzleHttp\Client;
 
-class GoogleGeocoder extends Geocoder
+class NominatimGeocoder extends Geocoder
 {
     /**
      * @var \GuzzleHttp\Client
@@ -13,17 +13,11 @@ class GoogleGeocoder extends Geocoder
     protected $client;
 
     /**
-     * @var string
-     */
-    protected $apiKey;
-
-    /**
      * GoogleGeocoder constructor.
      */
     public function __construct()
     {
-        $this->client = new Client(['base_uri' => 'https://maps.googleapis.com/']);
-        $this->apiKey = config('ck.google_api_key');
+        $this->client = new Client(['base_uri' => 'https://nominatim.openstreetmap.org/']);
     }
 
     /**
@@ -42,15 +36,16 @@ class GoogleGeocoder extends Geocoder
         }
 
         // Make the request.
-        $response = $this->client->get('/maps/api/geocode/json', [
+        $response = $this->client->get('/search', [
             'query' => [
-                'address' => $this->normaliseAddress($address),
-                'key' => $this->apiKey,
+                'format' => 'json',
+                'q' => $this->normaliseAddress($address),
+                'limit' => 1,
             ]
         ]);
 
         // Parse the results.
-        $results = json_decode($response->getBody()->getContents(), true)['results'];
+        $results = json_decode($response->getBody()->getContents(), true);
 
         // Throw an exception if no address was found.
         if (count($results) === 0) {
@@ -59,8 +54,8 @@ class GoogleGeocoder extends Geocoder
         }
 
         // Get the latitude and longitude.
-        $location = $results[0]['geometry']['location'];
-        $coordinate = new Coordinate($location['lat'], $location['lng']);
+        $location = $results[0];
+        $coordinate = new Coordinate($location['lat'], $location['lon']);
 
         // Save to cache.
         $this->saveToCache($address, $coordinate);

@@ -57,7 +57,6 @@ if (!function_exists('array_diff_multi')) {
     }
 }
 
-
 if (!function_exists('table')) {
     /**
      * Returns the table name of a model.
@@ -75,5 +74,34 @@ if (!function_exists('table')) {
         $table = (new $model())->getTable();
 
         return $column ? "$table.$column" : $table;
+    }
+}
+
+if (!function_exists('single_space')) {
+    /**
+     * Removes duplicate spaces from a string.
+     *
+     * @param string $string
+     * @return string
+     */
+    function single_space(string $string): string
+    {
+        $string = preg_replace('!\s+!', ' ', $string);
+        $string = trim($string);
+
+        return $string;
+    }
+}
+
+if (!function_exists('strip_spaces')) {
+    /**
+     * Removes spaces from a string.
+     *
+     * @param string $string
+     * @return string
+     */
+    function strip_spaces(string $string): string
+    {
+        return str_replace(' ', '', $string);
     }
 }

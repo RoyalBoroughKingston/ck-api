@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Contracts\Geocoder;
 use App\Geocode\GoogleGeocoder;
+use App\Geocode\NominatimGeocoder;
 use App\Geocode\StubGeocoder;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
         switch (config('ck.geocode_driver')) {
             case 'google':
                 $this->app->bind(Geocoder::class, GoogleGeocoder::class);
+                break;
+            case 'nominatim':
+                $this->app->bind(Geocoder::class, NominatimGeocoder::class);
                 break;
             case 'stub':
             default:

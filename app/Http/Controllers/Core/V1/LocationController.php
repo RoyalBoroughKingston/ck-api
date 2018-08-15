@@ -64,7 +64,7 @@ class LocationController extends Controller
             ]);
 
             // Persist the record to the database.
-            $location->save();
+            $location->updateCoordinate()->save();
 
             event(EndpointHit::onCreate($request, "Created location [{$location->id}]", $location));
 
