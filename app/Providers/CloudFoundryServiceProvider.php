@@ -40,7 +40,7 @@ class CloudFoundryServiceProvider extends ServiceProvider
             Config::set('database.redis.clusters.default.0.port', $redisConfig['port']);
 
             // Set the Elasticsearch config.
-            Config::set('scout_elastic.client.host.0', $elasticsearchConfig['uri']);
+            Config::set('scout_elastic.client.hosts.0', $elasticsearchConfig['uri']);
         }
 
         // Mark the environment as being parsed.
