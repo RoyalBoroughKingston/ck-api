@@ -17,7 +17,7 @@ addons:
     packages:
       - mysql-server
       - cf-cli
-      - elasticsearch-6.x
+      - elasticsearch
 
 dist: trusty
 
