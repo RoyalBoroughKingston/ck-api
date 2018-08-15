@@ -271,7 +271,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
-            'category_taxonomies' => [Taxonomy::category()->firstOrFail()->id],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
 
@@ -279,11 +279,11 @@ class ServicesTest extends TestCase
         $responsePayload = $payload;
         $responsePayload['category_taxonomies'] = [
             [
-                'id' => Taxonomy::category()->firstOrFail()->id,
-                'parent_id' => Taxonomy::category()->firstOrFail()->parent_id,
-                'name' => Taxonomy::category()->firstOrFail()->name,
-                'created_at' => Taxonomy::category()->firstOrFail()->created_at->format(Carbon::ISO8601),
-                'updated_at' => Taxonomy::category()->firstOrFail()->updated_at->format(Carbon::ISO8601),
+                'id' => Taxonomy::category()->children()->firstOrFail()->id,
+                'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
+                'name' => Taxonomy::category()->children()->firstOrFail()->name,
+                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
+                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
             ]
         ];
         $response->assertJsonFragment($responsePayload);
@@ -449,7 +449,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
-            'category_taxonomies' => [Taxonomy::category()->firstOrFail()->id],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 

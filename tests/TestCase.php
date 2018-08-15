@@ -5,6 +5,7 @@ namespace Tests;
 use App\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Collection;
 use App\Models\Service;
+use App\Models\Taxonomy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\TestResponse;
@@ -90,6 +91,14 @@ abstract class TestCase extends BaseTestCase
             $collection->collectionTaxonomies()->delete();
         });
         Collection::personas()->delete();
+    }
+
+    /**
+     * Delete all the category taxonomy records.
+     */
+    protected function truncateTaxonomies()
+    {
+        Taxonomy::category()->children->each->delete();
     }
 
     /**

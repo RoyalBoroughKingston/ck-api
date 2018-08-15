@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Collection;
-use App\Models\CollectionTaxonomy;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;
@@ -14,6 +13,20 @@ use Tests\TestCase;
 
 class SearchTest extends TestCase
 {
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->truncateTaxonomies();
+        $this->truncateCollectionCategories();
+        $this->truncateCollectionPersonas();
+    }
+
     /*
      * Perform a search for services.
      */
@@ -58,7 +71,7 @@ class SearchTest extends TestCase
     public function test_query_matches_taxonomy_name()
     {
         $service = factory(Service::class)->create();
-        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
 
         $response = $this->json('POST', '/core/v1/search', [
@@ -116,9 +129,10 @@ class SearchTest extends TestCase
     public function test_filter_by_category_works()
     {
         $service = factory(Service::class)->create();
-        $collection = Collection::categories()->firstOrFail();
-        $taxonomy = $collection->taxonomies()->firstOrFail();
-        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
+        $collection = Collection::create(['type' => Collection::TYPE_CATEGORY, 'name' => 'Self Help', 'meta' => [], 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
+        $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
         $response = $this->json('POST', '/core/v1/search', [
@@ -132,9 +146,10 @@ class SearchTest extends TestCase
     public function test_filter_by_persona_works()
     {
         $service = factory(Service::class)->create();
-        $collection = Collection::personas()->firstOrFail();
-        $taxonomy = $collection->taxonomies()->firstOrFail();
-        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
+        $collection = Collection::create(['type' => Collection::TYPE_PERSONA, 'name' => 'Refugees', 'meta' => [], 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
+        $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
         $response = $this->json('POST', '/core/v1/search', [
@@ -181,13 +196,17 @@ class SearchTest extends TestCase
     public function test_query_and_filter_works()
     {
         $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $collectionTaxonomy = $this->exclusiveCategoryTaxonomy();
-        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $collectionTaxonomy->taxonomy_id]);
+        $collection = Collection::create(['type' => Collection::TYPE_CATEGORY, 'name' => 'Self Help', 'meta' => [], 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create(['name' => 'Collection', 'order' => 1]);
+        $collectionTaxonomy = $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
         $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $differentCollectionTaxonomy = $this->exclusivePersonaTaxonomy();
-        $differentService->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $differentCollectionTaxonomy->taxonomy_id]);
+        $differentCollection = Collection::create(['type' => Collection::TYPE_PERSONA, 'name' => 'Refugees', 'meta' => [], 'order' => 1]);
+        $differentTaxonomy = Taxonomy::category()->children()->create(['name' => 'Persona', 'order' => 2]);
+        $differentCollection->collectionTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
+        $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->save();
 
         $response = $this->json('POST', '/core/v1/search', [
@@ -203,13 +222,17 @@ class SearchTest extends TestCase
     public function test_query_and_filter_works_when_query_does_not_match()
     {
         $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $collectionTaxonomy = $this->exclusiveCategoryTaxonomy();
-        $service->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $collectionTaxonomy->taxonomy_id]);
+        $collection = Collection::create(['type' => Collection::TYPE_CATEGORY, 'name' => 'Self Help', 'meta' => [], 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create(['name' => 'Collection', 'order' => 1]);
+        $collectionTaxonomy = $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
         $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $differentCollectionTaxonomy = $this->exclusivePersonaTaxonomy();
-        $differentService->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $differentCollectionTaxonomy->taxonomy_id]);
+        $differentCollection = Collection::create(['type' => Collection::TYPE_PERSONA, 'name' => 'Refugees', 'meta' => [], 'order' => 1]);
+        $differentTaxonomy = Taxonomy::category()->children()->create(['name' => 'Persona', 'order' => 2]);
+        $differentCollection->collectionTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
+        $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->save();
 
         $response = $this->json('POST', '/core/v1/search', [
@@ -220,37 +243,5 @@ class SearchTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonMissing(['id' => $service->id]);
         $response->assertJsonMissing(['id' => $differentService->id]);
-    }
-
-    /*
-     * Helpers.
-     */
-
-    /**
-     * @return \App\Models\CollectionTaxonomy
-     */
-    protected function exclusiveCategoryTaxonomy(): CollectionTaxonomy
-    {
-        $collectionCategoryIds = Collection::categories()->pluck('id')->toArray();
-        $collectionPersonaIds = Collection::personas()->pluck('id')->toArray();
-
-        return CollectionTaxonomy::query()
-            ->whereIn('collection_id', $collectionCategoryIds)
-            ->whereNotIn('collection_id', $collectionPersonaIds)
-            ->firstOrFail();
-    }
-
-    /**
-     * @return \App\Models\CollectionTaxonomy
-     */
-    protected function exclusivePersonaTaxonomy(): CollectionTaxonomy
-    {
-        $collectionPersonaIds = Collection::personas()->pluck('id')->toArray();
-        $collectionCategoryIds = Collection::categories()->pluck('id')->toArray();
-
-        return CollectionTaxonomy::query()
-            ->whereIn('collection_id', $collectionPersonaIds)
-            ->whereNotIn('collection_id', $collectionCategoryIds)
-            ->firstOrFail();
     }
 }

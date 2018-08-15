@@ -13,6 +13,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
+use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -111,10 +112,8 @@ class ServiceController extends Controller
             }
 
             // Create the category taxonomy records.
-            // TODO: Add parent taxonomies.
-            foreach ($request->category_taxonomies as $taxonomy) {
-                $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy]);
-            }
+            $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
+            $service->syncServiceTaxonomies($taxonomies);
 
             event(EndpointHit::onCreate($request, "Created service [{$service->id}]", $service));
 

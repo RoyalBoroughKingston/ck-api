@@ -13,6 +13,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use App\Http\Controllers\Controller;
+use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -65,12 +66,8 @@ class CollectionPersonaController extends Controller
             ]);
 
             // Create all of the pivot records.
-            foreach ($request->category_taxonomies as $categoryTaxonomyId) {
-                CollectionTaxonomy::create([
-                    'collection_id' => $persona->id,
-                    'taxonomy_id' => $categoryTaxonomyId,
-                ]);
-            }
+            $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
+            $persona->syncCollectionTaxonomies($taxonomies);
 
             // Reload the newly created pivot records.
             $persona->load('taxonomies');
@@ -116,17 +113,8 @@ class CollectionPersonaController extends Controller
             ]);
 
             // Update or create all of the pivot records.
-            foreach ($request->category_taxonomies as $categoryTaxonomyId) {
-                CollectionTaxonomy::updateOrCreate([
-                    'collection_id' => $persona->id,
-                    'taxonomy_id' => $categoryTaxonomyId,
-                ]);
-            }
-
-            // Delete any pivot records that exist but were not submitted.
-            $persona->collectionTaxonomies()
-                ->whereNotIn('taxonomy_id', $request->category_taxonomies)
-                ->delete();
+            $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
+            $persona->syncCollectionTaxonomies($taxonomies);
 
             event(EndpointHit::onUpdate($request, "Updated collection persona [{$persona->id}]", $persona));
 
