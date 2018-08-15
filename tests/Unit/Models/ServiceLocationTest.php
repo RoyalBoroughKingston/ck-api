@@ -234,4 +234,22 @@ class ServiceLocationTest extends TestCase
 
         $this->assertFalse($serviceLocation->isOpenNow());
     }
+
+    /*
+     * Holiday Opening Hours.
+     */
+
+    public function test_is_open_now_returns_true_if_holiday_opening_hours_include_today()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->holidayOpeningHours()->create([
+            'is_closed' => false,
+            'starts_at' => today()->subDay(),
+            'ends_at' => today()->addDay(),
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertTrue($serviceLocation->isOpenNow());
+    }
 }

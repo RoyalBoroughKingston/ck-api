@@ -46,6 +46,19 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      */
     protected function hasHolidayHoursOpenNow(): ?bool
     {
+        $holidayOpeningHours = $this->holidayOpeningHours()
+            ->where('starts_at', '<=', today())
+            ->where('ends_at', '>=', today())
+            ->get();
+
+        foreach ($holidayOpeningHours as $holidayOpeningHour) {
+            if ($holidayOpeningHour->is_closed) {
+                return false;
+            }
+
+            return Time::now()->between($holidayOpeningHour->opens_at, $holidayOpeningHour->closes_at);
+        }
+
         return null;
     }
 
