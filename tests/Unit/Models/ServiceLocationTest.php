@@ -65,7 +65,7 @@ class ServiceLocationTest extends TestCase
      * Monthly Frequency.
      */
 
-    public function test_is_open_now_with_monthly_frequency_returns_true_if_day_of_month_id_today()
+    public function test_is_open_now_with_monthly_frequency_returns_true_if_day_of_month_is_today()
     {
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
@@ -76,5 +76,117 @@ class ServiceLocationTest extends TestCase
         ]);
 
         $this->assertTrue($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_monthly_frequency_returns_false_if_day_of_month_is_not_today()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
+            'day_of_month' => today()->addDay()->day,
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertFalse($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_monthly_frequency_returns_false_if_day_of_month_is_today_but_out_of_hours()
+    {
+        Carbon::setTestNow(now()->setTime(9, 0));
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
+            'day_of_month' => today()->day,
+            'opens_at' => '12:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertFalse($serviceLocation->isOpenNow());
+    }
+
+    /*
+     * Fortnightly Frequency.
+     */
+
+    public function test_is_open_now_with_fortnightly_frequency_returns_true_if_lands_on_today()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+            'starts_at' => today(),
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertTrue($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_fortnightly_frequency_returns_true_if_lands_on_today_in_past()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+            'starts_at' => today()->subWeeks(2),
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertTrue($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_fortnightly_frequency_returns_true_if_lands_on_today_in_future()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+            'starts_at' => today()->addWeeks(2),
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertTrue($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_fortnightly_frequency_returns_false_if_lands_on_odd_week()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+            'starts_at' => today()->addWeek(),
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertFalse($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_fortnightly_frequency_returns_false_if_lands_off_schedule()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+            'starts_at' => today()->addDays(3),
+            'opens_at' => '00:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertFalse($serviceLocation->isOpenNow());
+    }
+
+    public function test_is_open_now_with_fortnightly_frequency_returns_false_if_lands_on_today_but_out_of_hours()
+    {
+        Carbon::setTestNow(now()->setTime(9, 0));
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $serviceLocation->regularOpeningHours()->create([
+            'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+            'starts_at' => today(),
+            'opens_at' => '10:00:00',
+            'closes_at' => '24:00:00',
+        ]);
+
+        $this->assertFalse($serviceLocation->isOpenNow());
     }
 }

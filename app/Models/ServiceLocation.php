@@ -10,6 +10,7 @@ use App\Support\Time;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class ServiceLocation extends Model implements AppliesUpdateRequests
@@ -41,6 +42,11 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
                     break;
                 case RegularOpeningHour::FREQUENCY_MONTHLY:
                     if (today()->day === $regularOpeningHour->day_of_month) {
+                        return true;
+                    }
+                    break;
+                case RegularOpeningHour::FREQUENCY_FORTNIGHTLY:
+                    if (fmod(today()->diffInDays($regularOpeningHour->starts_at) / Carbon::DAYS_PER_WEEK, 2) === 0.0) {
                         return true;
                     }
                     break;
