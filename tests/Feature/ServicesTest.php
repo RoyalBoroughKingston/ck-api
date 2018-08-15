@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Service;
+use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
@@ -287,6 +288,77 @@ class ServicesTest extends TestCase
             ]
         ];
         $response->assertJsonFragment($responsePayload);
+    }
+
+    public function test_taxonomy_hierarchy_works_when_creating()
+    {
+        $taxonomy = Taxonomy::category()->children()->firstOrFail()->children()->firstOrFail();
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => $this->faker->phoneNumber,
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [$taxonomy->id],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $service = Service::findOrFail(json_decode($response->getContent(), true)['data']['id']);
+        $this->assertDatabaseHas(table(ServiceTaxonomy::class), [
+            'service_id' => $service->id,
+            'taxonomy_id' => $taxonomy->id,
+        ]);
+        $this->assertDatabaseHas(table(ServiceTaxonomy::class), [
+            'service_id' => $service->id,
+            'taxonomy_id' => $taxonomy->parent_id,
+        ]);
     }
 
     /*
