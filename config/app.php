@@ -95,6 +95,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Faker Locale Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The faker locale determines the default locale that will be used
+    | by the faker library. You are free to set this value to any of
+    | the locales which will be supported by faker.
+    |
+    */
+
+    'faker_locale' => 'en_GB',
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

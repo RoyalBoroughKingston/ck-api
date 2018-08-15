@@ -61,6 +61,16 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Setup up the Faker instance.
+     *
+     * @return void
+     */
+    protected function setUpFaker()
+    {
+        $this->faker = $this->makeFaker(config('app.faker_locale'));
+    }
+
+    /**
      * Delete all the collection categories and pivot records.
      */
     protected function truncateCollectionCategories()

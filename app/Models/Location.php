@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\Geocoder;
+use App\Http\Requests\Location\UpdateRequest as Request;
 use App\Models\Mutators\LocationMutators;
 use App\Models\Relationships\LocationRelationships;
 use App\Models\Scopes\LocationScopes;
@@ -56,16 +57,7 @@ class Location extends Model implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        $rules = [
-            'address_line_1' => ['required', 'string', 'min:1', 'max:255'],
-            'address_line_2' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'address_line_3' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'city' => ['required', 'string', 'min:1', 'max:255'],
-            'county' => ['required', 'string', 'min:1', 'max:255'],
-            'postcode' => ['required', 'string', 'min:1', 'max:255'],
-            'country' => ['required', 'string', 'min:1', 'max:255'],
-            'accessibility_info' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
-        ];
+        $rules = (new Request())->rules();
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
