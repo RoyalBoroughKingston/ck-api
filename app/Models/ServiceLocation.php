@@ -46,20 +46,24 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      */
     protected function hasHolidayHoursOpenNow(): ?bool
     {
-        $holidayOpeningHours = $this->holidayOpeningHours()
+        // Get the holiday opening hours that today falls within.
+        $holidayOpeningHour = $this->holidayOpeningHours()
             ->where('starts_at', '<=', today())
             ->where('ends_at', '>=', today())
-            ->get();
+            ->first();
 
-        foreach ($holidayOpeningHours as $holidayOpeningHour) {
-            if ($holidayOpeningHour->is_closed) {
-                return false;
-            }
-
-            return Time::now()->between($holidayOpeningHour->opens_at, $holidayOpeningHour->closes_at);
+        // If none found, return null.
+        if ($holidayOpeningHour === null) {
+            return null;
         }
 
-        return null;
+        // If closed, opening and closing time are redundant, so just return false.
+        if ($holidayOpeningHour->is_closed) {
+            return false;
+        }
+
+        // Return if the current time falls within the opening and closing time.
+        return Time::now()->between($holidayOpeningHour->opens_at, $holidayOpeningHour->closes_at);
     }
 
     /**
@@ -67,31 +71,45 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      */
     protected function hasRegularHoursOpenNow(): bool
     {
+        // Loop through each opening hour.
         foreach ($this->regularOpeningHours as $regularOpeningHour) {
+            // Check if the current time falls within the opening hours.
             $isOpenNow = Time::now()->between($regularOpeningHour->opens_at, $regularOpeningHour->closes_at);
 
+            // If not, then continue to the next opening hour.
             if (!$isOpenNow) {
                 continue;
             }
 
+            // Use a different algorithm for each frequency type.
             switch ($regularOpeningHour->frequency) {
+                // If weekly then check that the weekday is the same as today.
                 case RegularOpeningHour::FREQUENCY_WEEKLY:
                     if (today()->dayOfWeek === $regularOpeningHour->weekday) {
                         return true;
                     }
                     break;
+                // If monthly then check that the day of the month is the same as today.
                 case RegularOpeningHour::FREQUENCY_MONTHLY:
                     if (today()->day === $regularOpeningHour->day_of_month) {
                         return true;
                     }
                     break;
+                // If fortnightly then check that today falls directly on a multiple of 2 weeks.
                 case RegularOpeningHour::FREQUENCY_FORTNIGHTLY:
                     if (fmod(today()->diffInDays($regularOpeningHour->starts_at) / Carbon::DAYS_PER_WEEK, 2) === 0.0) {
                         return true;
                     }
                     break;
+                // If nth occurrence of month then check today is the same occurrence.
                 case RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH:
-                    if (today()->day === $regularOpeningHour->occurrence_of_month) {
+                    $occurrence = occurrence($regularOpeningHour->occurrence_of_month);
+                    $weekday = weekday($regularOpeningHour->weekday);
+                    $month = month(today()->month);
+                    $year = today()->year;
+                    $dateString = "$occurrence $weekday of $month $year";
+                    $date = Carbon::createFromTimestamp(strtotime($dateString));
+                    if (today()->equalTo($date)) {
                         return true;
                     }
                     break;
