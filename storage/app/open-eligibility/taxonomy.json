@@ -2326,5 +2326,69 @@
     "order": 4,
     "created_at": "2018-08-10 14:46:59",
     "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "eda608f3-3384-44a0-a9dd-c1701fda6f8d",
+    "parent_id": "d71917b3-fd2a-417d-93bb-f1c536938408",
+    "name": "Sports and Leisure",
+    "order": 12,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "1c8e9f2a-8e94-47de-8a69-96bb3631d2b6",
+    "parent_id": "eda608f3-3384-44a0-a9dd-c1701fda6f8d",
+    "name": "Arts and Craft",
+    "order": 1,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "c9f73dd4-ee6c-4893-83f0-dbfca1b98d38",
+    "parent_id": "eda608f3-3384-44a0-a9dd-c1701fda6f8d",
+    "name": "General Recreation",
+    "order": 2,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "8dad7bbd-7db9-4ec8-80f9-276b552fd141",
+    "parent_id": "eda608f3-3384-44a0-a9dd-c1701fda6f8d",
+    "name": "Holidays and Day Trips",
+    "order": 3,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "ac0d792c-07ca-4ca1-b9fe-f83f99793eee",
+    "parent_id": "eda608f3-3384-44a0-a9dd-c1701fda6f8d",
+    "name": "Physical Fitness",
+    "order": 4,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "ded2c037-a260-430f-92e1-942e2f6e882e",
+    "parent_id": "eda608f3-3384-44a0-a9dd-c1701fda6f8d",
+    "name": "Social and Fun",
+    "order": 5,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "491fdc6e-b272-4aad-80fc-b70a16fb076f",
+    "parent_id": "eda608f3-3384-44a0-a9dd-c1701fda6f8d",
+    "name": "Sport",
+    "order": 6,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
+  },
+  {
+    "id": "c2972f17-4d7f-4015-b1f0-266950b0d1d9",
+    "parent_id": "8f8c9d82-2131-41d5-a5bd-4ce5a64d32fb",
+    "name": "Volunteering",
+    "order": 6,
+    "created_at": "2018-08-10 14:46:59",
+    "updated_at": "2018-08-10 14:46:59"
   }
 ]
