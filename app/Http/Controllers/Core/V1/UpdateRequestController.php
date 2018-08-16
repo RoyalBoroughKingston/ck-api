@@ -32,9 +32,12 @@ class UpdateRequestController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = UpdateRequest::query();
+        $baseQuery = UpdateRequest::query()
+            ->orderByDesc('created_at');
+
         $updateRequests = QueryBuilder::for($baseQuery)
             ->allowedFilters([
+                Filter::scope('id'),
                 Filter::scope('service_id'),
                 Filter::scope('service_location_id'),
                 Filter::scope('location_id'),

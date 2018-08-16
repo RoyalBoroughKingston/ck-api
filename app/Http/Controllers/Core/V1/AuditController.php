@@ -29,8 +29,14 @@ class AuditController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $audits = QueryBuilder::for(Audit::class)
-            ->allowedFilters(Filter::exact('user_id'))
+        $baseQuery = Audit::query()
+            ->orderByDesc('created_at');
+
+        $audits = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                Filter::exact('user_id'),
+            ])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all audits'));

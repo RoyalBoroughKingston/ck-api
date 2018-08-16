@@ -33,8 +33,12 @@ class TaxonomyOrganisationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Taxonomy::organisations()->orderBy('order');
-        $organisations = QueryBuilder::for($baseQuery)->get();
+        $baseQuery = Taxonomy::query()
+            ->organisations()
+            ->orderBy('order');
+
+        $organisations = QueryBuilder::for($baseQuery)
+            ->get();
 
         event(EndpointHit::onRead($request, 'Viewed all taxonomy organisations'));
 

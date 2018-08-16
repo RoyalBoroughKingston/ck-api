@@ -7,9 +7,15 @@ root:
        **Permission:** `Global Admin`
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - name: filter[id]
+      in: query
+      description: Comma seperated ID's to filter by
+      schema:
+        type: string
+        format: uuid
     - name: filter[user_id]
       in: query
-      description: The ID of the user
+      description: Comma seperated user ID's to filter by
       schema:
         type: string
         format: uuid

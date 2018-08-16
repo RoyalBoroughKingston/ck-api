@@ -14,6 +14,7 @@ use App\Models\ReportSchedule;
 use App\Http\Controllers\Controller;
 use App\Models\ReportType;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ReportScheduleController extends Controller
@@ -34,8 +35,14 @@ class ReportScheduleController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = ReportSchedule::query();
-        $reportSchedules = QueryBuilder::for($baseQuery)->paginate();
+        $baseQuery = ReportSchedule::query()
+            ->orderByDesc('created_at');
+
+        $reportSchedules = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+            ])
+            ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all report schedules'));
 

@@ -5,6 +5,14 @@ root:
     summary: List all the page feedbacks
     description: |
        **Permission:** `Global Admin`
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - name: filter[id]
+      in: query
+      description: Comma seperated ID's to filter by
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:

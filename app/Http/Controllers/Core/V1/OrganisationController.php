@@ -14,6 +14,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Organisation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class OrganisationController extends Controller
@@ -34,7 +35,14 @@ class OrganisationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $organisations = QueryBuilder::for(Organisation::class)
+        $baseQuery = Organisation::query()
+            ->orderBy('name');
+
+        $organisations = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                'name',
+            ])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all organisations'));

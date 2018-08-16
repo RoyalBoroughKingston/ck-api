@@ -37,10 +37,14 @@ class ServiceLocationController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = ServiceLocation::query()
-            ->with('regularOpeningHours', 'holidayOpeningHours');
+            ->with('regularOpeningHours', 'holidayOpeningHours')
+            ->orderByDesc('created_at');
 
         $serviceLocations = QueryBuilder::for($baseQuery)
-            ->allowedFilters(Filter::exact('service_id'))
+            ->allowedFilters([
+                Filter::exact('id'),
+                Filter::exact('service_id'),
+            ])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all service locations'));

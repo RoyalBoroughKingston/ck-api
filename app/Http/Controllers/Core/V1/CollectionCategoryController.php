@@ -14,6 +14,7 @@ use App\Models\Collection;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionCategoryController extends Controller
@@ -34,7 +35,13 @@ class CollectionCategoryController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $categories = QueryBuilder::for(Collection::categories())
+        $baseQuery = Collection::categories()
+            ->orderBy('order');
+
+        $categories = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+            ])
             ->with('taxonomies')
             ->paginate();
 

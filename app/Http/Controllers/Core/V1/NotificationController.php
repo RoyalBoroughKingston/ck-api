@@ -29,8 +29,14 @@ class NotificationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $notifications = QueryBuilder::for(Notification::class)
-            ->allowedFilters(Filter::exact('user_id'))
+        $baseQuery = Notification::query()
+            ->orderByDesc('created_at');
+
+        $notifications = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                Filter::exact('user_id'),
+            ])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all Notifications'));

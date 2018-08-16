@@ -6,6 +6,49 @@ root:
     description: |
        **Permission:** `Open`
     security: []
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - name: filter[id]
+      in: query
+      description: Comma seperated ID's to filter by
+      schema:
+        type: string
+        format: uuid
+    - name: filter[address_line_1]
+      in: query
+      description: Filter by address line 1
+      schema:
+        type: string
+    - name: filter[address_line_2]
+      in: query
+      description: Filter by address line 2
+      schema:
+        type: string
+    - name: filter[address_line_3]
+      in: query
+      description: Filter by address line 3
+      schema:
+        type: string
+    - name: filter[city]
+      in: query
+      description: Filter by city
+      schema:
+        type: string
+    - name: filter[county]
+      in: query
+      description: Filter by county
+      schema:
+        type: string
+    - name: filter[postcode]
+      in: query
+      description: Filter by postcode
+      schema:
+        type: string
+    - name: filter[country]
+      in: query
+      description: Filter by country
+      schema:
+        type: string
     responses:
       200:
         content:

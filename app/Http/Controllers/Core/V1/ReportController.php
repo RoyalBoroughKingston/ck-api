@@ -13,6 +13,7 @@ use App\Models\Report;
 use App\Http\Controllers\Controller;
 use App\Models\ReportType;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ReportController extends Controller
@@ -33,9 +34,14 @@ class ReportController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Report::query();
+        $baseQuery = Report::query()
+            ->orderByDesc('created_at');
 
-        $reports = QueryBuilder::for($baseQuery)->paginate();
+        $reports = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+            ])
+            ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all reports'));
 

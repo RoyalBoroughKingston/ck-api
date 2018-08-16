@@ -36,10 +36,15 @@ class ServiceController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Service::query();
+        $baseQuery = Service::query()
+            ->orderBy('name');
 
         $services = QueryBuilder::for($baseQuery)
-            ->allowedFilters(Filter::exact('organisation_id'))
+            ->allowedFilters([
+                Filter::exact('id'),
+                Filter::exact('organisation_id'),
+                'name',
+            ])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all services'));

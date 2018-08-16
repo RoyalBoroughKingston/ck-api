@@ -11,10 +11,10 @@ use App\Http\Requests\CollectionPersona\UpdateRequest;
 use App\Http\Resources\CollectionPersonaResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
-use App\Models\CollectionTaxonomy;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionPersonaController extends Controller
@@ -35,7 +35,13 @@ class CollectionPersonaController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $personas = QueryBuilder::for(Collection::personas())
+        $baseQuery = Collection::personas()
+            ->orderBy('order');
+
+        $personas = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+            ])
             ->with('taxonomies')
             ->paginate();
 

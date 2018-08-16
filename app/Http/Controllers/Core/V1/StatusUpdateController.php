@@ -8,6 +8,7 @@ use App\Http\Requests\StatusUpdate\IndexRequest;
 use App\Http\Resources\StatusUpdateResource;
 use App\Models\Referral;
 use App\Models\StatusUpdate;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class StatusUpdateController extends Controller
@@ -29,8 +30,17 @@ class StatusUpdateController extends Controller
     public function index(IndexRequest $request)
     {
         $referral = Referral::findOrFail($request->filter['referral_id']);
-        $baseQuery = StatusUpdate::where('referral_id', $referral->id);
-        $statusUpdates = QueryBuilder::for($baseQuery)->paginate();
+
+        $baseQuery = StatusUpdate::query()
+            ->where('referral_id', $referral->id)
+            ->orderByDesc('created_at');
+
+        $statusUpdates = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                Filter::exact('referral_id'),
+            ])
+            ->paginate();
 
         event(EndpointHit::onRead($request, "Viewed all status updates for referral [{$referral->id}]", $referral));
 

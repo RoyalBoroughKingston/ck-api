@@ -35,9 +35,11 @@ class TaxonomyCategoryController extends Controller
     {
         $baseQuery = Taxonomy::query()
             ->topLevelCategories()
-            ->orderBy('order')
-            ->with('children.children.children.children.children');
-        $categories = QueryBuilder::for($baseQuery)->get();
+            ->with('children.children.children.children.children')
+            ->orderBy('order');
+
+        $categories = QueryBuilder::for($baseQuery)
+            ->get();
 
         event(EndpointHit::onRead($request, 'Viewed all taxonomy categories'));
 
