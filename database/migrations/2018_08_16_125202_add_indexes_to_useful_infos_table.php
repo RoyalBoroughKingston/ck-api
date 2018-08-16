@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddIndexesToCollectionsTable extends Migration
+class AddIndexesToUsefulInfosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class AddIndexesToCollectionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('collections', function (Blueprint $table) {
-            $table->index('type');
+        Schema::table('useful_infos', function (Blueprint $table) {
             $table->index('order');
             $table->index('created_at');
         });
@@ -27,8 +26,7 @@ class AddIndexesToCollectionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('collections', function (Blueprint $table) {
-            $table->dropIndex(['type']);
+        Schema::table('useful_infos', function (Blueprint $table) {
             $table->dropIndex(['order']);
             $table->dropIndex(['created_at']);
         });
