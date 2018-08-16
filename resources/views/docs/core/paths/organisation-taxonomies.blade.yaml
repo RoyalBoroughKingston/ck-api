@@ -6,6 +6,8 @@ root:
     description: |
        **Permission:** `Open`
     security: []
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
     responses:
       200:
         content:

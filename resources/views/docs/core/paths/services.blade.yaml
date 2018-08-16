@@ -7,12 +7,24 @@ root:
       **Permission:** `Open`
     security: []
     parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - name: filter[id]
+      in: query
+      description: Comma seperated ID's to filter by
+      schema:
+        type: string
+        format: uuid
     - name: filter[organisation_id]
       in: query
       description: The ID of the organisation
       schema:
         type: string
         format: uuid
+    - name: filter[name]
+      in: query
+      description: Name to filter by
+      schema:
+        type: string
     responses:
       200:
         content:

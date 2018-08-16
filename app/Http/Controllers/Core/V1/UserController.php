@@ -17,6 +17,7 @@ use App\Models\Service;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -37,8 +38,18 @@ class UserController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = User::query()->with('userRoles.service', 'userRoles.organisation');
-        $users = QueryBuilder::for($baseQuery)->paginate();
+        $baseQuery = User::query()
+            ->with('userRoles.service', 'userRoles.organisation')
+            ->orderBy('first_name')
+            ->orderBy('last_name');
+
+        $users = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                'first_name',
+                'last_name',
+            ])
+            ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all users'));
 

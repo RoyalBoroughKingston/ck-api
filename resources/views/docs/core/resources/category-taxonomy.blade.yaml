@@ -11,9 +11,6 @@ properties:
     type: string
   order:
     type: integer
-  children:
-    type: array
-    items: []
   created_at:
     type: string
     format: date-time

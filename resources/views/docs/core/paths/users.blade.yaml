@@ -5,6 +5,24 @@ root:
     summary: List all the users
     description: |
       **Permission:** `Service Worker`
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - name: filter[id]
+      in: query
+      description: Comma seperated ID's to filter by
+      schema:
+        type: string
+        format: uuid
+    - name: filter[first_name]
+      in: query
+      description: First name to filter by
+      schema:
+        type: string
+    - name: filter[last_name]
+      in: query
+      description: Last name to filter by
+      schema:
+        type: string
     responses:
       200:
         content:

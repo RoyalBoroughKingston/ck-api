@@ -10,6 +10,7 @@ use App\Http\Resources\PageFeedbackResource;
 use App\Models\PageFeedback;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PageFeedbackController extends Controller
@@ -30,7 +31,13 @@ class PageFeedbackController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $pageFeedbacks = QueryBuilder::for(PageFeedback::class)
+        $baseQuery = PageFeedback::query()
+            ->orderByDesc('created_at');
+
+        $pageFeedbacks = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+            ])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all page feedbacks'));

@@ -14,6 +14,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Location;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class LocationController extends Controller
@@ -34,10 +35,29 @@ class LocationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        event(EndpointHit::onRead($request, 'Viewed all locations'));
+        $baseQuery = Location::query()
+            ->orderBy('address_line_1')
+            ->orderBy('address_line_2')
+            ->orderBy('address_line_3')
+            ->orderBy('city')
+            ->orderBy('county')
+            ->orderBy('postcode')
+            ->orderBy('country');
 
-        $locations = QueryBuilder::for(Location::class)
+        $locations = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                'address_line_1',
+                'address_line_2',
+                'address_line_3',
+                'city',
+                'county',
+                'postcode',
+                'country',
+            ])
             ->paginate();
+
+        event(EndpointHit::onRead($request, 'Viewed all locations'));
 
         return LocationResource::collection($locations);
     }

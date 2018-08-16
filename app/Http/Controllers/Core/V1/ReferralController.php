@@ -11,6 +11,7 @@ use App\Http\Resources\ReferralResource;
 use App\Models\Referral;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ReferralController extends Controller
@@ -32,9 +33,17 @@ class ReferralController extends Controller
     public function index(IndexRequest $request)
     {
         $serviceId = $request->filter['service_id'];
-        $baseQuery = Referral::query()->where('service_id', $serviceId);
 
-        $referrals = QueryBuilder::for($baseQuery)->paginate();
+        $baseQuery = Referral::query()
+            ->where('service_id', $serviceId)
+            ->orderByDesc('created_at');
+
+        $referrals = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                Filter::exact('service_id'),
+            ])
+            ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all referrals'));
 
