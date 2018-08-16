@@ -12,7 +12,6 @@ root:
       description: Comma seperated ID's to filter by
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:

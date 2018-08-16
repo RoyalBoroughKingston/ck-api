@@ -12,7 +12,6 @@ root:
       description: Comma seperated ID's to filter by
       schema:
         type: string
-        format: uuid
     - name: filter[first_name]
       in: query
       description: First name to filter by

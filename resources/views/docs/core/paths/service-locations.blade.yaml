@@ -13,7 +13,6 @@ root:
       description: Comma seperated ID's to filter by
       schema:
         type: string
-        format: uuid
     - name: filter[service_id]
       in: query
       description: The ID of the service

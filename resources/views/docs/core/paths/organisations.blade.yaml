@@ -13,7 +13,6 @@ root:
       description: Comma seperated ID's to filter by
       schema:
         type: string
-        format: uuid
     - name: filter[name]
       in: query
       description: Name to filter by

@@ -13,7 +13,6 @@ root:
       description: Comma seperated ID's to filter by
       schema:
         type: string
-        format: uuid
     - name: filter[address_line_1]
       in: query
       description: Filter by address line 1
