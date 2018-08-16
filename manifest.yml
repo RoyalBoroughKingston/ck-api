@@ -13,6 +13,10 @@ defaults: &defaults
     APP_KEY: ((APP_KEY))
     APP_NAME: Connected Kingston
     APP_URL: ((APP_URL))
+    AWS_ACCESS_KEY_ID: ((AWS_ACCESS_KEY_ID))
+    AWS_SECRET_ACCESS_KEY: ((AWS_SECRET_ACCESS_KEY))
+    AWS_DEFAULT_REGION: ((AWS_DEFAULT_REGION))
+    AWS_BUCKET: ((AWS_BUCKET))
     CACHE_DRIVER: redis
     DB_CERT_PATH: /etc/ssl/certs
     DB_CONNECTION: mysql
