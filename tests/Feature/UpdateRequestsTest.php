@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
@@ -10,6 +12,7 @@ use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -136,6 +139,21 @@ class UpdateRequestsTest extends TestCase
         $response->assertJsonMissing(['id' => $organisationUpdateRequest->id]);
     }
 
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $this->json('GET', '/core/v1/update-requests');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id);
+        });
+    }
+
     /*
      * Get a specific update request.
      */
@@ -227,6 +245,28 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $updateRequest) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $updateRequest->id);
+        });
+    }
+
     /*
      * Delete a specific update request.
      */
@@ -310,6 +350,28 @@ class UpdateRequestsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertSoftDeleted((new UpdateRequest())->getTable(), ['id' => $updateRequest->id]);
+    }
+
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $this->json('DELETE', "/core/v1/update-requests/{$updateRequest->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $updateRequest) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $updateRequest->id);
+        });
     }
 
     /*
@@ -527,5 +589,31 @@ class UpdateRequestsTest extends TestCase
             'id' => $service->id,
             'name' => 'Test Name',
         ]);
+    }
+
+    public function test_audit_created_when_approved()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => [
+                'name' => 'Test Name',
+                'regular_opening_hours' => [],
+                'holiday_opening_hours' => [],
+            ],
+        ]);
+
+        $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $updateRequest) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $updateRequest->id);
+        });
     }
 }
