@@ -167,7 +167,7 @@ class NotificationsTest extends TestCase
     public function test_audit_created_when_listed()
     {
         $this->fakeEvents();
-        
+
         /**
          * @var \App\Models\User $user
          */
