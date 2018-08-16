@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Report;
@@ -9,6 +11,7 @@ use App\Models\ReportType;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -77,6 +80,22 @@ class ReportsTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $this->json('GET', '/core/v1/reports');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id);
+        });
+    }
+
     /*
      * Create a report.
      */
@@ -141,6 +160,25 @@ class ReportsTest extends TestCase
         $this->assertDatabaseHas((new Report())->getTable(), [
             'report_type_id' => ReportType::commissionersReport()->id,
         ]);
+    }
+
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/reports', [
+            'report_type' => ReportType::commissionersReport()->name,
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
     }
 
     /*
@@ -211,6 +249,24 @@ class ReportsTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $this->json('GET', "/core/v1/reports/{$report->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $report) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $report->id);
+        });
+    }
+
     /*
      * Delete a specific report.
      */
@@ -277,6 +333,24 @@ class ReportsTest extends TestCase
         $this->assertDatabaseMissing((new File())->getTable(), ['id' => $report->file_id]);
     }
 
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $report = factory(Report::class)->create();
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/reports/{$report->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $report) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $report->id);
+        });
+    }
+
     /*
      * Download a specific report.
      */
@@ -340,5 +414,23 @@ class ReportsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
+    }
+
+    public function test_audit_created_when_file_viewed()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $report = Report::generate(ReportType::commissionersReport());
+
+        Passport::actingAs($user);
+
+        $this->json('GET', "/core/v1/reports/{$report->id}/download");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $report) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $report->id);
+        });
     }
 }
