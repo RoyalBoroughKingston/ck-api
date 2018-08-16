@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
@@ -9,6 +11,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -44,6 +47,17 @@ class TaxonomyCategoriesTest extends TestCase
                 'updated_at' => $randomTaxonomy->updated_at->format(Carbon::ISO8601),
             ]
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/taxonomies/categories');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -216,6 +230,27 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $siblingCount = Taxonomy::category()->children()->count();
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/categories', [
+            'parent_id' => null,
+            'name' => 'PHPUnit Taxonomy Category Test',
+            'order' => $siblingCount + 1,
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
     /*
      * Get a specific category taxonomy
      */
@@ -246,6 +281,28 @@ class TaxonomyCategoriesTest extends TestCase
                 'updated_at' => $randomTaxonomy->updated_at->format(Carbon::ISO8601),
             ]
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $randomTaxonomy = null;
+        Taxonomy::chunk(200, function (Collection $taxonomies) use (&$randomTaxonomy) {
+            foreach ($taxonomies as $taxonomy) {
+                if ($taxonomy->children()->count() === 0) {
+                    $randomTaxonomy = $taxonomy;
+                    return false;
+                }
+            }
+        });
+
+        $this->json('GET', "/core/v1/taxonomies/categories/{$randomTaxonomy->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($randomTaxonomy) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $randomTaxonomy->id);
+        });
     }
 
     /*
@@ -610,6 +667,27 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $category = $this->getRandomCategoryWithoutChildren();
+
+        Passport::actingAs($user);
+        $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}", [
+            'parent_id' => $category->parent_id,
+            'name' => 'PHPUnit Test Category',
+            'order' => $category->order,
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $category) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $category->id);
+        });
+    }
+
     /*
      * Delete a specific category taxonomy.
      */
@@ -680,6 +758,23 @@ class TaxonomyCategoriesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Taxonomy())->getTable(), ['id' => $category->id]);
+    }
+
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $category = $this->getRandomCategoryWithChildren();
+
+        Passport::actingAs($user);
+        $this->json('DELETE', "/core/v1/taxonomies/categories/{$category->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $category) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $category->id);
+        });
     }
 
     /*
