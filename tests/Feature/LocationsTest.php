@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
@@ -9,6 +11,7 @@ use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -55,6 +58,17 @@ class LocationsTest extends TestCase
             'created_at' => $location->created_at->format(Carbon::ISO8601),
             'updated_at' => $location->updated_at->format(Carbon::ISO8601),
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/locations');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -121,6 +135,38 @@ class LocationsTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/locations', [
+            'address_line_1' => '30-34 Aire St',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Leeds',
+            'county' => 'West Yorkshire',
+            'postcode' => 'LS1 4HT',
+            'country' => 'England',
+            'accessibility_info' => null,
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
     /*
      * Get a specific location.
      */
@@ -147,6 +193,20 @@ class LocationsTest extends TestCase
             'created_at' => $location->created_at->format(Carbon::ISO8601),
             'updated_at' => $location->updated_at->format(Carbon::ISO8601),
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $location = factory(Location::class)->create();
+
+        $this->json('GET', "/core/v1/locations/{$location->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($location) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $location->id);
+        });
     }
 
     /*
@@ -217,6 +277,39 @@ class LocationsTest extends TestCase
             ->firstOrFail()
             ->data;
         $this->assertEquals($data, $payload);
+    }
+
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $this->json('PUT', "/core/v1/locations/{$location->id}", [
+            'address_line_1' => '30-34 Aire St',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Leeds',
+            'county' => 'West Yorkshire',
+            'postcode' => 'LS1 4HT',
+            'country' => 'England',
+            'accessibility_info' => null,
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $location) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $location->id);
+        });
     }
 
     /*
@@ -301,5 +394,27 @@ class LocationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Location())->getTable(), ['id' => $location->id]);
+    }
+
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/locations/{$location->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $location) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $location->id);
+        });
     }
 }

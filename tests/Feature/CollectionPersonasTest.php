@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use App\Models\Organisation;
@@ -10,6 +12,7 @@ use App\Models\Taxonomy;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -43,6 +46,17 @@ class CollectionPersonasTest extends TestCase
             'created_at',
             'updated_at',
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/collections/personas');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -402,6 +416,34 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
     /*
      * Get a specific persona collection.
      */
@@ -440,6 +482,20 @@ class CollectionPersonasTest extends TestCase
             'created_at' => $persona->created_at->format(Carbon::ISO8601),
             'updated_at' => $persona->updated_at->format(Carbon::ISO8601),
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        $this->json('GET', "/core/v1/collections/personas/{$persona->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($persona) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $persona->id);
+        });
     }
 
     /*
@@ -803,6 +859,35 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $persona) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $persona->id);
+        });
+    }
+
     /*
      * Delete a specific persona collection.
      */
@@ -1048,6 +1133,28 @@ class CollectionPersonasTest extends TestCase
         $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 2]);
     }
 
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $persona) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $persona->id);
+        });
+    }
+
     /*
      * Get a specific persona collection's image.
      */
@@ -1060,6 +1167,20 @@ class CollectionPersonasTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    public function test_audit_created_when_image_viewed()
+    {
+        $this->fakeEvents();
+
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        $this->get("/core/v1/collections/personas/{$persona->id}/image");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($persona) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $persona->id);
+        });
     }
 
     /*
@@ -1166,6 +1287,31 @@ class CollectionPersonasTest extends TestCase
         $this->assertEquals($image, $content);
     }
 
+    public function test_audit_created_when_image_created()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $persona) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $persona->id);
+        });
+    }
+
     /*
      * Delete a specific persona collection's image.
      */
@@ -1268,5 +1414,31 @@ class CollectionPersonasTest extends TestCase
         $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
 
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    public function test_audit_created_when_image_deleted()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+        $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $persona) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $persona->id);
+        });
     }
 }

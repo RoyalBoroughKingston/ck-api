@@ -6,11 +6,13 @@ use App\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Throwable;
 
 abstract class TestCase extends BaseTestCase
@@ -133,5 +135,24 @@ abstract class TestCase extends BaseTestCase
     protected function dumpResponse(TestResponse $response)
     {
         dump(json_decode($response->getContent(), true));
+    }
+
+    /**
+     * @param \Illuminate\Foundation\Testing\TestResponse $response
+     * @return array
+     */
+    protected function getResponseContent(TestResponse $response): array
+    {
+        return json_decode($response->getContent(), true);
+    }
+
+    /**
+     * Fakes events except for models.
+     */
+    protected function fakeEvents()
+    {
+        $initialDispatcher = Event::getFacadeRoot();
+        Event::fake();
+        Model::setEventDispatcher($initialDispatcher);
     }
 }

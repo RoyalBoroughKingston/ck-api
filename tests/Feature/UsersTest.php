@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -47,6 +50,22 @@ class UsersTest extends TestCase
                 ]
             ],
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $this->json('GET', '/core/v1/users');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id);
+        });
     }
 
     /*
@@ -509,6 +528,28 @@ class UsersTest extends TestCase
     }
 
     /*
+     * Audit.
+     */
+
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
+            ['role' => Role::NAME_SUPER_ADMIN]
+        ]));
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
+    /*
      * ==================================================
      * Get a specific user.
      * ==================================================
@@ -546,6 +587,23 @@ class UsersTest extends TestCase
                 ]
             ],
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $this->json('GET', "/core/v1/users/{$user->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $user->id);
+        });
     }
 
     /*
@@ -1392,6 +1450,51 @@ class UsersTest extends TestCase
     }
 
     /*
+     * Audit.
+     */
+
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        $invoker = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($invoker);
+
+        $service = factory(Service::class)->create();
+        $subject = factory(User::class)->create()->makeSuperAdmin();
+
+        $this->json('PUT', "/core/v1/users/{$subject->id}", [
+            'first_name' => $subject->first_name,
+            'last_name' => $subject->last_name,
+            'email' => $subject->email,
+            'phone' => $subject->phone,
+            'password' => 'password',
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_SERVICE_ADMIN,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'role' => Role::NAME_ORGANISATION_ADMIN,
+                    'organisation_id' => $service->organisation->id,
+                ],
+                ['role' => Role::NAME_GLOBAL_ADMIN],
+                ['role' => Role::NAME_SUPER_ADMIN],
+            ],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($invoker, $subject) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $invoker->id) &&
+                ($event->getModel()->id === $subject->id);
+        });
+    }
+
+    /*
      * ==================================================
      * Delete a specific user.
      * ==================================================
@@ -1637,6 +1740,23 @@ class UsersTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertSoftDeleted((new User())->getTable(), ['id' => $subject->id]);
+    }
+
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        $invoker = factory(User::class)->create()->makeSuperAdmin();
+        $subject = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($invoker);
+
+        $this->json('DELETE', "/core/v1/users/{$subject->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($invoker, $subject) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $invoker->id) &&
+                ($event->getModel()->id === $subject->id);
+        });
     }
 
     /*

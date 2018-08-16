@@ -71,7 +71,7 @@ class UpdateRequestController extends Controller
     public function destroy(DestroyRequest $request, UpdateRequest $updateRequest)
     {
         return DB::transaction(function () use ($request, $updateRequest) {
-            event(EndpointHit::onRead($request, "Deleted update request [{$updateRequest->id}]", $updateRequest));
+            event(EndpointHit::onDelete($request, "Deleted update request [{$updateRequest->id}]", $updateRequest));
 
             $updateRequest->delete();
 

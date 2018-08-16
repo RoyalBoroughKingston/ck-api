@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\HolidayOpeningHour;
 use App\Models\Location;
 use App\Models\RegularOpeningHour;
@@ -10,6 +12,7 @@ use App\Models\ServiceLocation;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -113,6 +116,17 @@ class ServiceLocationsTest extends TestCase
             ],
             'created_at' => $serviceLocation->created_at->format(Carbon::ISO8601),
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/service-locations');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -240,6 +254,31 @@ class ServiceLocationsTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        $location = factory(Location::class)->create();
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/service-locations', [
+            'service_id' => $service->id,
+            'location_id' => $location->id,
+            'name' => null,
+            'regular_opening_hours' => [],
+            'holiday_opening_hours' => [],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
     /*
      * Get a specific service location.
      */
@@ -303,6 +342,22 @@ class ServiceLocationsTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $location = factory(Location::class)->create();
+        $service = factory(Service::class)->create();
+        $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
+
+        $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($serviceLocation) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $serviceLocation->id);
+        });
+    }
+
     /*
      * Update a specific service location.
      */
@@ -361,6 +416,28 @@ class ServiceLocationsTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
         $data = $serviceLocation->updateRequests()->firstOrFail()->data;
         $this->assertEquals($data, $payload);
+    }
+
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($serviceLocation->service);
+
+        Passport::actingAs($user);
+
+        $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", [
+            'name' => 'New Company Name',
+            'regular_opening_hours' => [],
+            'holiday_opening_hours' => [],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $serviceLocation) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $serviceLocation->id);
+        });
     }
 
     /*
@@ -435,5 +512,23 @@ class ServiceLocationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new ServiceLocation())->getTable(), ['id' => $serviceLocation->id]);
+    }
+
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $serviceLocation) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $serviceLocation->id);
+        });
     }
 }

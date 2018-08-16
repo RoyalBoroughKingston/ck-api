@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -157,6 +159,21 @@ class AuditsTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $this->json('GET', '/core/v1/audits');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id);
+        });
+    }
+
     /*
      * Get a specific audit.
      */
@@ -256,5 +273,30 @@ class AuditsTest extends TestCase
                 'updated_at' => $this->now->format(Carbon::ISO8601),
             ]
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $audit = Audit::create([
+            'action' => Audit::ACTION_READ,
+            'description' => 'Someone viewed a resource',
+            'ip_address' => '127.0.0.1',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Event::fake();
+        $this->json('GET', "/core/v1/audits/{$audit->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $audit) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $audit->id);
+        });
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Service;
@@ -12,6 +14,7 @@ use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -182,6 +185,17 @@ class ServicesTest extends TestCase
         $response->assertJsonMissing([
             'id' => $anotherService->id,
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/services');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -361,11 +375,76 @@ class ServicesTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/services', [
+            'organisation_id' => $organisation->id,
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => $this->faker->phoneNumber,
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
     /*
      * Get a specific service.
      */
 
-    public function test_guest_can_get_one()
+    public function test_guest_can_view_one()
     {
         $service = factory(Service::class)->create();
         $service->usefulInfos()->create([
@@ -442,6 +521,32 @@ class ServicesTest extends TestCase
             ],
             'created_at' => $service->created_at->format(Carbon::ISO8601)
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $service->usefulInfos()->create([
+            'title' => 'Did You Know?',
+            'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital/'
+        ]);
+        $service->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->first()->id,
+        ]);
+
+        $this->json('GET', "/core/v1/services/{$service->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($service) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $service->id);
+        });
     }
 
     /*
@@ -529,6 +634,70 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $this->json('PUT', "/core/v1/services/{$service->id}", [
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => $this->faker->phoneNumber,
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $service) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $service->id);
+        });
+    }
+
     /*
      * Delete a specific service.
      */
@@ -603,6 +772,24 @@ class ServicesTest extends TestCase
         $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
     }
 
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/services/{$service->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $service) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $service->id);
+        });
+    }
+
     /*
      * Get a specific service's logo.
      */
@@ -615,6 +802,20 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    public function test_audit_created_when_logo_viewed()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+
+        $this->get("/core/v1/services/{$service->id}/logo");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($service) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $service->id);
+        });
     }
 
     /*
@@ -663,6 +864,28 @@ class ServicesTest extends TestCase
             'updateable_type' => 'services',
             'updateable_id' => $service->id,
         ]);
+    }
+
+    public function test_audit_created_when_logo_created()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $this->json('POST', "/core/v1/services/{$service->id}/logo", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $service) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $service->id);
+        });
     }
 
     /*
@@ -715,6 +938,30 @@ class ServicesTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_logo_deleted()
+    {
+        $this->fakeEvents();
+
+        $file = File::create([
+            'filename' => 'test/png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ]);
+        $service = factory(Service::class)->create(['logo_file_id' => $file->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/services/{$service->id}/logo");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $service) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $service->id);
+        });
+    }
+
     /*
      * Get a specific service's SEO image.
      */
@@ -727,6 +974,20 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    public function test_audit_created_when_seo_image_viewed()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+
+        $this->get("/core/v1/services/{$service->id}/seo-image");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($service) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $service->id);
+        });
     }
 
     /*
@@ -777,6 +1038,28 @@ class ServicesTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_seo_image_created()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $this->json('POST', "/core/v1/services/{$service->id}/seo-image", [
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $service) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $service->id);
+        });
+    }
+
     /*
      * Delete a specific service's SEO image.
      */
@@ -825,5 +1108,29 @@ class ServicesTest extends TestCase
             'updateable_type' => 'services',
             'updateable_id' => $service->id,
         ]);
+    }
+
+    public function test_audit_created_when_seo_image_deleted()
+    {
+        $this->fakeEvents();
+
+        $file = File::create([
+            'filename' => 'test/png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ]);
+        $service = factory(Service::class)->create(['seo_image_file_id' => $file->id]);
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/services/{$service->id}/seo-image");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $service) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $service->id);
+        });
     }
 }
