@@ -49,7 +49,15 @@ class File extends Model implements Responsable
     {
         $directory = $this->is_private ? 'files/private' : 'files/public';
 
-        return "/{$directory}/{$this->id}";
+        return "/{$directory}/{$this->id}-{$this->filename}";
+    }
+
+    /**
+     * @return string
+     */
+    protected function visibility(): string
+    {
+        return $this->is_private ? 'private' : 'public';
     }
 
     /**
@@ -57,7 +65,15 @@ class File extends Model implements Responsable
      */
     public function upload(string $content)
     {
-        Storage::cloud()->put($this->path(), $content);
+        Storage::cloud()->put($this->path(), $content, $this->visibility());
+    }
+
+    /**
+     * @return string
+     */
+    public function url(): string
+    {
+        return Storage::cloud()->url($this->path());
     }
 
     /**
