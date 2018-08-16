@@ -64,7 +64,7 @@ class ReportSchedulesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_Global_admin_can_list_them()
+    public function test_global_admin_can_list_them()
     {
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
