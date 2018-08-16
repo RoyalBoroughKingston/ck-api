@@ -11,7 +11,6 @@ use App\Http\Requests\CollectionCategory\UpdateRequest;
 use App\Http\Resources\CollectionCategoryResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
-use App\Models\CollectionTaxonomy;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;

@@ -161,10 +161,11 @@ class AuditsTest extends TestCase
 
     public function test_audit_created_when_listed()
     {
+        $this->fakeEvents();
+
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
-        Event::fake();
         $this->json('GET', '/core/v1/audits');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
@@ -276,6 +277,8 @@ class AuditsTest extends TestCase
 
     public function test_audit_created_when_viewed()
     {
+        $this->fakeEvents();
+
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 

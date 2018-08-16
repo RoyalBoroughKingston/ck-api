@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use App\Models\Organisation;
@@ -10,6 +12,7 @@ use App\Models\Taxonomy;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -42,6 +45,17 @@ class CollectionCategoriesTest extends TestCase
             'created_at',
             'updated_at',
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/collections/categories');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -401,6 +415,34 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/categories', [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
     /*
      * Get a specific category collection.
      */
@@ -439,6 +481,20 @@ class CollectionCategoriesTest extends TestCase
             'created_at' => $collectionCategory->created_at->format(Carbon::ISO8601),
             'updated_at' => $collectionCategory->updated_at->format(Carbon::ISO8601),
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        $response = $this->json('GET', "/core/v1/collections/categories/{$collectionCategory->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
     }
 
     /*
@@ -802,6 +858,35 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $category) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $category->id);
+        });
+    }
+
     /*
      * Delete a specific category collection.
      */
@@ -1045,5 +1130,27 @@ class CollectionCategoriesTest extends TestCase
         $this->assertDatabaseMissing((new Collection())->getTable(), ['id' => $third->id]);
         $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $first->id, 'order' => 1]);
         $this->assertDatabaseHas((new Collection())->getTable(), ['id' => $second->id, 'order' => 2]);
+    }
+
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $this->json('DELETE', "/core/v1/collections/categories/{$category->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $category) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $category->id);
+        });
     }
 }
