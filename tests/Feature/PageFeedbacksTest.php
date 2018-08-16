@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\PageFeedback;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -105,6 +108,26 @@ class PageFeedbacksTest extends TestCase
         ]);
     }
 
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $this->json('GET', '/core/v1/page-feedbacks');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id);
+        });
+    }
+
     /*
      * Create a page feedback.
      */
@@ -120,6 +143,21 @@ class PageFeedbacksTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
+    }
+
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        $response = $this->json('POST', '/core/v1/page-feedbacks', [
+            'url' => url('test-page'),
+            'feedback' => 'This page does not work',
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
     }
 
     /*
@@ -237,5 +275,32 @@ class PageFeedbacksTest extends TestCase
                 'updated_at' => $pageFeedback->updated_at->format(Carbon::ISO8601),
             ]
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $pageFeedback = PageFeedback::create([
+            'url' => url('/test'),
+            'feedback' => 'This page does not work',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->json('GET', "/core/v1/page-feedbacks/{$pageFeedback->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $pageFeedback) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $pageFeedback->id);
+        });
     }
 }
