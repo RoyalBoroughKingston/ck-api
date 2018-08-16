@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -33,6 +36,17 @@ class TaxonomyOrganisationsTest extends TestCase
                 'updated_at' => $taxonomy->updated_at->format(Carbon::ISO8601),
             ]
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/taxonomies/organisations');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -211,6 +225,26 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_created()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $siblingCount = Taxonomy::organisation()->children()->count();
+
+        Passport::actingAs($user);
+        $response = $this->json('POST', '/core/v1/taxonomies/organisations', [
+            'name' => 'PHPUnit Taxonomy Organisation Test',
+            'order' => $siblingCount + 1,
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+        });
+    }
+
     /*
      * Get a specific organisation taxonomy.
      */
@@ -231,6 +265,20 @@ class TaxonomyOrganisationsTest extends TestCase
                 'updated_at' => $taxonomy->updated_at->format(Carbon::ISO8601),
             ]
         ]);
+    }
+
+    public function test_audit_created_when_viewed()
+    {
+        $this->fakeEvents();
+
+        $taxonomy = $this->createTaxonomyOrganisation();
+
+        $this->json('GET', "/core/v1/taxonomies/organisations/{$taxonomy->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($taxonomy) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $taxonomy->id);
+        });
     }
 
     /*
@@ -401,6 +449,26 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $organisation = $this->createTaxonomyOrganisation();
+
+        Passport::actingAs($user);
+        $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}", [
+            'name' => 'PHPUnit Test Organisation',
+            'order' => $organisation->order,
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $organisation) {
+            return ($event->getAction() === Audit::ACTION_UPDATE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $organisation->id);
+        });
+    }
+
     /*
      * Delete a specific organisation taxonomy.
      */
@@ -471,6 +539,23 @@ class TaxonomyOrganisationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Taxonomy())->getTable(), ['id' => $organisation->id]);
+    }
+
+    public function test_audit_created_when_deleted()
+    {
+        $this->fakeEvents();
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $organisation = $this->createTaxonomyOrganisation();
+
+        Passport::actingAs($user);
+        $this->json('DELETE', "/core/v1/taxonomies/organisations/{$organisation->id}");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $organisation) {
+            return ($event->getAction() === Audit::ACTION_DELETE) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $organisation->id);
+        });
     }
 
     /*
