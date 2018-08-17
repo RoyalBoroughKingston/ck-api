@@ -2,16 +2,18 @@
 
 namespace App\Search;
 
-use App\Geocode\Coordinate;
+use App\Contracts\Search;
+use App\Support\Coordinate;
 use App\Http\Resources\ServiceResource;
 use App\Models\SearchHistory;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 
-class Search
+class ElasticsearchSearch implements Search
 {
     /**
      * @var array
@@ -28,7 +30,7 @@ class Search
 
     /**
      * @param string $term
-     * @return \App\Search\Search
+     * @return \App\Search\ElasticsearchSearch
      */
     public function applyQuery(string $term): Search
     {
@@ -77,7 +79,7 @@ class Search
 
     /**
      * @param string $category
-     * @return \App\Search\Search
+     * @return \App\Search\ElasticsearchSearch
      */
     public function applyCategory(string $category): Search
     {
@@ -96,7 +98,7 @@ class Search
 
     /**
      * @param string $persona
-     * @return \App\Search\Search
+     * @return \App\Search\ElasticsearchSearch
      */
     public function applyPersona(string $persona): Search
     {
@@ -115,8 +117,8 @@ class Search
 
     /**
      * @param string $order
-     * @param \App\Geocode\Coordinate|null $location
-     * @return \App\Search\Search
+     * @param \App\Support\Coordinate|null $location
+     * @return \App\Search\ElasticsearchSearch
      */
     public function applyOrder(string $order, Coordinate $location = null): Search
     {
@@ -138,7 +140,7 @@ class Search
     /**
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function paginate()
+    public function paginate(): AnonymousResourceCollection
     {
         $response = Service::searchRaw($this->query);
         $this->logMetrics($response);
@@ -149,7 +151,7 @@ class Search
     /**
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function get()
+    public function get(): AnonymousResourceCollection
     {
         $response = Service::searchRaw($this->query);
         $this->logMetrics($response);
@@ -217,7 +219,7 @@ class Search
 
     /**
      * @param array $response
-     * @return \App\Search\Search
+     * @return \App\Search\ElasticsearchSearch
      */
     protected function logMetrics(array $response): Search
     {

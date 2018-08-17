@@ -2,10 +2,6 @@
 
 namespace App\Providers;
 
-use App\Contracts\Geocoder;
-use App\Geocode\GoogleGeocoder;
-use App\Geocode\NominatimGeocoder;
-use App\Geocode\StubGeocoder;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,16 +13,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Geocode.
         switch (config('ck.geocode_driver')) {
             case 'google':
-                $this->app->bind(Geocoder::class, GoogleGeocoder::class);
+                $this->app->singleton(\App\Contracts\Geocoder::class, \App\Geocode\GoogleGeocoder::class);
                 break;
             case 'nominatim':
-                $this->app->bind(Geocoder::class, NominatimGeocoder::class);
+                $this->app->singleton(\App\Contracts\Geocoder::class, \App\Geocode\NominatimGeocoder::class);
                 break;
             case 'stub':
             default:
-                $this->app->bind(Geocoder::class, StubGeocoder::class);
+                $this->app->singleton(\App\Contracts\Geocoder::class, \App\Geocode\StubGeocoder::class);
+                break;
+        }
+
+        // Search.
+        switch (config('scout.driver')) {
+            case 'elastic':
+            default:
+                $this->app->singleton(\App\Contracts\Search::class, \App\Search\ElasticsearchSearch::class);
                 break;
         }
     }

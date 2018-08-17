@@ -3,6 +3,7 @@
 namespace App\Geocode;
 
 use App\Support\Address;
+use App\Support\Coordinate;
 use GuzzleHttp\Client;
 
 class NominatimGeocoder extends Geocoder
@@ -24,7 +25,7 @@ class NominatimGeocoder extends Geocoder
      * Convert a a textual address into a coordinate.
      *
      * @param \App\Support\Address $address
-     * @return \App\Geocode\Coordinate
+     * @return \App\Support\Coordinate
      */
     public function geocode(Address $address): Coordinate
     {

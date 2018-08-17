@@ -5,12 +5,13 @@ namespace App\Geocode;
 use App\Contracts\Geocoder as GeocoderContract;
 use App\Models\CachedGeocodeResult;
 use App\Support\Address;
+use App\Support\Coordinate;
 
 abstract class Geocoder implements GeocoderContract
 {
     /**
      * @param \App\Support\Address $address
-     * @return \App\Geocode\Coordinate|null
+     * @return \App\Support\Coordinate|null
      */
     protected function retrieveFromCache(Address $address): ?Coordinate
     {
@@ -25,7 +26,7 @@ abstract class Geocoder implements GeocoderContract
 
     /**
      * @param \App\Support\Address $address
-     * @param \App\Geocode\Coordinate|null $coordinate
+     * @param \App\Support\Coordinate|null $coordinate
      * @return \App\Models\CachedGeocodeResult
      */
     protected function saveToCache(Address $address, ?Coordinate $coordinate): CachedGeocodeResult

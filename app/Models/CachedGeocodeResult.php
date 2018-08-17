@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Geocode\Coordinate;
+use App\Support\Coordinate;
 use App\Models\Mutators\CachedGeocodeResultMutators;
 use App\Models\Relationships\CachedGeocodeResultRelationships;
 use App\Models\Scopes\CachedGeocodeResultScopes;
@@ -22,7 +22,7 @@ class CachedGeocodeResult extends Model
     }
 
     /**
-     * @return \App\Geocode\Coordinate
+     * @return \App\Support\Coordinate
      */
     public function toCoordinate(): Coordinate
     {

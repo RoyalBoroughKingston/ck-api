@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Geocode;
+namespace App\Support;
 
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
