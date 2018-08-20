@@ -1,5 +1,4 @@
 type: object
-required:
 properties:
   query:
     type: string
@@ -15,6 +14,7 @@ properties:
     enum:
       - relevance
       - distance
+    default: relevance
   location:
     type: object
     required:

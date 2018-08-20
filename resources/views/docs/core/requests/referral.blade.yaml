@@ -3,6 +3,18 @@ store:
   required:
     - service_id
     - name
+    - email
+    - phone
+    - other_contact
+    - postcode_outward_code
+    - comments
+    - referral_consented
+    - feedback_consented
+    - referee_name
+    - referee_email
+    - referee_phone
+    - organisation_taxonomy_id
+    - organisation
   properties:
     service_id:
       type: string
@@ -63,6 +75,7 @@ update:
   type: object
   required:
     - status
+    - comments
   properties:
     status:
       type: string

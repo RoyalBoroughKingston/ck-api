@@ -1,12 +1,12 @@
 store:
   type: object
   required:
-    - first_name
-    - last_name
-    - email
-    - phone
-    - password
-    - roles
+  - first_name
+  - last_name
+  - email
+  - phone
+  - password
+  - roles
   properties:
     first_name:
       type: string
@@ -29,16 +29,18 @@ store:
       items:
         type: object
         required:
-          - role
+        - role
+        - organisation_id
+        - service_id
         properties:
           role:
             type: string
             enum:
-              - Service Worker
-              - Service Admin
-              - Organisation Admin
-              - Global Admin
-              - Super Admin
+            - Service Worker
+            - Service Admin
+            - Organisation Admin
+            - Global Admin
+            - Super Admin
             example: Service Worker
           organisation_id:
             type: string
@@ -53,4 +55,4 @@ store:
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

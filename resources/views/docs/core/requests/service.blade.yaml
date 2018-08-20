@@ -13,21 +13,31 @@ store:
 update:
   type: object
   required:
-    - name
-    - status
-    - intro
-    - description
-    - is_free
-    - contact_name
-    - contact_phone
-    - contact_email
-    - show_referral_disclaimer
-    - referral_method
-    - criteria
-    - seo_title
-    - seo_description
-    - social_medias
-    - category_taxonomies
+  - name
+  - status
+  - intro
+  - description
+  - wait_time
+  - is_free
+  - fees_text
+  - fees_url
+  - testimonial
+  - video_embed
+  - url
+  - contact_name
+  - contact_phone
+  - contact_email
+  - show_referral_disclaimer
+  - referral_method
+  - referral_button_text
+  - referral_email
+  - referral_url
+  - criteria
+  - seo_title
+  - seo_description
+  - useful_infos
+  - social_medias
+  - category_taxonomies
   properties:
     name:
       type: string
@@ -107,6 +117,15 @@ update:
       example: null
     criteria:
       type: object
+      required:
+      - age_group
+      - disability
+      - employment
+      - gender
+      - housing
+      - income
+      - language
+      - other
       properties:
         age_group:
           type: string
