@@ -54,7 +54,7 @@ class LogoController extends Controller
 
             event(EndpointHit::onCreate($request, "Created logo for organisation [{$organisation->id}]", $organisation));
 
-            return new UpdateRequestReceived([], Response::HTTP_CREATED);
+            return new UpdateRequestReceived(['logo_file_id' => $file->id], Response::HTTP_CREATED);
         });
     }
 
@@ -101,7 +101,7 @@ class LogoController extends Controller
 
             event(EndpointHit::onDelete($request, "Deleted logo for organisation [{$organisation->id}]", $organisation));
 
-            return new UpdateRequestReceived();
+            return new UpdateRequestReceived(['logo_file_id' => null]);
         });
     }
 }
