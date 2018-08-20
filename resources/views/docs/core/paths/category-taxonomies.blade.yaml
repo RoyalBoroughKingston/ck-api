@@ -4,10 +4,11 @@ root:
     tags: ["Taxonomy: Categories"]
     summary: List all the category taxonomies
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/filter-id.yaml
     responses:
       200:
         content:
@@ -24,7 +25,7 @@ root:
     tags: ["Taxonomy: Categories"]
     summary: Create a category taxonomy
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     requestBody:
       required: true
       content:
@@ -44,16 +45,17 @@ nested:
     tags: ["Taxonomy: Categories"]
     summary: Get a specific category taxonomy
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
-      - name: category
-        in: path
-        description: The ID of the category taxonomy
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: category
+      in: path
+      description: The ID of the category taxonomy
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -65,15 +67,16 @@ nested:
     tags: ["Taxonomy: Categories"]
     summary: Update a specific category taxonomy
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: category
-        in: path
-        description: The ID of the category taxonomy
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: category
+      in: path
+      description: The ID of the category taxonomy
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -91,15 +94,16 @@ nested:
     tags: ["Taxonomy: Categories"]
     summary: Delete a specific category taxonomy
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: category
-        in: path
-        description: The ID of the category taxonomy
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: category
+      in: path
+      description: The ID of the category taxonomy
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

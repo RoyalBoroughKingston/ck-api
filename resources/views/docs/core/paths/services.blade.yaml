@@ -8,11 +8,7 @@ root:
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
-    - name: filter[id]
-      in: query
-      description: Comma seperated ID's to filter by
-      schema:
-        type: string
+    - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[organisation_id]
       in: query
       description: The ID of the organisation
@@ -30,13 +26,13 @@ root:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/service.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/service.yaml
 
   post:
     tags: [Services]
@@ -65,13 +61,14 @@ nested:
       **Permission:** `Open`
     security: []
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -85,13 +82,14 @@ nested:
     description: |
       **Permission:** `Service Admin`
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -117,13 +115,14 @@ nested:
     description: |
       **Permission:** `Super Admin`
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -140,13 +139,14 @@ logo:
       **Permission:** `Open`
     security: []
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -158,13 +158,14 @@ logo:
     description: |
       **Permission:** `Service Admin`
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -176,6 +177,7 @@ logo:
                 type: string
                 format: binary
                 description: Base64 encoded string of the PNG image
+                example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
     responses:
       200:
         content:
@@ -193,13 +195,14 @@ logo:
     description: |
       **Permission:** `Service Admin`
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -220,13 +223,14 @@ seo-image:
       **Permission:** `Service Admin`
     security: []
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -238,13 +242,14 @@ seo-image:
     description: |
       **Permission:** `Service Admin`
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -256,6 +261,7 @@ seo-image:
                 type: string
                 format: binary
                 description: Base64 encoded string of the PNG image
+                example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
     responses:
       200:
         content:
@@ -273,13 +279,14 @@ seo-image:
     description: |
       **Permission:** `Service Admin`
     parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: service
+      in: path
+      description: The ID of the service
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

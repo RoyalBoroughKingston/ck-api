@@ -1,13 +1,13 @@
 store:
   type: object
   required:
-    - report_type
+  - report_type
   properties:
     report_type:
       type: string
       enum:
-        - Commissioners Report
+      - Commissioners Report
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

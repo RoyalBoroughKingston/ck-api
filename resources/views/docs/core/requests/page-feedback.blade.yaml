@@ -1,14 +1,16 @@
 store:
   type: object
   required:
-    - url
-    - feedback
+  - url
+  - feedback
   properties:
     url:
       type: string
+      example: {{ url('/path/to/page') }}
     feedback:
       type: string
+      example: This does not work on my browser
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

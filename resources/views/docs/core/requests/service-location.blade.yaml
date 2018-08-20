@@ -1,139 +1,100 @@
 store:
-  type: object
-  required:
+  allOf:
+  - type: object
+    required:
     - service_id
     - location_id
-    - name
-    - regular_opening_hours
-    - holiday_opening_hours
-  properties:
-    service_id:
-      type: string
-      format: uuid
-    location_id:
-      type: string
-      format: uuid
-    name:
-      type: string
-      nullable: true
-    regular_opening_hours:
-      type: array
-      items:
-        type: object
-        required:
-          - frequency
-          - opens_at
-          - closes_at
-        properties:
-          frequency:
-            type: string
-            enum:
-              - weekly
-              - monthly
-              - fortnightly
-              - nth_occurrence_of_month
-          weekday:
-            type: integer
-          day_of_month:
-            type: integer
-          occurrence_of_month:
-            type: integer
-          starts_at:
-            type: string
-            format: date
-          opens_at:
-            type: string
-            format: time
-          closes_at:
-            type: string
-            format: time
-    holiday_opening_hours:
-      type: array
-      items:
-        type: object
-        required:
-          - is_closed
-          - starts_at
-          - ends_at
-          - opens_at
-          - closes_at
-        properties:
-          is_closed:
-            type: boolean
-          starts_at:
-            type: string
-            format: date
-          ends_at:
-            type: string
-            format: date
-          opens_at:
-            type: string
-            format: time
-          closes_at:
-            type: string
-            format: time
+    properties:
+      service_id:
+        type: string
+        format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+      location_id:
+        type: string
+        format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+  - $ref: "#/update"
 
 update:
   type: object
   required:
-    - name
-    - regular_opening_hours
-    - holiday_opening_hours
+  - name
+  - regular_opening_hours
+  - holiday_opening_hours
   properties:
     name:
       type: string
       nullable: true
+      example: Floor 4
     regular_opening_hours:
       type: array
       items:
         type: object
         required:
-          - frequency
-          - opens_at
-          - closes_at
+        - frequency
+        - opens_at
+        - closes_at
         properties:
           frequency:
             type: string
             enum:
-              - weekly
-              - monthly
-              - fortnightly
-              - nth_occurrence_of_mon
+            - weekly
+            - monthly
+            - fortnightly
+            - nth_occurrence_of_month
+            example: weekly
           weekday:
             type: integer
+            nullable: true
+            example: 2
           day_of_month:
             type: integer
+            nullable: true
+            example: null
           occurrence_of_month:
             type: integer
+            nullable: true
+            example: null
           starts_at:
             type: string
+            nullable: true
             format: date
+            example: null
           opens_at:
             type: string
-            format: date-time
+            format: time
+            example: "09:00:00"
           closes_at:
             type: string
-            format: date-time
+            format: time
+            example: "17:30:00"
     holiday_opening_hours:
       type: array
       items:
         type: object
         required:
-          - is_closed
-          - starts_at
-          - ends_at
+        - is_closed
+        - starts_at
+        - ends_at
+        - opens_at
+        - closes_at
         properties:
           is_closed:
             type: boolean
+            example: true
           starts_at:
             type: string
-            format: date-time
+            format: date
+            example: "2018-12-24"
           ends_at:
             type: string
-            format: date-time
+            format: date
+            example: "2019-01-01"
           opens_at:
             type: string
-            format: date-time
+            format: time
+            example: "00:00:00"
           closes_at:
             type: string
-            format: date-time
+            format: time
+            example: "00:00:00"

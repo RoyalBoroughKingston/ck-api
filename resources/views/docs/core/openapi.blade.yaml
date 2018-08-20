@@ -9,7 +9,7 @@ info:
     url: https://ayup.agency
 
 servers:
-  - url: {{ url('/core/v1') }}
+- url: {{ url('/core/v1') }}
 
 paths:
   /audits:
@@ -119,27 +119,27 @@ components:
           tokenUrl: {{ url('/oauth/token') }}
 
 security:
-  - OAuth2: []
+- OAuth2: []
 
 tags:
-  - name: Audits
-  - name: "Collection: Categories"
-  - name: "Collection: Personas"
-  - name: Locations
-  - name: Notifications
-  - name: Organisations
-  - name: Page Feedbacks
-  - name: Referrals
-  - name: Report Schedules
-  - name: Reports
-  - name: Search
-  - name: Service Locations
-  - name: Services
-  - name: Status Updates
-  - name: "Taxonomy: Categories"
-  - name: "Taxonomy: Organisations"
-  - name: Update Requests
-  - name: Users
+- name: Audits
+- name: "Collection: Categories"
+- name: "Collection: Personas"
+- name: Locations
+- name: Notifications
+- name: Organisations
+- name: Page Feedbacks
+- name: Referrals
+- name: Report Schedules
+- name: Reports
+- name: Search
+- name: Service Locations
+- name: Services
+- name: Status Updates
+- name: "Taxonomy: Categories"
+- name: "Taxonomy: Organisations"
+- name: Update Requests
+- name: Users
 
 externalDocs:
   description: GitHub Wiki

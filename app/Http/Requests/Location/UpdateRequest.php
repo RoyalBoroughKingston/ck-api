@@ -30,13 +30,13 @@ class UpdateRequest extends FormRequest
     {
         return [
             'address_line_1' => ['required', 'string', 'min:1', 'max:255'],
-            'address_line_2' => ['nullable', 'string', 'min:1', 'max:255'],
-            'address_line_3' => ['nullable', 'string', 'min:1', 'max:255'],
+            'address_line_2' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+            'address_line_3' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'city' => ['required', 'string', 'min:1', 'max:255'],
             'county' => ['required', 'string', 'min:1', 'max:255'],
             'postcode' => ['required', 'string', 'min:1', 'max:255', new Postcode()],
             'country' => ['required', 'string', 'min:1', 'max:255'],
-            'accessibility_info' => ['nullable', 'string', 'min:1', 'max:10000'],
+            'accessibility_info' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
         ];
     }
 }

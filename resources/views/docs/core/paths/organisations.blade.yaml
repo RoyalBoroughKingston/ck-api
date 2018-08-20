@@ -4,15 +4,11 @@ root:
     tags: [Organisations]
     summary: List all the organisations
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
-    - name: filter[id]
-      in: query
-      description: Comma seperated ID's to filter by
-      schema:
-        type: string
+    - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[name]
       in: query
       description: Name to filter by
@@ -24,19 +20,19 @@ root:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/organisation.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/organisation.yaml
 
   post:
     tags: [Organisations]
     summary: Create an organisation
     description: |
-       **Permission:** `Global Admin`
+      **Permission:** `Global Admin`
     requestBody:
       required: true
       content:
@@ -56,16 +52,17 @@ nested:
     tags: [Organisations]
     summary: Get a specific organisation
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
-      - name: organisation
-        in: path
-        description: The ID of the organisation
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: organisation
+      in: path
+      description: The ID of the organisation
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -77,15 +74,16 @@ nested:
     tags: [Organisations]
     summary: Update a specific organisation
     description: |
-       **Permission:** `Organisation Admin`
+      **Permission:** `Organisation Admin`
     parameters:
-      - name: organisation
-        in: path
-        description: The ID of the organisation
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: organisation
+      in: path
+      description: The ID of the organisation
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -109,15 +107,16 @@ nested:
     tags: [Organisations]
     summary: Delete a specific organisation
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: organisation
-        in: path
-        description: The ID of the organisation
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: organisation
+      in: path
+      description: The ID of the organisation
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -131,16 +130,17 @@ logo:
     tags: [Organisations]
     summary: Get a specific organisation's logo
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
-      - name: organisation
-        in: path
-        description: The ID of the organisation
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: organisation
+      in: path
+      description: The ID of the organisation
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -150,15 +150,16 @@ logo:
     tags: [Organisations]
     summary: Upload a specific organisation's logo
     description: |
-       **Permission:** `Organisation Admin`
+      **Permission:** `Organisation Admin`
     parameters:
-      - name: organisation
-        in: path
-        description: The ID of the organisation
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: organisation
+      in: path
+      description: The ID of the organisation
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -170,6 +171,7 @@ logo:
                 type: string
                 format: binary
                 description: Base64 encoded string of the PNG image
+                example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
     responses:
       200:
         content:
@@ -185,15 +187,16 @@ logo:
     tags: [Organisations]
     summary: Delete a specific organisation's logo
     description: |
-       **Permission:** `Organisation Admin`
+      **Permission:** `Organisation Admin`
     parameters:
-      - name: organisation
-        in: path
-        description: The ID of the organisation
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: organisation
+      in: path
+      description: The ID of the organisation
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

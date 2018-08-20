@@ -1,35 +1,47 @@
 store:
   allOf:
-    - type: object
-      required:
-        - organisation_id
-      properties:
-        organisation_id:
-          type: string
-          format: uuid
-    - $ref: "#/update"
+  - type: object
+    required:
+    - organisation_id
+    properties:
+      organisation_id:
+        type: string
+        format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+  - $ref: "#/update"
 
 update:
   type: object
   required:
-    - name
-    - status
-    - intro
-    - description
-    - is_free
-    - contact_name
-    - contact_phone
-    - contact_email
-    - show_referral_disclaimer
-    - referral_method
-    - criteria
-    - seo_title
-    - seo_description
-    - social_medias
-    - category_taxonomies
+  - name
+  - status
+  - intro
+  - description
+  - wait_time
+  - is_free
+  - fees_text
+  - fees_url
+  - testimonial
+  - video_embed
+  - url
+  - contact_name
+  - contact_phone
+  - contact_email
+  - show_referral_disclaimer
+  - referral_method
+  - referral_button_text
+  - referral_email
+  - referral_url
+  - criteria
+  - seo_title
+  - seo_description
+  - useful_infos
+  - social_medias
+  - category_taxonomies
   properties:
     name:
       type: string
+      example: Helping The Homeless
     status:
       type: string
       enum:
@@ -37,8 +49,10 @@ update:
       - inactive
     intro:
       type: string
+      example: Lorem ipsum
     description:
       type: string
+      example: Lorem ipsum
     wait_time:
       type: string
       enum:
@@ -48,31 +62,42 @@ update:
       - month
       - longer
       nullable: true
+      example: null
     is_free:
       type: boolean
+      example: true
     fees_text:
       type: string
       nullable: true
+      example: null
     fees_url:
       type: string
       nullable: true
+      example: null
     testimonial:
       type: string
       nullable: true
+      example: null
     video_embed:
       type: string
       nullable: true
+      example: null
     url:
       type: string
       nullable: true
+      example: null
     contact_name:
       type: string
+      example: John Doe
     contact_phone:
       type: string
+      example: "01138591020"
     contact_email:
       type: string
+      example: info@ayup.agency
     show_referral_disclaimer:
       type: boolean
+      example: true
     referral_method:
       type: string
       enum:
@@ -81,43 +106,65 @@ update:
       - none
     referral_button_text:
       type: string
+      example: Make Referral
     referral_email:
       type: string
       nullable: true
+      example: info@ayup.agency
     referral_url:
       type: string
       nullable: true
+      example: null
     criteria:
       type: object
+      required:
+      - age_group
+      - disability
+      - employment
+      - gender
+      - housing
+      - income
+      - language
+      - other
       properties:
         age_group:
           type: string
           nullable: true
+          example: null
         disability:
           type: string
           nullable: true
+          example: null
         employment:
           type: string
           nullable: true
+          example: null
         gender:
           type: string
           nullable: true
+          example: null
         housing:
           type: string
           nullable: true
+          example: null
         income:
           type: string
           nullable: true
+          example: null
         language:
           type: string
           nullable: true
+          example: null
         other:
           type: string
           nullable: true
+          example: null
     seo_title:
       type: string
+      example: Helping The Homeless
     seo_description:
       type: string
+      example: Lorem ipsum
     useful_infos:
       type: array
       items:
@@ -129,10 +176,13 @@ update:
         properties:
           title:
             type: string
+            example: How to apply
           description:
             type: string
+            example: Lorem ipsum
           order:
             type: integer
+            example: 1
     social_medias:
       type: array
       items:
@@ -149,10 +199,13 @@ update:
             - instagram
             - youtube
             - other
+            example: instagram
           url:
             type: string
+            example: https://www.instagram.com/ayupdigital
     category_taxonomies:
       type: array
       items:
         type: string
         format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b

@@ -1,14 +1,16 @@
 store:
   type: object
   required:
-    - name
-    - order
+  - name
+  - order
   properties:
     name:
       type: string
+      example: Ayup Digital
     order:
       type: integer
+      example: 1
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

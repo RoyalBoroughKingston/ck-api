@@ -1,26 +1,31 @@
 store:
   type: object
   required:
-    - name
-    - intro
-    - subtitle
-    - order
-    - category_taxonomies
+  - name
+  - intro
+  - subtitle
+  - order
+  - category_taxonomies
   properties:
     name:
       type: string
+      example: Refugees
     intro:
       type: string
+      example: Lorem ipsum
     subtitle:
       type: string
+      example: Lorem ipsum
     order:
       type: integer
+      example: 1
     category_taxonomies:
       type: array
       items:
         type: string
         format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"
