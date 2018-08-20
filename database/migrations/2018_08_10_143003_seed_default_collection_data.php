@@ -67,11 +67,11 @@ class SeedDefaultCollectionData extends Migration
             'updated_at' => $this->now,
         ]);
 
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Support Groups']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'One-on-One Support']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Daily Life Skills']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'More Education', 'Health Education', 'Nutrition Education']);
-        $this->linkToCategoryTaxonomy($uuid, ['Food', 'Community Gardens']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Support Groups']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'One-on-One Support']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Daily Life Skills']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'More Education', 'Health Education', 'Nutrition Education']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Food', 'Community Gardens']);
     }
 
     /**
@@ -93,16 +93,16 @@ class SeedDefaultCollectionData extends Migration
             'updated_at' => $this->now,
         ]);
 
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Counseling']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Resume Development']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Computer Class']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Basic Literacy']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Daily Life Skills']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Specialized Training']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Skills Assessment']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Skills & Training', 'Interview Training']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'More Education', 'Financial Education', 'Credit Counseling']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'More Education', 'Financial Education', 'Homebuyer Education']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Counseling']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Resume Development']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Computer Class']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Basic Literacy']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Daily Life Skills']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Specialized Training']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Skills Assessment']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Skills & Training', 'Interview Training']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'More Education', 'Financial Education', 'Credit Counseling']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'More Education', 'Financial Education', 'Homebuyer Education']);
     }
 
     /**
@@ -124,27 +124,27 @@ class SeedDefaultCollectionData extends Migration
             'updated_at' => $this->now,
         ]);
 
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Support Groups', 'Bereavement']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Support Groups', 'Parenting Education']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Counseling']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Spiritual Support']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Help Hotlines']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'One-on-One Support']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Peer Support']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find Childcare']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Fill out Forms']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find Work']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find School']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find Housing']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education']);
-        $this->linkToCategoryTaxonomy($uuid, ['Work', 'Help Find Work']);
-        $this->linkToCategoryTaxonomy($uuid, ['Work', 'Help Pay for Work Expenses']);
-        $this->linkToCategoryTaxonomy($uuid, ['Work', 'Workplace Rights']);
-        $this->linkToCategoryTaxonomy($uuid, ['Emergency']);
-        $this->linkToCategoryTaxonomy($uuid, ['Legal', 'Advocacy & Legal Aid']);
-        $this->linkToCategoryTaxonomy($uuid, ['Health', 'Health Education']);
-        $this->linkToCategoryTaxonomy($uuid, ['Housing', 'Help Find Housing']);
-        $this->linkToCategoryTaxonomy($uuid, ['Money', 'Financial Assistance']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Support Groups', 'Bereavement']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Support Groups', 'Parenting Education']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Counseling']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Spiritual Support']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Help Hotlines']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'One-on-One Support']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Peer Support']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find Childcare']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Fill out Forms']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find Work']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find School']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find Housing']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Work', 'Help Find Work']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Work', 'Help Pay for Work Expenses']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Work', 'Workplace Rights']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Emergency']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Legal', 'Advocacy & Legal Aid']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Health', 'Health Education']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Housing', 'Help Find Housing']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Money', 'Financial Assistance']);
     }
 
     /**
@@ -177,10 +177,10 @@ class SeedDefaultCollectionData extends Migration
             'updated_at' => $this->now,
         ]);
 
-        $this->linkToCategoryTaxonomy($uuid, ['Housing', 'Help Find Housing']);
-        $this->linkToCategoryTaxonomy($uuid, ['Housing', 'Emergency Shelter']);
-        $this->linkToCategoryTaxonomy($uuid, ['Housing', 'Help Pay for Housing']);
-        $this->linkToCategoryTaxonomy($uuid, ['Money', 'Financial Assistance', 'Help Pay for Housing']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Housing', 'Help Find Housing']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Housing', 'Emergency Shelter']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Housing', 'Help Pay for Housing']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Money', 'Financial Assistance', 'Help Pay for Housing']);
     }
 
     /**
@@ -203,17 +203,17 @@ class SeedDefaultCollectionData extends Migration
             'updated_at' => $this->now,
         ]);
 
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find Childcare']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Fill out Forms']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find Work']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find School']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Navigating the System', 'Help Find Housing']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'More Education', 'English as a Second Language (ESL)']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Screening & Exams', 'English as a Second Language (ESL)']);
-        $this->linkToCategoryTaxonomy($uuid, ['Education', 'Screening & Exams', 'Citizenship & Immigration']);
-        $this->linkToCategoryTaxonomy($uuid, ['Work', 'Help Find Work', 'Job Placement']);
-        $this->linkToCategoryTaxonomy($uuid, ['Legal', 'Advocacy & Legal Aid', 'Citizenship & Immigration']);
-        $this->linkToCategoryTaxonomy($uuid, ['Housing', 'Help Find Housing']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find Childcare']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Fill out Forms']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find Work']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find School']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Navigating the System', 'Help Find Housing']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'More Education', 'English as a Second Language (ESL)']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Screening & Exams', 'English as a Second Language (ESL)']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Education', 'Screening & Exams', 'Citizenship & Immigration']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Work', 'Help Find Work', 'Job Placement']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Legal', 'Advocacy & Legal Aid', 'Citizenship & Immigration']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Housing', 'Help Find Housing']);
     }
 
     /**
@@ -236,8 +236,8 @@ class SeedDefaultCollectionData extends Migration
             'updated_at' => $this->now,
         ]);
 
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Support Groups']);
-        $this->linkToCategoryTaxonomy($uuid, ['Care', 'Support Network', 'Peer Support']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Support Groups']);
+        $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Peer Support']);
     }
 
     /**
