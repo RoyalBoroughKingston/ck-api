@@ -62,10 +62,13 @@ class File extends Model implements Responsable
 
     /**
      * @param string $content
+     * @return \App\Models\File
      */
-    public function upload(string $content)
+    public function upload(string $content): File
     {
         Storage::cloud()->put($this->path(), $content, $this->visibility());
+
+        return $this;
     }
 
     /**
@@ -86,13 +89,14 @@ class File extends Model implements Responsable
 
     /**
      * @param string $content
+     * @return \App\Models\File
      */
-    public function uploadBase64EncodedPng(string $content)
+    public function uploadBase64EncodedPng(string $content): File
     {
-        list($type, $data) = explode(';', $content);
+        list(, $data) = explode(';', $content);
         list(, $data) = explode(',', $data);
         $data = base64_decode($data);
 
-        $this->upload($data);
+        return $this->upload($data);
     }
 }
