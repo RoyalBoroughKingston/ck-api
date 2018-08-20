@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
+use App\Models\File;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
@@ -18,6 +19,7 @@ use Tests\TestCase;
 
 class UpdateRequestsTest extends TestCase
 {
+    const BASE64_ENCODED_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
     /*
      * List all the update requests.
      */
@@ -495,6 +497,32 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
+    public function test_global_admin_can_approve_one_for_organisation_logo()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $organisation = factory(Organisation::class)->create();
+        $file = factory(File::class)->create([
+            'filename' => str_random().'.png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ])->upload(base64_decode(static::BASE64_ENCODED_PNG));
+        $updateRequest = $organisation->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['logo_file_id' => $file->id],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new Organisation())->getTable(), [
+            'id' => $organisation->id,
+            'logo_file_id' => $file->id,
+        ]);
+    }
+
     public function test_global_admin_can_approve_one_for_location()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
@@ -588,6 +616,58 @@ class UpdateRequestsTest extends TestCase
         $this->assertDatabaseHas((new Service())->getTable(), [
             'id' => $service->id,
             'name' => 'Test Name',
+        ]);
+    }
+
+    public function test_global_admin_can_approve_one_for_service_logo()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->create();
+        $file = factory(File::class)->create([
+            'filename' => str_random().'.png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ])->upload(base64_decode(static::BASE64_ENCODED_PNG));
+        $updateRequest = $service->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['logo_file_id' => $file->id],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new Service())->getTable(), [
+            'id' => $service->id,
+            'logo_file_id' => $file->id,
+        ]);
+    }
+
+    public function test_global_admin_can_approve_one_for_seo_image()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->create();
+        $file = factory(File::class)->create([
+            'filename' => str_random().'.png',
+            'mime_type' => 'image/png',
+            'is_private' => false,
+        ])->upload(base64_decode(static::BASE64_ENCODED_PNG));
+        $updateRequest = $service->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => ['seo_image_file_id' => $file->id],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new Service())->getTable(), [
+            'id' => $service->id,
+            'seo_image_file_id' => $file->id,
         ]);
     }
 

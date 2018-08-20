@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Requests\Organisation\UpdateRequest as Request;
+use App\Http\Requests\Organisation\UpdateRequest as UpdateOrganisationRequest;
 use App\Models\Mutators\OrganisationMutators;
 use App\Models\Relationships\OrganisationRelationships;
 use App\Models\Scopes\OrganisationScopes;
@@ -26,7 +26,14 @@ class Organisation extends Model implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        $rules = (new Request())->rules();
+        // Differentiate between the update request types.
+        $isForLogo = isset($updateRequest->data['logo_file_id']);
+
+        if ($isForLogo) {
+            $rules = ['logo_file_id' => ['required', 'exists:files,id']];
+        } else {
+            $rules = (new UpdateOrganisationRequest())->rules();
+        }
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
@@ -39,13 +46,20 @@ class Organisation extends Model implements AppliesUpdateRequests
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
-        $this->update([
-            'name' => $updateRequest->data['name'],
-            'description' => $updateRequest->data['description'],
-            'url' => $updateRequest->data['url'],
-            'email' => $updateRequest->data['email'],
-            'phone' => $updateRequest->data['phone'],
-        ]);
+        // Differentiate between the update request types.
+        $isForLogo = isset($updateRequest->data['logo_file_id']);
+
+        if ($isForLogo) {
+            $this->update(['logo_file_id' => $updateRequest->data['logo_file_id']]);
+        } else {
+            $this->update([
+                'name' => $updateRequest->data['name'],
+                'description' => $updateRequest->data['description'],
+                'url' => $updateRequest->data['url'],
+                'email' => $updateRequest->data['email'],
+                'phone' => $updateRequest->data['phone'],
+            ]);
+        }
 
         return $updateRequest;
     }

@@ -54,7 +54,7 @@ class SeoImageController extends Controller
 
             event(EndpointHit::onCreate($request, "Created SEO image for service [{$service->id}]", $service));
 
-            return new UpdateRequestReceived([], Response::HTTP_CREATED);
+            return new UpdateRequestReceived(['seo_image_file_id' => $file->id], Response::HTTP_CREATED);
         });
     }
 
@@ -101,7 +101,7 @@ class SeoImageController extends Controller
 
             event(EndpointHit::onDelete($request, "Deleted SEO image for service [{$service->id}]", $service));
 
-            return new UpdateRequestReceived();
+            return new UpdateRequestReceived(['seo_image_file_id' => null]);
         });
     }
 }

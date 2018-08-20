@@ -146,9 +146,17 @@ class Service extends Model implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        $request = new Request();
-        $request->merge($updateRequest->data);
-        $rules = $request->rules();
+        // Differentiate between the update request types.
+        $isForLogo = isset($updateRequest->data['logo_file_id']);
+        $isForSeoImage = isset($updateRequest->data['seo_image_file_id']);
+
+        if ($isForLogo) {
+            $rules = ['logo_file_id' => ['required', 'exists:files,id']];
+        } elseif ($isForSeoImage) {
+            $rules = ['seo_image_file_id' => ['required', 'exists:files,id']];
+        } else {
+            $rules = (new Request())->merge($updateRequest->data)->rules();
+        }
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
@@ -160,6 +168,27 @@ class Service extends Model implements AppliesUpdateRequests
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
+    {
+        // Differentiate between the update request types.
+        $isForLogo = isset($updateRequest->data['logo_file_id']);
+        $isForSeoImage = isset($updateRequest->data['seo_image_file_id']);
+
+        if ($isForLogo) {
+            $this->update(['logo_file_id' => $updateRequest->data['logo_file_id']]);
+        } elseif ($isForSeoImage) {
+            $this->update(['seo_image_file_id' => $updateRequest->data['seo_image_file_id']]);
+        } else {
+            $this->applyStandardUpdateRequest($updateRequest);
+        }
+
+        return $updateRequest;
+    }
+
+    /**
+     * @param \App\Models\UpdateRequest $updateRequest
+     * @return \App\Models\UpdateRequest
+     */
+    protected function applyStandardUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
         // Update the service record.
         $this->update([
