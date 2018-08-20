@@ -13,6 +13,7 @@ See deployment for notes on how to deploy the project on a live system.
 * PHP
 * Composer
 * Vagrant
+* Docker
 
 ### Installing
 
@@ -26,15 +27,19 @@ cp .env.example .env
 # Installs Laravel Homestead.
 composer install --ignore-platform-reqs
 
-# Update your hosts file (use values set in Homestead.yaml).
+# Update your hosts file (use the IP and hostname set in Homestead.yaml).
 sudo echo "192.168.10.12 api.connectedkingston.test" >> /etc/hosts
 ```
 
 You should then be able to start the VM and SSH into it:
 
 ```bash
-vagrant up && vagrant ssh
-cd api.connectedkingston
+vagrant up
+
+# Allows access to Elasticsearch on host machine
+vagrant ssh -- -R 9200:localhost:9200
+
+cd ck-api
 
 # Generate the application key.
 php artisan key:generate
@@ -53,6 +58,26 @@ Ensure any API clients have been created:
 
 ```bash
 php artisan passport:client --password --name="Name of Application"
+```
+
+Pull the Elasticsearch docker image and start an instance of it:
+
+```bash
+docker pull docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+```
+
+Setup the Elasticsearch index:
+
+```bash
+# Create the index.
+php artisan elastic:create-index App\\IndexConfigurators\\ServicesIndexConfigurator
+
+# Set the fields mappings for the index.
+php artisan elastic:update-mapping App\\Models\\Service
+
+# Import all of the services from the database into the index.
+php artisan scout:import App\\Models\\Service
 ```
 
 ## Running the tests
