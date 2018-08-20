@@ -85,8 +85,15 @@ class ServiceLocationsTest extends TestCase
         $location = factory(Location::class)->create();
         $service = factory(Service::class)->create();
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
-        $regularOpeningHour = factory(RegularOpeningHour::class)->create(['service_location_id' => $serviceLocation->id]);
-        $holidayOpeningHour = factory(HolidayOpeningHour::class)->create(['service_location_id' => $serviceLocation->id]);
+        $regularOpeningHour = factory(RegularOpeningHour::class)->create([
+            'service_location_id' => $serviceLocation->id,
+            'weekday' => now()->addDay()->day,
+        ]);
+        $holidayOpeningHour = factory(HolidayOpeningHour::class)->create([
+            'service_location_id' => $serviceLocation->id,
+            'starts_at' => now()->addMonth(),
+            'ends_at' => now()->addMonths(2),
+        ]);
 
         $response = $this->json('GET', '/core/v1/service-locations');
 
@@ -309,8 +316,15 @@ class ServiceLocationsTest extends TestCase
         $location = factory(Location::class)->create();
         $service = factory(Service::class)->create();
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
-        $regularOpeningHour = factory(RegularOpeningHour::class)->create(['service_location_id' => $serviceLocation->id]);
-        $holidayOpeningHour = factory(HolidayOpeningHour::class)->create(['service_location_id' => $serviceLocation->id]);
+        $regularOpeningHour = factory(RegularOpeningHour::class)->create([
+            'service_location_id' => $serviceLocation->id,
+            'weekday' => now()->addDay()->day,
+        ]);
+        $holidayOpeningHour = factory(HolidayOpeningHour::class)->create([
+            'service_location_id' => $serviceLocation->id,
+            'starts_at' => now()->addMonth(),
+            'ends_at' => now()->addMonths(2),
+        ]);
 
         $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
 

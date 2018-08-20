@@ -41,7 +41,10 @@ return [
     |
     */
 
-    'queue' => env('SCOUT_QUEUE', false),
+    'queue' => [
+        'queue' => 'search',
+        'connection' => env('QUEUE_DRIVER', 'sync'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
