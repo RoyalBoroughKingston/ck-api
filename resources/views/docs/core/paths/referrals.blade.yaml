@@ -36,6 +36,9 @@ root:
   post:
     tags: [Referrals]
     summary: Create a referral
+    description: |
+       **Permission:** `Open`
+    security: []
     requestBody:
       required: true
       content:
