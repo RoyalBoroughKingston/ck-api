@@ -31,7 +31,7 @@ update:
   properties:
     name:
       type: string
-      example: Helpin The Homeless
+      example: Helping The Homeless
     status:
       type: string
       enum:
