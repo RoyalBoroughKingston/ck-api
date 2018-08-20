@@ -29,9 +29,11 @@ class Organisation extends Model implements AppliesUpdateRequests
         // Differentiate between the update request types.
         $isForLogo = isset($updateRequest->data['logo_file_id']);
 
-        $rules = $isForLogo
-            ? ['logo_file_id' => ['required', 'exists:files,id']]
-            : (new UpdateOrganisationRequest())->rules();
+        if ($isForLogo) {
+            $rules = ['logo_file_id' => ['required', 'exists:files,id']];
+        } else {
+            $rules = (new UpdateOrganisationRequest())->rules();
+        }
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
