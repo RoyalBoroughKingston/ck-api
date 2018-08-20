@@ -96,7 +96,7 @@ php vendor/bin/phpcs
 
 ## Deployment
 
-TODO: Write deployment process for GOV.UK PaaS
+Deployment is fully automated by pushing a commit to `develop` or `master`. More information on this process can be [found in the wiki](https://github.com/RoyalBoroughKingston/ck-api/wiki/Branching-and-Release-Strategy#continuous-delivery).
 
 ## Built With
 
