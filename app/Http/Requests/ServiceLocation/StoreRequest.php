@@ -48,7 +48,7 @@ class StoreRequest extends FormRequest
             'regular_opening_hours.*.weekday' => ['required_if:regular_opening_hours.*.frequency,'.RegularOpeningHour::FREQUENCY_WEEKLY, 'integer', 'min:1', 'max:7'],
             'regular_opening_hours.*.day_of_month' => ['required_if:regular_opening_hours.*.frequency,'.RegularOpeningHour::FREQUENCY_MONTHLY, 'integer', 'min:1', 'max:31'],
             'regular_opening_hours.*.occurrence_of_month' => ['required_if:regular_opening_hours.*.frequency,'.RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH, 'integer', 'min:1', 'max: 5'],
-            'regular_opening_hours.*.starts_at' => ['required_if:regular_opening_hours.*.frequency,'.RegularOpeningHour::FREQUENCY_FORTNIGHTLY],
+            'regular_opening_hours.*.starts_at' => ['required_if:regular_opening_hours.*.frequency,'.RegularOpeningHour::FREQUENCY_FORTNIGHTLY, 'date_format:Y-m-d'],
             'regular_opening_hours.*.opens_at' => ['required_with:regular_opening_hours.*', 'date_format:H:i:s'],
             'regular_opening_hours.*.closes_at' => ['required_with:regular_opening_hours.*', 'date_format:H:i:s'],
 

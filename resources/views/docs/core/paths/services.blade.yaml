@@ -177,6 +177,7 @@ logo:
                 type: string
                 format: binary
                 description: Base64 encoded string of the PNG image
+                example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
     responses:
       200:
         content:
@@ -260,6 +261,7 @@ seo-image:
                 type: string
                 format: binary
                 description: Base64 encoded string of the PNG image
+                example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
     responses:
       200:
         content:

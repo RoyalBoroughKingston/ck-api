@@ -9,14 +9,19 @@ store:
   properties:
     name:
       type: string
+      example: Ayup Digital
     description:
       type: string
+      example: Digital product agency
     url:
       type: string
+      example: https://ayup.agency
     email:
       type: string
+      example: info@ayup.agency
     phone:
       type: string
+      example: "01138591020"
 
 update:
   allOf:

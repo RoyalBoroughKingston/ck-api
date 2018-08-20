@@ -9,22 +9,31 @@ store:
   properties:
     address_line_1:
       type: string
+      example: 30-34 Aire St
     address_line_2:
       type: string
       nullable: true
+      example: null
     address_line_3:
       type: string
       nullable: true
+      example: null
     city:
       type: string
+      example: Leeds
     county:
       type: string
+      example: West Yorkshire
     postcode:
       type: string
+      example: LS1 4HT
     country:
       type: string
+      example: United Kingdom
     accessibility_info:
       type: string
+      nullable: true
+      example: null
 
 update:
   allOf:
