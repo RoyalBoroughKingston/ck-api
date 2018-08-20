@@ -2,8 +2,8 @@ store:
   allOf:
   - type: object
     required:
-      - service_id
-      - location_id
+    - service_id
+    - location_id
     properties:
       service_id:
         type: string

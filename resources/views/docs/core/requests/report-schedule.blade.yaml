@@ -1,19 +1,19 @@
 store:
   type: object
   required:
-    - report_type
-    - repeat_type
+  - report_type
+  - repeat_type
   properties:
     report_type:
       type: string
       enum:
-        - Commissioners Report
+      - Commissioners Report
     repeat_type:
       type: string
       enum:
-        - weekly
-        - monthly
+      - weekly
+      - monthly
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

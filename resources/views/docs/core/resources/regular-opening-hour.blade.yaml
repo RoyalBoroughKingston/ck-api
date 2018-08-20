@@ -3,10 +3,10 @@ properties:
   frequency:
     type: string
     enum:
-      - weekly
-      - monthly
-      - fortnightly
-      - nth_occurrence_of_month
+    - weekly
+    - monthly
+    - fortnightly
+    - nth_occurrence_of_month
     example: weekly
   weekday:
     type: integer

@@ -1,11 +1,11 @@
 store:
   type: object
   required:
-    - name
-    - intro
-    - subtitle
-    - order
-    - category_taxonomies
+  - name
+  - intro
+  - subtitle
+  - order
+  - category_taxonomies
   properties:
     name:
       type: string
@@ -28,4 +28,4 @@ store:
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

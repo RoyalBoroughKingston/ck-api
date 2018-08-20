@@ -4,7 +4,7 @@ root:
     tags: [Service Locations]
     summary: List all the service locations
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
@@ -21,13 +21,13 @@ root:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/service-location.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/service-location.yaml
 
   post:
     tags: [Service Locations]
@@ -53,17 +53,17 @@ nested:
     tags: [Service Locations]
     summary: Get a specific service location
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
-      - name: service_location
-        in: path
-        description: The ID of the service location
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: service_location
+      in: path
+      description: The ID of the service location
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -75,16 +75,16 @@ nested:
     tags: [Service Locations]
     summary: Update a specific service location
     description: |
-       **Permission:** `Service Admin`
+      **Permission:** `Service Admin`
     parameters:
-      - name: service_location
-        in: path
-        description: The ID of the service location
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: service_location
+      in: path
+      description: The ID of the service location
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -108,16 +108,16 @@ nested:
     tags: [Service Locations]
     summary: Delete a specific service location
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: service_location
-        in: path
-        description: The ID of the service location
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: service_location
+      in: path
+      description: The ID of the service location
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

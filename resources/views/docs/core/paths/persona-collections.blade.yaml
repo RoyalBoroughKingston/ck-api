@@ -4,7 +4,7 @@ root:
     tags: ["Collection: Personas"]
     summary: List all the persona collections
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
@@ -15,19 +15,19 @@ root:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/persona-collection.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/persona-collection.yaml
 
   post:
     tags: ["Collection: Personas"]
     summary: Create a persona collection
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     requestBody:
       required: true
       content:
@@ -47,17 +47,17 @@ nested:
     tags: ["Collection: Personas"]
     summary: Get a specific persona collection
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
-      - name: persona
-        in: path
-        description: The ID of the persona collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: persona
+      in: path
+      description: The ID of the persona collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -69,16 +69,16 @@ nested:
     tags: ["Collection: Personas"]
     summary: Update a specific persona collection
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: persona
-        in: path
-        description: The ID of the persona collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: persona
+      in: path
+      description: The ID of the persona collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -96,16 +96,16 @@ nested:
     tags: ["Collection: Personas"]
     summary: Delete a specific persona collection
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: persona
-        in: path
-        description: The ID of the persona collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: persona
+      in: path
+      description: The ID of the persona collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -119,17 +119,17 @@ image:
     tags: ["Collection: Personas"]
     summary: Get a specific persona collection's image
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
-      - name: persona
-        in: path
-        description: The ID of the persona collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: persona
+      in: path
+      description: The ID of the persona collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -139,16 +139,16 @@ image:
     tags: ["Collection: Personas"]
     summary: Upload a specific persona collection's image
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: persona
-        in: path
-        description: The ID of the persona collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: persona
+      in: path
+      description: The ID of the persona collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -176,16 +176,16 @@ image:
     tags: ["Collection: Personas"]
     summary: Delete a specific persona collection's image
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: persona
-        in: path
-        description: The ID of the persona collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: persona
+      in: path
+      description: The ID of the persona collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

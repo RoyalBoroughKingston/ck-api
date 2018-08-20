@@ -3,11 +3,11 @@ properties:
   type:
     type: string
     enum:
-      - twitter
-      - facebook
-      - instagram
-      - youtube
-      - other
+    - twitter
+    - facebook
+    - instagram
+    - youtube
+    - other
     example: instagram
   url:
     type: string

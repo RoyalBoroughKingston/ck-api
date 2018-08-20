@@ -12,10 +12,10 @@ properties:
   action:
     type: string
     enum:
-      - create
-      - read
-      - update
-      - delete
+    - create
+    - read
+    - update
+    - delete
     example: create
   description:
     type: string

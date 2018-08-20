@@ -4,7 +4,7 @@ root:
     tags: [Referrals]
     summary: List all the referrals
     description: |
-       **Permission:** `Service Worker`
+      **Permission:** `Service Worker`
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
@@ -22,19 +22,19 @@ root:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/referral.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/referral.yaml
 
   post:
     tags: [Referrals]
     summary: Create a referral
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     requestBody:
       required: true
@@ -55,16 +55,16 @@ nested:
     tags: [Referrals]
     summary: Get a specific referral
     description: |
-       **Permission:** `Service Worker`
+      **Permission:** `Service Worker`
     parameters:
-      - name: referral
-        in: path
-        description: The ID of the referral
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: referral
+      in: path
+      description: The ID of the referral
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -76,16 +76,16 @@ nested:
     tags: [Referrals]
     summary: Update a specific referral
     description: |
-       **Permission:** `Service Worker`
+      **Permission:** `Service Worker`
     parameters:
-      - name: referral
-        in: path
-        description: The ID of the referral
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: referral
+      in: path
+      description: The ID of the referral
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:

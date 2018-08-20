@@ -4,7 +4,7 @@ root:
     tags: [Search]
     summary: Perform a search for services
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     requestBody:
       required: true
@@ -32,8 +32,8 @@ root:
                             type: array
                             items:
                               allOf:
-                                - $ref: /docs/core/resources/service-location.yaml
-                                - type: object
-                                  properties:
-                                    location:
-                                      $ref: /docs/core/resources/location.yaml
+                              - $ref: /docs/core/resources/service-location.yaml
+                              - type: object
+                                properties:
+                                  location:
+                                    $ref: /docs/core/resources/location.yaml

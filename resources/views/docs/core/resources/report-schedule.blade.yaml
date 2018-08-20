@@ -7,12 +7,12 @@ properties:
   report_type:
     type: string
     enum:
-      - Commissioners Report
+    - Commissioners Report
   repeat_type:
     type: string
     enum:
-      - weekly
-      - monthly
+    - weekly
+    - monthly
   created_at:
     type: string
     format: date-time

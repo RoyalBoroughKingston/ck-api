@@ -24,11 +24,11 @@ properties:
         role:
           type: string
           enum:
-            - Service Worker
-            - Service Admin
-            - Organisation Admin
-            - Global Admin
-            - Super Admin
+          - Service Worker
+          - Service Admin
+          - Organisation Admin
+          - Global Admin
+          - Super Admin
           example: Service Worker
         organisation_id:
           type: string

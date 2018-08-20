@@ -12,8 +12,8 @@ properties:
   channel:
     type: string
     enum:
-      - email
-      - sms
+    - email
+    - sms
     example: email
   recipient:
     type: string

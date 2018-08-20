@@ -7,7 +7,7 @@ properties:
   report_type:
     type: string
     enum:
-      - Commissioners Report
+    - Commissioners Report
   created_at:
     type: string
     format: date-time

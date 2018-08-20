@@ -4,7 +4,7 @@ root:
     tags: [Status Updates]
     summary: List all of the status updates
     description: |
-       **Permission:** `Service Worker`
+      **Permission:** `Service Worker`
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
@@ -22,10 +22,10 @@ root:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/status-update.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/status-update.yaml

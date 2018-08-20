@@ -11,18 +11,18 @@ properties:
   from:
     type: string
     enum:
-      - new
-      - in_progress
-      - completed
-      - incompleted
+    - new
+    - in_progress
+    - completed
+    - incompleted
     example: new
   to:
     type: string
     enum:
-      - new
-      - in_progress
-      - completed
-      - incompleted
+    - new
+    - in_progress
+    - completed
+    - incompleted
     example: in_progress
   comments:
     type: string

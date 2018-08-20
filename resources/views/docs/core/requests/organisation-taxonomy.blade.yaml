@@ -1,8 +1,8 @@
 store:
   type: object
   required:
-    - name
-    - order
+  - name
+  - order
   properties:
     name:
       type: string
@@ -13,4 +13,4 @@ store:
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

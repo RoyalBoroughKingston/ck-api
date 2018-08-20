@@ -12,14 +12,14 @@ properties:
   order:
     type: string
     enum:
-      - relevance
-      - distance
+    - relevance
+    - distance
     default: relevance
   location:
     type: object
     required:
-      - lat
-      - lon
+    - lat
+    - lon
     properties:
       lat:
         type: float

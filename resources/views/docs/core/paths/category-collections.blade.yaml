@@ -4,7 +4,7 @@ root:
     tags: ["Collection: Categories"]
     summary: List all the category collections
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
@@ -15,19 +15,19 @@ root:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/category-collection.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/category-collection.yaml
 
   post:
     tags: ["Collection: Categories"]
     summary: Create a category collection
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     requestBody:
       required: true
       content:
@@ -47,17 +47,17 @@ nested:
     tags: ["Collection: Categories"]
     summary: Get a specific category collection
     description: |
-       **Permission:** `Open`
+      **Permission:** `Open`
     security: []
     parameters:
-      - name: category
-        in: path
-        description: The ID of the category collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: category
+      in: path
+      description: The ID of the category collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -69,16 +69,16 @@ nested:
     tags: ["Collection: Categories"]
     summary: Update a specific category collection
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: category
-        in: path
-        description: The ID of the category collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: category
+      in: path
+      description: The ID of the category collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -96,16 +96,16 @@ nested:
     tags: ["Collection: Categories"]
     summary: Delete a specific category collection
     description: |
-       **Permission:** `Super Admin`
+      **Permission:** `Super Admin`
     parameters:
-      - name: category
-        in: path
-        description: The ID of the category collection
-        required: true
-        schema:
-          type: string
-          format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - name: category
+      in: path
+      description: The ID of the category collection
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

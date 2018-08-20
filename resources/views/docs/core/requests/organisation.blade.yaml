@@ -1,11 +1,11 @@
 store:
   type: object
   required:
-    - name
-    - description
-    - url
-    - email
-    - phone
+  - name
+  - description
+  - url
+  - email
+  - phone
   properties:
     name:
       type: string
@@ -25,4 +25,4 @@ store:
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"
