@@ -8,11 +8,7 @@ root:
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
-    - name: filter[id]
-      in: query
-      description: Comma seperated ID's to filter by
-      schema:
-        type: string
+    - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[organisation_id]
       in: query
       description: The ID of the organisation
@@ -72,6 +68,7 @@ nested:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -92,6 +89,7 @@ nested:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -124,6 +122,7 @@ nested:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -147,6 +146,7 @@ logo:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -165,6 +165,7 @@ logo:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -200,6 +201,7 @@ logo:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -227,6 +229,7 @@ seo-image:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -245,6 +248,7 @@ seo-image:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -280,6 +284,7 @@ seo-image:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

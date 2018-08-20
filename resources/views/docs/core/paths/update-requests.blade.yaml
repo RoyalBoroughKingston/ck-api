@@ -7,11 +7,7 @@ root:
       **Permission:** `Global Admin`
     parameters:
     - $ref: /docs/core/parameters/page.yaml
-    - name: filter[id]
-      in: query
-      description: Comma seperated ID's to filter by
-      schema:
-        type: string
+    - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[service_id]
       in: query
       description: The ID of the service
@@ -65,6 +61,7 @@ nested:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -85,6 +82,7 @@ nested:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -107,6 +105,7 @@ approve:
         schema:
           type: string
           format: uuid
+        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
