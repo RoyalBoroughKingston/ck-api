@@ -26,6 +26,12 @@ interface Search
     public function applyPersona(string $persona): Search;
 
     /**
+     * @param bool $isFree
+     * @return \App\Contracts\Search
+     */
+    public function applyIsFree(bool $isFree): Search;
+
+    /**
      * @param string $order
      * @param \App\Support\Coordinate|null $location
      * @return \App\Contracts\Search

@@ -3,15 +3,15 @@
 namespace App\Search;
 
 use App\Contracts\Search;
+use App\Models\ServiceLocation;
 use App\Support\Coordinate;
 use App\Http\Resources\ServiceResource;
 use App\Models\SearchHistory;
 use App\Models\Service;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\DB;
 
 class ElasticsearchSearch implements Search
 {
@@ -116,6 +116,25 @@ class ElasticsearchSearch implements Search
     }
 
     /**
+     * @param bool $isFree
+     * @return \App\Contracts\Search
+     */
+    public function applyIsFree(bool $isFree): Search
+    {
+        if (!isset($this->query['query'])) {
+            $this->query['query'] = ['bool' => []];
+        }
+
+        $this->query['query']['bool']['filter'] = [
+            'term' => [
+                'is_free' => $isFree
+            ]
+        ];
+
+        return $this;
+    }
+
+    /**
      * @param string $order
      * @param \App\Support\Coordinate|null $location
      * @return \App\Search\ElasticsearchSearch
@@ -176,32 +195,21 @@ class ElasticsearchSearch implements Search
         $serviceIdsImploded = implode("','", $serviceIds);
         $serviceIdsImploded = "'$serviceIdsImploded'";
 
-        // Get all of the ID's for the service locations from the hits.
-        $serviceLocationIds = collect($hits)->flatMap(function (array $hit) {
-            return $hit['_source']['service_locations'];
-        })->map->id->toArray();
+        // Check if the query has been ordered by distance.
+        $isOrderedByDistance = isset($this->query['sort']);
 
-        // Implode the service location ID's so we can sort by them in database.
-        $serviceLocationIdsImploded = implode("','", $serviceLocationIds);
-        $serviceLocationIdsImploded = "'$serviceLocationIdsImploded'";
-
-        /*
-         * Create the query to get the services.
-         *
-         * Eager load the service locations along with the location they belong to.
-         * A constraint has been places on the service locations, to sort them by what was
-         * returned by Elasticsearch, as they have been ordered by distance.
-         *
-         * The services are also ordered by the order returned by Elasticsearch.
-         */
+        // Create the query to get the services, and keep ordering from Elasticsearch.
         $services = Service::query()
-            ->with(['serviceLocations' => function (HasMany $query) use ($serviceLocationIdsImploded) {
-                $query->with('location')
-                    ->orderByRaw(DB::raw("FIELD(service_locations.id,$serviceLocationIdsImploded)"));
-            }])
+            ->with('serviceLocations.location')
             ->whereIn('id', $serviceIds)
-            ->orderByRaw(DB::raw("FIELD(id,$serviceIdsImploded)"))
+            ->orderByRaw("FIELD(id,$serviceIdsImploded)")
             ->get();
+
+        // Order the fetched service locations by distance.
+        // TODO: Potential solution to the order nested locations in Elasticsearch: https://stackoverflow.com/a/43440405
+        if ($isOrderedByDistance) {
+            $services = $this->orderServicesByLocation($services);
+        }
 
         // If paginated, then create a new pagination instance.
         if ($paginate) {
@@ -229,5 +237,21 @@ class ElasticsearchSearch implements Search
         ]);
 
         return $this;
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $services
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function orderServicesByLocation(Collection $services): Collection
+    {
+        return $services->each(function (Service $service) {
+            $service->serviceLocations = $service->serviceLocations->sortBy(function (ServiceLocation $serviceLocation) {
+                $location = $this->query['sort'][0]['_geo_distance']['service_locations.location'];
+                $location = new Coordinate($location['lat'], $location['lon']);
+
+                return $location->distanceFrom($serviceLocation->location->toCoordinate());
+            });
+        });
     }
 }

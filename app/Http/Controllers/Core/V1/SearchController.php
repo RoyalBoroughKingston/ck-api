@@ -29,6 +29,11 @@ class SearchController extends Controller
             $search->applyPersona($request->persona);
         }
 
+        // Apply filter on `is_free` field.
+        if ($request->has('is_free')) {
+            $search->applyIsFree($request->is_free);
+        }
+
         // If ordering by distance, then parse the location.
         if ($request->order === 'distance') {
             $location = new Coordinate($request->location['lat'], $request->location['lon']);

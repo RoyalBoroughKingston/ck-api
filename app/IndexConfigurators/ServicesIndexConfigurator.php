@@ -13,6 +13,13 @@ class ServicesIndexConfigurator extends IndexConfigurator
      * @var array
      */
     protected $settings = [
-        //
+        'analysis' => [
+            'analyzer' => [
+                'default' => [
+                    'type' => 'standard',
+                    'stopwords' => '_english_',
+                ],
+            ]
+        ],
     ];
 }

@@ -7,6 +7,8 @@ use InvalidArgumentException;
 
 class Coordinate implements Arrayable
 {
+    const EARTH_RADIUS = 6371000;
+
     /**
      * @var float
      */
@@ -60,6 +62,29 @@ class Coordinate implements Arrayable
      */
     public function toArray()
     {
-        return [$this->lat, $this->lon];
+        return [
+            'lat' => $this->lat,
+            'lon' => $this->lon,
+        ];
+    }
+
+    /**
+     * @param \App\Support\Coordinate $from
+     * @return float
+     */
+    public function distanceFrom(Coordinate $from): float
+    {
+        // convert from degrees to radians
+        $latFrom = deg2rad($from->lat());
+        $lonFrom = deg2rad($from->lon());
+        $latTo = deg2rad($this->lat());
+        $lonTo = deg2rad($this->lon());
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) + cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        return $angle * static::EARTH_RADIUS;
     }
 }
