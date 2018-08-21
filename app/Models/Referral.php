@@ -66,15 +66,15 @@ class Referral extends Model
     public function sendEmailToClient(Email $email)
     {
         DB::transaction(function () use ($email) {
+            // Send the email and get the contents of it.
+            $message = resolve(EmailSender::class)->send($email);
+
             // Log a notification for the email in the database.
             $this->notifications()->create([
                 'channel' => Notification::CHANNEL_EMAIL,
                 'recipient' => $this->email,
-                'message' => '', // TODO: Get the message content
+                'message' => $message,
             ]);
-
-            // Send the email.
-            resolve(EmailSender::class)->send($email);
         });
     }
 }

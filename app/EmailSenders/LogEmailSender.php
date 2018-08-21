@@ -9,9 +9,9 @@ class LogEmailSender implements EmailSender
 {
     /**
      * @param \App\Emails\Email $email
-     * @return \App\Contracts\EmailSender
+     * @return string
      */
-    public function send(Email $email): EmailSender
+    public function send(Email $email): string
     {
         logger()->debug('Email sent at ['.now()->toDateTimeString().']', [
             'to' => $email->to,
@@ -21,6 +21,6 @@ class LogEmailSender implements EmailSender
             'replyTo' => $email->replyTo,
         ]);
 
-        return $this;
+        return 'Dummy content';
     }
 }

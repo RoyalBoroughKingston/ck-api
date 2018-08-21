@@ -8,7 +8,7 @@ interface EmailSender
 {
     /**
      * @param \App\Emails\Email $email
-     * @return \App\Contracts\EmailSender
+     * @return string
      */
-    public function send(Email $email): EmailSender;
+    public function send(Email $email): string;
 }
