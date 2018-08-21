@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Contracts\EmailSender;
+use App\Emails\Email;
 use App\Models\Mutators\ReferralMutators;
 use App\Models\Relationships\ReferralRelationships;
 use App\Models\Scopes\ReferralScopes;
 use App\Notifications\Notifications;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class Referral extends Model
 {
@@ -55,5 +58,23 @@ class Referral extends Model
         }
 
         return $reference;
+    }
+
+    /**
+     * @param \App\Emails\Email $email
+     */
+    public function sendEmailToClient(Email $email)
+    {
+        DB::transaction(function () use ($email) {
+            // Log a notification for the email in the database.
+            $this->notifications()->create([
+                'channel' => Notification::CHANNEL_EMAIL,
+                'recipient' => $this->email,
+                'message' => '', // TODO: Get the message content
+            ]);
+
+            // Send the email.
+            resolve(EmailSender::class)->send($email);
+        });
     }
 }

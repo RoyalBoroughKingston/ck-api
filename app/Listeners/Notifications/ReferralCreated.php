@@ -2,22 +2,13 @@
 
 namespace App\Listeners\Notifications;
 
+use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
 
 class ReferralCreated
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Handle the event.
      *
@@ -41,7 +32,13 @@ class ReferralCreated
      */
     protected function notifyClient(Referral $referral)
     {
-        // TODO: Send and log notifications.
+        // Only send an email if one was provided.
+        if ($referral->email) {
+            // TODO: Specify the values array.
+            $referral->sendEmailToClient(new NotifyClientEmail($referral->email, []));
+        }
+
+        // TODO: Send an SMS to the client.
     }
 
     /**

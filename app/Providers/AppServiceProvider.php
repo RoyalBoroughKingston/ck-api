@@ -34,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
                 $this->app->singleton(\App\Contracts\Search::class, \App\Search\ElasticsearchSearch::class);
                 break;
         }
+
+        // Email Sender.
+        $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\LogEmailSender::class);
     }
 
     /**
