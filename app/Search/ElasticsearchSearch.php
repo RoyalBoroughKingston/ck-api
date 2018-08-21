@@ -9,8 +9,6 @@ use App\Http\Resources\ServiceResource;
 use App\Models\SearchHistory;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -111,6 +109,25 @@ class ElasticsearchSearch implements Search
         $this->query['query']['bool']['filter'] = [
             'term' => [
                 'collection_personas' => $persona
+            ]
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @param bool $isFree
+     * @return \App\Contracts\Search
+     */
+    public function applyIsFree(bool $isFree): Search
+    {
+        if (!isset($this->query['query'])) {
+            $this->query['query'] = ['bool' => []];
+        }
+
+        $this->query['query']['bool']['filter'] = [
+            'term' => [
+                'is_free' => $isFree
             ]
         ];
 

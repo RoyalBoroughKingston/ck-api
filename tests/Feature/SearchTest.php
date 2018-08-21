@@ -160,6 +160,20 @@ class SearchTest extends TestCase
         $response->assertJsonFragment(['id' => $service->id]);
     }
 
+    public function test_filter_by_is_free_works()
+    {
+        $paidService = factory(Service::class)->create(['is_free' => false]);
+        $freeService = factory(Service::class)->create(['is_free' => true]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'is_free' => true,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $freeService->id]);
+        $response->assertJsonMissing(['id' => $paidService->id]);
+    }
+
     public function test_order_by_location_works()
     {
         $service = factory(Service::class)->create();

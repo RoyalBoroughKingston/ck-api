@@ -9,6 +9,9 @@ properties:
   persona:
     type: string
     example: Refugees
+  is_free:
+    type: boolean
+    example: true
   order:
     type: string
     enum:
