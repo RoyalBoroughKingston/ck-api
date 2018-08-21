@@ -49,10 +49,16 @@ class MigrationServiceProvider extends ServiceProvider
          */
         Blueprint::macro('morphsUuid', function (string $name, string $indexName = null) {
             $this->string("{$name}_type");
-
             $this->uuid("{$name}_id");
-
             $this->index(["{$name}_type", "{$name}_id"], $indexName);
+        });
+
+        /*
+         * UUID Nullable Polymorphic Helper.
+         */
+        Blueprint::macro('nullableMorphsUuid', function (string $name, string $indexName = null) {
+
+
         });
     }
 

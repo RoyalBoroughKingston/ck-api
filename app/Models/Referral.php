@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Models\Mutators\ReferralMutators;
 use App\Models\Relationships\ReferralRelationships;
 use App\Models\Scopes\ReferralScopes;
+use App\Notifications\Notifications;
 use Exception;
 
 class Referral extends Model
 {
+    use Notifications;
     use ReferralMutators;
     use ReferralRelationships;
     use ReferralScopes;

@@ -7,6 +7,7 @@ use App\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
+use App\Notifications\Notifications;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
@@ -16,6 +17,7 @@ use ScoutElastic\Searchable;
 
 class Service extends Model implements AppliesUpdateRequests
 {
+    use Notifications;
     use Searchable;
     use ServiceMutators;
     use ServiceRelationships;

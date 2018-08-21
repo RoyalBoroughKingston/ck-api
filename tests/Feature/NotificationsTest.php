@@ -85,8 +85,7 @@ class NotificationsTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $notification = Notification::create([
-            'user_id' => $user->id,
+        $notification = $user->notifications()->create([
             'channel' => Notification::CHANNEL_EMAIL,
             'recipient' => 'test@example.com',
             'message' => 'This is a test',
@@ -102,7 +101,8 @@ class NotificationsTest extends TestCase
         $response->assertJsonFragment([
             [
                 'id' => $notification->id,
-                'user_id' => $notification->user_id,
+                'notifiable_type' => 'users',
+                'notifiable_id' => $user->id,
                 'channel' => $notification->channel,
                 'recipient' => $notification->recipient,
                 'message' => $notification->message,
@@ -119,8 +119,7 @@ class NotificationsTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $notification = Notification::create([
-            'user_id' => $user->id,
+        $notification = $user->notifications()->create([
             'channel' => Notification::CHANNEL_EMAIL,
             'recipient' => 'test@example.com',
             'message' => 'This is a test',
@@ -143,7 +142,8 @@ class NotificationsTest extends TestCase
         $response->assertJsonFragment([
             [
                 'id' => $notification->id,
-                'user_id' => $notification->user_id,
+                'notifiable_type' => 'users',
+                'notifiable_id' => $user->id,
                 'channel' => $notification->channel,
                 'recipient' => $notification->recipient,
                 'message' => $notification->message,
@@ -151,17 +151,7 @@ class NotificationsTest extends TestCase
                 'updated_at' => $notification->updated_at->format(Carbon::ISO8601),
             ]
         ]);
-        $response->assertJsonMissing([
-            [
-                'id' => $anotherNotification->id,
-                'user_id' => $anotherNotification->user_id,
-                'channel' => $anotherNotification->channel,
-                'recipient' => $anotherNotification->recipient,
-                'message' => $anotherNotification->message,
-                'created_at' => $anotherNotification->created_at->format(Carbon::ISO8601),
-                'updated_at' => $anotherNotification->updated_at->format(Carbon::ISO8601),
-            ]
-        ]);
+        $response->assertJsonMissing(['id' => $anotherNotification->id]);
     }
 
     public function test_audit_created_when_listed()
@@ -173,8 +163,7 @@ class NotificationsTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $notification = Notification::create([
-            'user_id' => $user->id,
+        $notification = $user->notifications()->create([
             'channel' => Notification::CHANNEL_EMAIL,
             'recipient' => 'test@example.com',
             'message' => 'This is a test',
@@ -305,12 +294,13 @@ class NotificationsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $notification->id,
-            'user_id' => $notification->user_id,
-            'channel' => $notification->channel,
-            'recipient' => $notification->recipient,
-            'message' => $notification->message,
-            'created_at' => $notification->created_at->format(Carbon::ISO8601),
-            'updated_at' => $notification->updated_at->format(Carbon::ISO8601),
+            'notifiable_type' => null,
+            'notifiable_id' => null,
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now->format(Carbon::ISO8601),
+            'updated_at' => $this->now->format(Carbon::ISO8601),
         ]);
     }
 
