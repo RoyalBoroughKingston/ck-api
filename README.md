@@ -27,8 +27,11 @@ cp .env.example .env
 # Installs Laravel Homestead.
 composer install --ignore-platform-reqs
 
-# Update your hosts file (use the IP and hostname set in Homestead.yaml).
-sudo echo "192.168.10.12 api.connectedkingston.test" >> /etc/hosts
+# Update your hosts file.
+sudo vim /etc/hosts
+
+# Append this to the end (use the IP and hostname set in Homestead.yaml).
+192.168.10.12 api.connectedkingston.test
 ```
 
 You should then be able to start the VM and SSH into it:
@@ -44,11 +47,11 @@ cd ck-api
 # Generate the application key.
 php artisan key:generate
 
-# Run the migrations and initial seeder.
-php artisan migrate --seed
+# Run the migrations.
+php artisan migrate
 
 # Install the OAuth 2.0 keys.
-php artisan pasport:keys
+php artisan passport:keys
 
 # Create the first Global Admin user (take a note of the password outputted).
 php artisan ck:create-user <first-name> <last-name> <email> <phone-number>
@@ -60,16 +63,19 @@ Ensure any API clients have been created:
 php artisan passport:client --password --name="Name of Application"
 ```
 
-Pull the Elasticsearch docker image and start an instance of it:
+In a separate terminal on your host machine, pull the Elasticsearch docker image and start an instance of it:
 
 ```bash
 docker pull docker.elastic.co/elasticsearch/elasticsearch:6.3.2
 docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
 ```
 
-Setup the Elasticsearch index:
+Then back on the homestead VM, run the seeder and setup the Elasticsearch index:
 
 ```bash
+# Run the seeder.
+php artisan db:seed
+
 # Create the index.
 php artisan elastic:create-index App\\IndexConfigurators\\ServicesIndexConfigurator
 
