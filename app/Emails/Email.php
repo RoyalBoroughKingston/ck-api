@@ -6,7 +6,7 @@ namespace App\Emails;
  * @property string $to
  * @property string $templateId
  * @property array $values
- * @property string $reference
+ * @property string|null $reference
  * @property string|null $replyTo
  */
 abstract class Email
@@ -27,7 +27,7 @@ abstract class Email
     protected $templateId;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $reference;
 
