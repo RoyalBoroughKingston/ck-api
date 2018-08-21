@@ -6,6 +6,7 @@ use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Notification;
 use App\Models\Organisation;
+use App\Models\Referral;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
@@ -139,18 +140,71 @@ class NotificationsTest extends TestCase
         $response = $this->json('GET', "/core/v1/notifications?filter[user_id]={$user->id}");
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            [
-                'id' => $notification->id,
-                'notifiable_type' => 'users',
-                'notifiable_id' => $user->id,
-                'channel' => $notification->channel,
-                'recipient' => $notification->recipient,
-                'message' => $notification->message,
-                'created_at' => $notification->created_at->format(Carbon::ISO8601),
-                'updated_at' => $notification->updated_at->format(Carbon::ISO8601),
-            ]
+        $response->assertJsonFragment(['id' => $notification->id]);
+        $response->assertJsonMissing(['id' => $anotherNotification->id]);
+    }
+
+    public function test_global_admin_can_list_them_for_referral()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $referral = factory(Referral::class)->create();
+        $notification = $referral->notifications()->create([
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
         ]);
+        $anotherNotification = Notification::create([
+            'channel' => Notification::CHANNEL_SMS,
+            'recipient' => '07700000000',
+            'message' => 'Another notification',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/notifications?filter[referral_id]={$referral->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $notification->id]);
+        $response->assertJsonMissing(['id' => $anotherNotification->id]);
+    }
+
+    public function test_global_admin_can_list_them_for_service()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $service = factory(Service::class)->create();
+        $notification = $service->notifications()->create([
+            'channel' => Notification::CHANNEL_EMAIL,
+            'recipient' => 'test@example.com',
+            'message' => 'This is a test',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+        $anotherNotification = Notification::create([
+            'channel' => Notification::CHANNEL_SMS,
+            'recipient' => '07700000000',
+            'message' => 'Another notification',
+            'created_at' => $this->now,
+            'updated_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/notifications?filter[service_id]={$service->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $notification->id]);
         $response->assertJsonMissing(['id' => $anotherNotification->id]);
     }
 
