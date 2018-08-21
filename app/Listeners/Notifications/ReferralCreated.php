@@ -31,6 +31,34 @@ class ReferralCreated
             return;
         }
 
-        logger()->debug('Referral', $event->getModel()->toArray());
+        $this->notifyClient($event->getModel());
+        $this->notifyReferee($event->getModel());
+        $this->notifyService($event->getModel());
+    }
+
+    /**
+     * @param \App\Models\Referral $referral
+     */
+    protected function notifyClient(Referral $referral)
+    {
+        // TODO: Send and log notifications.
+    }
+
+    /**
+     * @param \App\Models\Referral $referral
+     */
+    protected function notifyReferee(Referral $referral)
+    {
+        // TODO: Check if referee details present.
+
+        // TODO: Send and log notifications.
+    }
+
+    /**
+     * @param \App\Models\Referral $referral
+     */
+    protected function notifyService(Referral $referral)
+    {
+        // TODO: Send and log notifications.
     }
 }
