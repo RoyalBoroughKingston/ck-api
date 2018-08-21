@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Events\EndpointHit;
 use App\Listeners\AuditLogger;
-use App\Listeners\Notifications\ReferralMade;
+use App\Listeners\Notifications\ReferralCreated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -17,7 +17,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         EndpointHit::class => [
             AuditLogger::class,
-            ReferralMade::class,
+            ReferralCreated::class,
         ],
     ];
 

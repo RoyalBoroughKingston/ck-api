@@ -6,7 +6,7 @@ use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
 
-class ReferralMade
+class ReferralCreated
 {
     /**
      * Create the event listener.
@@ -21,7 +21,7 @@ class ReferralMade
     /**
      * Handle the event.
      *
-     * @param  EndpointHit  $event
+     * @param  EndpointHit $event
      * @return void
      */
     public function handle(EndpointHit $event)
