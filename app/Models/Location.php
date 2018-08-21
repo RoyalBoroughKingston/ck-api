@@ -8,6 +8,7 @@ use App\Models\Mutators\LocationMutators;
 use App\Models\Relationships\LocationRelationships;
 use App\Models\Scopes\LocationScopes;
 use App\Support\Address;
+use App\Support\Coordinate;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
@@ -108,5 +109,13 @@ class Location extends Model implements AppliesUpdateRequests
             $this->postcode,
             $this->country
         );
+    }
+
+    /**
+     * @return \App\Support\Coordinate
+     */
+    public function toCoordinate(): Coordinate
+    {
+        return new Coordinate($this->lat, $this->lon);
     }
 }

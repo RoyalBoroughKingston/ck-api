@@ -115,6 +115,7 @@ class Service extends Model implements AppliesUpdateRequests
     public function toSearchableArray()
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
             'is_free' => $this->is_free,
