@@ -14,4 +14,15 @@ class Notification extends Model
 
     const CHANNEL_EMAIL = 'email';
     const CHANNEL_SMS = 'sms';
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'sent_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }

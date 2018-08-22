@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Emails\Email;
-use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Models\Mutators\ReferralMutators;
 use App\Models\Relationships\ReferralRelationships;
 use App\Models\Scopes\ReferralScopes;
@@ -69,13 +68,14 @@ class Referral extends Model
     {
         DB::transaction(function () use ($email) {
             // Log a notification for the email in the database.
-            $this->notifications()->create([
+            $notification = $this->notifications()->create([
                 'channel' => Notification::CHANNEL_EMAIL,
                 'recipient' => $this->email,
                 'message' => $email->getContent(),
             ]);
 
             // Add the email as a job on the queue to be sent.
+            $email->notification = $notification;
             $this->dispatch($email);
         });
     }
