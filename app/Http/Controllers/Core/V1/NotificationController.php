@@ -35,7 +35,9 @@ class NotificationController extends Controller
         $notifications = QueryBuilder::for($baseQuery)
             ->allowedFilters([
                 Filter::exact('id'),
-                Filter::exact('user_id'),
+                Filter::scope('referral_id'),
+                Filter::scope('service_id'),
+                Filter::scope('user_id'),
             ])
             ->paginate();
 

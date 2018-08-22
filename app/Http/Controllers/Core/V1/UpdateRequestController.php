@@ -37,7 +37,7 @@ class UpdateRequestController extends Controller
 
         $updateRequests = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::scope('id'),
+                Filter::exact('id'),
                 Filter::scope('service_id'),
                 Filter::scope('service_location_id'),
                 Filter::scope('location_id'),

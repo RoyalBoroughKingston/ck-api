@@ -73,17 +73,24 @@ docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elas
 Then back on the homestead VM, run the seeder and setup the Elasticsearch index:
 
 ```bash
-# Run the seeder.
-php artisan db:seed
-
 # Create the index.
 php artisan elastic:create-index App\\IndexConfigurators\\ServicesIndexConfigurator
 
 # Set the fields mappings for the index.
 php artisan elastic:update-mapping App\\Models\\Service
 
+# Run the seeder.
+php artisan db:seed
+
 # Import all of the services from the database into the index.
 php artisan scout:import App\\Models\\Service
+```
+
+Finally, install the NPM dependencies and compile all assets:
+
+```bash
+npm install
+npm run dev
 ```
 
 ## Running the tests

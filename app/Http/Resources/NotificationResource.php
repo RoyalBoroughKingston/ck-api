@@ -17,10 +17,13 @@ class NotificationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
+            'notifiable_type' => $this->notifiable_type,
+            'notifiable_id' => $this->notifiable_id,
             'channel' => $this->channel,
             'recipient' => $this->recipient,
             'message' => $this->message,
+            'sent_at' => optional($this->sent_at)->format(Carbon::ISO8601),
+            'failed_at' => optional($this->failed_at)->format(Carbon::ISO8601),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
         ];
