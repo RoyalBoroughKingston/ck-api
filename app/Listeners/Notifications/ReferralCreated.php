@@ -77,13 +77,10 @@ class ReferralCreated
      */
     protected function notifyService(Referral $referral)
     {
-        // Only send an email if email address was provided.
-        if ($referral->service->contact_email) {
-            $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->contact_email, [
-                'CONTACT_NAME' => $referral->service->contact_name,
-                'SERVICE_NAME' => $referral->service->name,
-                'REFERRAL_ID' => $referral->id,
-            ]));
-        }
+        $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->contact_email, [
+            'CONTACT_NAME' => $referral->service->contact_name,
+            'SERVICE_NAME' => $referral->service->name,
+            'REFERRAL_ID' => $referral->id,
+        ]));
     }
 }

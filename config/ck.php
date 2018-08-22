@@ -54,6 +54,14 @@ return [
             ],
         ],
 
+        'referral_unactioned' => [
+
+            'notify_service' => [
+                'email' => '30a5e55f-0e56-4387-9cf3-3eb4ed83b115',
+            ],
+
+        ],
+
     ],
 
 ];
