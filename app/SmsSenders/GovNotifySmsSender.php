@@ -16,12 +16,16 @@ class GovNotifySmsSender implements SmsSender
         /** @var \Alphagov\Notifications\Client $client */
         $client = resolve(Client::class);
 
-        $client->sendSms(
+        $response = $client->sendSms(
             $sms->to,
             $sms->templateId,
             $sms->values,
             $sms->reference,
             $sms->senderId
         );
+
+        if (config('app.debug')) {
+            logger()->debug('SMS sent', $response);
+        }
     }
 }

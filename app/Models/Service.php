@@ -2,21 +2,26 @@
 
 namespace App\Models;
 
+use App\Emails\Email;
 use App\Http\Requests\Service\UpdateRequest as Request;
 use App\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
 use App\Notifications\Notifications;
+use App\Sms\Sms;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
 
 class Service extends Model implements AppliesUpdateRequests
 {
+    use DispatchesJobs;
     use Notifications;
     use Searchable;
     use ServiceMutators;
@@ -287,5 +292,43 @@ class Service extends Model implements AppliesUpdateRequests
         }
 
         return $this->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
+    }
+
+    /**
+     * @param \App\Emails\Email $email
+     */
+    public function sendEmailToContact(Email $email)
+    {
+        DB::transaction(function () use ($email) {
+            // Log a notification for the email in the database.
+            $notification = $this->notifications()->create([
+                'channel' => Notification::CHANNEL_EMAIL,
+                'recipient' => $this->contact_email,
+                'message' => $email->getContent(),
+            ]);
+
+            // Add the email as a job on the queue to be sent.
+            $email->notification = $notification;
+            $this->dispatch($email);
+        });
+    }
+
+    /**
+     * @param \App\Sms\Sms $sms
+     */
+    public function sendSmsToContact(Sms $sms)
+    {
+        DB::transaction(function () use ($sms) {
+            // Log a notification for the SMS in the database.
+            $notification = $this->notifications()->create([
+                'channel' => Notification::CHANNEL_SMS,
+                'recipient' => $this->contact_phone,
+                'message' => $sms->getContent(),
+            ]);
+
+            // Add the SMS as a job on the queue to be sent.
+            $sms->notification = $notification;
+            $this->dispatch($sms);
+        });
     }
 }

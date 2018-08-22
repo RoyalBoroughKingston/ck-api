@@ -16,12 +16,16 @@ class GovNotifyEmailSender implements EmailSender
         /** @var \Alphagov\Notifications\Client $client */
         $client = resolve(Client::class);
 
-        $client->sendEmail(
+        $response = $client->sendEmail(
             $email->to,
             $email->templateId,
             $email->values,
             $email->reference,
             $email->replyTo
         );
+
+        if (config('app.debug')) {
+            logger()->debug('Email sent', $response);
+        }
     }
 }

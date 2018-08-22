@@ -4,6 +4,7 @@ namespace App\Listeners\Notifications;
 
 use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Emails\ReferralCreated\NotifyRefereeEmail;
+use App\Emails\ReferralCreated\NotifyServiceEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
@@ -28,7 +29,7 @@ class ReferralCreated
 
         $this->notifyClient($event->getModel());
         $this->notifyReferee($event->getModel());
-        $this->notifyService($event->getModel()->service);
+        $this->notifyService($event->getModel());
     }
 
     /**
@@ -38,12 +39,16 @@ class ReferralCreated
     {
         // Only send an email if email address was provided.
         if ($referral->email) {
-            $referral->sendEmailToClient(new NotifyClientEmail($referral->email, ['CLIENT_NAME' => $referral->name]));
+            $referral->sendEmailToClient(new NotifyClientEmail($referral->email, [
+                'CLIENT_NAME' => $referral->name,
+            ]));
         }
 
         // Only send SMS if phone number was provided.
         if ($referral->phone) {
-            $referral->sendSmsToClient(new NotifyClientSms($referral->phone, ['CLIENT_NAME' => $referral->name]));
+            $referral->sendSmsToClient(new NotifyClientSms($referral->phone, [
+                'CLIENT_NAME' => $referral->name,
+            ]));
         }
     }
 
@@ -54,20 +59,31 @@ class ReferralCreated
     {
         // Only send an email if email address was provided.
         if ($referral->referee_email) {
-            $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, ['REFEREE_NAME' => $referral->referee_name]));
+            $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, [
+                'REFEREE_NAME' => $referral->referee_name,
+            ]));
         }
 
         // Only send SMS if phone number was provided.
         if ($referral->referee_phone) {
-            $referral->sendSmsToReferee(new NotifyRefereeSms($referral->referee_phone, ['REFEREE_NAME' => $referral->referee_name]));
+            $referral->sendSmsToReferee(new NotifyRefereeSms($referral->referee_phone, [
+                'REFEREE_NAME' => $referral->referee_name,
+            ]));
         }
     }
 
     /**
-     * @param \App\Models\Service $service
+     * @param \App\Models\Referral $referral
      */
-    protected function notifyService(Service $service)
+    protected function notifyService(Referral $referral)
     {
-        // TODO: Send and log notifications.
+        // Only send an email if email address was provided.
+        if ($referral->service->contact_email) {
+            $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->contact_email, [
+                'CONTACT_NAME' => $referral->service->contact_name,
+                'SERVICE_NAME' => $referral->service->name,
+                'REFERRAL_ID' => $referral->id,
+            ]));
+        }
     }
 }

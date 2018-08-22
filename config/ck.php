@@ -48,6 +48,10 @@ return [
                 'email' => '6b789487-da89-4bee-8061-8af31c84cbfe',
                 'sms' => '354e712f-a435-4ac6-9b18-52018992fcaf',
             ],
+
+            'notify_service' => [
+                'email' => '8fc13a1c-1194-4a7e-849c-42412bf1ede7',
+            ],
         ],
 
     ],
