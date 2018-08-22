@@ -8,25 +8,39 @@ return [
     'pagination_results' => 10,
 
     /*
+     * Available drivers: 'stub', 'nominatim', 'google'
+     */
+    'geocode_driver' => env('GEOCODE_DRIVER', 'stub'),
+
+    /*
      * The API key to use with the Google Geocoding API.
      */
     'google_api_key' => env('GOOGLE_API_KEY'),
 
     /*
-     * Available drivers: 'stub', 'nominatim', 'google'
+     * Available drivers: 'log', 'gov'
      */
-    'geocode_driver' => env('GEOCODE_DRIVER', 'stub'),
+    'email_driver' => env('EMAIL_DRIVER', 'log'),
+
+    /*
+     * Available drivers: 'log', 'gov'
+     */
+    'sms_driver' => env('SMS_DRIVER', 'log'),
+
+    /*
+     * The GOV.UK Notify API key.
+     */
+    'gov_notify_api_key' => env('GOV_NOTIFY_API_KEY'),
 
     /*
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [
 
-        // TODO: Get the actual IDs for the templates.
         'referral_created' => [
             'notify_client' => [
-                'email' => 'unique-template-id',
-                'sms' => 'unique-template-id',
+                'email' => '7e46d4d4-ce3f-475f-9416-fa35f2d5a65f',
+                'sms' => '8ab81261-3b84-4cc9-8c76-d9aa85aa6aaa',
             ],
         ],
 

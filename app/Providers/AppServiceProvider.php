@@ -36,8 +36,26 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Email Sender.
-        $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\LogEmailSender::class);
-        $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\LogSmsSender::class);
+        switch (config('ck.email_driver')) {
+            case 'gov':
+                $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\GovNotifyEmailSender::class);
+                break;
+            case 'log':
+            default:
+                $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\LogEmailSender::class);
+                break;
+        }
+
+        // SMS Sender.
+        switch (config('ck.sms_driver')) {
+            case 'gov':
+                $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\GovNotifySmsSender::class);
+                break;
+            case 'log':
+            default:
+                $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\LogSmsSender::class);
+                break;
+        }
     }
 
     /**

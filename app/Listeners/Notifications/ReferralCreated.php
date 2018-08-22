@@ -35,14 +35,12 @@ class ReferralCreated
     {
         // Only send an email if email address was provided.
         if ($referral->email) {
-            // TODO: Specify the values array.
-            $referral->sendEmailToClient(new NotifyClientEmail($referral->email, []));
+            $referral->sendEmailToClient(new NotifyClientEmail($referral->email, ['CLIENT_NAME' => $referral->name]));
         }
 
         // Only send SMS if phone number was provided.
         if ($referral->phone) {
-            // TODO: Specify the values array.
-            $referral->sendSmsToClient(new NotifyClientSms($referral->phone, []));
+            $referral->sendSmsToClient(new NotifyClientSms($referral->phone, ['CLIENT_NAME' => $referral->name]));
         }
     }
 
