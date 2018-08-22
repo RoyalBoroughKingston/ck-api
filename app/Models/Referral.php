@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
-use App\Contracts\EmailSender;
 use App\Emails\Email;
+use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Models\Mutators\ReferralMutators;
 use App\Models\Relationships\ReferralRelationships;
 use App\Models\Scopes\ReferralScopes;
 use App\Notifications\Notifications;
 use Exception;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 
 class Referral extends Model
 {
+    use DispatchesJobs;
     use Notifications;
     use ReferralMutators;
     use ReferralRelationships;
@@ -66,15 +68,15 @@ class Referral extends Model
     public function sendEmailToClient(Email $email)
     {
         DB::transaction(function () use ($email) {
-            // Send the email and get the contents of it.
-            $message = resolve(EmailSender::class)->send($email);
-
             // Log a notification for the email in the database.
             $this->notifications()->create([
                 'channel' => Notification::CHANNEL_EMAIL,
                 'recipient' => $this->email,
-                'message' => $message,
+                'message' => $email->getContent(),
             ]);
+
+            // Add the email as a job on the queue to be sent.
+            $this->dispatch($email);
         });
     }
 }

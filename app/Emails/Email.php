@@ -2,39 +2,42 @@
 
 namespace App\Emails;
 
-/**
- * @property string $to
- * @property string $templateId
- * @property array $values
- * @property string|null $reference
- * @property string|null $replyTo
- */
-abstract class Email
+use App\Contracts\EmailSender;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+
+abstract class Email implements ShouldQueue
 {
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+
     /**
      * @var string
      */
-    protected $to;
+    public $to;
 
     /**
      * @var array
      */
-    protected $values;
+    public $values;
 
     /**
      * @var string
      */
-    protected $templateId;
+    public $templateId;
 
     /**
      * @var string|null
      */
-    protected $reference;
+    public $reference;
 
     /**
      * @var string|null
      */
-    protected $replyTo;
+    public $replyTo;
 
     /**
      * Email constructor.
@@ -44,6 +47,8 @@ abstract class Email
      */
     public function __construct(string $to, array $values = [])
     {
+        $this->queue = 'notifications';
+
         $this->to = $to;
         $this->values = $values;
         $this->templateId = $this->getTemplateId();
@@ -67,11 +72,26 @@ abstract class Email
     abstract protected function getReplyTo(): ?string;
 
     /**
-     * @param string $property
-     * @return mixed
+     * @return string
      */
-    public function __get(string $property)
+    abstract public function getContent(): string;
+
+    /**
+     * @return void
+     */
+    public function send()
     {
-        return $this->$property;
+        $this->handle(resolve(EmailSender::class));
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @param \App\Contracts\EmailSender $emailSender
+     * @return void
+     */
+    public function handle(EmailSender $emailSender)
+    {
+        $emailSender->send($this);
     }
 }

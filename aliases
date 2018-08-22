@@ -12,6 +12,8 @@ alias serve=serve-laravel
 alias xoff='sudo phpdismod -s cli xdebug'
 alias xon='sudo phpenmod -s cli xdebug'
 
+alias syncdate='sudo service ntp stop && sudo ntpdate -s time.nist.gov && sudo service ntp start'
+
 function artisan() {
     php artisan "$@"
 }

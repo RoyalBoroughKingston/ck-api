@@ -29,4 +29,13 @@ class NotifyClientEmail extends Email
     {
         return null;
     }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        // TODO: Return actual content.
+        return 'Lorem ipsum';
+    }
 }
