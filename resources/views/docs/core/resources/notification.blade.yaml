@@ -29,6 +29,11 @@ properties:
     type: string
     format: date-time
     nullable: true
+  failed_at:
+    type: string
+    format: date-time
+    nullable: true
+    example: null
   created_at:
     type: string
     format: date-time

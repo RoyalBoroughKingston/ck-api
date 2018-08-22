@@ -22,6 +22,7 @@ class Notification extends Model
      */
     protected $casts = [
         'sent_at' => 'datetime',
+        'failed_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

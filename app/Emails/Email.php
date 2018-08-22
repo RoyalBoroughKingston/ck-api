@@ -3,6 +3,7 @@
 namespace App\Emails;
 
 use App\Contracts\EmailSender;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -99,12 +100,22 @@ abstract class Email implements ShouldQueue
      */
     public function handle(EmailSender $emailSender)
     {
-        // Send the email.
-        $emailSender->send($this);
+        try {
+            // Send the email.
+            $emailSender->send($this);
 
-        // Update the notification.
-        if ($this->notification) {
-            $this->notification->update(['sent_at' => now()]);
+            // Update the notification.
+            if ($this->notification) {
+                $this->notification->update(['sent_at' => now()]);
+            }
+        } catch (Exception $exception) {
+            // Log the error.
+            logger()->error($exception);
+
+            // Update the notification.
+            if ($this->notification) {
+                $this->notification->update(['failed_at' => now()]);
+            }
         }
     }
 }

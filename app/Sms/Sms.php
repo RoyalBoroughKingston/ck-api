@@ -3,6 +3,7 @@
 namespace App\Sms;
 
 use App\Contracts\SmsSender;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -99,12 +100,22 @@ abstract class Sms implements ShouldQueue
      */
     public function handle(SmsSender $smsSender)
     {
-        // Send the SMS.
-        $smsSender->send($this);
+        try {
+            // Send the SMS.
+            $smsSender->send($this);
 
-        // Update the notification.
-        if ($this->notification) {
-            $this->notification->update(['sent_at' => now()]);
+            // Update the notification.
+            if ($this->notification) {
+                $this->notification->update(['sent_at' => now()]);
+            }
+        } catch (Exception $exception) {
+            // Log the error.
+            logger()->error($exception);
+
+            // Update the notification.
+            if ($this->notification) {
+                $this->notification->update(['failed_at' => now()]);
+            }
         }
     }
 }
