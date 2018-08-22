@@ -99,4 +99,42 @@ class Referral extends Model
             $this->dispatch($sms);
         });
     }
+
+    /**
+     * @param \App\Emails\Email $email
+     */
+    public function sendEmailToReferee(Email $email)
+    {
+        DB::transaction(function () use ($email) {
+            // Log a notification for the email in the database.
+            $notification = $this->notifications()->create([
+                'channel' => Notification::CHANNEL_EMAIL,
+                'recipient' => $this->referee_email,
+                'message' => $email->getContent(),
+            ]);
+
+            // Add the email as a job on the queue to be sent.
+            $email->notification = $notification;
+            $this->dispatch($email);
+        });
+    }
+
+    /**
+     * @param \App\Sms\Sms $sms
+     */
+    public function sendSmsToReferee(Sms $sms)
+    {
+        DB::transaction(function () use ($sms) {
+            // Log a notification for the SMS in the database.
+            $notification = $this->notifications()->create([
+                'channel' => Notification::CHANNEL_SMS,
+                'recipient' => $this->referee_phone,
+                'message' => $sms->getContent(),
+            ]);
+
+            // Add the SMS as a job on the queue to be sent.
+            $sms->notification = $notification;
+            $this->dispatch($sms);
+        });
+    }
 }

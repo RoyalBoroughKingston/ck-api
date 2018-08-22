@@ -38,9 +38,15 @@ return [
     'notifications_template_ids' => [
 
         'referral_created' => [
+
             'notify_client' => [
                 'email' => '7e46d4d4-ce3f-475f-9416-fa35f2d5a65f',
                 'sms' => '8ab81261-3b84-4cc9-8c76-d9aa85aa6aaa',
+            ],
+
+            'notify_referee' => [
+                'email' => '6b789487-da89-4bee-8061-8af31c84cbfe',
+                'sms' => '354e712f-a435-4ac6-9b18-52018992fcaf',
             ],
         ],
 

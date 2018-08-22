@@ -3,10 +3,12 @@
 namespace App\Listeners\Notifications;
 
 use App\Emails\ReferralCreated\NotifyClientEmail;
+use App\Emails\ReferralCreated\NotifyRefereeEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
 use App\Sms\ReferralCreated\NotifyClientSms;
+use App\Sms\ReferralCreated\NotifyRefereeSms;
 
 class ReferralCreated
 {
@@ -49,9 +51,15 @@ class ReferralCreated
      */
     protected function notifyReferee(Referral $referral)
     {
-        // TODO: Check if referee details present.
+        // Only send an email if email address was provided.
+        if ($referral->referee_email) {
+            $referral->sendEmailToClient(new NotifyRefereeEmail($referral->email, ['REFEREE_NAME' => $referral->referee_name]));
+        }
 
-        // TODO: Send and log notifications.
+        // Only send SMS if phone number was provided.
+        if ($referral->referee_phone) {
+            $referral->sendSmsToClient(new NotifyRefereeSms($referral->phone, ['REFEREE_NAME' => $referral->referee_name]));
+        }
     }
 
     /**
