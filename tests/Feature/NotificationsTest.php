@@ -100,16 +100,14 @@ class NotificationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            [
-                'id' => $notification->id,
-                'notifiable_type' => 'users',
-                'notifiable_id' => $user->id,
-                'channel' => $notification->channel,
-                'recipient' => $notification->recipient,
-                'message' => $notification->message,
-                'created_at' => $notification->created_at->format(Carbon::ISO8601),
-                'updated_at' => $notification->updated_at->format(Carbon::ISO8601),
-            ]
+            'id' => $notification->id,
+            'notifiable_type' => 'users',
+            'notifiable_id' => $user->id,
+            'channel' => $notification->channel,
+            'recipient' => $notification->recipient,
+            'message' => $notification->message,
+            'created_at' => $notification->created_at->format(Carbon::ISO8601),
+            'updated_at' => $notification->updated_at->format(Carbon::ISO8601),
         ]);
     }
 

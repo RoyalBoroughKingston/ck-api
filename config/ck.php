@@ -20,10 +20,14 @@ return [
     /*
      * Used for GOV.UK Notify.
      */
-    'email_templates' => [
+    'notifications_template_ids' => [
 
+        // TODO: Get the actual IDs for the templates.
         'referral_created' => [
-            'notify_client' => 'unique-template-id', // TODO: Get the actual values for the templates.
+            'notify_client' => [
+                'email' => 'unique-template-id',
+                'sms' => 'unique-template-id',
+            ],
         ],
 
     ],

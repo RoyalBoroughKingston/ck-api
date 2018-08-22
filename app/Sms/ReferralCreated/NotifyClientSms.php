@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Emails\ReferralCreated;
+namespace App\Sms\ReferralCreated;
 
-use App\Emails\Email;
+use App\Sms\Sms;
 
-class NotifyClientEmail extends Email
+class NotifyClientSms extends Sms
 {
     /**
      * @return string
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.referral_created.notify_client.email');
+        return config('ck.notifications_template_ids.referral_created.notify_client.sms');
     }
 
     /**
@@ -25,7 +25,7 @@ class NotifyClientEmail extends Email
     /**
      * @return string|null
      */
-    protected function getReplyTo(): ?string
+    protected function getSenderId(): ?string
     {
         return null;
     }

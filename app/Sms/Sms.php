@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Emails;
+namespace App\Sms;
 
-use App\Contracts\EmailSender;
+use App\Contracts\SmsSender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-abstract class Email implements ShouldQueue
+abstract class Sms implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -39,7 +39,7 @@ abstract class Email implements ShouldQueue
     /**
      * @var string|null
      */
-    public $replyTo;
+    public $senderId;
 
     /**
      * @var \App\Models\Notification|null
@@ -47,7 +47,7 @@ abstract class Email implements ShouldQueue
     public $notification;
 
     /**
-     * Email constructor.
+     * Sms constructor.
      *
      * @param string $to
      * @param array $values
@@ -60,7 +60,7 @@ abstract class Email implements ShouldQueue
         $this->values = $values;
         $this->templateId = $this->getTemplateId();
         $this->reference = $this->getReference();
-        $this->replyTo = $this->getReplyTo();
+        $this->senderId = $this->getSenderId();
     }
 
     /**
@@ -76,7 +76,7 @@ abstract class Email implements ShouldQueue
     /**
      * @return string|null
      */
-    abstract protected function getReplyTo(): ?string;
+    abstract protected function getSenderId(): ?string;
 
     /**
      * @return string
@@ -88,19 +88,19 @@ abstract class Email implements ShouldQueue
      */
     public function send()
     {
-        $this->handle(resolve(EmailSender::class));
+        $this->handle(resolve(SmsSender::class));
     }
 
     /**
      * Execute the job.
      *
-     * @param \App\Contracts\EmailSender $emailSender
+     * @param \App\Contracts\SmsSender $smsSender
      * @return void
      */
-    public function handle(EmailSender $emailSender)
+    public function handle(SmsSender $smsSender)
     {
-        // Send the email.
-        $emailSender->send($this);
+        // Send the SMS.
+        $smsSender->send($this);
 
         // Update the notification.
         if ($this->notification) {

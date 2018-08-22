@@ -6,6 +6,7 @@ use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
+use App\Sms\ReferralCreated\NotifyClientSms;
 
 class ReferralCreated
 {
@@ -32,13 +33,17 @@ class ReferralCreated
      */
     protected function notifyClient(Referral $referral)
     {
-        // Only send an email if one was provided.
+        // Only send an email if email address was provided.
         if ($referral->email) {
             // TODO: Specify the values array.
             $referral->sendEmailToClient(new NotifyClientEmail($referral->email, []));
         }
 
-        // TODO: Send an SMS to the client.
+        // Only send SMS if phone number was provided.
+        if ($referral->phone) {
+            // TODO: Specify the values array.
+            $referral->sendSmsToClient(new NotifyClientSms($referral->phone, []));
+        }
     }
 
     /**

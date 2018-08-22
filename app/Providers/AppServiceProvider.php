@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Email Sender.
         $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\LogEmailSender::class);
+        $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\LogSmsSender::class);
     }
 
     /**

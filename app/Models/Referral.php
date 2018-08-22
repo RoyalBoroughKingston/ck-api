@@ -7,6 +7,7 @@ use App\Models\Mutators\ReferralMutators;
 use App\Models\Relationships\ReferralRelationships;
 use App\Models\Scopes\ReferralScopes;
 use App\Notifications\Notifications;
+use App\Sms\Sms;
 use Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +78,25 @@ class Referral extends Model
             // Add the email as a job on the queue to be sent.
             $email->notification = $notification;
             $this->dispatch($email);
+        });
+    }
+
+    /**
+     * @param \App\Sms\Sms $sms
+     */
+    public function sendSmsToClient(Sms $sms)
+    {
+        DB::transaction(function () use ($sms) {
+            // Log a notification for the SMS in the database.
+            $notification = $this->notifications()->create([
+                'channel' => Notification::CHANNEL_SMS,
+                'recipient' => $this->phone,
+                'message' => $sms->getContent(),
+            ]);
+
+            // Add the SMS as a job on the queue to be sent.
+            $sms->notification = $notification;
+            $this->dispatch($sms);
         });
     }
 }
