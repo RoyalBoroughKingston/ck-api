@@ -7,6 +7,7 @@ use App\Emails\ReferralCreated\NotifyRefereeEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
+use App\Models\Service;
 use App\Sms\ReferralCreated\NotifyClientSms;
 use App\Sms\ReferralCreated\NotifyRefereeSms;
 
@@ -27,7 +28,7 @@ class ReferralCreated
 
         $this->notifyClient($event->getModel());
         $this->notifyReferee($event->getModel());
-        $this->notifyService($event->getModel());
+        $this->notifyService($event->getModel()->service);
     }
 
     /**
@@ -53,19 +54,19 @@ class ReferralCreated
     {
         // Only send an email if email address was provided.
         if ($referral->referee_email) {
-            $referral->sendEmailToClient(new NotifyRefereeEmail($referral->email, ['REFEREE_NAME' => $referral->referee_name]));
+            $referral->sendEmailToClient(new NotifyRefereeEmail($referral->referee_email, ['REFEREE_NAME' => $referral->referee_name]));
         }
 
         // Only send SMS if phone number was provided.
         if ($referral->referee_phone) {
-            $referral->sendSmsToClient(new NotifyRefereeSms($referral->phone, ['REFEREE_NAME' => $referral->referee_name]));
+            $referral->sendSmsToClient(new NotifyRefereeSms($referral->referee_phone, ['REFEREE_NAME' => $referral->referee_name]));
         }
     }
 
     /**
-     * @param \App\Models\Referral $referral
+     * @param \App\Models\Service $service
      */
-    protected function notifyService(Referral $referral)
+    protected function notifyService(Service $service)
     {
         // TODO: Send and log notifications.
     }
