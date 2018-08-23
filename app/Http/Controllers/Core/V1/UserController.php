@@ -168,7 +168,7 @@ class UserController extends Controller
                             break;
                     }
                 } catch (CannotRevokeRoleException $exception) {
-                    // Do nothing.
+                    continue;
                 }
             }
 
