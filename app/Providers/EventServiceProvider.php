@@ -10,6 +10,7 @@ use App\Listeners\Notifications\ReferralCreated;
 use App\Listeners\Notifications\ReferralIncompleted;
 use App\Listeners\Notifications\UpdateRequestApproved;
 use App\Listeners\Notifications\UpdateRequestRejected;
+use App\Listeners\Notifications\UserCreated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -28,6 +29,7 @@ class EventServiceProvider extends ServiceProvider
             PageFeedbackReceived::class,
             UpdateRequestApproved::class,
             UpdateRequestRejected::class,
+            UserCreated::class,
         ],
     ];
 

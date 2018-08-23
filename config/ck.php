@@ -89,6 +89,11 @@ return [
                 'email' => '4b9a76de-f869-4327-8563-51ebdf9d13f6',
             ],
         ],
+        'user_created' => [
+            'notify_user' => [
+                'email' => '7bb4074d-ffe8-4c80-baac-fbeb92be3ef9',
+            ],
+        ],
     ],
 
 ];
