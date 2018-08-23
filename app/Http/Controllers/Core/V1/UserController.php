@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Events\UserRolesUpdated;
 use App\Exceptions\CannotRevokeRoleException;
 use App\Http\Requests\User\DestroyRequest;
 use App\Http\Requests\User\IndexRequest;
@@ -131,6 +132,9 @@ class UserController extends Controller
     public function update(UpdateRequest $request, User $user)
     {
         return DB::transaction(function () use ($request, $user) {
+            // Store the original user roles in case they have been updated in the request (used for notification).
+            $originalRoles = $user->userRoles;
+
             // Update the user record.
             $user->update([
                 'first_name' => $request->first_name,
@@ -194,6 +198,14 @@ class UserController extends Controller
                         $user->makeSuperAdmin();
                         break;
                 }
+            }
+
+            // Refresh the user roles.
+            $user->load('userRoles');
+
+            // Trigger the roles updated event if they have been modified in the request.
+            if ($request->rolesHaveBeenUpdated()) {
+                event(new UserRolesUpdated($user, $originalRoles, $user->userRoles));
             }
 
             event(EndpointHit::onUpdate($request, "Updated user [{$user->id}]", $user));

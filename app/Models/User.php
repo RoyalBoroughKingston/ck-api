@@ -390,7 +390,6 @@ class User extends Authenticatable
             throw new CannotRevokeRoleException('Cannot revoke service admin role when user is an organisation admin');
         }
 
-        $this->revokeServiceWorker($service);
         $this->removeRoll(Role::serviceAdmin(), $service);
 
         return $this;
@@ -407,9 +406,6 @@ class User extends Authenticatable
             throw new CannotRevokeRoleException('Cannot revoke organisation admin role when user is an global admin');
         }
 
-        foreach ($organisation->services as $service) {
-            $this->revokeServiceAdmin($service);
-        }
         $this->removeRoll(Role::organisationAdmin(), $organisation);
 
         return $this;
@@ -425,9 +421,6 @@ class User extends Authenticatable
             throw new CannotRevokeRoleException('Cannot revoke global admin role when user is an super admin');
         }
 
-        foreach (Organisation::all() as $organisation) {
-            $this->revokeOrganisationAdmin($organisation);
-        }
         $this->removeRoll(Role::globalAdmin());
 
         return $this;
@@ -439,7 +432,6 @@ class User extends Authenticatable
      */
     public function revokeSuperAdmin()
     {
-        $this->revokeGlobalAdmin();
         $this->removeRoll(Role::superAdmin());
 
         return $this;

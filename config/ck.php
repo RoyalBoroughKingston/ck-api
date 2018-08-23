@@ -94,6 +94,11 @@ return [
                 'email' => '7bb4074d-ffe8-4c80-baac-fbeb92be3ef9',
             ],
         ],
+        'user_roles_updated' => [
+            'notify_user' => [
+                'email' => '9018cd8d-46fd-47e7-baa3-1ac6d3b6d943',
+            ],
+        ],
     ],
 
 ];

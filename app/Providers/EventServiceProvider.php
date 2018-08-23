@@ -2,15 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\EndpointHit;
-use App\Listeners\AuditLogger;
-use App\Listeners\Notifications\PageFeedbackReceived;
-use App\Listeners\Notifications\ReferralCompleted;
-use App\Listeners\Notifications\ReferralCreated;
-use App\Listeners\Notifications\ReferralIncompleted;
-use App\Listeners\Notifications\UpdateRequestApproved;
-use App\Listeners\Notifications\UpdateRequestRejected;
-use App\Listeners\Notifications\UserCreated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -21,15 +12,18 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        EndpointHit::class => [
-            AuditLogger::class,
-            ReferralCreated::class,
-            ReferralCompleted::class,
-            ReferralIncompleted::class,
-            PageFeedbackReceived::class,
-            UpdateRequestApproved::class,
-            UpdateRequestRejected::class,
-            UserCreated::class,
+        \App\Events\EndpointHit::class => [
+            \App\Listeners\AuditLogger::class,
+            \App\Listeners\Notifications\ReferralCreated::class,
+            \App\Listeners\Notifications\ReferralCompleted::class,
+            \App\Listeners\Notifications\ReferralIncompleted::class,
+            \App\Listeners\Notifications\PageFeedbackReceived::class,
+            \App\Listeners\Notifications\UpdateRequestApproved::class,
+            \App\Listeners\Notifications\UpdateRequestRejected::class,
+            \App\Listeners\Notifications\UserCreated::class,
+        ],
+        \App\Events\UserRolesUpdated::class => [
+            \App\Listeners\Notifications\UserRolesUpdated::class,
         ],
     ];
 
