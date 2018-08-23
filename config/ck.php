@@ -59,6 +59,10 @@ return [
                 'email' => '6cde8dcc-3458-4190-a42a-a2a62fcbb37e',
                 'sms' => '33d7f0a0-dfe3-41ff-b7a3-a16e570317f2',
             ],
+            'notify_referee' => [
+                'email' => 'ccdab7ea-4a16-4add-a4b0-bdb8f056b31d',
+                'sms' => 'adf7ea2f-8ebc-4429-baf9-c15eece24e1f',
+            ],
         ],
         'referral_incompleted' => [
             'notify_client' => [

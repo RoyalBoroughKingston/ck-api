@@ -36,15 +36,13 @@ class ReferralCreated
      */
     protected function notifyClient(Referral $referral)
     {
-        // Only send an email if email address was provided.
         if ($referral->email) {
+            // Only send an email if email address was provided.
             $referral->sendEmailToClient(new NotifyClientEmail($referral->email, [
                 'CLIENT_NAME' => $referral->name,
             ]));
-        }
-
-        // Only send SMS if phone number was provided.
-        if ($referral->phone) {
+        } elseif ($referral->phone) {
+            // Resort to SMS, but only if phone number address was provided.
             $referral->sendSmsToClient(new NotifyClientSms($referral->phone, [
                 'CLIENT_NAME' => $referral->name,
             ]));
@@ -56,15 +54,13 @@ class ReferralCreated
      */
     protected function notifyReferee(Referral $referral)
     {
-        // Only send an email if email address was provided.
         if ($referral->referee_email) {
+            // Only send an email if email address was provided.
             $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, [
                 'REFEREE_NAME' => $referral->referee_name,
             ]));
-        }
-
-        // Only send SMS if phone number was provided.
-        if ($referral->referee_phone) {
+        } elseif ($referral->referee_phone) {
+            // Resort to SMS, but only if phone number address was provided.
             $referral->sendSmsToReferee(new NotifyRefereeSms($referral->referee_phone, [
                 'REFEREE_NAME' => $referral->referee_name,
             ]));
