@@ -3,12 +3,10 @@
 namespace App\Listeners\Notifications;
 
 use App\Emails\PageFeedbackReceived\NotifyGlobalAdminEmail;
-use App\Emails\PageFeedbackReceived\NotifyUserEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\PageFeedback;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class PageFeedbackReceived
@@ -34,26 +32,17 @@ class PageFeedbackReceived
      */
     protected function notifyGlobalAdmins(PageFeedback $pageFeedback)
     {
-        $this->getGlobalAdminsQuery()->chunk(200, function (Collection $users) use ($pageFeedback) {
-            $users->each(function (User $user) use ($pageFeedback) {
-                $user->sendEmail(new NotifyGlobalAdminEmail($user->email, [
-                    'NAME' => $user->first_name,
-                    'URL' => $pageFeedback->url,
-                    'FEEDBACK' => $pageFeedback->feedback,
-                ]));
-            });
-        });
-    }
-
-    /**
-     * Get all users with email addresses that are Global Admins.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    protected function getGlobalAdminsQuery(): Builder
-    {
-        return User::query()
+        User::query()
             ->whereNotNull('email')
-            ->globalAdmins();
+            ->globalAdmins()
+            ->chunk(200, function (Collection $users) use ($pageFeedback) {
+                $users->each(function (User $user) use ($pageFeedback) {
+                    $user->sendEmail(new NotifyGlobalAdminEmail($user->email, [
+                        'NAME' => $user->first_name,
+                        'URL' => $pageFeedback->url,
+                        'FEEDBACK' => $pageFeedback->feedback,
+                    ]));
+                });
+            });
     }
 }
