@@ -69,6 +69,10 @@ return [
                 'email' => '69e6a891-21e1-402b-8670-71b651218507',
                 'sms' => 'b9d203fa-2db1-4baf-aa1a-0ef7a8a8ecdc',
             ],
+            'notify_referee' => [
+                'email' => '2fee9310-d1d5-4cd2-8b2e-88a03fabf111',
+                'sms' => '4429932d-fbe7-401e-9b30-7d15df08647c',
+            ],
         ],
         'page_feedback_received' => [
             'notify_global_admin' => [

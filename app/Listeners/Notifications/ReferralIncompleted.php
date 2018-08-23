@@ -3,10 +3,12 @@
 namespace App\Listeners\Notifications;
 
 use App\Emails\ReferralIncompleted\NotifyClientEmail;
+use App\Emails\ReferralIncompleted\NotifyRefereeEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
 use App\Sms\ReferralIncompleted\NotifyClientSms;
+use App\Sms\ReferralIncompleted\NotifyRefereeSms;
 
 class ReferralIncompleted
 {
@@ -33,6 +35,7 @@ class ReferralIncompleted
         }
 
         $this->notifyClient($event->getModel());
+        $this->notifyReferee($event->getModel());
     }
 
     /**
@@ -50,6 +53,26 @@ class ReferralIncompleted
             // Resort to SMS, but only if phone number address was provided.
             $referral->sendSmsToClient(new NotifyClientSms($referral->phone, [
                 'CLIENT_NAME' => $referral->name,
+                'SERVICE_NAME' => $referral->service->contact_name,
+            ]));
+        }
+    }
+
+    /**
+     * @param \App\Models\Referral $referral
+     */
+    protected function notifyReferee(Referral $referral)
+    {
+        if ($referral->referee_email) {
+            // Only send an email if email address was provided.
+            $referral->sendEmailToClient(new NotifyRefereeEmail($referral->referee_email, [
+                'REFEREE_NAME' => $referral->referee_name,
+                'SERVICE_NAME' => $referral->service->contact_name,
+            ]));
+        } elseif ($referral->referee_phone) {
+            // Resort to SMS, but only if phone number address was provided.
+            $referral->sendSmsToClient(new NotifyRefereeSms($referral->referee_phone, [
+                'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
             ]));
         }
