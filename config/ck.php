@@ -79,6 +79,11 @@ return [
                 'email' => '9d6c6177-37af-47f0-b097-bffd430a48cc',
             ],
         ],
+        'update_request_approved' => [
+            'notify_submitter' => [
+                'email' => 'e26647a6-97e9-4ab0-bedd-e924b4d03742',
+            ],
+        ],
     ],
 
 ];
