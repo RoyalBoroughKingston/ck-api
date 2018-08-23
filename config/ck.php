@@ -43,21 +43,29 @@ return [
                 'email' => '7e46d4d4-ce3f-475f-9416-fa35f2d5a65f',
                 'sms' => '8ab81261-3b84-4cc9-8c76-d9aa85aa6aaa',
             ],
-
             'notify_referee' => [
                 'email' => '6b789487-da89-4bee-8061-8af31c84cbfe',
                 'sms' => '354e712f-a435-4ac6-9b18-52018992fcaf',
             ],
-
             'notify_service' => [
                 'email' => '8fc13a1c-1194-4a7e-849c-42412bf1ede7',
             ],
+
         ],
 
         'referral_unactioned' => [
 
             'notify_service' => [
                 'email' => '30a5e55f-0e56-4387-9cf3-3eb4ed83b115',
+            ],
+
+        ],
+
+        'referral_completed' => [
+
+            'notify_client' => [
+                'email' => '6cde8dcc-3458-4190-a42a-a2a62fcbb37e',
+                'sms' => '33d7f0a0-dfe3-41ff-b7a3-a16e570317f2',
             ],
 
         ],

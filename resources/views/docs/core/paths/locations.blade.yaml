@@ -91,7 +91,6 @@ nested:
       schema:
         type: string
         format: uuid
-      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:
@@ -112,7 +111,6 @@ nested:
       schema:
         type: string
         format: uuid
-      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     requestBody:
       required: true
       content:
@@ -145,7 +143,6 @@ nested:
       schema:
         type: string
         format: uuid
-      example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
     responses:
       200:
         content:

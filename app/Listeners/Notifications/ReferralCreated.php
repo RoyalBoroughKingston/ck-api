@@ -8,7 +8,6 @@ use App\Emails\ReferralCreated\NotifyServiceEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Referral;
-use App\Models\Service;
 use App\Sms\ReferralCreated\NotifyClientSms;
 use App\Sms\ReferralCreated\NotifyRefereeSms;
 
