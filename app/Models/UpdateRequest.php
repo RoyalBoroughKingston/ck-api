@@ -25,6 +25,7 @@ class UpdateRequest extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'approved_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
 

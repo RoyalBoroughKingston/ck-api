@@ -84,6 +84,11 @@ return [
                 'email' => 'e26647a6-97e9-4ab0-bedd-e924b4d03742',
             ],
         ],
+        'update_request_rejected' => [
+            'notify_submitter' => [
+                'email' => '4b9a76de-f869-4327-8563-51ebdf9d13f6',
+            ],
+        ],
     ],
 
 ];
