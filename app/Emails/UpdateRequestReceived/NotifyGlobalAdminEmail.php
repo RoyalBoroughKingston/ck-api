@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Emails\PageFeedbackReceived;
+namespace App\Emails\UpdateRequestReceived;
 
 use App\Emails\Email;
 
-class NotifyUserEmail extends Email
+class NotifyGlobalAdminEmail extends Email
 {
     /**
      * @return string
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.page_feedback_received.notify_user.email');
+        return config('ck.notifications_template_ids.update_request_submitted.notify_global_admin.email');
     }
 
     /**
