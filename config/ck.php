@@ -70,6 +70,15 @@ return [
 
         ],
 
+        'referral_incompleted' => [
+
+            'notify_client' => [
+                'email' => '69e6a891-21e1-402b-8670-71b651218507',
+                'sms' => 'b9d203fa-2db1-4baf-aa1a-0ef7a8a8ecdc',
+            ],
+
+        ],
+
     ],
 
 ];

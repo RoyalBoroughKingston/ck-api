@@ -6,6 +6,7 @@ use App\Events\EndpointHit;
 use App\Listeners\AuditLogger;
 use App\Listeners\Notifications\ReferralCompleted;
 use App\Listeners\Notifications\ReferralCreated;
+use App\Listeners\Notifications\ReferralIncompleted;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -20,6 +21,7 @@ class EventServiceProvider extends ServiceProvider
             AuditLogger::class,
             ReferralCreated::class,
             ReferralCompleted::class,
+            ReferralIncompleted::class,
         ],
     ];
 
