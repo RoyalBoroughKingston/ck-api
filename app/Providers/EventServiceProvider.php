@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\EndpointHit;
 use App\Listeners\AuditLogger;
+use App\Listeners\Notifications\PageFeedbackReceived;
 use App\Listeners\Notifications\ReferralCompleted;
 use App\Listeners\Notifications\ReferralCreated;
 use App\Listeners\Notifications\ReferralIncompleted;
@@ -22,6 +23,7 @@ class EventServiceProvider extends ServiceProvider
             ReferralCreated::class,
             ReferralCompleted::class,
             ReferralIncompleted::class,
+            PageFeedbackReceived::class,
         ],
     ];
 

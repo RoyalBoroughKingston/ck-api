@@ -23,7 +23,9 @@ class Role extends Model
      */
     public static function serviceWorker(): self
     {
-        return static::where('name', static::NAME_SERVICE_WORKER)->firstOrFail();
+        return cache()->rememberForever('Role::serviceWorker', function () {
+            return static::query()->where('name', static::NAME_SERVICE_WORKER)->firstOrFail();
+        });
     }
 
     /**
@@ -31,7 +33,9 @@ class Role extends Model
      */
     public static function serviceAdmin(): self
     {
-        return static::where('name', static::NAME_SERVICE_ADMIN)->firstOrFail();
+        return cache()->rememberForever('Role::serviceAdmin', function () {
+            return static::query()->where('name', static::NAME_SERVICE_ADMIN)->firstOrFail();
+        });
     }
 
     /**
@@ -39,7 +43,9 @@ class Role extends Model
      */
     public static function organisationAdmin(): self
     {
-        return static::where('name', static::NAME_ORGANISATION_ADMIN)->firstOrFail();
+        return cache()->rememberForever('Role::organisationAdmin', function () {
+            return static::query()->where('name', static::NAME_ORGANISATION_ADMIN)->firstOrFail();
+        });
     }
 
     /**
@@ -47,7 +53,9 @@ class Role extends Model
      */
     public static function globalAdmin(): self
     {
-        return static::where('name', static::NAME_GLOBAL_ADMIN)->firstOrFail();
+        return cache()->rememberForever('Role::globalAdmin', function () {
+            return static::query()->where('name', static::NAME_GLOBAL_ADMIN)->firstOrFail();
+        });
     }
 
     /**
@@ -55,6 +63,8 @@ class Role extends Model
      */
     public static function superAdmin(): self
     {
-        return static::where('name', static::NAME_SUPER_ADMIN)->firstOrFail();
+        return cache()->rememberForever('Role::superAdmin', function () {
+            return static::query()->where('name', static::NAME_SUPER_ADMIN)->firstOrFail();
+        });
     }
 }

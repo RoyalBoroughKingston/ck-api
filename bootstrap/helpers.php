@@ -73,7 +73,7 @@ if (!function_exists('table')) {
 
         $table = (new $model())->getTable();
 
-        return $column ? "`$table`.`$column`" : $table;
+        return $column ? "$table.$column" : $table;
     }
 }
 

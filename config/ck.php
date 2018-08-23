@@ -36,9 +36,7 @@ return [
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [
-
         'referral_created' => [
-
             'notify_client' => [
                 'email' => '7e46d4d4-ce3f-475f-9416-fa35f2d5a65f',
                 'sms' => '8ab81261-3b84-4cc9-8c76-d9aa85aa6aaa',
@@ -50,35 +48,29 @@ return [
             'notify_service' => [
                 'email' => '8fc13a1c-1194-4a7e-849c-42412bf1ede7',
             ],
-
         ],
-
         'referral_unactioned' => [
-
             'notify_service' => [
                 'email' => '30a5e55f-0e56-4387-9cf3-3eb4ed83b115',
             ],
-
         ],
-
         'referral_completed' => [
-
             'notify_client' => [
                 'email' => '6cde8dcc-3458-4190-a42a-a2a62fcbb37e',
                 'sms' => '33d7f0a0-dfe3-41ff-b7a3-a16e570317f2',
             ],
-
         ],
-
         'referral_incompleted' => [
-
             'notify_client' => [
                 'email' => '69e6a891-21e1-402b-8670-71b651218507',
                 'sms' => 'b9d203fa-2db1-4baf-aa1a-0ef7a8a8ecdc',
             ],
-
         ],
-
+        'page_feedback_received' => [
+            'notify_user' => [
+                'email' => '55af8b8f-1b36-4854-8cce-07d998fdd82a',
+            ],
+        ],
     ],
 
 ];

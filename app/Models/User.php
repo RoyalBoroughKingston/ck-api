@@ -2,19 +2,24 @@
 
 namespace App\Models;
 
+use App\Emails\Email;
 use App\Exceptions\CannotRevokeRoleException;
 use App\Models\Mutators\UserMutators;
 use App\Models\Relationships\UserRelationships;
 use App\Models\Scopes\UserScopes;
 use App\Notifications\Notifications;
+use App\Sms\Sms;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use DispatchesJobs;
     use HasApiTokens;
     use Notifications;
     use SoftDeletes;
@@ -529,5 +534,43 @@ class User extends Authenticatable
     public function canRevokeSuperAdmin(User $subject): bool
     {
         return $this->canRevokeRole($subject);
+    }
+
+    /**
+     * @param \App\Emails\Email $email
+     */
+    public function sendEmail(Email $email)
+    {
+        DB::transaction(function () use ($email) {
+            // Log a notification for the email in the database.
+            $notification = $this->notifications()->create([
+                'channel' => Notification::CHANNEL_EMAIL,
+                'recipient' => $this->email,
+                'message' => $email->getContent(),
+            ]);
+
+            // Add the email as a job on the queue to be sent.
+            $email->notification = $notification;
+            $this->dispatch($email);
+        });
+    }
+
+    /**
+     * @param \App\Sms\Sms $sms
+     */
+    public function sendSms(Sms $sms)
+    {
+        DB::transaction(function () use ($sms) {
+            // Log a notification for the SMS in the database.
+            $notification = $this->notifications()->create([
+                'channel' => Notification::CHANNEL_SMS,
+                'recipient' => $this->phone,
+                'message' => $sms->getContent(),
+            ]);
+
+            // Add the SMS as a job on the queue to be sent.
+            $sms->notification = $notification;
+            $this->dispatch($sms);
+        });
     }
 }
