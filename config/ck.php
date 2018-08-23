@@ -71,6 +71,11 @@ return [
                 'email' => '55af8b8f-1b36-4854-8cce-07d998fdd82a',
             ],
         ],
+        'update_request_submitted' => [
+            'notify_submitter' => [
+                'email' => 'e6cd56cc-6259-4cc7-9568-7c48a4988abc',
+            ],
+        ],
     ],
 
 ];

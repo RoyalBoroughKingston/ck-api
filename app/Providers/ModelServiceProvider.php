@@ -13,6 +13,7 @@ use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\ServiceTaxonomy;
 use App\Models\Taxonomy;
+use App\Models\UpdateRequest;
 use App\Models\User;
 use App\Observers\CollectionObserver;
 use App\Observers\CollectionTaxonomyObserver;
@@ -25,6 +26,7 @@ use App\Observers\ServiceLocationObserver;
 use App\Observers\ServiceObserver;
 use App\Observers\ServiceTaxonomyObserver;
 use App\Observers\TaxonomyObserver;
+use App\Observers\UpdateRequestObserver;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
@@ -48,6 +50,7 @@ class ModelServiceProvider extends ServiceProvider
         Service::observe(ServiceObserver::class);
         ServiceTaxonomy::observe(ServiceTaxonomyObserver::class);
         Taxonomy::observe(TaxonomyObserver::class);
+        UpdateRequest::observe(UpdateRequestObserver::class);
 
         Relation::morphMap([
             'locations' => Location::class,
