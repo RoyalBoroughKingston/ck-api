@@ -5,7 +5,7 @@ return [
     /*
      * The number of results to show in paginated responses.
      */
-    'pagination_results' => 10,
+    'pagination_results' => 25,
 
     /*
      * Available drivers: 'stub', 'nominatim', 'google'
