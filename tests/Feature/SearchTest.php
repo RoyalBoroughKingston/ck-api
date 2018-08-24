@@ -258,4 +258,24 @@ class SearchTest extends TestCase
         $response->assertJsonMissing(['id' => $service->id]);
         $response->assertJsonMissing(['id' => $differentService->id]);
     }
+
+    public function test_only_active_services_returned()
+    {
+        $activeService = factory(Service::class)->create([
+            'name' => 'Testing Service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $inactiveService = factory(Service::class)->create([
+            'name' => 'Testing Service',
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'Testing Service',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $activeService->id]);
+        $response->assertJsonMissing(['id' => $inactiveService->id]);
+    }
 }

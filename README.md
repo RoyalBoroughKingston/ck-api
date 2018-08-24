@@ -74,7 +74,7 @@ Then back on the homestead VM, run the seeder and setup the Elasticsearch index:
 
 ```bash
 # Create the index.
-php artisan elastic:create-index App\\IndexConfigurators\\ServicesIndexConfigurator
+php artisan elastic:create-index App\\Models\\IndexConfigurators\\ServicesIndexConfigurator
 
 # Set the fields mappings for the index.
 php artisan elastic:update-mapping App\\Models\\Service
