@@ -475,7 +475,8 @@ class UpdateRequestsTest extends TestCase
         $updateRequest = $organisation->updateRequests()->create([
             'user_id' => factory(User::class)->create()->id,
             'data' => [
-                'name' => $this->faker->name,
+                'slug' => 'ayup-digital',
+                'name' => 'Ayup Digital',
                 'description' => $this->faker->paragraph,
                 'url' => $this->faker->url,
                 'email' => $this->faker->safeEmail,
@@ -489,6 +490,7 @@ class UpdateRequestsTest extends TestCase
         $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new Organisation())->getTable(), [
             'id' => $organisation->id,
+            'slug' => $updateRequest->data['slug'],
             'name' => $updateRequest->data['name'],
             'description' => $updateRequest->data['description'],
             'url' => $updateRequest->data['url'],
@@ -572,6 +574,7 @@ class UpdateRequestsTest extends TestCase
         $updateRequest = $service->updateRequests()->create([
             'user_id' => factory(User::class)->create()->id,
             'data' => [
+                'slug' => 'test-name',
                 'name' => 'Test Name',
                 'status' => $service->status,
                 'intro' => $service->intro,

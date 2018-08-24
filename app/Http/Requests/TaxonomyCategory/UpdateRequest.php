@@ -33,7 +33,7 @@ class UpdateRequest extends FormRequest
         $parentId = $this->parent_id ?? Taxonomy::category()->id;
 
         // Check if the parent taxonomy remained the same.
-        $hasSameParent = $this->route('taxonomy')->parent_id === $parentId;
+        $hasSameParent = $this->taxonomy->parent_id === $parentId;
 
         // Get the sibling count for the same parent.
         $siblingTaxonomiesCount = Taxonomy::where('parent_id', $parentId)->count();

@@ -42,7 +42,7 @@ class UpdateRequest extends FormRequest
                 'min:1',
                 'max:255',
                 Rule::unique(table(Service::class), 'slug')
-                    ->ignoreModel($this->route('service')),
+                    ->ignoreModel($this->service),
                 new Slug(),
             ],
             'name' => ['required', 'string', 'min:1', 'max:255'],

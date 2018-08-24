@@ -67,7 +67,6 @@ nested:
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -87,7 +86,6 @@ nested:
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -119,7 +117,6 @@ nested:
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -142,7 +139,6 @@ logo:
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -160,7 +156,6 @@ logo:
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -196,7 +191,6 @@ logo:
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -223,7 +217,6 @@ seo-image:
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -241,7 +234,6 @@ seo-image:
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -277,7 +269,6 @@ seo-image:
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:

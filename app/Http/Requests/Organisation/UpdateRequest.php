@@ -16,7 +16,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $organisation = $this->route('organisation');
+        $organisation = $this->organisation;
 
         if ($this->user()->isOrganisationAdmin($organisation)) {
             return true;
@@ -39,7 +39,7 @@ class UpdateRequest extends FormRequest
                 'min:1',
                 'max:255',
                 Rule::unique(table(Organisation::class), 'slug')
-                    ->ignoreModel($this->route('organisation')),
+                    ->ignoreModel($this->organisation),
                 new Slug(),
             ],
             'name' => ['required', 'string', 'min:1', 'max:255'],

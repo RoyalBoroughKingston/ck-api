@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Emails\Email;
-use App\Http\Requests\Service\UpdateRequest as Request;
+use App\Http\Requests\Service\UpdateRequest as UpdateServiceRequest;
 use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
@@ -163,7 +163,10 @@ class Service extends Model implements AppliesUpdateRequests
         } elseif ($isForSeoImage) {
             $rules = ['seo_image_file_id' => ['required', 'exists:files,id']];
         } else {
-            $rules = (new Request())->merge($updateRequest->data)->rules();
+            $rules = (new UpdateServiceRequest())
+                ->merge(['service' => $this])
+                ->merge($updateRequest->data)
+                ->rules();
         }
 
         return ValidatorFacade::make($updateRequest->data, $rules);
