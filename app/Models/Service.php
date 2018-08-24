@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Emails\Email;
 use App\Http\Requests\Service\UpdateRequest as Request;
-use App\IndexConfigurators\ServicesIndexConfigurator;
+use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;

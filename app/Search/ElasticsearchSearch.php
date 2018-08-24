@@ -25,7 +25,24 @@ class ElasticsearchSearch implements Search
      */
     public function __construct()
     {
-        $this->query = ['size' => config('ck.pagination_results')];
+        $this->query = [
+            'size' => config('ck.pagination_results'),
+            'query' => [
+                'bool' => [
+                    'filter' => [
+                        'bool' => [
+                            'must' => [
+                                [
+                                    'term' => [
+                                        'status' => Service::STATUS_ACTIVE,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -34,10 +51,6 @@ class ElasticsearchSearch implements Search
      */
     public function applyQuery(string $term): Search
     {
-        if (!isset($this->query['query'])) {
-            $this->query['query'] = ['bool' => []];
-        }
-
         $this->query['query']['bool']['must'] = [
             'bool' => [
                 'should' => [
@@ -83,11 +96,7 @@ class ElasticsearchSearch implements Search
      */
     public function applyCategory(string $category): Search
     {
-        if (!isset($this->query['query'])) {
-            $this->query['query'] = ['bool' => []];
-        }
-
-        $this->query['query']['bool']['filter'] = [
+        $this->query['query']['bool']['filter']['bool']['must'][] = [
             'term' => [
                 'collection_categories' => $category
             ]
@@ -102,11 +111,7 @@ class ElasticsearchSearch implements Search
      */
     public function applyPersona(string $persona): Search
     {
-        if (!isset($this->query['query'])) {
-            $this->query['query'] = ['bool' => []];
-        }
-
-        $this->query['query']['bool']['filter'] = [
+        $this->query['query']['bool']['filter']['bool']['must'][] = [
             'term' => [
                 'collection_personas' => $persona
             ]
@@ -121,11 +126,7 @@ class ElasticsearchSearch implements Search
      */
     public function applyIsFree(bool $isFree): Search
     {
-        if (!isset($this->query['query'])) {
-            $this->query['query'] = ['bool' => []];
-        }
-
-        $this->query['query']['bool']['filter'] = [
+        $this->query['query']['bool']['filter']['bool']['must'][] = [
             'term' => [
                 'is_free' => $isFree
             ]

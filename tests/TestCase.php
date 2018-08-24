@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\IndexConfigurators\ServicesIndexConfigurator;
+use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
