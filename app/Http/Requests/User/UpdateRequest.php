@@ -12,6 +12,11 @@ use Illuminate\Validation\Rule;
 class UpdateRequest extends FormRequest
 {
     /**
+     * @var array|null
+     */
+    protected $existingRoles = null;
+
+    /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
@@ -34,20 +39,24 @@ class UpdateRequest extends FormRequest
      */
     protected function getExistingRoles(): array
     {
-        /** @var \App\Models\User $user */
-        $user = $this->route('user');
+        if ($this->existingRoles === null) {
+            /** @var \App\Models\User $user */
+            $user = $this->route('user');
 
-        $exitingRoles = $user->userRoles->load('role');
+            $exitingRoles = $user->userRoles->load('role');
 
-        $existingRolesArray = $exitingRoles->map(function (UserRole $userRole) {
-            return array_filter_null([
-                'role' => $userRole->role->name,
-                'organisation_id' => $userRole->organisation_id,
-                'service_id' => $userRole->service_id,
-            ]);
-        })->toArray();
+            $existingRolesArray = $exitingRoles->map(function (UserRole $userRole) {
+                return array_filter_null([
+                    'role' => $userRole->role->name,
+                    'organisation_id' => $userRole->organisation_id,
+                    'service_id' => $userRole->service_id,
+                ]);
+            })->toArray();
 
-        return $existingRolesArray;
+            $this->existingRoles = $existingRolesArray;
+        }
+
+        return $this->existingRoles;
     }
 
     /**
@@ -67,13 +76,24 @@ class UpdateRequest extends FormRequest
     }
 
     /**
+     * @return bool
+     */
+    public function rolesHaveBeenUpdated(): bool
+    {
+        $hasNewRoles = count($this->getNewRoles()) > 0;
+        $hasDeletedRoles = count($this->getDeletedRoles()) > 0;
+
+        return $hasNewRoles || $hasDeletedRoles;
+    }
+
+    /**
      * @param array $newRoles
      * @return bool
      */
     protected function canAddNewRoles(array $newRoles): bool
     {
         /** @var \App\Models\User $user */
-        $user = $this->route('user');
+        $user = $this->user();
 
         foreach ($newRoles as $newRole) {
             $service = isset($newRole['service_id']) ? Service::findOrFail($newRole['service_id']) : null;

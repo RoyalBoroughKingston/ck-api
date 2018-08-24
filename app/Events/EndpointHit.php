@@ -169,4 +169,26 @@ class EndpointHit
     {
         return $this->model;
     }
+
+    /**
+     * @param string $model
+     * @param string|null $action
+     * @return bool
+     */
+    public function isFor(string $model, string $action = null): bool
+    {
+        return $action
+            ? ($this->getModel() instanceof $model) && $this->getAction() === $action
+            : $this->getModel() instanceof $model;
+    }
+
+    /**
+     * @param string $model
+     * @param string|null $action
+     * @return bool
+     */
+    public function isntFor(string $model, string $action = null): bool
+    {
+        return !$this->isFor($model, $action);
+    }
 }

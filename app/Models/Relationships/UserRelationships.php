@@ -46,14 +46,6 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function statusUpdated()
     {
         return $this->hasMany(StatusUpdate::class);

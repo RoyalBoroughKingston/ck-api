@@ -51,9 +51,13 @@ if (!function_exists('array_diff_multi')) {
      */
     function array_diff_multi(array $arrayA, array $arrayB): array
     {
-        return array_udiff($arrayA, $arrayB, function ($arrayA, $arrayB): int {
-            return count(array_diff_assoc($arrayA, $arrayB));
-        });
+        foreach ($arrayA as $keyA => $valueA) {
+            if (in_array($valueA, $arrayB)) {
+                unset($arrayA[$keyA]);
+            }
+        }
+
+        return $arrayA;
     }
 }
 
@@ -73,7 +77,7 @@ if (!function_exists('table')) {
 
         $table = (new $model())->getTable();
 
-        return $column ? "`$table`.`$column`" : $table;
+        return $column ? "$table.$column" : $table;
     }
 }
 

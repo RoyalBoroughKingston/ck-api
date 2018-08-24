@@ -2,15 +2,13 @@
 
 namespace App\Models\Relationships;
 
-use App\Models\User;
-
 trait NotificationRelationships
 {
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function user()
+    public function notifiable()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo('notifiable');
     }
 }
