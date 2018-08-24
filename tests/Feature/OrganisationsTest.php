@@ -195,6 +195,28 @@ class OrganisationsTest extends TestCase
         ]);
     }
 
+    public function test_guest_can_view_one_by_slug()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $response = $this->json('GET', "/core/v1/organisations/{$organisation->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $organisation->id,
+                'slug' => $organisation->slug,
+                'name' => $organisation->name,
+                'description' => $organisation->description,
+                'url' => $organisation->url,
+                'email' => $organisation->email,
+                'phone' => $organisation->phone,
+                'created_at' => $organisation->created_at->format(Carbon::ISO8601),
+                'updated_at' => $organisation->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     public function test_audit_created_when_viewed()
     {
         $this->fakeEvents();
