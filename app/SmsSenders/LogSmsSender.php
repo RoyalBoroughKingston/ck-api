@@ -19,5 +19,7 @@ class LogSmsSender implements SmsSender
             'reference' => $sms->reference,
             'senderId' => $sms->senderId,
         ]);
+
+        $sms->notification->update(['message' => 'Sent by log sender - no message content provided']);
     }
 }

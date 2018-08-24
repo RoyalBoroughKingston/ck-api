@@ -19,5 +19,7 @@ class LogEmailSender implements EmailSender
             'reference' => $email->reference,
             'replyTo' => $email->replyTo,
         ]);
+
+        $email->notification->update(['message' => 'Sent by log sender - no message content provided']);
     }
 }

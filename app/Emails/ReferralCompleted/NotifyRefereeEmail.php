@@ -35,7 +35,6 @@ class NotifyRefereeEmail extends Email
      */
     public function getContent(): string
     {
-        // TODO: Return actual content.
-        return 'Lorem ipsum';
+        return 'Pending to be sent. Content will be filled once sent.';
     }
 }

@@ -24,6 +24,8 @@ class GovNotifyEmailSender implements EmailSender
             $email->replyTo
         );
 
+        $email->notification->update(['message' => $response['content']['body']]);
+
         if (config('app.debug')) {
             logger()->debug('Email sent', $response);
         }

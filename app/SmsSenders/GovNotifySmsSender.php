@@ -24,6 +24,8 @@ class GovNotifySmsSender implements SmsSender
             $sms->senderId
         );
 
+        $sms->notification->update(['message' => $response['content']['body']]);
+
         if (config('app.debug')) {
             logger()->debug('SMS sent', $response);
         }
