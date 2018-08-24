@@ -5,6 +5,7 @@ namespace App\Http\Requests\User;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
+use App\Rules\UkPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -66,7 +67,7 @@ class StoreRequest extends FormRequest
             'first_name' => ['required', 'string', 'min:1', 'max:255'],
             'last_name' => ['required', 'string', 'min:1', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['required', 'string', 'min:1', 'max:255'],
+            'phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
             'password' => ['required', 'string', 'min:8', 'max:255'],
 
             'roles' => ['required', 'array'],

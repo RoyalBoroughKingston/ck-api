@@ -9,6 +9,6 @@ $factory->define(Organisation::class, function (Faker $faker) {
         'description' => 'This organisation provides x service.',
         'url' => $faker->url,
         'email' => $faker->safeEmail,
-        'phone' => $faker->phoneNumber,
+        'phone' => random_uk_phone(),
     ];
 });

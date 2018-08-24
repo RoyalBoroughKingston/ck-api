@@ -8,6 +8,7 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
+use App\Rules\UkPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -59,7 +60,7 @@ class StoreRequest extends FormRequest
             'video_embed' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
             'url' => ['required', 'url', 'max:255'],
             'contact_name' => ['required', 'string', 'min:1', 'max:255'],
-            'contact_phone' => ['required', 'string', 'min:1', 'max:255'],
+            'contact_phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
             'contact_email' => ['required', 'email', 'max:255'],
             'show_referral_disclaimer' => ['required', 'boolean'],
             'referral_method' => ['required', Rule::in([
