@@ -14,7 +14,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize()
     {
-        $organisation = $this->route('organisation');
+        $organisation = $this->organisation;
 
         if ($this->user()->isOrganisationAdmin($organisation)) {
             return true;

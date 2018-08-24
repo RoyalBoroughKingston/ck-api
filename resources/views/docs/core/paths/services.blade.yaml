@@ -63,11 +63,10 @@ nested:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -83,11 +82,10 @@ nested:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -115,11 +113,10 @@ nested:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -138,11 +135,10 @@ logo:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -156,11 +152,10 @@ logo:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -192,11 +187,10 @@ logo:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -219,11 +213,10 @@ seo-image:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -237,11 +230,10 @@ seo-image:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -273,11 +265,10 @@ seo-image:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:

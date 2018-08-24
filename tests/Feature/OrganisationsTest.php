@@ -32,6 +32,7 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment([
             [
                 'id' => $organisation->id,
+                'slug' => $organisation->slug,
                 'name' => $organisation->name,
                 'description' => $organisation->description,
                 'url' => $organisation->url,
@@ -124,6 +125,7 @@ class OrganisationsTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
         $payload = [
+            'slug' => 'test-org',
             'name' => 'Test Org',
             'description' => 'Test description',
             'url' => 'http://test-org.example.com',
@@ -152,6 +154,7 @@ class OrganisationsTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/organisations', [
+            'slug' => 'test-org',
             'name' => 'Test Org',
             'description' => 'Test description',
             'url' => 'http://test-org.example.com',
@@ -180,6 +183,29 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment([
             [
                 'id' => $organisation->id,
+                'slug' => $organisation->slug,
+                'name' => $organisation->name,
+                'description' => $organisation->description,
+                'url' => $organisation->url,
+                'email' => $organisation->email,
+                'phone' => $organisation->phone,
+                'created_at' => $organisation->created_at->format(Carbon::ISO8601),
+                'updated_at' => $organisation->updated_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
+    public function test_guest_can_view_one_by_slug()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $response = $this->json('GET', "/core/v1/organisations/{$organisation->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $organisation->id,
+                'slug' => $organisation->slug,
                 'name' => $organisation->name,
                 'description' => $organisation->description,
                 'url' => $organisation->url,
@@ -249,6 +275,7 @@ class OrganisationsTest extends TestCase
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
         $payload = [
+            'slug' => 'test-org',
             'name' => 'Test Org',
             'description' => 'Test description',
             'url' => 'http://test-org.example.com',
@@ -284,6 +311,7 @@ class OrganisationsTest extends TestCase
         Passport::actingAs($user);
 
         $this->json('PUT', "/core/v1/organisations/{$organisation->id}", [
+            'slug' => 'test-org',
             'name' => 'Test Org',
             'description' => 'Test description',
             'url' => 'http://test-org.example.com',

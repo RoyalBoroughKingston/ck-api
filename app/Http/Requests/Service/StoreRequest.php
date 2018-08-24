@@ -8,6 +8,7 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
+use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -39,6 +40,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'organisation_id' => ['required', 'exists:organisations,id'],
+            'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:'.table(Service::class).',slug', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'status' => ['required', Rule::in([
                 Service::STATUS_ACTIVE,

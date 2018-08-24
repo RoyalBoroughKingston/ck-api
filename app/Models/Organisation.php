@@ -32,7 +32,9 @@ class Organisation extends Model implements AppliesUpdateRequests
         if ($isForLogo) {
             $rules = ['logo_file_id' => ['required', 'exists:files,id']];
         } else {
-            $rules = (new UpdateOrganisationRequest())->rules();
+            $rules = (new UpdateOrganisationRequest())
+                ->merge(['organisation' => $this])
+                ->rules();
         }
 
         return ValidatorFacade::make($updateRequest->data, $rules);
@@ -53,6 +55,7 @@ class Organisation extends Model implements AppliesUpdateRequests
             $this->update(['logo_file_id' => $updateRequest->data['logo_file_id']]);
         } else {
             $this->update([
+                'slug' => $updateRequest->data['slug'],
                 'name' => $updateRequest->data['name'],
                 'description' => $updateRequest->data['description'],
                 'url' => $updateRequest->data['url'],

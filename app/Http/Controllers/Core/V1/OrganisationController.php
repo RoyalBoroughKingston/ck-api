@@ -60,6 +60,7 @@ class OrganisationController extends Controller
     {
         return DB::transaction(function () use ($request) {
             $organisation = Organisation::create([
+                'slug' => $request->slug,
                 'name' => $request->name,
                 'description' => $request->description,
                 'url' => $request->url,
@@ -98,6 +99,7 @@ class OrganisationController extends Controller
     {
         return DB::transaction(function () use ($request, $organisation) {
             $data = [
+                'slug' => $request->slug,
                 'name' => $request->name,
                 'description' => $request->description,
                 'url' => $request->url,

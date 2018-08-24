@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $canUpdate = $this->user()->canUpdate($this->route('user'));
+        $canUpdate = $this->user()->canUpdate($this->user);
         $canAddNewRoles = $this->canAddNewRoles($this->getNewRoles());
         $canRevokeDeletedRoles = $this->canRevokeDeletedRoles($this->getDeletedRoles());
 
@@ -42,7 +42,7 @@ class UpdateRequest extends FormRequest
     {
         if ($this->existingRoles === null) {
             /** @var \App\Models\User $user */
-            $user = $this->route('user');
+            $user = $this->user;
 
             $exitingRoles = $user->userRoles->load('role');
 
@@ -142,7 +142,7 @@ class UpdateRequest extends FormRequest
         $user = $this->user()->load('userRoles');
 
         /** @var \App\Models\User $subject */
-        $subject = $this->route('user')->load('userRoles');
+        $subject = $this->user->load('userRoles');
 
         foreach ($deletedRoles as $deletedRole) {
             $service = isset($deletedRole['service_id']) ? Service::findOrFail($deletedRole['service_id']) : null;
@@ -190,7 +190,7 @@ class UpdateRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'min:1', 'max:255'],
             'last_name' => ['required', 'string', 'min:1', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignoreModel($this->route('user'))],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignoreModel($this->user)],
             'phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
             'password' => ['string', 'min:8', 'max:255'],
 

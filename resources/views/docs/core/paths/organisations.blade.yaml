@@ -57,11 +57,10 @@ nested:
     parameters:
     - name: organisation
       in: path
-      description: The ID of the organisation
+      description: The ID or slug of the organisation
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -77,11 +76,10 @@ nested:
     parameters:
     - name: organisation
       in: path
-      description: The ID of the organisation
+      description: The ID or slug of the organisation
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -109,11 +107,10 @@ nested:
     parameters:
     - name: organisation
       in: path
-      description: The ID of the organisation
+      description: The ID or slug of the organisation
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -132,11 +129,10 @@ logo:
     parameters:
     - name: organisation
       in: path
-      description: The ID of the organisation
+      description: The ID or slug of the organisation
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:
@@ -150,11 +146,10 @@ logo:
     parameters:
     - name: organisation
       in: path
-      description: The ID of the organisation
+      description: The ID or slug of the organisation
       required: true
       schema:
         type: string
-        format: uuid
     requestBody:
       required: true
       content:
@@ -186,11 +181,10 @@ logo:
     parameters:
     - name: organisation
       in: path
-      description: The ID of the organisation
+      description: The ID or slug of the organisation
       required: true
       schema:
         type: string
-        format: uuid
     responses:
       200:
         content:

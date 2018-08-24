@@ -18,25 +18,29 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::apiResource('/audits', 'AuditController')->only('index', 'show');
 
     // Collection Categories.
-    Route::apiResource('/collections/categories', 'CollectionCategoryController')->names([
-        'index' => 'collection-categories.index',
-        'store' => 'collection-categories.store',
-        'show' => 'collection-categories.show',
-        'update' => 'collection-categories.update',
-        'destroy' => 'collection-categories.destroy',
-    ]);
+    Route::apiResource('/collections/categories', 'CollectionCategoryController')
+        ->parameter('categories', 'collection')
+        ->names([
+            'index' => 'collection-categories.index',
+            'store' => 'collection-categories.store',
+            'show' => 'collection-categories.show',
+            'update' => 'collection-categories.update',
+            'destroy' => 'collection-categories.destroy',
+        ]);
 
     // Collection Personas.
-    Route::apiResource('/collections/personas', 'CollectionPersonaController')->names([
-        'index' => 'collection-personas.index',
-        'store' => 'collection-personas.store',
-        'show' => 'collection-personas.show',
-        'update' => 'collection-personas.update',
-        'destroy' => 'collection-personas.destroy',
-    ]);
-    Route::post('/collections/personas/{persona}/image', 'CollectionPersona\\ImageController@store')->name('collection-personas.image.store');
-    Route::get('/collections/personas/{persona}/image', 'CollectionPersona\\ImageController@show')->name('collection-personas.image.show');
-    Route::delete('/collections/personas/{persona}/image', 'CollectionPersona\\ImageController@destroy')->name('collection-personas.image.destroy');
+    Route::apiResource('/collections/personas', 'CollectionPersonaController')
+        ->parameter('personas', 'collection')
+        ->names([
+            'index' => 'collection-personas.index',
+            'store' => 'collection-personas.store',
+            'show' => 'collection-personas.show',
+            'update' => 'collection-personas.update',
+            'destroy' => 'collection-personas.destroy',
+        ]);
+    Route::post('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@store')->name('collection-personas.image.store');
+    Route::get('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@show')->name('collection-personas.image.show');
+    Route::delete('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@destroy')->name('collection-personas.image.destroy');
 
     // Locations.
     Route::apiResource('/locations', 'LocationController');
@@ -82,22 +86,26 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::apiResource('/status-updates', 'StatusUpdateController');
 
     // Taxonomy Categories.
-    Route::apiResource('/taxonomies/categories', 'TaxonomyCategoryController')->names([
-        'index' => 'taxonomy-categories.index',
-        'store' => 'taxonomy-categories.store',
-        'show' => 'taxonomy-categories.show',
-        'update' => 'taxonomy-categories.update',
-        'destroy' => 'taxonomy-categories.destroy',
-    ]);
+    Route::apiResource('/taxonomies/categories', 'TaxonomyCategoryController')
+        ->parameter('categories', 'taxonomy')
+        ->names([
+            'index' => 'taxonomy-categories.index',
+            'store' => 'taxonomy-categories.store',
+            'show' => 'taxonomy-categories.show',
+            'update' => 'taxonomy-categories.update',
+            'destroy' => 'taxonomy-categories.destroy',
+        ]);
 
     // Taxonomy Organisations.
-    Route::apiResource('/taxonomies/organisations', 'TaxonomyOrganisationController')->names([
-        'index' => 'taxonomy-organisations.index',
-        'store' => 'taxonomy-organisations.store',
-        'show' => 'taxonomy-organisations.show',
-        'update' => 'taxonomy-organisations.update',
-        'destroy' => 'taxonomy-organisations.destroy',
-    ]);
+    Route::apiResource('/taxonomies/organisations', 'TaxonomyOrganisationController')
+        ->parameter('organisations', 'taxonomy')
+        ->names([
+            'index' => 'taxonomy-organisations.index',
+            'store' => 'taxonomy-organisations.store',
+            'show' => 'taxonomy-organisations.show',
+            'update' => 'taxonomy-organisations.update',
+            'destroy' => 'taxonomy-organisations.destroy',
+        ]);
 
     // Update Requests.
     Route::apiResource('/update-requests', 'UpdateRequestController')->only('index', 'show', 'destroy');

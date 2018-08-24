@@ -69,34 +69,34 @@ class TaxonomyOrganisationController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\TaxonomyOrganisation\ShowRequest $request
-     * @param  \App\Models\Taxonomy $organisation
+     * @param  \App\Models\Taxonomy $taxonomy
      * @return \App\Http\Resources\TaxonomyOrganisationResource
      */
-    public function show(ShowRequest $request, Taxonomy $organisation)
+    public function show(ShowRequest $request, Taxonomy $taxonomy)
     {
-        event(EndpointHit::onRead($request, "Viewed taxonomy organisation [{$organisation->id}]", $organisation));
+        event(EndpointHit::onRead($request, "Viewed taxonomy organisation [{$taxonomy->id}]", $taxonomy));
 
-        return new TaxonomyOrganisationResource($organisation);
+        return new TaxonomyOrganisationResource($taxonomy);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\TaxonomyOrganisation\UpdateRequest $request
-     * @param  \App\Models\Taxonomy $organisation
+     * @param  \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Taxonomy $organisation)
+    public function update(UpdateRequest $request, Taxonomy $taxonomy)
     {
-        return DB::transaction(function () use ($request, $organisation) {
-            $organisation->update([
+        return DB::transaction(function () use ($request, $taxonomy) {
+            $taxonomy->update([
                 'name' => $request->name,
                 'order' => $request->order,
             ]);
 
-            event(EndpointHit::onUpdate($request, "Updated taxonomy organisation [{$organisation->id}]", $organisation));
+            event(EndpointHit::onUpdate($request, "Updated taxonomy organisation [{$taxonomy->id}]", $taxonomy));
 
-            return new TaxonomyOrganisationResource($organisation);
+            return new TaxonomyOrganisationResource($taxonomy);
         });
     }
 
@@ -104,15 +104,15 @@ class TaxonomyOrganisationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\TaxonomyOrganisation\DestroyRequest $request
-     * @param  \App\Models\Taxonomy $organisation
+     * @param  \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DestroyRequest $request, Taxonomy $organisation)
+    public function destroy(DestroyRequest $request, Taxonomy $taxonomy)
     {
-        return DB::transaction(function () use ($request, $organisation) {
-            event(EndpointHit::onDelete($request, "Deleted taxonomy organisation [{$organisation->id}]", $organisation));
+        return DB::transaction(function () use ($request, $taxonomy) {
+            event(EndpointHit::onDelete($request, "Deleted taxonomy organisation [{$taxonomy->id}]", $taxonomy));
 
-            $organisation->delete();
+            $taxonomy->delete();
 
             return new ResourceDeleted('taxonomy organisation');
         });

@@ -71,35 +71,35 @@ class TaxonomyCategoryController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\TaxonomyCategory\ShowRequest $request
-     * @param  \App\Models\Taxonomy $category
+     * @param  \App\Models\Taxonomy $taxonomy
      * @return \App\Http\Resources\TaxonomyCategoryResource
      */
-    public function show(ShowRequest $request, Taxonomy $category)
+    public function show(ShowRequest $request, Taxonomy $taxonomy)
     {
-        event(EndpointHit::onRead($request, "Viewed taxonomy category [{$category->id}]", $category));
+        event(EndpointHit::onRead($request, "Viewed taxonomy category [{$taxonomy->id}]", $taxonomy));
 
-        return new TaxonomyCategoryResource($category->load('children.children.children.children.children'));
+        return new TaxonomyCategoryResource($taxonomy->load('children.children.children.children.children'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\TaxonomyCategory\UpdateRequest $request
-     * @param  \App\Models\Taxonomy $category
+     * @param  \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Taxonomy $category)
+    public function update(UpdateRequest $request, Taxonomy $taxonomy)
     {
-        return DB::transaction(function () use ($request, $category) {
-            $category->update([
+        return DB::transaction(function () use ($request, $taxonomy) {
+            $taxonomy->update([
                 'parent_id' => $request->parent_id ?? Taxonomy::category()->id,
                 'name' => $request->name,
                 'order' => $request->order,
             ]);
 
-            event(EndpointHit::onUpdate($request, "Updated taxonomy category [{$category->id}]", $category));
+            event(EndpointHit::onUpdate($request, "Updated taxonomy category [{$taxonomy->id}]", $taxonomy));
 
-            return new TaxonomyCategoryResource($category);
+            return new TaxonomyCategoryResource($taxonomy);
         });
     }
 
@@ -107,15 +107,15 @@ class TaxonomyCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\TaxonomyCategory\DestroyRequest $request
-     * @param  \App\Models\Taxonomy $category
+     * @param  \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DestroyRequest $request, Taxonomy $category)
+    public function destroy(DestroyRequest $request, Taxonomy $taxonomy)
     {
-        return DB::transaction(function () use ($request, $category) {
-            event(EndpointHit::onDelete($request, "Deleted taxonomy category [{$category->id}]", $category));
+        return DB::transaction(function () use ($request, $taxonomy) {
+            event(EndpointHit::onDelete($request, "Deleted taxonomy category [{$taxonomy->id}]", $taxonomy));
 
-            $category->delete();
+            $taxonomy->delete();
 
             return new ResourceDeleted('taxonomy category');
         });

@@ -88,28 +88,28 @@ class CollectionCategoryController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionCategory\ShowRequest $request
-     * @param  \App\Models\Collection $category
+     * @param  \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionCategoryResource
      */
-    public function show(ShowRequest $request, Collection $category)
+    public function show(ShowRequest $request, Collection $collection)
     {
-        event(EndpointHit::onRead($request, "Viewed collection category [{$category->id}]", $category));
+        event(EndpointHit::onRead($request, "Viewed collection category [{$collection->id}]", $collection));
 
-        return new CollectionCategoryResource($category);
+        return new CollectionCategoryResource($collection);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\CollectionCategory\UpdateRequest $request
-     * @param  \App\Models\Collection $category
+     * @param  \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Collection $category)
+    public function update(UpdateRequest $request, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $category) {
+        return DB::transaction(function () use ($request, $collection) {
             // Update the collection record.
-            $category->update([
+            $collection->update([
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
@@ -120,11 +120,11 @@ class CollectionCategoryController extends Controller
 
             // Update or create all of the pivot records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
-            $category->syncCollectionTaxonomies($taxonomies);
+            $collection->syncCollectionTaxonomies($taxonomies);
 
-            event(EndpointHit::onUpdate($request, "Updated collection category [{$category->id}]", $category));
+            event(EndpointHit::onUpdate($request, "Updated collection category [{$collection->id}]", $collection));
 
-            return new CollectionCategoryResource($category);
+            return new CollectionCategoryResource($collection);
         });
     }
 
@@ -132,15 +132,15 @@ class CollectionCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\CollectionCategory\DestroyRequest $request
-     * @param  \App\Models\Collection $category
+     * @param  \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DestroyRequest $request, Collection $category)
+    public function destroy(DestroyRequest $request, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $category) {
-            event(EndpointHit::onDelete($request, "Deleted collection category [{$category->id}]", $category));
+        return DB::transaction(function () use ($request, $collection) {
+            event(EndpointHit::onDelete($request, "Deleted collection category [{$collection->id}]", $collection));
 
-            $category->delete();
+            $collection->delete();
 
             return new ResourceDeleted('collection category');
         });

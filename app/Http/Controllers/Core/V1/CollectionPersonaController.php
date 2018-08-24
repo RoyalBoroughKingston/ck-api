@@ -88,28 +88,28 @@ class CollectionPersonaController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionPersona\ShowRequest $request
-     * @param  \App\Models\Collection $persona
+     * @param  \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionPersonaResource
      */
-    public function show(ShowRequest $request, Collection $persona)
+    public function show(ShowRequest $request, Collection $collection)
     {
-        event(EndpointHit::onRead($request, "Viewed collection persona [{$persona->id}]", $persona));
+        event(EndpointHit::onRead($request, "Viewed collection persona [{$collection->id}]", $collection));
 
-        return new CollectionPersonaResource($persona);
+        return new CollectionPersonaResource($collection);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\CollectionPersona\UpdateRequest $request
-     * @param  \App\Models\Collection $persona
+     * @param  \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Collection $persona)
+    public function update(UpdateRequest $request, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $persona) {
+        return DB::transaction(function () use ($request, $collection) {
             // Update the collection record.
-            $persona->update([
+            $collection->update([
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
@@ -120,11 +120,11 @@ class CollectionPersonaController extends Controller
 
             // Update or create all of the pivot records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
-            $persona->syncCollectionTaxonomies($taxonomies);
+            $collection->syncCollectionTaxonomies($taxonomies);
 
-            event(EndpointHit::onUpdate($request, "Updated collection persona [{$persona->id}]", $persona));
+            event(EndpointHit::onUpdate($request, "Updated collection persona [{$collection->id}]", $collection));
 
-            return new CollectionPersonaResource($persona);
+            return new CollectionPersonaResource($collection);
         });
     }
 
@@ -132,15 +132,15 @@ class CollectionPersonaController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\CollectionPersona\DestroyRequest $request
-     * @param  \App\Models\Collection $persona
+     * @param  \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DestroyRequest $request, Collection $persona)
+    public function destroy(DestroyRequest $request, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $persona) {
-            event(EndpointHit::onDelete($request, "Deleted collection persona [{$persona->id}]", $persona));
+        return DB::transaction(function () use ($request, $collection) {
+            event(EndpointHit::onDelete($request, "Deleted collection persona [{$collection->id}]", $collection));
 
-            $persona->delete();
+            $collection->delete();
 
             return new ResourceDeleted('collection persona');
         });

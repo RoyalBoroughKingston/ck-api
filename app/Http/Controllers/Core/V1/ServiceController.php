@@ -64,6 +64,7 @@ class ServiceController extends Controller
             // Create the service record.
             $service = Service::create([
                 'organisation_id' => $request->organisation_id,
+                'slug' => $request->slug,
                 'name' => $request->name,
                 'status' => $request->status,
                 'intro' => $request->intro,
@@ -154,6 +155,7 @@ class ServiceController extends Controller
         return DB::transaction(function () use ($request, $service) {
             // Initialise the data array.
             $data = [
+                'slug' => $request->slug,
                 'name' => $request->name,
                 'status' => $request->status,
                 'intro' => $request->intro,
