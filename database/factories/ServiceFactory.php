@@ -4,11 +4,14 @@ use App\Models\Service;
 use Faker\Generator as Faker;
 
 $factory->define(Service::class, function (Faker $faker) {
+    $name = $faker->unique()->company;
+
     return [
         'organisation_id' => function () {
             return factory(\App\Models\Organisation::class)->create()->id;
         },
-        'name' => $faker->company,
+        'slug' => str_slug($name),
+        'name' => $name,
         'status' => Service::STATUS_ACTIVE,
         'intro' => $faker->sentence,
         'description' => $faker->paragraph,

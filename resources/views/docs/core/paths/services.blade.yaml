@@ -63,7 +63,7 @@ nested:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -83,7 +83,7 @@ nested:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -115,7 +115,7 @@ nested:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -138,7 +138,7 @@ logo:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -156,7 +156,7 @@ logo:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -192,7 +192,7 @@ logo:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -219,7 +219,7 @@ seo-image:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -237,7 +237,7 @@ seo-image:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string
@@ -273,7 +273,7 @@ seo-image:
     parameters:
     - name: service
       in: path
-      description: The ID of the service
+      description: The ID or slug of the service
       required: true
       schema:
         type: string

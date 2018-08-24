@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Organisation;
+use App\Models\Service;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -23,9 +26,21 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
+
+        // Resolve by ID first, then resort to slug.
+        Route::bind('organisation', function ($value) {
+            return Organisation::query()->find($value)
+                ?? Organisation::query()->where('slug', $value)->first()
+                ?? abort(Response::HTTP_NOT_FOUND);
+        });
+
+        // Resolve by ID first, then resort to slug.
+        Route::bind('service', function ($value) {
+            return Service::query()->find($value)
+                ?? Service::query()->where('slug', $value)->first()
+                ?? abort(Response::HTTP_NOT_FOUND);
+        });
     }
 
     /**

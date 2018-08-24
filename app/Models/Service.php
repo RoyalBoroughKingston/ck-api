@@ -200,6 +200,7 @@ class Service extends Model implements AppliesUpdateRequests
     {
         // Update the service record.
         $this->update([
+            'slug' => $updateRequest->data['slug'],
             'name' => $updateRequest->data['name'],
             'status' => $updateRequest->data['status'],
             'intro' => $updateRequest->data['intro'],

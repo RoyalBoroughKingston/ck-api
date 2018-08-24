@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Organisation;
 
+use App\Models\Organisation;
+use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -28,6 +30,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:'.table(Organisation::class).',slug', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'description' => ['required', 'string', 'min:1', 'max:10000'],
             'url' => ['required', 'url', 'max:255'],

@@ -53,6 +53,7 @@ class Organisation extends Model implements AppliesUpdateRequests
             $this->update(['logo_file_id' => $updateRequest->data['logo_file_id']]);
         } else {
             $this->update([
+                'slug' => $updateRequest->data['slug'],
                 'name' => $updateRequest->data['name'],
                 'description' => $updateRequest->data['description'],
                 'url' => $updateRequest->data['url'],

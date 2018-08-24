@@ -29,34 +29,34 @@ class ImageController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\CollectionPersona\Image\StoreRequest $request
-     * @param  \App\Models\Collection $persona
+     * @param  \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request, Collection $persona)
+    public function store(StoreRequest $request, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $persona) {
+        return DB::transaction(function () use ($request, $collection) {
             // If the persona already has an image then delete it.
-            if ($persona->meta['image_file_id']) {
-                File::findOrFail($persona->meta['image_file_id'])->delete();
+            if ($collection->meta['image_file_id']) {
+                File::findOrFail($collection->meta['image_file_id'])->delete();
             }
 
             // Create the file record.
             $file = File::create([
-                'filename' => $persona->id.'.png',
+                'filename' => $collection->id.'.png',
                 'mime_type' => 'image/png',
                 'is_private' => false,
             ]);
 
             // Update the persona record to point to the file.
-            $meta = $persona->meta;
+            $meta = $collection->meta;
             $meta['image_file_id'] = $file->id;
-            $persona->meta = $meta;
-            $persona->save();
+            $collection->meta = $meta;
+            $collection->save();
 
             // Upload the file.
             $file->uploadBase64EncodedPng($request->input('file'));
 
-            event(EndpointHit::onCreate($request, "Created image for collection persona [{$persona->id}]", $persona));
+            event(EndpointHit::onCreate($request, "Created image for collection persona [{$collection->id}]", $collection));
 
             return new FileUploaded("persona collection's image");
         });
@@ -66,15 +66,15 @@ class ImageController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionPersona\Image\ShowRequest $request
-     * @param  \App\Models\Collection $persona
+     * @param  \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function show(ShowRequest $request, Collection $persona)
+    public function show(ShowRequest $request, Collection $collection)
     {
-        event(EndpointHit::onRead($request, "Viewed image for collection persona [{$persona->id}]", $persona));
+        event(EndpointHit::onRead($request, "Viewed image for collection persona [{$collection->id}]", $collection));
 
-        $image = File::find($persona->meta['image_file_id']);
+        $image = File::find($collection->meta['image_file_id']);
 
         return $image ?? response()->make(
             Storage::disk('local')->get('/placeholders/image.png'),
@@ -87,26 +87,26 @@ class ImageController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\CollectionPersona\Image\DestroyRequest $request
-     * @param  \App\Models\Collection $persona
+     * @param  \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DestroyRequest $request, Collection $persona)
+    public function destroy(DestroyRequest $request, Collection $collection)
     {
-        if ($persona->meta['image_file_id'] === null) {
+        if ($collection->meta['image_file_id'] === null) {
             abort(Response::HTTP_NOT_FOUND);
         }
 
-        return DB::transaction(function () use ($request, $persona) {
+        return DB::transaction(function () use ($request, $collection) {
             // Delete the file record.
-            File::findOrFail($persona->meta['image_file_id'])->delete();
+            File::findOrFail($collection->meta['image_file_id'])->delete();
 
             // Update the persona record to point to the file.
-            $meta = $persona->meta;
+            $meta = $collection->meta;
             $meta['image_file_id'] = null;
-            $persona->meta = $meta;
-            $persona->save();
+            $collection->meta = $meta;
+            $collection->save();
 
-            event(EndpointHit::onDelete($request, "Deleted image for collection persona [{$persona->id}]", $persona));
+            event(EndpointHit::onDelete($request, "Deleted image for collection persona [{$collection->id}]", $collection));
 
             return new ResourceDeleted("persona collection's image");
         });

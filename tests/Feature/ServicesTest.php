@@ -47,6 +47,7 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment([
             'id' => $service->id,
             'organisation_id' => $service->organisation_id,
+            'slug' => $service->slug,
             'name' => $service->name,
             'status' => $service->status,
             'intro' => $service->intro,
@@ -127,6 +128,7 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment([
             'id' => $service->id,
             'organisation_id' => $service->organisation_id,
+            'slug' => $service->slug,
             'name' => $service->name,
             'status' => $service->status,
             'intro' => $service->intro,
@@ -242,6 +244,7 @@ class ServicesTest extends TestCase
 
         $payload = [
             'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
@@ -315,6 +318,7 @@ class ServicesTest extends TestCase
 
         $payload = [
             'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
@@ -386,6 +390,7 @@ class ServicesTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/services', [
             'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
@@ -466,6 +471,7 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment([
             'id' => $service->id,
             'organisation_id' => $service->organisation_id,
+            'slug' => $service->slug,
             'name' => $service->name,
             'status' => $service->status,
             'intro' => $service->intro,
@@ -582,6 +588,7 @@ class ServicesTest extends TestCase
         Passport::actingAs($user);
 
         $payload = [
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
@@ -644,6 +651,7 @@ class ServicesTest extends TestCase
         Passport::actingAs($user);
 
         $this->json('PUT', "/core/v1/services/{$service->id}", [
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
