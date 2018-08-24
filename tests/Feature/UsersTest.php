@@ -1775,7 +1775,7 @@ class UsersTest extends TestCase
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'email' => $this->faker->safeEmail,
-            'phone' => $this->faker->phoneNumber,
+            'phone' => random_uk_phone(),
             'password' => 'password',
             'roles' => $roles,
         ];
@@ -1791,7 +1791,7 @@ class UsersTest extends TestCase
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'email' => $this->faker->safeEmail,
-            'phone' => $this->faker->phoneNumber,
+            'phone' => random_uk_phone(),
             'roles' => $roles,
         ];
     }

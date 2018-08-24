@@ -479,7 +479,7 @@ class UpdateRequestsTest extends TestCase
                 'description' => $this->faker->paragraph,
                 'url' => $this->faker->url,
                 'email' => $this->faker->safeEmail,
-                'phone' => $this->faker->phoneNumber,
+                'phone' => random_uk_phone(),
             ],
         ]);
 

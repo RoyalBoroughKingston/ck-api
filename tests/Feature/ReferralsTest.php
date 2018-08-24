@@ -61,7 +61,7 @@ class ReferralsTest extends TestCase
             'referral_consented_at' => $this->now,
             'referee_name' => $this->faker->name,
             'referee_email' => $this->faker->safeEmail,
-            'referee_phone' => $this->faker->phoneNumber,
+            'referee_phone' => random_uk_phone(),
             'organisation' => $this->faker->company,
         ]);
 
@@ -153,7 +153,7 @@ class ReferralsTest extends TestCase
             'feedback_consented' => false,
             'referee_name' => $this->faker->name,
             'referee_email' => $this->faker->safeEmail,
-            'referee_phone' => $this->faker->phoneNumber,
+            'referee_phone' => random_uk_phone(),
             'organisation' => $this->faker->company,
         ];
 
@@ -193,7 +193,7 @@ class ReferralsTest extends TestCase
             'feedback_consented' => false,
             'referee_name' => $this->faker->name,
             'referee_email' => $this->faker->safeEmail,
-            'referee_phone' => $this->faker->phoneNumber,
+            'referee_phone' => random_uk_phone(),
             'organisation' => $this->faker->company,
         ]);
 

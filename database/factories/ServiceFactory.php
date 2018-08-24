@@ -15,7 +15,7 @@ $factory->define(Service::class, function (Faker $faker) {
         'is_free' => true,
         'url' => $faker->url,
         'contact_name' => $faker->name,
-        'contact_phone' => $faker->phoneNumber,
+        'contact_phone' => random_uk_phone(),
         'contact_email' => $faker->safeEmail,
         'show_referral_disclaimer' => false,
         'referral_method' => Service::REFERRAL_METHOD_NONE,
