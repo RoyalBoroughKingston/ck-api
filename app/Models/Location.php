@@ -29,6 +29,8 @@ class Location extends Model implements AppliesUpdateRequests
     protected $casts = [
         'lat' => 'float',
         'lon' => 'float',
+        'has_wheelchair_access' => 'boolean',
+        'has_induction_loop' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -80,6 +82,8 @@ class Location extends Model implements AppliesUpdateRequests
             'postcode' => $updateRequest->data['postcode'],
             'country' => $updateRequest->data['country'],
             'accessibility_info' => $updateRequest->data['accessibility_info'],
+            'has_wheelchair_access' => $updateRequest->data['has_wheelchair_access'],
+            'has_induction_loop' => $updateRequest->data['has_induction_loop'],
         ]);
 
         $this->updateCoordinate()->save();

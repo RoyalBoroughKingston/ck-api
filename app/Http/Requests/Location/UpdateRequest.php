@@ -37,6 +37,8 @@ class UpdateRequest extends FormRequest
             'postcode' => ['required', 'string', 'min:1', 'max:255', new Postcode()],
             'country' => ['required', 'string', 'min:1', 'max:255'],
             'accessibility_info' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
+            'has_wheelchair_access' => ['required', 'boolean'],
+            'has_induction_loop' => ['required', 'boolean'],
         ];
     }
 }

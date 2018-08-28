@@ -9,6 +9,8 @@ store:
   - postcode
   - country
   - accessibility_info
+  - has_wheelchair_access
+  - has_induction_loop
   properties:
     address_line_1:
       type: string
@@ -37,6 +39,10 @@ store:
       type: string
       nullable: true
       example: null
+    has_wheelchair_access:
+      type: boolean
+    has_induction_loop:
+      type: boolean
 
 update:
   allOf:

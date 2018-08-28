@@ -40,6 +40,8 @@ class LocationsTest extends TestCase
             'lat',
             'lon',
             'accessibility_info',
+            'has_wheelchair_access',
+            'has_induction_loop',
             'created_at',
             'updated_at',
         ]);
@@ -55,6 +57,8 @@ class LocationsTest extends TestCase
             'lat' => $location->lat,
             'lon' => $location->lon,
             'accessibility_info' => $location->accessibility_info,
+            'has_wheelchair_access' => $location->has_wheelchair_access,
+            'has_induction_loop' => $location->has_induction_loop,
             'created_at' => $location->created_at->format(Carbon::ISO8601),
             'updated_at' => $location->updated_at->format(Carbon::ISO8601),
         ]);
@@ -120,6 +124,8 @@ class LocationsTest extends TestCase
             'postcode' => 'LS1 4HT',
             'country' => 'England',
             'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -132,6 +138,8 @@ class LocationsTest extends TestCase
             'postcode' => 'LS1 4HT',
             'country' => 'England',
             'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
         ]);
     }
 
@@ -158,6 +166,8 @@ class LocationsTest extends TestCase
             'postcode' => 'LS1 4HT',
             'country' => 'England',
             'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
@@ -190,6 +200,8 @@ class LocationsTest extends TestCase
             'lat' => $location->lat,
             'lon' => $location->lon,
             'accessibility_info' => $location->accessibility_info,
+            'has_wheelchair_access' => $location->has_wheelchair_access,
+            'has_induction_loop' => $location->has_induction_loop,
             'created_at' => $location->created_at->format(Carbon::ISO8601),
             'updated_at' => $location->updated_at->format(Carbon::ISO8601),
         ]);
@@ -262,6 +274,8 @@ class LocationsTest extends TestCase
             'postcode' => 'LS1 4HT',
             'country' => 'England',
             'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
         ];
         $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
 
@@ -303,6 +317,8 @@ class LocationsTest extends TestCase
             'postcode' => 'LS1 4HT',
             'country' => 'England',
             'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $location) {
