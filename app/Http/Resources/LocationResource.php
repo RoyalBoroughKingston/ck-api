@@ -27,6 +27,8 @@ class LocationResource extends JsonResource
             'lat' => $this->lat,
             'lon' => $this->lon,
             'accessibility_info' => $this->accessibility_info,
+            'has_wheelchair_access' => $this->has_wheelchair_access,
+            'has_induction_loop' => $this->has_induction_loop,
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
         ];

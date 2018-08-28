@@ -542,6 +542,8 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
+                'has_wheelchair_access' => false,
+                'has_induction_loop' => false,
             ],
         ]);
 
@@ -559,6 +561,8 @@ class UpdateRequestsTest extends TestCase
             'postcode' => $updateRequest->data['postcode'],
             'country' => $updateRequest->data['country'],
             'accessibility_info' => $updateRequest->data['accessibility_info'],
+            'has_wheelchair_access' => $updateRequest->data['has_wheelchair_access'],
+            'has_induction_loop' => $updateRequest->data['has_induction_loop'],
         ]);
     }
 

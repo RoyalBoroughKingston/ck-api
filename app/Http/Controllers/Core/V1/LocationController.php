@@ -81,6 +81,8 @@ class LocationController extends Controller
                 'postcode' => $request->postcode,
                 'country' => $request->country,
                 'accessibility_info' => $request->accessibility_info,
+                'has_wheelchair_access' => $request->has_wheelchair_access,
+                'has_induction_loop' => $request->has_induction_loop,
             ]);
 
             // Persist the record to the database.
@@ -127,6 +129,8 @@ class LocationController extends Controller
                     'postcode' => $request->postcode,
                     'country' => $request->country,
                     'accessibility_info' => $request->accessibility_info,
+                    'has_wheelchair_access' => $request->has_wheelchair_access,
+                    'has_induction_loop' => $request->has_induction_loop,
                 ]
             ]);
 
