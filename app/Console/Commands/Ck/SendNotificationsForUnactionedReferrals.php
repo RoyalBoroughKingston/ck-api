@@ -17,7 +17,7 @@ class SendNotificationsForUnactionedReferrals extends Command
      * @var string
      */
     protected $signature = 'ck:send-notifications-for-unactioned-referrals
-                            {--working-days=8 : The number of working days to wait for}';
+                            {--working-days=6 : The number of working days to wait for}';
 
     /**
      * The console command description.
