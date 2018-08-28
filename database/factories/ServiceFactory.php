@@ -10,7 +10,7 @@ $factory->define(Service::class, function (Faker $faker) {
         'organisation_id' => function () {
             return factory(\App\Models\Organisation::class)->create()->id;
         },
-        'slug' => str_slug($name),
+        'slug' => str_slug($name).'-'.rand(1, 1000),
         'name' => $name,
         'status' => Service::STATUS_ACTIVE,
         'intro' => $faker->sentence,
