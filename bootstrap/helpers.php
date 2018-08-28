@@ -221,3 +221,16 @@ if (!function_exists('month')) {
         throw new InvalidArgumentException("[$month] must be between 1-12");
     }
 }
+
+if (!function_exists('register_enum_type')) {
+    /**
+     * Registers the enum type as a string.
+     */
+    function register_enum_type()
+    {
+        \Illuminate\Support\Facades\Schema::getConnection()
+            ->getDoctrineSchemaManager()
+            ->getDatabasePlatform()
+            ->registerDoctrineTypeMapping('enum', 'string');
+    }
+}

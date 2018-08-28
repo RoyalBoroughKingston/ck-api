@@ -8,6 +8,7 @@
         "php": "^7.2.0",
         "alphagov/notifications-php-client": "^1.6",
         "babenkoivan/scout-elasticsearch-driver": "^3.8",
+        "doctrine/dbal": "^2.8",
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "~3.0",
         "laravel/framework": "5.6.*",
