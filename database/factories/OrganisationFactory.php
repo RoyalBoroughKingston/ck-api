@@ -7,7 +7,7 @@ $factory->define(Organisation::class, function (Faker $faker) {
     $name = $faker->unique()->company;
 
     return [
-        'slug' => str_slug($name),
+        'slug' => str_slug($name).'-'.rand(1, 1000),
         'name' => $name,
         'description' => 'This organisation provides x service.',
         'url' => $faker->url,
