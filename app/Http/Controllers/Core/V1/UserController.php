@@ -17,6 +17,7 @@ use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -39,9 +40,19 @@ class UserController extends Controller
      */
     public function index(IndexRequest $request)
     {
+        // Check if the request has asked for user roles to be included.
+        $userRolesIncluded = in_array(
+            'userRoles',
+            explode(',', $request->include)
+        );
+
         $baseQuery = User::query()
             ->orderBy('first_name')
-            ->orderBy('last_name');
+            ->orderBy('last_name')
+            ->when($userRolesIncluded, function (Builder $query): Builder {
+                // If user roles included, then make sure the role is also eager loaded.
+                return $query->with('userRoles.role');
+            });
 
         $users = QueryBuilder::for($baseQuery)
             ->allowedFilters([
