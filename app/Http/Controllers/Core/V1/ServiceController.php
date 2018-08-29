@@ -138,6 +138,13 @@ class ServiceController extends Controller
      */
     public function show(ShowRequest $request, Service $service)
     {
+        $baseQuery = Service::query()
+            ->where('id', $service->id);
+
+        $service = QueryBuilder::for($baseQuery)
+            ->allowedIncludes(['organisation'])
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed service [{$service->id}]", $service));
 
         return new ServiceResource($service);

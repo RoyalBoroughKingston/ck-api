@@ -100,6 +100,12 @@ class ReferralController extends Controller
      */
     public function show(ShowRequest $request, Referral $referral)
     {
+        $baseQuery = Referral::query()
+            ->where('id', $referral->id);
+
+        $referral = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed referral [{$referral->id}]", $referral));
 
         return new ReferralResource($referral);

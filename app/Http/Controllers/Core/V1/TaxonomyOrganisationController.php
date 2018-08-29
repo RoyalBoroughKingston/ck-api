@@ -74,6 +74,12 @@ class TaxonomyOrganisationController extends Controller
      */
     public function show(ShowRequest $request, Taxonomy $taxonomy)
     {
+        $baseQuery = Taxonomy::query()
+            ->where('id', $taxonomy->id);
+
+        $taxonomy = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed taxonomy organisation [{$taxonomy->id}]", $taxonomy));
 
         return new TaxonomyOrganisationResource($taxonomy);

@@ -93,6 +93,12 @@ class CollectionPersonaController extends Controller
      */
     public function show(ShowRequest $request, Collection $collection)
     {
+        $baseQuery = Collection::query()
+            ->where('id', $collection->id);
+
+        $collection = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed collection persona [{$collection->id}]", $collection));
 
         return new CollectionPersonaResource($collection);

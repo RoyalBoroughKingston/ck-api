@@ -74,6 +74,12 @@ class PageFeedbackController extends Controller
      */
     public function show(ShowRequest $request, PageFeedback $pageFeedback)
     {
+        $baseQuery = PageFeedback::query()
+            ->where('id', $pageFeedback->id);
+
+        $pageFeedback = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed page feedback [{$pageFeedback->id}]", $pageFeedback));
 
         return new PageFeedbackResource($pageFeedback);

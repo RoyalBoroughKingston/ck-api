@@ -41,10 +41,7 @@ class UserController extends Controller
     public function index(IndexRequest $request)
     {
         // Check if the request has asked for user roles to be included.
-        $userRolesIncluded = in_array(
-            'userRoles',
-            explode(',', $request->include)
-        );
+        $userRolesIncluded = str_contains($request->include, 'userRoles');
 
         $baseQuery = User::query()
             ->orderBy('first_name')
@@ -131,9 +128,26 @@ class UserController extends Controller
      */
     public function show(ShowRequest $request, User $user)
     {
+        // Check if the request has asked for user roles to be included.
+        $userRolesIncluded = str_contains($request->include, 'userRoles');
+
+        $baseQuery = User::query()
+            ->where('id', $user->id)
+            ->when($userRolesIncluded, function (Builder $query): Builder {
+                // If user roles included, then make sure the role is also eager loaded.
+                return $query->with('userRoles.role');
+            });
+
+        $user = QueryBuilder::for($baseQuery)
+            ->allowedIncludes([
+                'userRoles.organisation',
+                'userRoles.service',
+            ])
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed user [{$user->id}]", $user));
 
-        return new UserResource($user->load('userRoles.service', 'userRoles.organisation'));
+        return new UserResource($user);
     }
 
     /**

@@ -60,6 +60,12 @@ class UpdateRequestController extends Controller
      */
     public function show(ShowRequest $request, UpdateRequest $updateRequest)
     {
+        $baseQuery = UpdateRequest::query()
+            ->where('id', $updateRequest->id);
+
+        $updateRequest = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed update request [{$updateRequest->id}]", $updateRequest));
 
         return new UpdateRequestResource($updateRequest);

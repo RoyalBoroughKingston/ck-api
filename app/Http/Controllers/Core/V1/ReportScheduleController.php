@@ -78,6 +78,12 @@ class ReportScheduleController extends Controller
      */
     public function show(ShowRequest $request, ReportSchedule $reportSchedule)
     {
+        $baseQuery = ReportSchedule::query()
+            ->where('id', $reportSchedule->id);
+
+        $reportSchedule = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed report schedule [{$reportSchedule->id}]", $reportSchedule));
 
         return new ReportScheduleResource($reportSchedule);

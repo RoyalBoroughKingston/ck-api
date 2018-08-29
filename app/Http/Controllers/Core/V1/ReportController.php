@@ -75,6 +75,12 @@ class ReportController extends Controller
      */
     public function show(ShowRequest $request, Report $report)
     {
+        $baseQuery = Report::query()
+            ->where('id', $report->id);
+
+        $report = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed report [{$report->id}]", $report));
 
         return new ReportResource($report);

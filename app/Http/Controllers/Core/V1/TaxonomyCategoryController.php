@@ -76,6 +76,12 @@ class TaxonomyCategoryController extends Controller
      */
     public function show(ShowRequest $request, Taxonomy $taxonomy)
     {
+        $baseQuery = Taxonomy::query()
+            ->where('id', $taxonomy->id);
+
+        $taxonomy = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed taxonomy category [{$taxonomy->id}]", $taxonomy));
 
         return new TaxonomyCategoryResource($taxonomy->load('children.children.children.children.children'));

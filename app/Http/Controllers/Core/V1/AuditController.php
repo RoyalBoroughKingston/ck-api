@@ -53,6 +53,12 @@ class AuditController extends Controller
      */
     public function show(ShowRequest $request, Audit $audit)
     {
+        $baseQuery = Audit::query()
+            ->where('id', $audit->id);
+
+        $audit = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed audit [{$audit->id}]", $audit));
 
         return new AuditResource($audit);
