@@ -43,6 +43,7 @@ class ReferralController extends Controller
                 Filter::exact('id'),
                 Filter::exact('service_id'),
             ])
+            ->allowedIncludes(['service'])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all referrals'));
