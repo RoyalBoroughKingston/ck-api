@@ -40,7 +40,6 @@ class UserController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = User::query()
-            ->with('userRoles.service', 'userRoles.organisation')
             ->orderBy('first_name')
             ->orderBy('last_name');
 
@@ -49,6 +48,10 @@ class UserController extends Controller
                 Filter::exact('id'),
                 'first_name',
                 'last_name',
+            ])
+            ->allowedIncludes([
+                'userRoles.organisation',
+                'userRoles.service',
             ])
             ->paginate();
 
