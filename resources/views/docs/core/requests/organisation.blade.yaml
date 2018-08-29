@@ -2,6 +2,7 @@ store:
   type: object
   required:
   - name
+  - slug
   - description
   - url
   - email
@@ -10,6 +11,9 @@ store:
     name:
       type: string
       example: Ayup Digital
+    slug:
+      type: string
+      example: ayup-digital
     description:
       type: string
       example: Digital product agency
