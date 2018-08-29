@@ -34,6 +34,9 @@ class ReferralResource extends JsonResource
             'referee_organisation' => $this->organisationTaxonomy->name ?? $this->organisation,
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+
+            // Relationships.
+            'service' => new ServiceResource($this->whenLoaded('service')),
         ];
     }
 }
