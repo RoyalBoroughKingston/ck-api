@@ -11,7 +11,6 @@ root:
     - name: filter[service_id]
       in: query
       description: The ID of the service
-      required: true
       schema:
         type: string
         format: uuid
