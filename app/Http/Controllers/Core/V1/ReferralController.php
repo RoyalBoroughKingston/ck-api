@@ -11,6 +11,7 @@ use App\Http\Resources\ReferralResource;
 use App\Models\Referral;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -33,6 +34,9 @@ class ReferralController extends Controller
      */
     public function index(IndexRequest $request)
     {
+        // Check if the request has asked for user roles to be included.
+        $serviceIncluded = str_contains($request->include, 'service');
+
         // Constrain the user to only show services that they are a service worker for.
         $userServiceIds = $request
             ->user()
@@ -41,6 +45,15 @@ class ReferralController extends Controller
 
         $baseQuery = Referral::query()
             ->whereIn('service_id', $userServiceIds)
+            ->when($serviceIncluded, function (Builder $query): Builder {
+                // If service included, then make sure the service relationships are also eager loaded.
+                return $query->with([
+                    'service.serviceCriterion',
+                    'service.usefulInfos',
+                    'service.socialMedias',
+                    'service.taxonomies',
+                ]);
+            })
             ->orderByDesc('created_at');
 
         // Filtering by the service ID here will only work for the IDs retrieved above. Others will be discarded.
@@ -100,10 +113,23 @@ class ReferralController extends Controller
      */
     public function show(ShowRequest $request, Referral $referral)
     {
+        // Check if the request has asked for user roles to be included.
+        $serviceIncluded = str_contains($request->include, 'service');
+
         $baseQuery = Referral::query()
+            ->when($serviceIncluded, function (Builder $query): Builder {
+                // If service included, then make sure the service relationships are also eager loaded.
+                return $query->with([
+                    'service.serviceCriterion',
+                    'service.usefulInfos',
+                    'service.socialMedias',
+                    'service.taxonomies',
+                ]);
+            })
             ->where('id', $referral->id);
 
         $referral = QueryBuilder::for($baseQuery)
+            ->allowedIncludes('service')
             ->firstOrFail();
 
         event(EndpointHit::onRead($request, "Viewed referral [{$referral->id}]", $referral));

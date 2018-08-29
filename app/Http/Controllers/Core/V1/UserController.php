@@ -41,7 +41,7 @@ class UserController extends Controller
     public function index(IndexRequest $request)
     {
         // Check if the request has asked for user roles to be included.
-        $userRolesIncluded = str_contains($request->include, 'userRoles');
+        $userRolesIncluded = str_contains($request->include, 'user-roles');
 
         $baseQuery = User::query()
             ->orderBy('first_name')
@@ -58,8 +58,8 @@ class UserController extends Controller
                 'last_name',
             ])
             ->allowedIncludes([
-                'userRoles.organisation',
-                'userRoles.service',
+                'user-roles.organisation',
+                'user-roles.service',
             ])
             ->paginate();
 
@@ -129,7 +129,7 @@ class UserController extends Controller
     public function show(ShowRequest $request, User $user)
     {
         // Check if the request has asked for user roles to be included.
-        $userRolesIncluded = str_contains($request->include, 'userRoles');
+        $userRolesIncluded = str_contains($request->include, 'user-roles');
 
         $baseQuery = User::query()
             ->where('id', $user->id)
@@ -140,8 +140,8 @@ class UserController extends Controller
 
         $user = QueryBuilder::for($baseQuery)
             ->allowedIncludes([
-                'userRoles.organisation',
-                'userRoles.service',
+                'user-roles.organisation',
+                'user-roles.service',
             ])
             ->firstOrFail();
 
