@@ -11,6 +11,9 @@ properties:
   name:
     type: string
     example: Helping The Homeless
+  slug:
+    type: string
+    example: helping-the-homeless
   status:
     type: string
     enum:

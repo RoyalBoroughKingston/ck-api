@@ -42,7 +42,8 @@ class ReferralsTest extends TestCase
 
         $response = $this->json('GET', "/core/v1/referrals?filter[service_id]={$anotherService->id}");
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => []]);
     }
 
     public function test_service_worker_can_list_them()
@@ -94,7 +95,7 @@ class ReferralsTest extends TestCase
         ]);
     }
 
-    public function test_service_worker_cannot_list_without_service_id()
+    public function test_only_referrals_user_is_authorised_to_view_are_shown()
     {
         /**
          * @var \App\Models\Service $service
@@ -103,12 +104,25 @@ class ReferralsTest extends TestCase
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create();
         $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+        $anotherReferral = factory(Referral::class)->create();
 
         Passport::actingAs($user);
 
         $response = $this->json('GET', '/core/v1/referrals');
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $referral->id]);
+        $response->assertJsonMissing(['id' => $anotherReferral->id]);
     }
 
     public function test_audit_created_when_listed()

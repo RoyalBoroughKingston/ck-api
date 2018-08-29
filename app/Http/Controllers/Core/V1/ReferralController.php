@@ -10,6 +10,7 @@ use App\Http\Requests\Referral\UpdateRequest;
 use App\Http\Resources\ReferralResource;
 use App\Models\Referral;
 use App\Http\Controllers\Controller;
+use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -32,17 +33,24 @@ class ReferralController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $serviceId = $request->filter['service_id'];
+        // Constrain the user to only show services that they are a service worker for.
+        $userServiceIds = $request
+            ->user()
+            ->services()
+            ->pluck(table(Service::class, 'id'));
 
         $baseQuery = Referral::query()
-            ->where('service_id', $serviceId)
+            ->whereIn('service_id', $userServiceIds)
             ->orderByDesc('created_at');
 
+        // Filtering by the service ID here will only work for the IDs retrieved above. Others will be discarded.
         $referrals = QueryBuilder::for($baseQuery)
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('service_id'),
+                Filter::exact('reference'),
             ])
+            ->allowedIncludes(['service'])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all referrals'));
