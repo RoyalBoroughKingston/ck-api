@@ -97,21 +97,21 @@ class UpdateRequest extends FormRequest
         $user = $this->user();
 
         foreach ($newRoles as $newRole) {
-            $service = isset($newRole['service_id']) ? Service::findOrFail($newRole['service_id']) : null;
-            $organisation = isset($newRole['organisation_id']) ? Organisation::findOrFail($newRole['organisation_id']) : null;
-
             switch ($newRole['role']) {
                 case Role::NAME_SERVICE_WORKER:
+                    $service = Service::findOrFail($newRole['service_id']);
                     if (!$user->canMakeServiceWorker($service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_SERVICE_ADMIN:
+                    $service = Service::findOrFail($newRole['service_id']);
                     if (!$user->canMakeServiceAdmin($service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_ORGANISATION_ADMIN:
+                    $organisation = Organisation::findOrFail($newRole['organisation_id']);
                     if (!$user->canMakeOrganisationAdmin($organisation)) {
                         return false;
                     }
@@ -145,21 +145,21 @@ class UpdateRequest extends FormRequest
         $subject = $this->user->load('userRoles');
 
         foreach ($deletedRoles as $deletedRole) {
-            $service = isset($deletedRole['service_id']) ? Service::findOrFail($deletedRole['service_id']) : null;
-            $organisation = isset($deletedRole['organisation_id']) ? Organisation::findOrFail($deletedRole['organisation_id']) : null;
-
             switch ($deletedRole['role']) {
                 case Role::NAME_SERVICE_WORKER:
+                    $service = Service::findOrFail($deletedRole['service_id']);
                     if (!$user->canRevokeServiceWorker($subject, $service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_SERVICE_ADMIN:
+                    $service = Service::findOrFail($deletedRole['service_id']);
                     if (!$user->canRevokeServiceAdmin($subject, $service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_ORGANISATION_ADMIN:
+                    $organisation = Organisation::findOrFail($deletedRole['organisation_id']);
                     if (!$user->canRevokeOrganisationAdmin($subject, $organisation)) {
                         return false;
                     }

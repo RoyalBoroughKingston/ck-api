@@ -21,21 +21,21 @@ class StoreRequest extends FormRequest
         $user = $this->user()->load('userRoles');
 
         foreach ($this->roles as $role) {
-            $service = isset($role['service_id']) ? Service::findOrFail($role['service_id']) : null;
-            $organisation = isset($role['organisation_id']) ? Organisation::findOrFail($role['organisation_id']) : null;
-
             switch ($role['role']) {
                 case Role::NAME_SERVICE_WORKER:
+                    $service = Service::findOrFail($role['service_id']);
                     if (!$user->canMakeServiceWorker($service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_SERVICE_ADMIN:
+                    $service = Service::findOrFail($role['service_id']);
                     if (!$user->canMakeServiceAdmin($service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_ORGANISATION_ADMIN:
+                    $organisation = Organisation::findOrFail($role['organisation_id']);
                     if (!$user->canMakeOrganisationAdmin($organisation)) {
                         return false;
                     }
@@ -54,7 +54,7 @@ class StoreRequest extends FormRequest
         }
 
         // User must at least be a service worker.
-        if ($this->user()->isServiceWorker()) {
+        if ($this->user()->isGlobalAdmin() || $this->user()->isServiceWorker()) {
             return true;
         }
 
