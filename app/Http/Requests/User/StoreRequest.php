@@ -53,7 +53,12 @@ class StoreRequest extends FormRequest
             }
         }
 
-        return true;
+        // User must at least be a service worker.
+        if ($this->user()->isServiceWorker()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
