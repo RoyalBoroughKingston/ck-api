@@ -40,6 +40,7 @@ class StatusUpdateController extends Controller
                 Filter::exact('id'),
                 Filter::exact('referral_id'),
             ])
+            ->allowedIncludes(['user'])
             ->paginate();
 
         event(EndpointHit::onRead($request, "Viewed all status updates for referral [{$referral->id}]", $referral));
