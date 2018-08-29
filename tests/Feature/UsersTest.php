@@ -34,7 +34,7 @@ class UsersTest extends TestCase
         $user = factory(User::class)->create()->makeServiceWorker($service);
         Passport::actingAs($user);
 
-        $response = $this->json('GET', '/core/v1/users');
+        $response = $this->json('GET', '/core/v1/users', ['include' => 'userRoles']);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
@@ -571,7 +571,7 @@ class UsersTest extends TestCase
         $user = factory(User::class)->create()->makeServiceWorker($service);
         Passport::actingAs($user);
 
-        $response = $this->json('GET', "/core/v1/users/{$user->id}");
+        $response = $this->json('GET', "/core/v1/users/{$user->id}", ['include' => 'userRoles']);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([

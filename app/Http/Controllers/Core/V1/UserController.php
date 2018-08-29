@@ -17,6 +17,7 @@ use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -39,16 +40,26 @@ class UserController extends Controller
      */
     public function index(IndexRequest $request)
     {
+        // Check if the request has asked for user roles to be included.
+        $userRolesIncluded = str_contains($request->include, 'userRoles');
+
         $baseQuery = User::query()
-            ->with('userRoles.service', 'userRoles.organisation')
             ->orderBy('first_name')
-            ->orderBy('last_name');
+            ->orderBy('last_name')
+            ->when($userRolesIncluded, function (Builder $query): Builder {
+                // If user roles included, then make sure the role is also eager loaded.
+                return $query->with('userRoles.role');
+            });
 
         $users = QueryBuilder::for($baseQuery)
             ->allowedFilters([
                 Filter::exact('id'),
                 'first_name',
                 'last_name',
+            ])
+            ->allowedIncludes([
+                'userRoles.organisation',
+                'userRoles.service',
             ])
             ->paginate();
 
@@ -117,9 +128,26 @@ class UserController extends Controller
      */
     public function show(ShowRequest $request, User $user)
     {
+        // Check if the request has asked for user roles to be included.
+        $userRolesIncluded = str_contains($request->include, 'userRoles');
+
+        $baseQuery = User::query()
+            ->where('id', $user->id)
+            ->when($userRolesIncluded, function (Builder $query): Builder {
+                // If user roles included, then make sure the role is also eager loaded.
+                return $query->with('userRoles.role');
+            });
+
+        $user = QueryBuilder::for($baseQuery)
+            ->allowedIncludes([
+                'userRoles.organisation',
+                'userRoles.service',
+            ])
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed user [{$user->id}]", $user));
 
-        return new UserResource($user->load('userRoles.service', 'userRoles.organisation'));
+        return new UserResource($user);
     }
 
     /**

@@ -55,6 +55,12 @@ class NotificationController extends Controller
      */
     public function show(ShowRequest $request, Notification $notification)
     {
+        $baseQuery = Notification::query()
+            ->where('id', $notification->id);
+
+        $notification = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed Notification [{$notification->id}]", $notification));
 
         return new NotificationResource($notification);

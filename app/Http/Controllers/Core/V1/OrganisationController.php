@@ -83,6 +83,12 @@ class OrganisationController extends Controller
      */
     public function show(ShowRequest $request, Organisation $organisation)
     {
+        $baseQuery = Organisation::query()
+            ->where('id', $organisation->id);
+
+        $organisation = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed organisation [{$organisation->id}]", $organisation));
 
         return new OrganisationResource($organisation);

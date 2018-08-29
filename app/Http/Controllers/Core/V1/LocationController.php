@@ -103,6 +103,12 @@ class LocationController extends Controller
      */
     public function show(ShowRequest $request, Location $location)
     {
+        $baseQuery = Location::query()
+            ->where('id', $location->id);
+
+        $location = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
         event(EndpointHit::onRead($request, "Viewed location [{$location->id}]", $location));
 
         return new LocationResource($location);

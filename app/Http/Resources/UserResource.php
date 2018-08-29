@@ -21,9 +21,11 @@ class UserResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'roles' => UserRoleResource::collection($this->userRoles),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+
+            // Relationships.
+            'roles' => UserRoleResource::collection($this->whenLoaded('userRoles')),
         ];
     }
 }

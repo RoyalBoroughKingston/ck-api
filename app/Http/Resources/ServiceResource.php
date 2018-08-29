@@ -49,6 +49,7 @@ class ServiceResource extends JsonResource
 
             // Relationships.
             'service_locations' => ServiceLocationResource::collection($this->whenLoaded('serviceLocations')),
+            'organisation' => new OrganisationResource($this->whenLoaded('organisation')),
         ];
     }
 }
