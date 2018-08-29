@@ -45,6 +45,7 @@ class ServiceLocationController extends Controller
                 Filter::exact('id'),
                 Filter::exact('service_id'),
             ])
+            ->allowedIncludes(['location'])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all service locations'));
@@ -116,13 +117,6 @@ class ServiceLocationController extends Controller
     public function show(ShowRequest $request, ServiceLocation $serviceLocation)
     {
         event(EndpointHit::onRead($request, "Viewed service location [{$serviceLocation->id}]", $serviceLocation));
-
-        $baseQuery = ServiceLocation::query()
-            ->where('id', $serviceLocation->id);
-
-        $serviceLocation = QueryBuilder::for($baseQuery)
-            ->allowedIncludes(['location'])
-            ->firstOrFail();
 
         return new ServiceLocationResource($serviceLocation);
     }
