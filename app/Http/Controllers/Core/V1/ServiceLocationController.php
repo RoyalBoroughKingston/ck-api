@@ -45,6 +45,7 @@ class ServiceLocationController extends Controller
                 Filter::exact('id'),
                 Filter::exact('service_id'),
             ])
+            ->allowedIncludes(['location'])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all service locations'));
