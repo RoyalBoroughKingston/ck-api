@@ -48,6 +48,7 @@ class ReferralController extends Controller
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('service_id'),
+                Filter::exact('reference'),
             ])
             ->allowedIncludes(['service'])
             ->paginate();
