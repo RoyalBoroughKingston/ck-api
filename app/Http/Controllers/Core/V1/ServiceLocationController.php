@@ -118,6 +118,13 @@ class ServiceLocationController extends Controller
     {
         event(EndpointHit::onRead($request, "Viewed service location [{$serviceLocation->id}]", $serviceLocation));
 
+        $baseQuery = ServiceLocation::query()
+            ->where('id', $serviceLocation->id);
+
+        $serviceLocation = QueryBuilder::for($baseQuery)
+            ->allowedIncludes(['location'])
+            ->firstOrFail();
+
         return new ServiceLocationResource($serviceLocation);
     }
 
