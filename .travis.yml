@@ -10,14 +10,8 @@ addons:
   apt:
     sources:
       - mysql-5.7-trusty
-      - sourceline: deb https://packages.cloudfoundry.org/debian stable main
-        key_url: https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key
-      - sourceline: deb https://artifacts.elastic.co/packages/6.x/apt stable main
-        key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     packages:
       - mysql-server
-      - cf-cli
-      - elasticsearch
 
 dist: trusty
 
@@ -34,8 +28,12 @@ cache:
     - node_modules
 
 before_install:
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D27D666CD88E42B4
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5733FEC050C212B6
+  - wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+  - echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+  - wget -q -O - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+  - echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elasticsearch.list
+  - sudo apt-get update
+  - sudo apt-get install -y cf-cli elasticsearch
 
 install:
   - composer self-update
