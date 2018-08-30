@@ -18,6 +18,7 @@ class NotificationController extends Controller
      */
     public function __construct()
     {
+        $this->middleware('throttle:60,1');
         $this->middleware('auth:api');
     }
 

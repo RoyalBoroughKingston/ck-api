@@ -22,6 +22,7 @@ class ImageController extends Controller
      */
     public function __construct()
     {
+        $this->middleware('throttle:60,1')->except('show');
         $this->middleware('auth:api')->except('show');
     }
 

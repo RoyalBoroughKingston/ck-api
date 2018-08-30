@@ -25,6 +25,7 @@ class ServiceController extends Controller
      */
     public function __construct()
     {
+        $this->middleware('throttle:60,1');
         $this->middleware('auth:api')->except('index', 'show');
     }
 
@@ -37,6 +38,7 @@ class ServiceController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = Service::query()
+            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
             ->orderBy('name');
 
         $services = QueryBuilder::for($baseQuery)
