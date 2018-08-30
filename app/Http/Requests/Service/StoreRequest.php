@@ -10,6 +10,7 @@ use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
+use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -59,7 +60,7 @@ class StoreRequest extends FormRequest
             'fees_text' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'fees_url' => ['present', 'nullable', 'url', 'max:255'],
             'testimonial' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'video_embed' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
+            'video_embed' => ['present', 'nullable', 'url', 'max:255', new VideoEmbed()],
             'url' => ['required', 'url', 'max:255'],
             'contact_name' => ['required', 'string', 'min:1', 'max:255'],
             'contact_phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
