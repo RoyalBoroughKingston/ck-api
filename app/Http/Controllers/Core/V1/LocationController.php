@@ -56,7 +56,7 @@ class LocationController extends Controller
                 'postcode',
                 'country',
             ])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all locations'));
 

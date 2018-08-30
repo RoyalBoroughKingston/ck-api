@@ -3,9 +3,14 @@
 return [
 
     /*
-     * The number of results to show in paginated responses.
+     * The default number of results to show in paginated responses.
      */
     'pagination_results' => 25,
+
+    /*
+     * The maximum number of results that can be requested.
+     */
+    'max_pagination_results' => 100,
 
     /*
      * Available drivers: 'stub', 'nominatim', 'google'

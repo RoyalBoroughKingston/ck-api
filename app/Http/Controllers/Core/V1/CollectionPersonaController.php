@@ -44,7 +44,7 @@ class CollectionPersonaController extends Controller
                 Filter::exact('id'),
             ])
             ->with('taxonomies')
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all collection personas'));
 

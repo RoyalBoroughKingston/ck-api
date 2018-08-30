@@ -45,7 +45,7 @@ class UpdateRequestController extends Controller
                 Filter::scope('location_id'),
                 Filter::scope('organisation_id'),
             ])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all update requests'));
 

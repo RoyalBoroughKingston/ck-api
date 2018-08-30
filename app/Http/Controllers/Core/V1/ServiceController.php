@@ -48,7 +48,7 @@ class ServiceController extends Controller
                 'name',
             ])
             ->allowedIncludes(['organisation'])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all services'));
 
@@ -142,6 +142,7 @@ class ServiceController extends Controller
     public function show(ShowRequest $request, Service $service)
     {
         $baseQuery = Service::query()
+            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
             ->where('id', $service->id);
 
         $service = QueryBuilder::for($baseQuery)

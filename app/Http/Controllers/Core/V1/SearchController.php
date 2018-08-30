@@ -51,6 +51,6 @@ class SearchController extends Controller
         $search->applyOrder($request->order ?? 'relevance', $location ?? null);
 
         // Perform the search.
-        return $search->paginate();
+        return $search->paginate(per_page($request->per_page));
     }
 }

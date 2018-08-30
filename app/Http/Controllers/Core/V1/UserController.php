@@ -62,7 +62,7 @@ class UserController extends Controller
                 'user-roles.organisation',
                 'user-roles.service',
             ])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all users'));
 

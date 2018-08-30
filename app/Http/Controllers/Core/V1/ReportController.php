@@ -42,7 +42,7 @@ class ReportController extends Controller
             ->allowedFilters([
                 Filter::exact('id'),
             ])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all reports'));
 

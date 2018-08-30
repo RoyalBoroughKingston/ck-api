@@ -234,3 +234,19 @@ if (!function_exists('register_enum_type')) {
             ->registerDoctrineTypeMapping('enum', 'string');
     }
 }
+
+if (!function_exists('per_page')) {
+    /**
+     * @param int|null $perPage
+     * @return int
+     */
+    function per_page(int $perPage = null): int
+    {
+        $perPage = $perPage ?? config('ck.pagination_results');
+
+        $perPage = min(config('ck.max_pagination_results'), $perPage);
+        $perPage = max(1, $perPage);
+
+        return $perPage;
+    }
+}

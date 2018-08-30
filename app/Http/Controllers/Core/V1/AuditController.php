@@ -38,7 +38,7 @@ class AuditController extends Controller
                 Filter::exact('id'),
                 Filter::exact('user_id'),
             ])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all audits'));
 

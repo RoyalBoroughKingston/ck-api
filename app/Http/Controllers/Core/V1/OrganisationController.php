@@ -44,7 +44,7 @@ class OrganisationController extends Controller
                 Filter::exact('id'),
                 'name',
             ])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all organisations'));
 

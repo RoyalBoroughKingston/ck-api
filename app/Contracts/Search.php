@@ -39,12 +39,14 @@ interface Search
     public function applyOrder(string $order, Coordinate $location = null): Search;
 
     /**
+     * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function paginate(): AnonymousResourceCollection;
+    public function paginate(int $perPage = null): AnonymousResourceCollection;
 
     /**
+     * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function get(): AnonymousResourceCollection;
+    public function get(int $perPage = null): AnonymousResourceCollection;
 }

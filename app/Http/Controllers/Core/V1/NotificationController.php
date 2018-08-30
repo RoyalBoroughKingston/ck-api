@@ -40,7 +40,7 @@ class NotificationController extends Controller
                 Filter::scope('service_id'),
                 Filter::scope('user_id'),
             ])
-            ->paginate();
+            ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all Notifications'));
 

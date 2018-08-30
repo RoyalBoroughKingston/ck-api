@@ -158,10 +158,13 @@ class ElasticsearchSearch implements Search
     }
 
     /**
+     * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function paginate(): AnonymousResourceCollection
+    public function paginate(int $perPage = null): AnonymousResourceCollection
     {
+        $this->query['size'] = per_page($perPage);
+
         $response = Service::searchRaw($this->query);
         $this->logMetrics($response);
 
@@ -169,10 +172,13 @@ class ElasticsearchSearch implements Search
     }
 
     /**
+     * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function get(): AnonymousResourceCollection
+    public function get(int $perPage = null): AnonymousResourceCollection
     {
+        $this->query['size'] = per_page($perPage);
+
         $response = Service::searchRaw($this->query);
         $this->logMetrics($response);
 
