@@ -34,8 +34,8 @@ cache:
     - node_modules
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install cf-cli elasticsearch -y --allow-unauthenticated
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D27D666CD88E42B4
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5733FEC050C212B6
 
 install:
   - composer self-update
