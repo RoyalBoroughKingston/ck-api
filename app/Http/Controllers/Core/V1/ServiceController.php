@@ -45,6 +45,7 @@ class ServiceController extends Controller
                 Filter::exact('organisation_id'),
                 'name',
             ])
+            ->allowedIncludes(['organisation'])
             ->paginate();
 
         event(EndpointHit::onRead($request, 'Viewed all services'));
