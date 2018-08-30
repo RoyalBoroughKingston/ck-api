@@ -33,6 +33,9 @@ cache:
     - vendor
     - node_modules
 
+before_install:
+  - sudo apt-get update
+
 install:
   - composer self-update
   - composer install --no-interaction
