@@ -40,7 +40,7 @@ applications:
 - name: ck-queue-worker
   <<: *defaults
   no-route: true
-  command: php artisan queue:work --queue=default,search,notifications
+  command: php artisan queue:work --queue={default},{search},{notifications}
   health-check-type: process
 
 - name: ck-scheduler
