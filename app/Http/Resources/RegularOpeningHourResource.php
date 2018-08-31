@@ -18,7 +18,8 @@ class RegularOpeningHourResource extends JsonResource
         return [
             'frequency' => $this->frequency,
             'weekday' => $this->when(
-                in_array($this->frequency,
+                in_array(
+                    $this->frequency,
                     [
                         RegularOpeningHour::FREQUENCY_WEEKLY,
                         RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH,
