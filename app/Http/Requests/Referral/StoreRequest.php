@@ -26,7 +26,8 @@ class StoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        // Standard rules.
+        $rules = [
             'service_id' => ['required', 'exists:services,id'],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'email' => ['required_without_all:phone,other_contact', 'nullable', 'email', 'max:255'],
@@ -36,16 +37,30 @@ class StoreRequest extends FormRequest
             'comments' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'referral_consented' => ['required', 'boolean', 'accepted'],
             'feedback_consented' => ['required', 'boolean'],
-            'referee_name' => ['required', 'string', 'min:1', 'max:255'],
-            'referee_email' => ['required', 'email', 'max:255'],
-            'referee_phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
-            'organisation_taxonomy_id' => [
-                'required_without:organisation',
-                'nullable',
-                'exists:taxonomies,id',
-                new RootTaxonomyIs(Taxonomy::NAME_ORGANISATION),
-            ],
-            'organisation' => ['required_without:organisation_taxonomy_id', 'nullable', 'string', 'min:1', 'max:255'],
         ];
+
+        // Extra rules if not a self referral.
+        if ($this->filled('referee_name')) {
+            $rules = array_merge($rules, [
+                'referee_name' => ['required', 'string', 'min:1', 'max:255'],
+                'referee_email' => ['required', 'email', 'max:255'],
+                'referee_phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
+                'organisation_taxonomy_id' => [
+                    'required_without:organisation',
+                    'nullable',
+                    'exists:taxonomies,id',
+                    new RootTaxonomyIs(Taxonomy::NAME_ORGANISATION),
+                ],
+                'organisation' => [
+                    'required_without:organisation_taxonomy_id',
+                    'nullable',
+                    'string',
+                    'min:1',
+                    'max:255',
+                ],
+            ]);
+        }
+
+        return $rules;
     }
 }
