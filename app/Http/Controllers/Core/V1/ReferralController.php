@@ -96,10 +96,13 @@ class ReferralController extends Controller
 
             // Fill in the fields for client referral.
             if ($request->filled('referee_name')) {
-                $referral->referee_name = $request->referee_name;
-                $referral->referee_email = $request->referee_email;
-                $referral->referee_phone = $request->referee_phone;
-                $referral->organisation = $request->organisation;
+                $referral->fill([
+                    'referee_name' => $request->referee_name,
+                    'referee_email' => $request->referee_email,
+                    'referee_phone' => $request->referee_phone,
+                    'organisation_taxonomy_id' => $request->organisation_taxonomy_id,
+                    'organisation' => $request->organisation,
+                ]);
             }
 
             $referral->save();
