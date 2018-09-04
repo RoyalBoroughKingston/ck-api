@@ -4,6 +4,7 @@ namespace App\BatchUpload;
 
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
+use App\Models\Location;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
@@ -62,8 +63,9 @@ class BatchUploader
 
             $collections = $this->processCollections($collections);
             $collectionTaxonomies = $this->processCollectionTaxonomies($collectionTaxonomies, $collections);
-            
-            //dump($collectionTaxonomies);
+            $locations = $this->processLocations($locations);
+
+            dump($locations);
 
             // DB::commit();
             DB::rollBack(); // TODO: Remove this
@@ -110,7 +112,6 @@ class BatchUploader
             $order++;
 
             // Create a collection instance.
-            /** @var \App\Models\Collection $collection */
             $collection = Collection::create([
                 'type' => Collection::TYPE_CATEGORY,
                 'name' => $collectionArray['Category Name'],
@@ -157,5 +158,38 @@ class BatchUploader
         });
 
         return $collectionTaxonomies;
+    }
+
+    /**
+     * @param array $locations
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processLocations(array $locations): EloquentCollection
+    {
+        $locations = new EloquentCollection($locations);
+        $locations = $locations->map(function (array $locationArray): Location {
+            $location = new Location(array_filter([
+                'address_line_1' => $locationArray['Address Line 1*'],
+                'address_line_2' => $locationArray['Address Line 2'],
+                'address_line_3' => $locationArray['Address Line 3'],
+                'city' => $locationArray['City*'],
+                'county' => $locationArray['County*'],
+                'postcode' => $locationArray['Postcode*'],
+                'country' => $locationArray['Country*'],
+            ]));
+
+            $location->has_wheelchair_access = false;
+            $location->has_induction_loop = false;
+
+            // Save the location.
+            $location->updateCoordinate()->save();
+
+            // Assign the ID provided by the spreadsheet.
+            $location->_id = $locationArray['ID*'];
+
+            return $location;
+        });
+
+        return $locations;
     }
 }
