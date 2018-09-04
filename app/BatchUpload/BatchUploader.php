@@ -3,6 +3,7 @@
 namespace App\BatchUpload;
 
 use App\Models\Collection;
+use App\Models\CollectionTaxonomy;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
@@ -60,7 +61,9 @@ class BatchUploader
             DB::beginTransaction();
 
             $collections = $this->processCollections($collections);
-            dump($collections);
+            $collectionTaxonomies = $this->processCollectionTaxonomies($collectionTaxonomies, $collections);
+            
+            //dump($collectionTaxonomies);
 
             // DB::commit();
             DB::rollBack(); // TODO: Remove this
@@ -102,22 +105,57 @@ class BatchUploader
         $order = Collection::categories()->orderByDesc('order')->first()->order;
 
         $collections = new EloquentCollection($collections);
-        $collections = $collections->map(function (array $collection) use (&$order): Collection {
+        $collections = $collections->map(function (array $collectionArray) use (&$order): Collection {
             // Increment order.
             $order++;
 
             // Create a collection instance.
-            return Collection::create([
+            /** @var \App\Models\Collection $collection */
+            $collection = Collection::create([
                 'type' => Collection::TYPE_CATEGORY,
-                'name' => $collection['Category Name'],
+                'name' => $collectionArray['Category Name'],
                 'meta' => [
                     'icon' => 'coffee',
                     'intro' => 'Lorem ipsum',
                 ],
                 'order' => $order,
             ]);
+
+            // Assign the ID provided by the spreadsheet.
+            $collection->_id = $collectionArray['Category ID'];
+
+            return $collection;
         });
 
         return $collections;
+    }
+
+    /**
+     * @param array $collectionTaxonomies
+     * @param \Illuminate\Database\Eloquent\Collection $collections
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processCollectionTaxonomies(array $collectionTaxonomies, EloquentCollection $collections): EloquentCollection
+    {
+        $collectionTaxonomies = new EloquentCollection($collectionTaxonomies);
+        $collectionTaxonomies = $collectionTaxonomies->map(function (array $collectionTaxonomyArray) use ($collections): CollectionTaxonomy {
+            // Get the collection ID.
+            $collectionId = $collections->first(function (Collection $collection) use ($collectionTaxonomyArray): bool {
+                return $collection->_id == $collectionTaxonomyArray['Collection ID'];
+            })->id;
+
+            // Fail if it doesn't exist.
+            if ($collectionId === null) {
+                throw new Exception("Collection ID [{$collectionTaxonomyArray['Collection ID']}] does not exist");
+            }
+
+            // Create a collection taxonomy instance.
+            return CollectionTaxonomy::create([
+                'collection_id' => $collectionId,
+                'taxonomy_id' => $collectionTaxonomyArray['Taxonomy ID'],
+            ]);
+        });
+
+        return $collectionTaxonomies;
     }
 }
