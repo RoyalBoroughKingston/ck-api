@@ -6,6 +6,9 @@ use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use App\Models\Location;
 use App\Models\Organisation;
+use App\Models\Service;
+use App\Models\ServiceCriterion;
+use App\Models\SocialMedia;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
@@ -66,8 +69,9 @@ class BatchUploader
             $collectionTaxonomies = $this->processCollectionTaxonomies($collectionTaxonomies, $collections);
             $locations = $this->processLocations($locations);
             $organisations = $this->processOrganisations($organisations);
+            $services = $this->processServices($services, $organisations);
 
-            dump($organisations);
+            dump($services->first());
 
             // DB::commit();
             DB::rollBack(); // TODO: Remove this
@@ -147,11 +151,6 @@ class BatchUploader
                 return $collection->_id == $collectionTaxonomyArray['Collection ID'];
             })->id;
 
-            // Fail if it doesn't exist.
-            if ($collectionId === null) {
-                throw new Exception("Collection ID [{$collectionTaxonomyArray['Collection ID']}] does not exist");
-            }
-
             // Create a collection taxonomy instance.
             return CollectionTaxonomy::create([
                 'collection_id' => $collectionId,
@@ -226,5 +225,156 @@ class BatchUploader
         });
 
         return $organisations;
+    }
+
+    /**
+     * @param array $services
+     * @param \Illuminate\Database\Eloquent\Collection $organisations
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processServices(array $services, EloquentCollection $organisations): EloquentCollection
+    {
+        $services = new EloquentCollection($services);
+        $services = $services->map(function (array $serviceArray) use ($organisations): Service {
+            $organisationId = $organisations->first(function (Organisation $organisation) use ($serviceArray): bool {
+                return $organisation->_id == $serviceArray['Organisation ID*'];
+            })->id;
+
+            $slug = str_slug($serviceArray['Name*']);
+            $iteration = 0;
+            do {
+                $slug = $iteration > 0 ? $slug.'-'.$iteration : $slug;
+                $duplicate = Service::query()->where('slug', $slug)->exists();
+                $iteration++;
+            } while ($duplicate);
+
+            $isFree = $serviceArray['Is Free*'] == 'yes';
+
+            $isInternal = $serviceArray['Referral Method*'] == 'internal';
+            $isExternal = $serviceArray['Referral Method*'] == 'external';
+            $isNone = $serviceArray['Referral Method*'] == 'none';
+
+            $service = Service::create([
+                'organisation_id' => $organisationId,
+                'slug' => $slug,
+                'name' => $serviceArray['Name*'],
+                'status' => $serviceArray['Status*'],
+                'intro' => str_limit($serviceArray['Intro*'], 250),
+                'description' => $serviceArray['Description*'],
+                'wait_time' => $this->parseWaitTime($serviceArray['Wait Time']),
+                'is_free' => $isFree,
+                'fees_text' => !$isFree ? $serviceArray['Fees Text'] : null,
+                'fees_url' => !$isFree ? $serviceArray['Fees URL'] : null,
+                'testimonial' => $serviceArray['Testimonial'],
+                'video_embed' => $serviceArray['Video Embed'],
+                'url' => $serviceArray['URL*'],
+                'contact_name' => $serviceArray['Contact Name*'],
+                'contact_phone' => $serviceArray['Contact Phone*'],
+                'contact_email' => $serviceArray['Contact Email*'],
+                'show_referral_disclaimer' => $serviceArray['Show Referral Disclaimer*'] == 'yes',
+                'referral_method' => $serviceArray['Referral Method*'],
+                'referral_button_text' => !$isNone ? 'Make referral' : null,
+                'referral_email' => $isInternal ? $serviceArray['Referral Email'] : null,
+                'referral_url' => $isExternal ? $serviceArray['Referral URL'] : null,
+                'seo_title' => $serviceArray['SEO Title*'],
+                'seo_description' => str_limit($serviceArray['SEO Description*'], 250),
+            ]);
+
+            $service->_id = $serviceArray['ID*'];
+
+            $service->criteria = $this->processCriteria($serviceArray, $service);
+            $service->social_medias = $this->processSocialMedia($serviceArray, $service);
+
+            return $service;
+        });
+
+        return $services;
+    }
+
+    /**
+     * @param null|string $waitTime
+     * @return null|string
+     */
+    protected function parseWaitTime(?string $waitTime): ?string
+    {
+        switch ($waitTime) {
+            case 'Within a week':
+                return Service::WAIT_TIME_ONE_WEEK;
+            case 'Up to two weeks':
+                return Service::WAIT_TIME_TWO_WEEKS;
+            case 'Up to three weeks':
+                return Service::WAIT_TIME_THREE_WEEKS;
+            case 'Up to a month':
+                return Service::WAIT_TIME_MONTH;
+            case 'Not applicable for this service':
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * @param array $serviceArray
+     * @param \App\Models\Service $service
+     * @return \App\Models\ServiceCriterion
+     */
+    protected function processCriteria(array $serviceArray, Service $service): ServiceCriterion
+    {
+        return $service->serviceCriterion()->create([
+            'age_group' => $serviceArray['Critera - Age Group'],
+            'disability' => $serviceArray['Criteria - Disability'],
+            'employment' => $serviceArray['Criteria Employment'],
+            'gender' => $serviceArray['Criteria - Gender'],
+            'housing' => $serviceArray['Criteria - Housing'],
+            'income' => $serviceArray['Criteria - Income'],
+            'language' => $serviceArray['Criteria - Language'],
+            'other' => $serviceArray['Criteria - Other'],
+        ]);
+    }
+
+    /**
+     * @param array $serviceArray
+     * @param \App\Models\Service $service
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processSocialMedia(array $serviceArray, Service $service): EloquentCollection
+    {
+        $socialMedias = new EloquentCollection();
+
+        if ($serviceArray['Social Medias - Twitter']) {
+            $socialMedias->push($service->socialMedias()->create([
+                'type' => SocialMedia::TYPE_TWITTER,
+                'url' => $serviceArray['Social Medias - Twitter'],
+            ]));
+        }
+
+        if ($serviceArray['Social Medias - Facebook']) {
+            $socialMedias->push($service->socialMedias()->create([
+                'type' => SocialMedia::TYPE_FACEBOOK,
+                'url' => $serviceArray['Social Medias - Facebook'],
+            ]));
+        }
+
+        if ($serviceArray['Social Medias - Instagram']) {
+            $socialMedias->push($service->socialMedias()->create([
+                'type' => SocialMedia::TYPE_INSTAGRAM,
+                'url' => $serviceArray['Social Medias - Instagram'],
+            ]));
+        }
+
+        if ($serviceArray['Social Medias - YouTube']) {
+            $socialMedias->push($service->socialMedias()->create([
+                'type' => SocialMedia::TYPE_YOUTUBE,
+                'url' => $serviceArray['Social Medias - YouTube'],
+            ]));
+        }
+
+        if ($serviceArray['Social Medias - Other']) {
+            $socialMedias->push($service->socialMedias()->create([
+                'type' => SocialMedia::TYPE_OTHER,
+                'url' => $serviceArray['Social Medias - Other'],
+            ]));
+        }
+
+        return $socialMedias;
     }
 }
