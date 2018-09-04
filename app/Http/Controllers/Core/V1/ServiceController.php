@@ -65,6 +65,7 @@ class ServiceController extends Controller
     {
         return DB::transaction(function () use ($request) {
             // Create the service record.
+            /** @var \App\Models\Service $service */
             $service = Service::create([
                 'organisation_id' => $request->organisation_id,
                 'slug' => $request->slug,

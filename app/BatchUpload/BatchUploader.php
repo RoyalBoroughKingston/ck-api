@@ -10,6 +10,7 @@ use App\Models\Service;
 use App\Models\ServiceCriterion;
 use App\Models\ServiceLocation;
 use App\Models\SocialMedia;
+use App\Models\Taxonomy;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
@@ -67,16 +68,14 @@ class BatchUploader
             DB::beginTransaction();
 
             $collections = $this->processCollections($collections);
-            $collectionTaxonomies = $this->processCollectionTaxonomies($collectionTaxonomies, $collections);
+            $this->processCollectionTaxonomies($collectionTaxonomies, $collections);
             $locations = $this->processLocations($locations);
             $organisations = $this->processOrganisations($organisations);
             $services = $this->processServices($services, $organisations);
-            $serviceLocations = $this->processServiceLocations($serviceLocations, $services, $locations);
+            $this->processServiceLocations($serviceLocations, $services, $locations);
+            $this->processServiceTaxonomies($serviceTaxonomies, $services);
 
-            dump($serviceLocations->first());
-
-            // DB::commit();
-            DB::rollBack(); // TODO: Remove this
+            DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -384,6 +383,34 @@ class BatchUploader
     }
 
     /**
+     * @param array $serviceArray
+     * @param \App\Models\Service $service
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processUsefulInfo(array $serviceArray, Service $service): EloquentCollection
+    {
+        $usefulInfos = new EloquentCollection();
+
+        if ($serviceArray['Useful Info 1 - Title'] && $serviceArray['Useful Info 1 - Description']) {
+            $usefulInfos->push($service->usefulInfos()->create([
+                'title' => $serviceArray['Useful Info 1 - Title'],
+                'description' => $serviceArray['Useful Info 1 - Description'],
+                'order' => 1,
+            ]));
+
+            if ($serviceArray['Useful Info 2 - Title'] && $serviceArray['Useful Info 2 - Description']) {
+                $usefulInfos->push($service->usefulInfos()->create([
+                    'title' => $serviceArray['Useful Info 2 - Title'],
+                    'description' => $serviceArray['Useful Info 2 - Description'],
+                    'order' => 2,
+                ]));
+            }
+        }
+
+        return $usefulInfos;
+    }
+
+    /**
      * @param array $serviceLocations
      * @param \Illuminate\Database\Eloquent\Collection $services
      * @param \Illuminate\Database\Eloquent\Collection $locations
@@ -412,5 +439,31 @@ class BatchUploader
         });
 
         return $serviceLocations;
+    }
+
+    /**
+     * @param array $serviceTaxonomies
+     * @param \Illuminate\Database\Eloquent\Collection $services
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processServiceTaxonomies(
+        array $serviceTaxonomies,
+        EloquentCollection $services
+    ): EloquentCollection {
+        $serviceTaxonomies = new EloquentCollection($serviceTaxonomies);
+
+        $taxonomies = $serviceTaxonomies->map(function (array $serviceTaxonomyArray) {
+            $taxonomy = Taxonomy::findOrFail($serviceTaxonomyArray['Taxonomy ID']);
+            $taxonomy->_service_id = $serviceTaxonomyArray['Service ID'];
+            return $taxonomy;
+        })->groupBy('_service_id');
+
+        $services->each(function (Service $service) use ($taxonomies) {
+            if ($taxonomies->has($service->_id)) {
+                $service->syncServiceTaxonomies($taxonomies[$service->_id]);
+            }
+        });
+
+        return $services->load('serviceTaxonomies');
     }
 }

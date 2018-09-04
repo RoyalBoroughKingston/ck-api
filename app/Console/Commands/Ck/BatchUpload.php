@@ -43,20 +43,15 @@ class BatchUpload extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @throws \Exception
      */
     public function handle()
     {
-        try {
-            $this->line('Uploading file...');
+        $this->line('Uploading file...');
 
-            $path = storage_path($this->argument('path'));
-            $this->batchUploader->upload($path);
+        $path = storage_path($this->argument('path'));
+        $this->batchUploader->upload($path);
 
-            $this->info('Spreadsheet uploaded');
-        } catch (ValidationFailedException $exception) {
-            $this->error('Validation failed');
-        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $exception) {
-            $this->error('Spreadsheet error');
-        }
+        $this->info('Spreadsheet uploaded');
     }
 }
