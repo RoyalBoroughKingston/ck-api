@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceCriterion;
+use App\Models\ServiceLocation;
 use App\Models\SocialMedia;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -70,8 +71,9 @@ class BatchUploader
             $locations = $this->processLocations($locations);
             $organisations = $this->processOrganisations($organisations);
             $services = $this->processServices($services, $organisations);
+            $serviceLocations = $this->processServiceLocations($serviceLocations, $services, $locations);
 
-            dump($services->first());
+            dump($serviceLocations->first());
 
             // DB::commit();
             DB::rollBack(); // TODO: Remove this
@@ -142,10 +144,13 @@ class BatchUploader
      * @param \Illuminate\Database\Eloquent\Collection $collections
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function processCollectionTaxonomies(array $collectionTaxonomies, EloquentCollection $collections): EloquentCollection
-    {
+    protected function processCollectionTaxonomies(
+        array $collectionTaxonomies,
+        EloquentCollection $collections
+    ): EloquentCollection {
         $collectionTaxonomies = new EloquentCollection($collectionTaxonomies);
-        $collectionTaxonomies = $collectionTaxonomies->map(function (array $collectionTaxonomyArray) use ($collections): CollectionTaxonomy {
+        $collectionTaxonomies = $collectionTaxonomies->map(function (array $collectionTaxonomyArray) use ($collections
+        ): CollectionTaxonomy {
             // Get the collection ID.
             $collectionId = $collections->first(function (Collection $collection) use ($collectionTaxonomyArray): bool {
                 return $collection->_id == $collectionTaxonomyArray['Collection ID'];
@@ -205,7 +210,7 @@ class BatchUploader
             $slug = str_slug($organisationArray['Name*']);
             $iteration = 0;
             do {
-                $slug = $iteration > 0 ? $slug.'-'.$iteration : $slug;
+                $slug = $iteration > 0 ? $slug . '-' . $iteration : $slug;
                 $duplicate = Organisation::query()->where('slug', $slug)->exists();
                 $iteration++;
             } while ($duplicate);
@@ -243,7 +248,7 @@ class BatchUploader
             $slug = str_slug($serviceArray['Name*']);
             $iteration = 0;
             do {
-                $slug = $iteration > 0 ? $slug.'-'.$iteration : $slug;
+                $slug = $iteration > 0 ? $slug . '-' . $iteration : $slug;
                 $duplicate = Service::query()->where('slug', $slug)->exists();
                 $iteration++;
             } while ($duplicate);
@@ -376,5 +381,36 @@ class BatchUploader
         }
 
         return $socialMedias;
+    }
+
+    /**
+     * @param array $serviceLocations
+     * @param \Illuminate\Database\Eloquent\Collection $services
+     * @param \Illuminate\Database\Eloquent\Collection $locations
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processServiceLocations(
+        array $serviceLocations,
+        EloquentCollection $services,
+        EloquentCollection $locations
+    ): EloquentCollection {
+        $serviceLocations = new EloquentCollection($serviceLocations);
+
+        $serviceLocations = $serviceLocations->map(function (array $serviceLocationArray) use ($services, $locations): ServiceLocation {
+            $serviceId = $services->first(function (Service $service) use ($serviceLocationArray): bool {
+                return $service->_id == $serviceLocationArray['Service ID*'];
+            })->id;
+
+            $locationId = $locations->first(function (Location $location) use ($serviceLocationArray): bool {
+                return $location->_id == $serviceLocationArray['Location ID*'];
+            })->id;
+
+            return ServiceLocation::create([
+                'service_id' => $serviceId,
+                'location_id' => $locationId,
+            ]);
+        });
+
+        return $serviceLocations;
     }
 }
