@@ -5,6 +5,7 @@ namespace App\BatchUpload;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use App\Models\Location;
+use App\Models\Organisation;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
@@ -64,8 +65,9 @@ class BatchUploader
             $collections = $this->processCollections($collections);
             $collectionTaxonomies = $this->processCollectionTaxonomies($collectionTaxonomies, $collections);
             $locations = $this->processLocations($locations);
+            $organisations = $this->processOrganisations($organisations);
 
-            dump($locations);
+            dump($organisations);
 
             // DB::commit();
             DB::rollBack(); // TODO: Remove this
@@ -191,5 +193,38 @@ class BatchUploader
         });
 
         return $locations;
+    }
+
+    /**
+     * @param array $organisations
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function processOrganisations(array $organisations): EloquentCollection
+    {
+        $organisations = new EloquentCollection($organisations);
+        $organisations = $organisations->map(function (array $organisationArray): Organisation {
+            $slug = str_slug($organisationArray['Name*']);
+            $iteration = 0;
+            do {
+                $slug = $iteration > 0 ? $slug.'-'.$iteration : $slug;
+                $duplicate = Organisation::query()->where('slug', $slug)->exists();
+                $iteration++;
+            } while ($duplicate);
+
+            $organisation = Organisation::create([
+                'slug' => $slug,
+                'name' => $organisationArray['Name*'],
+                'description' => $organisationArray['Description*'],
+                'url' => $organisationArray['URL*'],
+                'email' => $organisationArray['Email*'],
+                'phone' => $organisationArray['Phone*'],
+            ]);
+
+            $organisation->_id = $organisationArray['ID*'];
+
+            return $organisation;
+        });
+
+        return $organisations;
     }
 }
