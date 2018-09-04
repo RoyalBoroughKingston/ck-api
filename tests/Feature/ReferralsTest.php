@@ -189,6 +189,40 @@ class ReferralsTest extends TestCase
         ]);
     }
 
+    public function test_guest_can_create_self_referral()
+    {
+        $service = factory(Service::class)->create();
+
+        $payload = [
+            'service_id' => $service->id,
+            'name' => $this->faker->name,
+            'email' => $this->faker->safeEmail,
+            'phone' => null,
+            'other_contact' => null,
+            'postcode_outward_code' => null,
+            'comments' => null,
+            'referral_consented' => true,
+            'feedback_consented' => false,
+        ];
+
+        $response = $this->json('POST', '/core/v1/referrals', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment([
+            'service_id' => $service->id,
+            'name' => $payload['name'],
+            'email' => $payload['email'],
+            'phone' => null,
+            'other_contact' => null,
+            'postcode_outward_code' => null,
+            'comments' => null,
+            'referee_name' => null,
+            'referee_email' => null,
+            'referee_phone' => null,
+            'referee_organisation' => null,
+        ]);
+    }
+
     public function test_audit_created_when_created()
     {
         $this->fakeEvents();
