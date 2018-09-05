@@ -25,6 +25,9 @@ class UpdateRequestResource extends JsonResource
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
             'approved_at' => optional($this->approved_at)->format(Carbon::ISO8601),
             'deleted_at' => optional($this->deleted_at)->format(Carbon::ISO8601),
+
+            // Relationships.
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }
