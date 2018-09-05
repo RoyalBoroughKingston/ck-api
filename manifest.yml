@@ -21,7 +21,7 @@ defaults: &defaults
     DB_CERT_PATH: /etc/ssl/certs
     DB_CONNECTION: mysql
     EMAIL_DRIVER: gov
-    GEOCODE_DRIVER: nominatim
+    GEOCODE_DRIVER: google
     GOOGLE_API_KEY: ((GOOGLE_API_KEY))
     GOV_NOTIFY_API_KEY: ((GOV_NOTIFY_API_KEY))
     LOG_CHANNEL: errorlog
