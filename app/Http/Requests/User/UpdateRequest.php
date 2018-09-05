@@ -6,6 +6,7 @@ use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\UserRole;
+use App\Rules\Password;
 use App\Rules\UkPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -192,7 +193,7 @@ class UpdateRequest extends FormRequest
             'last_name' => ['required', 'string', 'min:1', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignoreModel($this->user)],
             'phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
-            'password' => ['string', 'min:8', 'max:255'],
+            'password' => ['string', 'min:8', 'max:255', new Password()],
 
             'roles' => ['required', 'array'],
             'roles.*' => ['required', 'array'],
