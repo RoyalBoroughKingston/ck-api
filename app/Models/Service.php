@@ -344,7 +344,7 @@ class Service extends Model implements AppliesUpdateRequests
      */
     public static function waitTimeIsValid(string $waitTime): bool
     {
-        return !in_array($waitTime, [
+        return in_array($waitTime, [
             static::WAIT_TIME_ONE_WEEK,
             static::WAIT_TIME_TWO_WEEKS,
             static::WAIT_TIME_THREE_WEEKS,
