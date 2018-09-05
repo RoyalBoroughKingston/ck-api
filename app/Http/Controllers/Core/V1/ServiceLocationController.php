@@ -74,7 +74,7 @@ class ServiceLocationController extends Controller
             foreach ($request->regular_opening_hours as $regularOpeningHour) {
                 $serviceLocation->regularOpeningHours()->create([
                     'frequency' => $regularOpeningHour['frequency'],
-                    'weekday' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_WEEKLY)
+                    'weekday' => (in_array($regularOpeningHour['frequency'], [RegularOpeningHour::FREQUENCY_WEEKLY, RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH]))
                         ? $regularOpeningHour['weekday']
                         : null,
                     'day_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_MONTHLY)
