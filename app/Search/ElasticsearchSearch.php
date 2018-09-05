@@ -130,13 +130,7 @@ class ElasticsearchSearch implements Search
      */
     public function applyWaitTime(string $waitTime): Search
     {
-        if (!in_array($waitTime, [
-            Service::WAIT_TIME_ONE_WEEK,
-            Service::WAIT_TIME_TWO_WEEKS,
-            Service::WAIT_TIME_THREE_WEEKS,
-            Service::WAIT_TIME_MONTH,
-            Service::WAIT_TIME_LONGER,
-        ])) {
+        if (!Service::waitTimeIsValid($waitTime)) {
             throw new InvalidArgumentException("The wait time [$waitTime] is not valid");
         }
 

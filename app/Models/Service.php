@@ -337,4 +337,19 @@ class Service extends Model implements AppliesUpdateRequests
             $this->dispatch($sms);
         });
     }
+
+    /**
+     * @param string $waitTime
+     * @return bool
+     */
+    public static function waitTimeIsValid(string $waitTime): bool
+    {
+        return !in_array($waitTime, [
+            static::WAIT_TIME_ONE_WEEK,
+            static::WAIT_TIME_TWO_WEEKS,
+            static::WAIT_TIME_THREE_WEEKS,
+            static::WAIT_TIME_MONTH,
+            static::WAIT_TIME_LONGER,
+        ]);
+    }
 }
