@@ -85,6 +85,7 @@ class Service extends Model implements AppliesUpdateRequests
                 ],
             ],
             'description' => ['type' => 'text'],
+            'wait_time' => ['type' => 'keyword'],
             'is_free' => ['type' => 'boolean'],
             'status' => ['type' => 'keyword'],
             'organisation_name' => [
@@ -125,6 +126,7 @@ class Service extends Model implements AppliesUpdateRequests
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'wait_time' => $this->wait_time,
             'is_free' => $this->is_free,
             'status' => $this->status,
             'organisation_name' => $this->organisation->name,
@@ -334,5 +336,20 @@ class Service extends Model implements AppliesUpdateRequests
             $sms->notification = $notification;
             $this->dispatch($sms);
         });
+    }
+
+    /**
+     * @param string $waitTime
+     * @return bool
+     */
+    public static function waitTimeIsValid(string $waitTime): bool
+    {
+        return in_array($waitTime, [
+            static::WAIT_TIME_ONE_WEEK,
+            static::WAIT_TIME_TWO_WEEKS,
+            static::WAIT_TIME_THREE_WEEKS,
+            static::WAIT_TIME_MONTH,
+            static::WAIT_TIME_LONGER,
+        ]);
     }
 }

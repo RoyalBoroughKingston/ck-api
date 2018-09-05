@@ -26,6 +26,12 @@ interface Search
     public function applyPersona(string $persona): Search;
 
     /**
+     * @param string $waitTime
+     * @return \App\Contracts\Search
+     */
+    public function applyWaitTime(string $waitTime): Search;
+
+    /**
      * @param bool $isFree
      * @return \App\Contracts\Search
      */
