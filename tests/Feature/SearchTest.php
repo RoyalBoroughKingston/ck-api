@@ -160,6 +160,22 @@ class SearchTest extends TestCase
         $response->assertJsonFragment(['id' => $service->id]);
     }
 
+    public function test_filter_by_wait_time_works()
+    {
+        $oneMonthWaitTimeService = factory(Service::class)->create(['wait_time' => Service::WAIT_TIME_MONTH]);
+        $twoWeeksWaitTimeService = factory(Service::class)->create(['wait_time' => Service::WAIT_TIME_TWO_WEEKS]);
+        $oneWeekWaitTimeService = factory(Service::class)->create(['wait_time' => Service::WAIT_TIME_ONE_WEEK]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'wait_time' => Service::WAIT_TIME_TWO_WEEKS,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $oneWeekWaitTimeService->id]);
+        $response->assertJsonFragment(['id' => $twoWeeksWaitTimeService->id]);
+        $response->assertJsonMissing(['id' => $oneMonthWaitTimeService->id]);
+    }
+
     public function test_filter_by_is_free_works()
     {
         $paidService = factory(Service::class)->create(['is_free' => false]);

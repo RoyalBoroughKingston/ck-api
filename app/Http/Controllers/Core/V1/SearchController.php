@@ -37,6 +37,11 @@ class SearchController extends Controller
             $search->applyPersona($request->persona);
         }
 
+        // Apply filter on `wait_time` field.
+        if ($request->has('wait_time')) {
+            $search->applyWaitTime($request->wait_time);
+        }
+
         // Apply filter on `is_free` field.
         if ($request->has('is_free')) {
             $search->applyIsFree($request->is_free);

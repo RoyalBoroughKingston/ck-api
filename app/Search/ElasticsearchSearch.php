@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use InvalidArgumentException;
 
 class ElasticsearchSearch implements Search
 {
@@ -37,6 +38,9 @@ class ElasticsearchSearch implements Search
                                         'status' => Service::STATUS_ACTIVE,
                                     ],
                                 ],
+                            ],
+                            'should' => [
+                                //
                             ],
                         ],
                     ],
@@ -116,6 +120,57 @@ class ElasticsearchSearch implements Search
                 'collection_personas' => $persona
             ]
         ];
+
+        return $this;
+    }
+
+    /**
+     * @param string $waitTime
+     * @return \App\Contracts\Search
+     */
+    public function applyWaitTime(string $waitTime): Search
+    {
+        if (!in_array($waitTime, [
+            Service::WAIT_TIME_ONE_WEEK,
+            Service::WAIT_TIME_TWO_WEEKS,
+            Service::WAIT_TIME_THREE_WEEKS,
+            Service::WAIT_TIME_MONTH,
+            Service::WAIT_TIME_LONGER,
+        ])) {
+            throw new InvalidArgumentException("The wait time [$waitTime] is not valid");
+        }
+
+        $criteria = [];
+
+        switch ($waitTime) {
+            case Service::WAIT_TIME_ONE_WEEK:
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_ONE_WEEK]];
+                break;
+            case Service::WAIT_TIME_TWO_WEEKS:
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_ONE_WEEK]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_TWO_WEEKS]];
+                break;
+            case Service::WAIT_TIME_THREE_WEEKS:
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_ONE_WEEK]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_TWO_WEEKS]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_THREE_WEEKS]];
+                break;
+            case Service::WAIT_TIME_MONTH:
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_ONE_WEEK]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_TWO_WEEKS]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_THREE_WEEKS]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_MONTH]];
+                break;
+            case Service::WAIT_TIME_LONGER:
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_ONE_WEEK]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_TWO_WEEKS]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_THREE_WEEKS]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_MONTH]];
+                $criteria[] = ['term' => ['wait_time' => Service::WAIT_TIME_LONGER]];
+                break;
+        }
+
+        $this->query['query']['bool']['filter']['bool']['should'][] = $criteria;
 
         return $this;
     }
