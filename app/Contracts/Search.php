@@ -45,10 +45,11 @@ interface Search
     public function applyOrder(string $order, Coordinate $location = null): Search;
 
     /**
+     * @param int|null $page
      * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function paginate(int $perPage = null): AnonymousResourceCollection;
+    public function paginate(int $page = null, int $perPage = null): AnonymousResourceCollection;
 
     /**
      * @param int|null $perPage

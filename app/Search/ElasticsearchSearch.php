@@ -27,6 +27,7 @@ class ElasticsearchSearch implements Search
     public function __construct()
     {
         $this->query = [
+            'from' => 0,
             'size' => config('ck.pagination_results'),
             'query' => [
                 'bool' => [
@@ -207,11 +208,13 @@ class ElasticsearchSearch implements Search
     }
 
     /**
+     * @param int|null $page
      * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function paginate(int $perPage = null): AnonymousResourceCollection
+    public function paginate(int $page = null, int $perPage = null): AnonymousResourceCollection
     {
+        $this->query['from'] = (page($page) - 1) * per_page($perPage);
         $this->query['size'] = per_page($perPage);
 
         $response = Service::searchRaw($this->query);

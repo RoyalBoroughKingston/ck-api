@@ -250,3 +250,18 @@ if (!function_exists('per_page')) {
         return $perPage;
     }
 }
+
+if (!function_exists('page')) {
+    /**
+     * @param int|null $page
+     * @return int
+     */
+    function page(int $page = null): int
+    {
+        $page = $page ?? 1;
+
+        $page = max(1, $page);
+
+        return $page;
+    }
+}
