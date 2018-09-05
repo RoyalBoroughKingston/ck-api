@@ -661,7 +661,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -698,7 +698,7 @@ class UsersTest extends TestCase
             'last_name' => $subject->last_name,
             'email' => $subject->email,
             'phone' => $subject->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -743,7 +743,7 @@ class UsersTest extends TestCase
             'last_name' => $subject->last_name,
             'email' => $subject->email,
             'phone' => $subject->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -779,7 +779,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -816,7 +816,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -861,7 +861,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -918,7 +918,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -958,7 +958,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -995,7 +995,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1040,7 +1040,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1097,7 +1097,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1158,7 +1158,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1197,7 +1197,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1234,7 +1234,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1279,7 +1279,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1336,7 +1336,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1397,7 +1397,7 @@ class UsersTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1468,7 +1468,7 @@ class UsersTest extends TestCase
             'last_name' => $subject->last_name,
             'email' => $subject->email,
             'phone' => $subject->phone,
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => [
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
@@ -1776,7 +1776,7 @@ class UsersTest extends TestCase
             'last_name' => $this->faker->lastName,
             'email' => $this->faker->safeEmail,
             'phone' => random_uk_phone(),
-            'password' => 'password',
+            'password' => 'Pa$$w0rd',
             'roles' => $roles,
         ];
     }
