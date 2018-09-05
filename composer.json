@@ -12,7 +12,7 @@
         "doctrine/dbal": "^2.8",
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "~3.0",
-        "laravel/framework": "5.6.*",
+        "laravel/framework": "5.7.*",
         "laravel/passport": "^6.0",
         "laravel/tinker": "^1.0",
         "league/flysystem-aws-s3-v3": "~1.0",
@@ -23,7 +23,7 @@
         "symfony/yaml": "^4.1"
     },
     "require-dev": {
-        "beyondcode/laravel-dump-server": "^1.1",
+        "beyondcode/laravel-dump-server": "~1.1",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
         "laravel/homestead": "^7.10",
