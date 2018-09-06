@@ -214,13 +214,16 @@ class ElasticsearchSearch implements Search
      */
     public function paginate(int $page = null, int $perPage = null): AnonymousResourceCollection
     {
-        $this->query['from'] = (page($page) - 1) * per_page($perPage);
-        $this->query['size'] = per_page($perPage);
+        $page = page($page);
+        $perPage = per_page($perPage);
+
+        $this->query['from'] = ($page - 1) * $perPage;
+        $this->query['size'] = $perPage;
 
         $response = Service::searchRaw($this->query);
         $this->logMetrics($response);
 
-        return $this->toResource($response);
+        return $this->toResource($response, true, $page);
     }
 
     /**
@@ -240,9 +243,10 @@ class ElasticsearchSearch implements Search
     /**
      * @param array $response
      * @param bool $paginate
+     * @param int|null $page
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    protected function toResource(array $response, bool $paginate = true)
+    protected function toResource(array $response, bool $paginate = true, int $page = null)
     {
         // Extract the hits from the array.
         $hits = $response['hits']['hits'];
@@ -276,7 +280,7 @@ class ElasticsearchSearch implements Search
                 $services,
                 $response['hits']['total'],
                 config('ck.pagination_results'),
-                null,
+                $page,
                 ['path' => Paginator::resolveCurrentPath()]
             );
         }
