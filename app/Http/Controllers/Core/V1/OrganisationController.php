@@ -74,7 +74,7 @@ class OrganisationController extends Controller
             // Upload the logo if provided.
             if ($request->has('logo')) {
                 // Create the file record.
-                $file = $organisation->logoFile()->create([
+                $file = File::create([
                     'filename' => $organisation->id . '.png',
                     'mime_type' => 'image/png',
                     'is_private' => false,
@@ -82,6 +82,10 @@ class OrganisationController extends Controller
 
                 // Upload the file.
                 $file->uploadBase64EncodedPng($request->logo);
+
+                // Link the file to the organisation.
+                $organisation->logo_file_id = $file->id;
+                $organisation->save();
             }
 
             event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));

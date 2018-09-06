@@ -37,7 +37,7 @@ class StoreRequest extends FormRequest
             'url' => ['required', 'url', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'min:1', 'max:255'],
-            'logo' => ['string', new Base64EncodedPng()],
+            'logo' => ['nullable', 'string', new Base64EncodedPng()],
         ];
     }
 }
