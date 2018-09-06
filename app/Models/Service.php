@@ -156,20 +156,10 @@ class Service extends Model implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        // Differentiate between the update request types.
-        $isForLogo = isset($updateRequest->data['logo_file_id']);
-        $isForSeoImage = isset($updateRequest->data['seo_image_file_id']);
-
-        if ($isForLogo) {
-            $rules = ['logo_file_id' => ['required', 'exists:files,id']];
-        } elseif ($isForSeoImage) {
-            $rules = ['seo_image_file_id' => ['required', 'exists:files,id']];
-        } else {
-            $rules = (new UpdateServiceRequest())
-                ->merge(['service' => $this])
-                ->merge($updateRequest->data)
-                ->rules();
-        }
+        $rules = (new UpdateServiceRequest())
+            ->merge(['service' => $this])
+            ->merge($updateRequest->data)
+            ->rules();
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
@@ -181,27 +171,6 @@ class Service extends Model implements AppliesUpdateRequests
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
-    {
-        // Differentiate between the update request types.
-        $isForLogo = isset($updateRequest->data['logo_file_id']);
-        $isForSeoImage = isset($updateRequest->data['seo_image_file_id']);
-
-        if ($isForLogo) {
-            $this->update(['logo_file_id' => $updateRequest->data['logo_file_id']]);
-        } elseif ($isForSeoImage) {
-            $this->update(['seo_image_file_id' => $updateRequest->data['seo_image_file_id']]);
-        } else {
-            $this->applyStandardUpdateRequest($updateRequest);
-        }
-
-        return $updateRequest;
-    }
-
-    /**
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \App\Models\UpdateRequest
-     */
-    protected function applyStandardUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
         // Update the service record.
         $this->update([
@@ -227,6 +196,8 @@ class Service extends Model implements AppliesUpdateRequests
             'referral_url' => $updateRequest->data['referral_url'],
             'seo_title' => $updateRequest->data['seo_title'],
             'seo_description' => $updateRequest->data['seo_description'],
+            'logo_file_id' => $updateRequest->data['logo_file_id'] ?? $this->logo_file_id,
+            'seo_image_file_id' => $updateRequest->data['seo_image_file_id'] ?? $this->seo_image_file_id,
         ]);
 
         // Update the service criterion record.

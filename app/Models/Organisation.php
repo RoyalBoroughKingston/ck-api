@@ -26,16 +26,9 @@ class Organisation extends Model implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        // Differentiate between the update request types.
-        $isForLogo = isset($updateRequest->data['logo_file_id']);
-
-        if ($isForLogo) {
-            $rules = ['logo_file_id' => ['required', 'exists:files,id']];
-        } else {
-            $rules = (new UpdateOrganisationRequest())
-                ->merge(['organisation' => $this])
-                ->rules();
-        }
+        $rules = (new UpdateOrganisationRequest())
+            ->merge(['organisation' => $this])
+            ->rules();
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
@@ -48,21 +41,15 @@ class Organisation extends Model implements AppliesUpdateRequests
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
-        // Differentiate between the update request types.
-        $isForLogo = isset($updateRequest->data['logo_file_id']);
-
-        if ($isForLogo) {
-            $this->update(['logo_file_id' => $updateRequest->data['logo_file_id']]);
-        } else {
-            $this->update([
-                'slug' => $updateRequest->data['slug'],
-                'name' => $updateRequest->data['name'],
-                'description' => $updateRequest->data['description'],
-                'url' => $updateRequest->data['url'],
-                'email' => $updateRequest->data['email'],
-                'phone' => $updateRequest->data['phone'],
-            ]);
-        }
+        $this->update([
+            'slug' => $updateRequest->data['slug'],
+            'name' => $updateRequest->data['name'],
+            'description' => $updateRequest->data['description'],
+            'url' => $updateRequest->data['url'],
+            'email' => $updateRequest->data['email'],
+            'phone' => $updateRequest->data['phone'],
+            'logo_file_id' => $updateRequest->data['logo_file_id'] ?? $this->logo_file_id,
+        ]);
 
         return $updateRequest;
     }

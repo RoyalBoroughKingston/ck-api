@@ -230,7 +230,7 @@ class OrganisationsTest extends TestCase
                 ($event->getModel()->id === $organisation->id);
         });
     }
-    
+
     /*
      * Update a specific organisation.
      */
@@ -452,173 +452,71 @@ class OrganisationsTest extends TestCase
      * Upload a specific organisation's logo.
      */
 
-    public function test_guest_cannot_upload_logo()
-    {
-        $organisation = factory(Organisation::class)->create();
-
-        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo");
-
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function test_service_worker_cannot_upload_logo()
-    {
-        $organisation = factory(Organisation::class)->create();
-        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
-        $user = factory(User::class)->create();
-        $user->makeServiceWorker($service);
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_service_admin_cannot_upload_logo()
-    {
-        $organisation = factory(Organisation::class)->create();
-        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
-        $user = factory(User::class)->create();
-        $user->makeServiceAdmin($service);
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
 
     public function test_organisation_admin_can_upload_logo()
     {
-        $organisation = factory(Organisation::class)->create();
+        /**
+         * @var \App\Models\User $user
+         */
         $user = factory(User::class)->create();
-        $user->makeOrganisationAdmin($organisation);
+        $user->makeGlobalAdmin();
         $image = Storage::disk('local')->get('/test-data/image.png');
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '07700000000',
+            'logo' => 'data:image/png;base64,' . base64_encode($image),
+        ];
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo", [
-            'file' => 'data:image/png;base64,' . base64_encode($image),
-        ]);
+        $response = $this->json('POST', '/core/v1/organisations', $payload);
+        $organisationArray = $this->getResponseContent($response)['data'];
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
-        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
-            'user_id' => $user->id,
-            'updateable_type' => 'organisations',
-            'updateable_id' => $organisation->id,
+        $this->assertDatabaseHas(table(Organisation::class), [
+            'id' => $organisationArray['id'],
         ]);
-    }
-
-    public function test_audit_created_when_logo_created()
-    {
-        $this->fakeEvents();
-
-        $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create();
-        $user->makeOrganisationAdmin($organisation);
-        $image = Storage::disk('local')->get('/test-data/image.png');
-
-        Passport::actingAs($user);
-
-        $this->json('POST', "/core/v1/organisations/{$organisation->id}/logo", [
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+        $this->assertDatabaseMissing(table(Organisation::class), [
+            'id' => $organisationArray['id'],
+            'logo_file_id' => null,
         ]);
-
-        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $organisation) {
-            return ($event->getAction() === Audit::ACTION_CREATE) &&
-                ($event->getUser()->id === $user->id) &&
-                ($event->getModel()->id === $organisation->id);
-        });
     }
 
     /*
      * Delete a specific organisation's logo.
      */
 
-    public function test_guest_cannot_delete_logo()
-    {
-        $organisation = factory(Organisation::class)->create();
-
-        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
-
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function test_service_worker_cannot_delete_logo()
-    {
-        $organisation = factory(Organisation::class)->create();
-        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
-        $user = factory(User::class)->create();
-        $user->makeServiceWorker($service);
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_service_admin_cannot_delete_logo()
-    {
-        $organisation = factory(Organisation::class)->create();
-        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
-        $user = factory(User::class)->create();
-        $user->makeServiceAdmin($service);
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function test_organisation_admin_can_delete_logo()
     {
-        $file = File::create([
-            'filename' => 'test/png',
-            'mime_type' => 'image/png',
-            'is_private' => false,
-        ]);
-        $organisation = factory(Organisation::class)->create(['logo_file_id' => $file->id]);
+        /**
+         * @var \App\Models\User $user
+         */
         $user = factory(User::class)->create();
-        $user->makeOrganisationAdmin($organisation);
+        $user->makeGlobalAdmin();
+        $organisation = factory(Organisation::class)->create([
+            'logo_file_id' => factory(File::class)->create()->id,
+        ]);
+        $payload = [
+            'slug' => $organisation->slug,
+            'name' => $organisation->name,
+            'description' => $organisation->description,
+            'url' => $organisation->url,
+            'email' => $organisation->email,
+            'phone' => $organisation->phone,
+            'logo' => null,
+        ];
 
         Passport::actingAs($user);
 
-        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['message' => 'The update request has been received and needs to be reviewed']);
-        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
-            'user_id' => $user->id,
-            'updateable_type' => 'organisations',
-            'updateable_id' => $organisation->id,
-        ]);
-    }
-
-    public function test_audit_created_when_logo_deleted()
-    {
-        $this->fakeEvents();
-
-        $file = File::create([
-            'filename' => 'test/png',
-            'mime_type' => 'image/png',
-            'is_private' => false,
-        ]);
-        $organisation = factory(Organisation::class)->create(['logo_file_id' => $file->id]);
-        $user = factory(User::class)->create();
-        $user->makeOrganisationAdmin($organisation);
-
-        Passport::actingAs($user);
-
-        $this->json('DELETE', "/core/v1/organisations/{$organisation->id}/logo");
-
-        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $organisation) {
-            return ($event->getAction() === Audit::ACTION_DELETE) &&
-                ($event->getUser()->id === $user->id) &&
-                ($event->getModel()->id === $organisation->id);
-        });
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $organisation->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $organisation->id)->firstOrFail();
+        $this->assertEquals(null, $updateRequest->data['logo_file_id']);
     }
 }

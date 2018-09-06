@@ -12,6 +12,7 @@ use App\Http\Resources\CollectionPersonaResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
 use App\Http\Controllers\Controller;
+use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -68,9 +69,28 @@ class CollectionPersonaController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
+                    'image_file_id' => null,
                 ],
                 'order' => $request->order,
             ]);
+
+            // Create the file record.
+            if ($request->has('image')) {
+                $file = File::create([
+                    'filename' => $persona->id . '.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Update the persona record to point to the file.
+                $meta = $persona->meta;
+                $meta['image_file_id'] = $file->id;
+                $persona->meta = $meta;
+                $persona->save();
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->image);
+            }
 
             // Create all of the pivot records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
@@ -121,9 +141,34 @@ class CollectionPersonaController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
+                    'image_file_id' => $collection->meta['image_file_id'],
                 ],
                 'order' => $request->order,
             ]);
+
+            // Update the image if the image field was provided.
+            if ($request->filled('image')) {
+                // If a new image was uploaded.
+                $file = File::create([
+                    'filename' => $collection->id.'.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->image);
+
+                $meta = $collection->meta;
+                $meta['image_file_id'] = $file->id;
+                $collection->meta = $meta;
+                $collection->save();
+            } else if ($request->has('image')) {
+                // If the image was removed.
+                $meta = $collection->meta;
+                $meta['image_file_id'] = null;
+                $collection->meta = $meta;
+                $collection->save();
+            }
 
             // Update or create all of the pivot records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();

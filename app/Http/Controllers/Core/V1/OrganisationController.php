@@ -11,6 +11,7 @@ use App\Http\Requests\Organisation\UpdateRequest;
 use App\Http\Resources\OrganisationResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
+use App\Models\File;
 use App\Models\Organisation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -60,6 +61,7 @@ class OrganisationController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
+            // Create the organisation.
             $organisation = Organisation::create([
                 'slug' => $request->slug,
                 'name' => $request->name,
@@ -68,6 +70,23 @@ class OrganisationController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
             ]);
+
+            // Upload the logo if provided.
+            if ($request->has('logo')) {
+                // Create the file record.
+                $file = File::create([
+                    'filename' => $organisation->id . '.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->logo);
+
+                // Link the file to the organisation.
+                $organisation->logo_file_id = $file->id;
+                $organisation->save();
+            }
 
             event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));
 
@@ -113,6 +132,24 @@ class OrganisationController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
             ];
+
+            // Update the logo if the logo field was provided.
+            if ($request->filled('logo')) {
+                // If a new logo was uploaded.
+                $file = File::create([
+                    'filename' => $organisation->id.'.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->logo);
+
+                $data['logo_file_id'] = $file->id;
+            } else if ($request->has('logo')) {
+                // If the logo was removed.
+                $data['logo_file_id'] = null;
+            }
 
             $organisation->updateRequests()->create([
                 'user_id' => $request->user()->id,

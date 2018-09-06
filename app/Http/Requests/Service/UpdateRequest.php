@@ -5,6 +5,7 @@ namespace App\Http\Requests\Service;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
+use App\Rules\Base64EncodedPng;
 use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
@@ -109,6 +110,9 @@ class UpdateRequest extends FormRequest
 
             'category_taxonomies' => ['required', 'array'],
             'category_taxonomies.*' => ['required', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
+
+            'logo' => ['nullable', 'string', new Base64EncodedPng()],
+            'seo_image' => ['nullable', 'string', new Base64EncodedPng()],
         ];
     }
 }

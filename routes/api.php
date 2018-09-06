@@ -38,9 +38,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
             'update' => 'collection-personas.update',
             'destroy' => 'collection-personas.destroy',
         ]);
-    Route::post('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@store')->name('collection-personas.image.store');
-    Route::get('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@show')->name('collection-personas.image.show');
-    Route::delete('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@destroy')->name('collection-personas.image.destroy');
+    Route::get('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController')->name('collection-personas.image.show');
 
     // Locations.
     Route::apiResource('/locations', 'LocationController');
@@ -50,9 +48,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Organisations.
     Route::apiResource('/organisations', 'OrganisationController');
-    Route::post('/organisations/{organisation}/logo', 'Organisation\\LogoController@store')->name('organisations.logo.store');
-    Route::get('/organisations/{organisation}/logo', 'Organisation\\LogoController@show')->name('organisations.logo.show');
-    Route::delete('/organisations/{organisation}/logo', 'Organisation\\LogoController@destroy')->name('organisations.logo.destroy');
+    Route::get('/organisations/{organisation}/logo', 'Organisation\\LogoController')->name('organisations.logo');
 
     // Page Feedbacks.
     Route::apiResource('/page-feedbacks', 'PageFeedbackController')->only('index', 'store', 'show');
@@ -75,12 +71,8 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Services.
     Route::apiResource('/services', 'ServiceController');
-    Route::post('/services/{service}/logo', 'Service\\LogoController@store')->name('services.logo.store');
-    Route::get('/services/{service}/logo', 'Service\\LogoController@show')->name('services.logo.show');
-    Route::delete('/services/{service}/logo', 'Service\\LogoController@destroy')->name('services.logo.destroy');
-    Route::post('/services/{service}/seo-image', 'Service\\SeoImageController@store')->name('services.seo-image.store');
-    Route::get('/services/{service}/seo-image', 'Service\\SeoImageController@show')->name('services.seo-image.show');
-    Route::delete('/services/{service}/seo-image', 'Service\\SeoImageController@destroy')->name('services.seo-image.destroy');
+    Route::get('/services/{service}/logo', 'Service\\LogoController')->name('services.logo.show');
+    Route::get('/services/{service}/seo-image', 'Service\\SeoImageController')->name('services.seo-image.show');
 
     // Status Updates.
     Route::apiResource('/status-updates', 'StatusUpdateController');
