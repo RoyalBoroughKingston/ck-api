@@ -6,6 +6,7 @@ use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
+use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
@@ -648,6 +649,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
         $second = Collection::create([
@@ -657,6 +659,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
         $third = Collection::create([
@@ -666,6 +669,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
 
@@ -702,6 +706,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
         $second = Collection::create([
@@ -711,6 +716,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
         $third = Collection::create([
@@ -720,6 +726,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
 
@@ -756,6 +763,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
         $second = Collection::create([
@@ -765,6 +773,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
         $third = Collection::create([
@@ -774,6 +783,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
 
@@ -810,6 +820,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
 
@@ -843,6 +854,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'image_file_id' => null,
             ],
         ]);
 
@@ -1187,85 +1199,6 @@ class CollectionPersonasTest extends TestCase
      * Upload a specific persona collection's image.
      */
 
-    public function test_guest_cannot_upload_image()
-    {
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function test_service_worker_cannot_upload_image()
-    {
-        /**
-         * @var \App\Models\Service $service
-         * @var \App\Models\User $user
-         */
-        $service = factory(Service::class)->create();
-        $user = factory(User::class)->create();
-        $user->makeServiceWorker($service);
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_service_admin_cannot_upload_image()
-    {
-        /**
-         * @var \App\Models\Service $service
-         * @var \App\Models\User $user
-         */
-        $service = factory(Service::class)->create();
-        $user = factory(User::class)->create();
-        $user->makeServiceAdmin($service);
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_organisation_admin_cannot_upload_image()
-    {
-        /**
-         * @var \App\Models\Organisation $organisation
-         * @var \App\Models\User $user
-         */
-        $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create();
-        $user->makeOrganisationAdmin($organisation);
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_global_admin_cannot_upload_image()
-    {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = factory(User::class)->create();
-        $user->makeGlobalAdmin();
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function test_super_admin_can_upload_image()
     {
         /**
@@ -1273,127 +1206,29 @@ class CollectionPersonasTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
         $image = Storage::disk('local')->get('/test-data/image.png');
 
         Passport::actingAs($user);
 
-        $response = $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'category_taxonomies' => [$randomCategory->id],
+            'image' => 'data:image/png;base64,' . base64_encode($image),
         ]);
-        $content = $this->get("/core/v1/collections/personas/{$persona->id}/image")->content();
 
         $response->assertStatus(Response::HTTP_CREATED);
+        $collectionArray = $this->getResponseContent($response)['data'];
+        $content = $this->get("/core/v1/collections/personas/{$collectionArray['id']}/image")->content();
         $this->assertEquals($image, $content);
-    }
-
-    public function test_audit_created_when_image_created()
-    {
-        $this->fakeEvents();
-
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = factory(User::class)->create();
-        $user->makeSuperAdmin();
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-        $image = Storage::disk('local')->get('/test-data/image.png');
-
-        Passport::actingAs($user);
-
-        $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
-            'file' => 'data:image/png;base64,' . base64_encode($image),
-        ]);
-
-        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $persona) {
-            return ($event->getAction() === Audit::ACTION_CREATE) &&
-                ($event->getUser()->id === $user->id) &&
-                ($event->getModel()->id === $persona->id);
-        });
     }
 
     /*
      * Delete a specific persona collection's image.
      */
-
-    public function test_guest_cannot_delete_image()
-    {
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function test_service_worker_cannot_delete_image()
-    {
-        /**
-         * @var \App\Models\Service $service
-         * @var \App\Models\User $user
-         */
-        $service = factory(Service::class)->create();
-        $user = factory(User::class)->create();
-        $user->makeServiceWorker($service);
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_service_admin_cannot_delete_image()
-    {
-        /**
-         * @var \App\Models\Service $service
-         * @var \App\Models\User $user
-         */
-        $service = factory(Service::class)->create();
-        $user = factory(User::class)->create();
-        $user->makeServiceAdmin($service);
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_organisation_admin_cannot_delete_image()
-    {
-        /**
-         * @var \App\Models\Organisation $organisation
-         * @var \App\Models\User $user
-         */
-        $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create();
-        $user->makeOrganisationAdmin($organisation);
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_global_admin_cannot_delete_image()
-    {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = factory(User::class)->create();
-        $user->makeGlobalAdmin();
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
 
     public function test_super_admin_can_delete_image()
     {
@@ -1403,42 +1238,24 @@ class CollectionPersonasTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-        $image = Storage::disk('local')->get('/test-data/image.png');
+        $meta = $persona->meta;
+        $meta['image_file_id'] = factory(File::class)->create()->id;
+        $persona->meta = $meta;
+        $persona->save();
 
         Passport::actingAs($user);
 
-        $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'name' => $persona->name,
+            'intro' => $persona->meta['intro'],
+            'subtitle' => $persona->meta['subtitle'],
+            'order' => $persona->order,
+            'category_taxonomies' => $persona->taxonomies()->pluck(table(Taxonomy::class, 'id')),
+            'image' => null,
         ]);
-
-        $response = $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
 
         $response->assertStatus(Response::HTTP_OK);
-    }
-
-    public function test_audit_created_when_image_deleted()
-    {
-        $this->fakeEvents();
-
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = factory(User::class)->create();
-        $user->makeSuperAdmin();
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-        $image = Storage::disk('local')->get('/test-data/image.png');
-
-        Passport::actingAs($user);
-
-        $this->json('POST', "/core/v1/collections/personas/{$persona->id}/image", [
-            'file' => 'data:image/png;base64,' . base64_encode($image),
-        ]);
-        $this->json('DELETE', "/core/v1/collections/personas/{$persona->id}/image");
-
-        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $persona) {
-            return ($event->getAction() === Audit::ACTION_DELETE) &&
-                ($event->getUser()->id === $user->id) &&
-                ($event->getModel()->id === $persona->id);
-        });
+        $persona = $persona->fresh();
+        $this->assertEquals(null, $persona->meta['image_file_id']);
     }
 }

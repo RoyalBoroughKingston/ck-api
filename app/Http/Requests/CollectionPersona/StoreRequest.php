@@ -4,6 +4,7 @@ namespace App\Http\Requests\CollectionPersona;
 
 use App\Models\Collection;
 use App\Models\Taxonomy;
+use App\Rules\Base64EncodedPng;
 use App\Rules\RootTaxonomyIs;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -37,6 +38,7 @@ class StoreRequest extends FormRequest
             'order' => ['required', 'integer', 'min:1', 'max:'.(Collection::personas()->count() + 1)],
             'category_taxonomies' => ['present', 'array'],
             'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
+            'image' => ['nullable', 'string', new Base64EncodedPng()],
         ];
     }
 }

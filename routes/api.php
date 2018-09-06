@@ -38,9 +38,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
             'update' => 'collection-personas.update',
             'destroy' => 'collection-personas.destroy',
         ]);
-    Route::post('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@store')->name('collection-personas.image.store');
-    Route::get('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@show')->name('collection-personas.image.show');
-    Route::delete('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController@destroy')->name('collection-personas.image.destroy');
+    Route::get('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController')->name('collection-personas.image.show');
 
     // Locations.
     Route::apiResource('/locations', 'LocationController');
