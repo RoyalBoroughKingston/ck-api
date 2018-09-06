@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Organisation;
 
 use App\Models\Organisation;
+use App\Rules\Base64EncodedPng;
 use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -36,6 +37,7 @@ class StoreRequest extends FormRequest
             'url' => ['required', 'url', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'min:1', 'max:255'],
+            'logo' => ['string', new Base64EncodedPng()],
         ];
     }
 }

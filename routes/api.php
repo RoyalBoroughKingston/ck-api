@@ -50,9 +50,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Organisations.
     Route::apiResource('/organisations', 'OrganisationController');
-    Route::post('/organisations/{organisation}/logo', 'Organisation\\LogoController@store')->name('organisations.logo.store');
-    Route::get('/organisations/{organisation}/logo', 'Organisation\\LogoController@show')->name('organisations.logo.show');
-    Route::delete('/organisations/{organisation}/logo', 'Organisation\\LogoController@destroy')->name('organisations.logo.destroy');
+    Route::get('/organisations/{organisation}/logo', 'Organisation\\LogoController')->name('organisations.logo');
 
     // Page Feedbacks.
     Route::apiResource('/page-feedbacks', 'PageFeedbackController')->only('index', 'store', 'show');
