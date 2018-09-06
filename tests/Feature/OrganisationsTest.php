@@ -497,7 +497,9 @@ class OrganisationsTest extends TestCase
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $organisation = factory(Organisation::class)->create();
+        $organisation = factory(Organisation::class)->create([
+            'logo_file_id' => factory(File::class)->create()->id,
+        ]);
         $payload = [
             'slug' => $organisation->slug,
             'name' => $organisation->name,
@@ -513,9 +515,8 @@ class OrganisationsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas(table(Organisation::class), [
-            'id' =>$organisation->id,
-            'logo_file_id' => null,
-        ]);
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $organisation->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $organisation->id)->firstOrFail();
+        $this->assertEquals(null, $updateRequest->data['logo_file_id']);
     }
 }

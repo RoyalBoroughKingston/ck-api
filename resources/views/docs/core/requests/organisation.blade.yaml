@@ -30,16 +30,9 @@ store:
       type: string
       format: binary
       description: Base64 encoded string of the PNG image
+      nullable: true
       example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
 
 update:
   allOf:
   - $ref: "#/store"
-  - type: object
-    properties:
-      logo:
-        type: string
-        format: binary
-        nullable: true
-        description: Base64 encoded string of the PNG image
-        example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="

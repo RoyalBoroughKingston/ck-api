@@ -11,6 +11,7 @@ use App\Http\Requests\Service\UpdateRequest;
 use App\Http\Resources\ServiceResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
+use App\Models\File;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
@@ -91,6 +92,40 @@ class ServiceController extends Controller
                 'seo_title' => $request->seo_title,
                 'seo_description' => $request->seo_description,
             ]);
+
+            // Upload the logo if provided.
+            if ($request->has('logo')) {
+                // Create the file record.
+                $file = File::create([
+                    'filename' => $service->id . '.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->logo);
+
+                // Link the file to the organisation.
+                $service->logo_file_id = $file->id;
+                $service->save();
+            }
+
+            // Upload the SEO image if provided.
+            if ($request->has('seo_image')) {
+                // Create the file record.
+                $file = File::create([
+                    'filename' => $service->id . '.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->seo_image);
+
+                // Link the file to the organisation.
+                $service->seo_image_file_id = $file->id;
+                $service->save();
+            }
 
             // Create the service criterion record.
             $service->serviceCriterion()->create([
@@ -203,6 +238,42 @@ class ServiceController extends Controller
                 'social_medias' => [],
                 'category_taxonomies' => $request->category_taxonomies,
             ];
+
+            // Update the logo if the logo field was provided.
+            if ($request->filled('logo')) {
+                // If a new logo was uploaded.
+                $file = File::create([
+                    'filename' => $service->id.'.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->logo);
+
+                $data['logo_file_id'] = $file->id;
+            } else if ($request->has('logo')) {
+                // If the logo was removed.
+                $data['logo_file_id'] = null;
+            }
+
+            // Update the SEO image if the SEO image field was provided.
+            if ($request->filled('seo_image')) {
+                // If a new SEO image was uploaded.
+                $file = File::create([
+                    'filename' => $service->id.'.png',
+                    'mime_type' => 'image/png',
+                    'is_private' => false,
+                ]);
+
+                // Upload the file.
+                $file->uploadBase64EncodedPng($request->seo_image);
+
+                $data['seo_image_file_id'] = $file->id;
+            } else if ($request->has('seo_image')) {
+                // If the SEO image was removed.
+                $data['seo_image_file_id'] = null;
+            }
 
             // Loop through each useful info.
             foreach ($request->useful_infos as $usefulInfo) {
