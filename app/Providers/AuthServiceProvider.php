@@ -31,8 +31,7 @@ class AuthServiceProvider extends ServiceProvider
             $router->forAuthorization();
         });
         Passport::enableImplicitGrant();
-        Passport::tokensExpireIn(now()->addHours(4));
-        Passport::refreshTokensExpireIn(now()->addHours(8));
+        Passport::tokensExpireIn(now()->addMonths(18));
     }
 
     /**
