@@ -25,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\UserRolesUpdated::class => [
             \App\Listeners\Notifications\UserRolesUpdated::class,
         ],
+        \Laravel\Passport\Events\AccessTokenCreated::class => [
+            \App\Listeners\RevokeOldTokens::class,
+        ],
     ];
 
     /**
