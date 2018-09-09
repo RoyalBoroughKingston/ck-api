@@ -3,3 +3,14 @@
 body {
   margin: 0;
 }
+
+.govuk-button {
+  &.govuk-button--error {
+    background-color: $govuk-error-colour;
+
+    &:hover,
+    &:focus {
+      background-color: darken($govuk-error-colour, 5%);
+    }
+  }
+}

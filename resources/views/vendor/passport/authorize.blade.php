@@ -1,91 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('auth.layout')
 
-    <title>{{ config('app.name') }} - Authorization</title>
+@section('content')
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
 
-    <!-- Styles -->
-    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+            <h1 class="govuk-heading-xl">Authorisation request</h1>
 
-    <style>
-        .passport-authorize .container {
-            margin-top: 30px;
-        }
+            <p class="govuk-body">{{ $client->name }} is requesting permission to access your account.</p>
 
-        .passport-authorize .scopes {
-            margin-top: 20px;
-        }
+            <form method="POST" action="{{ url('/oauth/authorize') }}" novalidate style="display: inline-block;">
 
-        .passport-authorize .buttons {
-            margin-top: 25px;
-            text-align: center;
-        }
+                @csrf
+                {{ method_field('DELETE') }}
 
-        .passport-authorize .btn {
-            width: 125px;
-        }
+                <input type="hidden" name="state" value="{{ $request->state }}">
+                <input type="hidden" name="client_id" value="{{ $client->id }}">
 
-        .passport-authorize .btn-approve {
-            margin-right: 15px;
-        }
+                <button type="submit" class="govuk-button govuk-button--error">
+                    Cancel
+                </button>
 
-        .passport-authorize form {
-            display: inline;
-        }
-    </style>
-</head>
-<body class="passport-authorize">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card card-default">
-                    <div class="card-header">
-                        Authorization Request
-                    </div>
-                    <div class="card-body">
-                        <!-- Introduction -->
-                        <p><strong>{{ $client->name }}</strong> is requesting permission to access your account.</p>
+            </form>
 
-                        <!-- Scope List -->
-                        @if (count($scopes) > 0)
-                            <div class="scopes">
-                                    <p><strong>This application will be able to:</strong></p>
+            <form method="POST" action="{{ url('/oauth/authorize') }}" novalidate style="display: inline-block;">
 
-                                    <ul>
-                                        @foreach ($scopes as $scope)
-                                            <li>{{ $scope->description }}</li>
-                                        @endforeach
-                                    </ul>
-                            </div>
-                        @endif
+                @csrf
 
-                        <div class="buttons">
-                            <!-- Authorize Button -->
-                            <form method="post" action="{{ url('/oauth/authorize') }}">
-                                {{ csrf_field() }}
+                <input type="hidden" name="state" value="{{ $request->state }}">
+                <input type="hidden" name="client_id" value="{{ $client->id }}">
 
-                                <input type="hidden" name="state" value="{{ $request->state }}">
-                                <input type="hidden" name="client_id" value="{{ $client->id }}">
-                                <button type="submit" class="btn btn-success btn-approve">Authorize</button>
-                            </form>
+                <button type="submit" class="govuk-button">
+                    Authorise
+                </button>
 
-                            <!-- Cancel Button -->
-                            <form method="post" action="{{ url('/oauth/authorize') }}">
-                                {{ csrf_field() }}
-                                {{ method_field('DELETE') }}
+            </form>
 
-                                <input type="hidden" name="state" value="{{ $request->state }}">
-                                <input type="hidden" name="client_id" value="{{ $client->id }}">
-                                <button class="btn btn-danger">Cancel</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-</body>
-</html>
+@endsection
