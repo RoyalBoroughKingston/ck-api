@@ -53,22 +53,4 @@ class ResetPasswordController extends Controller
             'password' => ['required', 'confirmed', new Password()],
         ];
     }
-
-    /**
-     * Reset the given user's password.
-     *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
-     * @param  string  $password
-     * @return void
-     */
-    protected function resetPassword($user, $password)
-    {
-        $user->password = Hash::make($password);
-
-        $user->save();
-
-        event(new PasswordReset($user));
-
-        $this->guard()->login($user);
-    }
 }

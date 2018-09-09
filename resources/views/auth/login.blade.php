@@ -29,7 +29,7 @@
             </div>
 
             <button type="submit" class="govuk-button">
-                Login
+                Send code
             </button>
 
         </form>
