@@ -19,6 +19,6 @@ class RevokeOldTokens
             ->where('user_id', $event->userId)
             ->where('id', '!=', $event->tokenId)
             ->where('revoked', false)
-            ->update(['revoked', true]);
+            ->update(['revoked' => true]);
     }
 }
