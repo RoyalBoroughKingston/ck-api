@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Emails\Email;
+use App\Emails\PasswordReset\UserEmail;
 use App\Exceptions\CannotRevokeRoleException;
 use App\Models\Mutators\UserMutators;
 use App\Models\Relationships\UserRelationships;
@@ -79,6 +80,20 @@ class User extends Authenticatable
                 $model->{$model->getKeyName()} = uuid();
             }
         });
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->sendEmail(new UserEmail($this->email, [
+            'USER_NAME' => $this->first_name,
+            'PASSWORD_RESET_LINK' => route('password.reset', ['token' => $token]),
+        ]));
     }
 
     /**

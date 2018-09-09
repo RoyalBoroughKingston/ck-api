@@ -15,3 +15,8 @@ mix
     .js('resources/assets/js/docs.js', 'public/js')
     .sass('resources/assets/sass/docs.scss', 'public/css')
     .version();
+
+mix
+    .sass('resources/assets/sass/auth.scss', 'public/css')
+    .copy('node_modules/govuk-frontend/assets/fonts', 'public/assets/fonts')
+    .version();

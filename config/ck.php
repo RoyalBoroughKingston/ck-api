@@ -41,6 +41,12 @@ return [
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [
+        'password_reset' => [
+            'email' => '5018a240-1c8e-4cb9-9322-f4f465c4500f',
+        ],
+        'otp_login_code' => [
+            'sms' => '7b86b267-d0c9-434f-843d-c05b4d065c9a',
+        ],
         'referral_created' => [
             'notify_client' => [
                 'email' => '7e46d4d4-ce3f-475f-9416-fa35f2d5a65f',
