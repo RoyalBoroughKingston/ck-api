@@ -115,8 +115,8 @@ components:
     OAuth2:
       type: oauth2
       flows:
-        password:
-          tokenUrl: {{ url('/oauth/token') }}
+        implicit:
+          authorizationUrl: {{ url('/oauth/authorize') }}
 
 security:
 - OAuth2: []
