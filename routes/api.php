@@ -38,7 +38,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
             'update' => 'collection-personas.update',
             'destroy' => 'collection-personas.destroy',
         ]);
-    Route::get('/collections/personas/{collection}/image', 'CollectionPersona\\ImageController')->name('collection-personas.image.show');
+    Route::get('/collections/personas/{collection}/image.png', 'CollectionPersona\\ImageController')->name('collection-personas.image.show');
 
     // Locations.
     Route::apiResource('/locations', 'LocationController');
@@ -48,7 +48,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Organisations.
     Route::apiResource('/organisations', 'OrganisationController');
-    Route::get('/organisations/{organisation}/logo', 'Organisation\\LogoController')->name('organisations.logo');
+    Route::get('/organisations/{organisation}/logo.png', 'Organisation\\LogoController')->name('organisations.logo');
 
     // Page Feedbacks.
     Route::apiResource('/page-feedbacks', 'PageFeedbackController')->only('index', 'store', 'show');
@@ -71,8 +71,8 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Services.
     Route::apiResource('/services', 'ServiceController');
-    Route::get('/services/{service}/logo', 'Service\\LogoController')->name('services.logo.show');
-    Route::get('/services/{service}/seo-image', 'Service\\SeoImageController')->name('services.seo-image.show');
+    Route::get('/services/{service}/logo.png', 'Service\\LogoController')->name('services.logo.show');
+    Route::get('/services/{service}/seo-image.png', 'Service\\SeoImageController')->name('services.seo-image.show');
 
     // Status Updates.
     Route::apiResource('/status-updates', 'StatusUpdateController');

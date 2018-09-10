@@ -886,7 +886,7 @@ class ServicesTest extends TestCase
     {
         $service = factory(Service::class)->create();
 
-        $response = $this->get("/core/v1/services/{$service->id}/logo");
+        $response = $this->get("/core/v1/services/{$service->id}/logo.png");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
@@ -898,7 +898,7 @@ class ServicesTest extends TestCase
 
         $service = factory(Service::class)->create();
 
-        $this->get("/core/v1/services/{$service->id}/logo");
+        $this->get("/core/v1/services/{$service->id}/logo.png");
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($service) {
             return ($event->getAction() === Audit::ACTION_READ) &&
@@ -1053,7 +1053,7 @@ class ServicesTest extends TestCase
     {
         $service = factory(Service::class)->create();
 
-        $response = $this->get("/core/v1/services/{$service->id}/seo-image");
+        $response = $this->get("/core/v1/services/{$service->id}/seo-image.png");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
@@ -1065,7 +1065,7 @@ class ServicesTest extends TestCase
 
         $service = factory(Service::class)->create();
 
-        $this->get("/core/v1/services/{$service->id}/seo-image");
+        $this->get("/core/v1/services/{$service->id}/seo-image.png");
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($service) {
             return ($event->getAction() === Audit::ACTION_READ) &&

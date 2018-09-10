@@ -1175,7 +1175,7 @@ class CollectionPersonasTest extends TestCase
     {
         $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
-        $response = $this->get("/core/v1/collections/personas/{$persona->id}/image");
+        $response = $this->get("/core/v1/collections/personas/{$persona->id}/image.png");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
@@ -1187,7 +1187,7 @@ class CollectionPersonasTest extends TestCase
 
         $persona = Collection::personas()->inRandomOrder()->firstOrFail();
 
-        $this->get("/core/v1/collections/personas/{$persona->id}/image");
+        $this->get("/core/v1/collections/personas/{$persona->id}/image.png");
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($persona) {
             return ($event->getAction() === Audit::ACTION_READ) &&
@@ -1222,7 +1222,7 @@ class CollectionPersonasTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $collectionArray = $this->getResponseContent($response)['data'];
-        $content = $this->get("/core/v1/collections/personas/{$collectionArray['id']}/image")->content();
+        $content = $this->get("/core/v1/collections/personas/{$collectionArray['id']}/image.png")->content();
         $this->assertEquals($image, $content);
     }
 

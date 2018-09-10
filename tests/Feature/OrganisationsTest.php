@@ -428,7 +428,7 @@ class OrganisationsTest extends TestCase
     {
         $organisation = factory(Organisation::class)->create();
 
-        $response = $this->get("/core/v1/organisations/{$organisation->id}/logo");
+        $response = $this->get("/core/v1/organisations/{$organisation->id}/logo.png");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
@@ -440,7 +440,7 @@ class OrganisationsTest extends TestCase
 
         $organisation = factory(Organisation::class)->create();
 
-        $this->get("/core/v1/organisations/{$organisation->id}/logo");
+        $this->get("/core/v1/organisations/{$organisation->id}/logo.png");
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($organisation) {
             return ($event->getAction() === Audit::ACTION_READ) &&
