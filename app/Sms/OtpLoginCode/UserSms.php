@@ -2,9 +2,9 @@
 
 namespace App\Sms\OtpLoginCode;
 
-use App\Sms\Sms as BaseSms;
+use App\Sms\Sms;
 
-class UserSms extends BaseSms
+class UserSms extends Sms
 {
     /**
      * @return string
