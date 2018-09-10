@@ -20,10 +20,15 @@
                 <input class="govuk-input" id="email" name="email" type="email" aria-describedby="email-hint" value="{{ old('email') }}">
             </div>
 
-            <div class="govuk-form-group">
+            <div class="govuk-form-group {{ $errors->has('password') ? 'govuk-form-group--error' : '' }}">
                 <label class="govuk-label govuk-label--m" for="password">
                     Password
                 </label>
+                @if($errors->has('password'))
+                <span class="govuk-error-message">
+                    {{ $errors->first('password') }}
+                </span>
+                @endif
                 <input class="govuk-input" id="password" name="password" type="password" aria-describedby="password-hint">
                 <a class="govuk-link govuk-link--no-visited-state" href="{{ route('password.request') }}">Forgotten password?</a>
             </div>

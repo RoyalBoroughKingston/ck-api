@@ -8,6 +8,7 @@ use App\Sms\OtpLoginCode\UserSms;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -147,5 +148,21 @@ class LoginController extends Controller
         throw ValidationException::withMessages([
             'token' => ['The token provided is incorrect.'],
         ]);
+    }
+
+    /**
+     * Get the throttle key for the given request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string
+     */
+    protected function throttleKey(Request $request)
+    {
+        $key = session()->get(
+            'otp.user_id',
+            Str::lower($request->input($this->username()))
+        );
+
+        return $key.'|'.$request->ip();
     }
 }
