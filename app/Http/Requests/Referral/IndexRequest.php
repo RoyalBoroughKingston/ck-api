@@ -26,12 +26,7 @@ class IndexRequest extends FormRequest
             }
         }
 
-        // Finally check if the user is at least a service worker to access the route.
-        if ($this->user()->isServiceWorker()) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
