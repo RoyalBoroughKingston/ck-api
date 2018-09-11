@@ -73,9 +73,9 @@ deploy:
     local_dir: build
     skip_cleanup: true
     bucket: builds.connectedkingston.uk
-#    on:
-#      repo: RoyalBoroughKingston/ck-api
-#      branch: master
+    on:
+      repo: RoyalBoroughKingston/ck-api
+      branch: feature/code-deploy # TODO: Change this to master
   - provider: codedeploy
     access_key_id: *1
     secret_access_key: *2
@@ -84,9 +84,9 @@ deploy:
     bundle_type: zip
     application: CK-API
     deployment_group: CK-API-Deployment-Production
-#    on:
-#      repo: RoyalBoroughKingston/ck-api
-#      branch: master
+    on:
+      repo: RoyalBoroughKingston/ck-api
+      branch: feature/code-deploy # TODO: Change this to master
 
 notifications:
   slack:
