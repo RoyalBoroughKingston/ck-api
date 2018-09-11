@@ -3,5 +3,9 @@
 # Go to the install directory.
 cd /var/www/html
 
+# Install NPM dependencies.
+npm install
+npm run prod
+
 # Install composer dependencies.
-composer install
+composer install --no-interaction
