@@ -73,6 +73,7 @@ deploy:
     local_dir: build
     skip_cleanup: true
     bucket: builds.connectedkingston.uk
+    region: eu-west-1
     on:
       repo: RoyalBoroughKingston/ck-api
       branch: feature/code-deploy # TODO: Change this to master
@@ -80,6 +81,7 @@ deploy:
     access_key_id: *1
     secret_access_key: *2
     bucket: builds.connectedkingston.uk
+    region: eu-west-1
     key: latest.zip
     bundle_type: zip
     application: CK-API
