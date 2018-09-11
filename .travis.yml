@@ -53,11 +53,6 @@ script:
   - vendor/bin/phpcs
   - vendor/bin/phpunit
 
-before_deploy: # TODO: Fill .env variables for production.
-  - zip -r latest . --exclude .git/\* node_modules/\* vendor/\*
-  - mkdir build
-  - mv latest.zip build/latest.zip
-
 deploy:
   - provider: script
     script: bash scripts/Deploy.sh
@@ -65,7 +60,8 @@ deploy:
     on:
       repo: RoyalBoroughKingston/ck-api
       branch: develop
-  - provider: github
+  - provider: codedeploy
+    revision_type: github
     access_key_id:
       secure: OHgcyqIqktrpJN8F9/Q2UZP5Q5V6EFqj26DIqzVaPUq/o0sm9u+JF1+JBHMtXroRtVYWBmofEn7bfmas3vTTaHwUutj/cbqTwMdSGq+JCLxAlm+Guvqh0aN/8lc8dfrkqeenaI9+ymRYVNVcc0OqimugO1INdysjaTmvZmCEE8gAX2KmfusuDscgw3sC4/Auk3JekfvVpB/JnhVVZNzpoT6DBn+tCYcv00Mk2MAFVxkZpKrjm54sAhiBfZFmeHnaQCcTIsIVV8rIEX2lmIfx2k/DBRjpLMlsjJtvii7nsTUKCSX3XNJzSUD+hKTy4Dwgt3svgaPpX1Fl01uFoXWY2Z2/cPGjTymbGVsdQ12NfmfhdiId9Q3dgwIOkFt64vnmne8YKaAn9qyxLHfpN3qxnvSZfxN6fnRmRK1CxCSwIQ8l/3u8di46NpXAQBMJZgNx8bRdnA09lW7/WAuYYQYxnKz72giHCOAJ1MwkD2EgklJMzOUIo8smJrcAEsosscOEZdIKzmbPvutY+5zrzUHoPyVMf2mLj9AT86IggbQysuG7+vSL6laBTr/BUjhye8fn6Oq2n+qfNNfd+bvWX2VU9baN9xkJfGhYJD9IBasxP2h3J5FTKIxa6LOmmq2zVAeVz7qyHLLMNOz99nJqTilhvTKLhUfiS+7Krwqwz7liFdk=
     secret_access_key:
