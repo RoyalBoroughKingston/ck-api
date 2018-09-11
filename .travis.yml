@@ -21,6 +21,7 @@ branches:
   only:
     - master
     - develop
+    - feature/code-deploy # TODO: Remove this
 
 cache:
   directories:
