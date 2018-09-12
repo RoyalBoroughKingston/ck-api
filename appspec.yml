@@ -3,6 +3,7 @@ os: linux
 files:
   - source: /
     destination: /var/www/html
+    overwrite: true
 hooks:
   AfterInstall:
     - location: scripts/AfterInstall.sh
