@@ -8,4 +8,5 @@ npm install
 npm run prod
 
 # Install composer dependencies.
-composer install --no-interaction
+export COMPOSER_HOME="$HOME/.config/composer/"
+composer install --no-interaction --no-dev
