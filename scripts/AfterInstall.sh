@@ -4,6 +4,7 @@
 cd /var/www/html
 
 # Download the .env file from AWS Secrets Manager.
+echo "Importing .env file..."
 aws secretsmanager get-secret-value --secret-id ck-api-env-production --region eu-west-1 | \
 python -c "import json,sys;obj=json.load(sys.stdin);print obj['SecretString'];" > .env
 
