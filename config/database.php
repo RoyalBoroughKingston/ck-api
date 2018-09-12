@@ -1,6 +1,6 @@
 <?php
 
-return [
+$database = [
 
     /*
     |--------------------------------------------------------------------------
@@ -110,24 +110,7 @@ return [
     'redis' => [
 
         'client' => 'predis',
-
-        'cluster' => 'redis',
-
-        'clusters' => [
-            'default' => [
-                [
-                    'scheme' => env('REDIS_SCHEME', 'tcp'),
-                    'host' => env('REDIS_HOST', '127.0.0.1'),
-                    'password' => env('REDIS_PASSWORD', null),
-                    'port' => env('REDIS_PORT', 6379),
-                    'database' => 0,
-                ]
-            ],
-
-            'options' => [
-                'cluster' => 'redis',
-            ]
-        ],
+        'cluster' => env('REDIS_CLUSTER', false),
 
         'options' => [
             'parameters' => [
@@ -143,3 +126,31 @@ return [
     ],
 
 ];
+
+if (env('REDIS_CLUSTER', false)) {
+    $database['redis']['clusters'] = [
+        'default' => [
+            [
+                'scheme' => env('REDIS_SCHEME', 'tcp'),
+                'host' => env('REDIS_HOST', '127.0.0.1'),
+                'password' => env('REDIS_PASSWORD', null),
+                'port' => env('REDIS_PORT', 6379),
+                'database' => 0,
+            ]
+        ],
+
+        'options' => [
+            'cluster' => 'redis',
+        ],
+    ];
+} else {
+    $database['redis']['default'] = [
+        'scheme' => env('REDIS_SCHEME', 'tcp'),
+        'host' => env('REDIS_HOST', '127.0.0.1'),
+        'password' => env('REDIS_PASSWORD', null),
+        'port' => env('REDIS_PORT', 6379),
+        'database' => 0,
+    ];
+}
+
+return $database;
