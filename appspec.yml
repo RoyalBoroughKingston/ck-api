@@ -9,12 +9,8 @@ permissions:
     user: apache
     group: apache
   - object: /var/www/html/bootstrap/cache
-    user: apache
-    group: apache
     mode: 777
   - object: /var/www/html/storage
-    user: apache
-    group: apache
     mode: 777
 hooks:
   AfterInstall:
