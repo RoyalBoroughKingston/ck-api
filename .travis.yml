@@ -70,7 +70,6 @@ deploy:
     deployment_group: CK-API-Deployment-Production
     region: eu-west-1
     skip_cleanup: true
-    wait-until-deployed: true
     on:
       repo: RoyalBoroughKingston/ck-api
       branch: feature/code-deploy # TODO: Change this to master
