@@ -34,7 +34,7 @@ before_install:
   - wget -q -O - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
   - echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elasticsearch.list
   - sudo apt-get update
-  - sudo apt-get install -y cf-cli elasticsearch
+  - sudo apt-get install -y --allow-unauthenticated cf-cli elasticsearch
 
 install:
   - composer self-update
