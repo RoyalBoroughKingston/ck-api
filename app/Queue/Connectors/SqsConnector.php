@@ -24,7 +24,9 @@ class SqsConnector extends BaseSqsConnector
         }
 
         return new SqsQueue(
-            new SqsClient($config), $config['queue'], $config['prefix'] ?? ''
+            new SqsClient($config),
+            $config['queue'],
+            $config['prefix'] ?? ''
         );
     }
 }
