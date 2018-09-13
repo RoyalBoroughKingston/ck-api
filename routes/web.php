@@ -28,6 +28,8 @@ Route::namespace('Auth')->group(function () {
     Route::post('password/reset', 'ResetPasswordController@reset')->name('password.update');
 });
 
+Route::get('/', 'HomeController');
+
 Route::get('/docs', 'DocsController@index')
     ->name('docs.index');
 
