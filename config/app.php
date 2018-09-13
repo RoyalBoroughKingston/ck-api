@@ -152,7 +152,7 @@ return [
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
-        Illuminate\Queue\QueueServiceProvider::class,
+        // Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
@@ -177,6 +177,7 @@ return [
         App\Providers\GovNotifyServiceProvider::class,
         App\Providers\MigrationServiceProvider::class,
         App\Providers\ModelServiceProvider::class,
+        App\Providers\QueueServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TestingServiceProvider::class,
 
