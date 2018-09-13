@@ -14,5 +14,3 @@ permissions:
 hooks:
   AfterInstall:
     - location: scripts/AfterInstall.sh
-  ApplicationStart:
-    - location: scripts/ApplicationStart.sh
