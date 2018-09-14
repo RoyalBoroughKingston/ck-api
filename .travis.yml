@@ -43,7 +43,7 @@ install:
 
 before_script:
   - sudo -i service elasticsearch start
-  - sleep 10 # Needed to give Elasticsearch time to setup
+  - sleep 10 # Needed to give Elasticsearch time to setup.
   - mysql -e 'create database ck_testing;'
   - php artisan migrate --force
   - php artisan passport:keys
