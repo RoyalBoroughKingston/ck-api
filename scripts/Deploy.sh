@@ -12,5 +12,5 @@ cf api $CF_API
 # Login to Cloud Foundry.
 cf login -u $CF_USERNAME -p $CF_PASSWORD -o $CF_ORGANISATION -s $CF_SPACE
 
-# Deploy
+# Deploy.
 cf push --vars-file "$SECRETS_FILE"

@@ -25,8 +25,14 @@ defaults: &defaults
     GOOGLE_API_KEY: ((GOOGLE_API_KEY))
     GOV_NOTIFY_API_KEY: ((GOV_NOTIFY_API_KEY))
     LOG_CHANNEL: errorlog
-    QUEUE_DRIVER: redis
+    QUEUE_DRIVER: sqs
     SMS_DRIVER: gov
+    SQS_KEY: ((SQS_KEY))
+    SQS_PREFIX: ((SQS_PREFIX))
+    SQS_QUEUE: ((SQS_QUEUE))
+    SQS_REGION: ((SQS_REGION))
+    SQS_SECRET: ((SQS_SECRET))
+    REDIS_CLUSTER: true
     REDIS_SCHEME: tls
     SCOUT_ELASTIC_DOCUMENT_REFRESH: "null"
     SESSION_DRIVER: redis
@@ -40,7 +46,7 @@ applications:
 - name: ck-queue-worker
   <<: *defaults
   no-route: true
-  command: php artisan queue:work --queue={default},{search},{notifications} --tries=1
+  command: php artisan queue:work --queue=default,search,notifications --tries=1
   health-check-type: process
 
 - name: ck-scheduler
