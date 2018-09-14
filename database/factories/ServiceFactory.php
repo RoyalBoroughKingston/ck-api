@@ -14,7 +14,7 @@ $factory->define(Service::class, function (Faker $faker) {
         'name' => $name,
         'status' => Service::STATUS_ACTIVE,
         'intro' => $faker->sentence,
-        'description' => $faker->paragraph,
+        'description' => $faker->sentence,
         'is_free' => true,
         'url' => $faker->url,
         'contact_name' => $faker->name,
