@@ -21,7 +21,6 @@ branches:
   only:
     - master
     - develop
-    - feature/code-deploy # TODO: Remove this
 
 cache:
   directories:
@@ -72,7 +71,7 @@ deploy:
     skip_cleanup: true
     on:
       repo: RoyalBoroughKingston/ck-api
-      branch: feature/code-deploy # TODO: Change this to master
+      branch: feature/master
   - provider: codedeploy
     revision_type: github
     access_key_id:
@@ -85,7 +84,7 @@ deploy:
     skip_cleanup: true
     on:
       repo: RoyalBoroughKingston/ck-api
-      branch: feature/code-deploy # TODO: Change this to master
+      branch: feature/master
   - provider: codedeploy
     revision_type: github
     access_key_id:
@@ -98,7 +97,7 @@ deploy:
     skip_cleanup: true
     on:
       repo: RoyalBoroughKingston/ck-api
-      branch: feature/code-deploy # TODO: Change this to master
+      branch: feature/master
 
 notifications:
   slack:
