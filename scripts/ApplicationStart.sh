@@ -6,5 +6,5 @@ if [ "$APP_ROLE" = "queue-worker" ]; then
 
     # Restart supervisor.
     sudo supervisorctl reread
-    sudo supervisorctl start laravel-worker:*
+    sudo supervisorctl reload
 fi
