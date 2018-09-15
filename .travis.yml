@@ -71,7 +71,7 @@ deploy:
     skip_cleanup: true
     on:
       repo: RoyalBoroughKingston/ck-api
-      branch: feature/master
+      branch: master
   - provider: codedeploy
     revision_type: github
     access_key_id:
@@ -84,7 +84,7 @@ deploy:
     skip_cleanup: true
     on:
       repo: RoyalBoroughKingston/ck-api
-      branch: feature/master
+      branch: master
   - provider: codedeploy
     revision_type: github
     access_key_id:
@@ -97,7 +97,7 @@ deploy:
     skip_cleanup: true
     on:
       repo: RoyalBoroughKingston/ck-api
-      branch: feature/master
+      branch: master
 
 notifications:
   slack:
