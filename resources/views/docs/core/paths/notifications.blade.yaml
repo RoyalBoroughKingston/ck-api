@@ -3,62 +3,58 @@ root:
   get:
     tags: [Notifications]
     summary: List all the notifications
+    description: |
+      **Permission:** `Global Admin`
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/filter-id.yaml
+    - name: filter[referral_id]
+      in: query
+      description: The ID of the referral
+      schema:
+        type: string
+    - name: filter[service_id]
+      in: query
+      description: The ID of the service
+      schema:
+        type: string
+    - name: filter[user_id]
+      in: query
+      description: The ID of the user
+      schema:
+        type: string
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/notification.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/notification.yaml
 
 # /notifications/{notification}
 nested:
   get:
     tags: [Notifications]
     summary: Get a specific notification
+    description: |
+      **Permission:** `Global Admin`
     parameters:
-      - name: notification
-        in: path
-        description: The ID of the notification
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: notification
+      in: path
+      description: The ID of the notification
+      required: true
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
           application/json:
             schema:
               $ref: /docs/core/resources/notification.yaml
-# /users/{user}/notifications
-users:
-  get:
-    tags: [Notifications]
-    summary: List all the notifications for a user
-    parameters:
-      - name: user
-        in: path
-        description: The ID of the user
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/notification.yaml

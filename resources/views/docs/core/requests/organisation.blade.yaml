@@ -1,21 +1,38 @@
 store:
   type: object
   required:
-    - name
-    - email
-    - phone
+  - name
+  - slug
+  - description
+  - url
+  - email
+  - phone
   properties:
     name:
       type: string
+      example: Ayup Digital
+    slug:
+      type: string
+      example: ayup-digital
     description:
       type: string
+      example: Digital product agency
     url:
       type: string
+      example: https://ayup.agency
     email:
       type: string
+      example: info@ayup.agency
     phone:
       type: string
+      example: "01138591020"
+    logo:
+      type: string
+      format: binary
+      description: Base64 encoded string of the PNG image
+      nullable: true
+      example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

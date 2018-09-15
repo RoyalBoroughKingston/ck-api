@@ -1,4 +1,4 @@
-# Connect Well Kingston
+# Connected Kingston
 
 A scheme run by RBK to help residents take control of their own health by connecting them with services and events in their local area.
 This system forms the online aspect of this scheme, by providing an API as well a frontend and backend web app.
@@ -13,6 +13,7 @@ See deployment for notes on how to deploy the project on a live system.
 * PHP
 * Composer
 * Vagrant
+* Docker
 
 ### Installing
 
@@ -26,33 +27,70 @@ cp .env.example .env
 # Installs Laravel Homestead.
 composer install --ignore-platform-reqs
 
-# Update your hosts file (use values set in Homestead.yaml).
-sudo echo "192.168.10.12 api.connectwellkingston.test" >> /etc/hosts
+# Update your hosts file.
+sudo vim /etc/hosts
+
+# Append this to the end (use the IP and hostname set in Homestead.yaml).
+192.168.10.12 api.connectedkingston.test
 ```
 
 You should then be able to start the VM and SSH into it:
 
 ```bash
-vagrant up && vagrant ssh
-cd api.connectwellkingston
+vagrant up
+
+# Allows access to Elasticsearch on host machine
+vagrant ssh -- -R 9200:localhost:9200
+
+cd ck-api
 
 # Generate the application key.
 php artisan key:generate
 
-# Run the migrations and initial seeder.
-php artisan migrate --seed
+# Run the migrations.
+php artisan migrate
 
 # Install the OAuth 2.0 keys.
-php artisan pasport:keys
+php artisan passport:keys
 
 # Create the first Global Admin user (take a note of the password outputted).
-php artisan cwk:create-user <first-name> <last-name> <email> <phone-number>
+php artisan ck:create-user <first-name> <last-name> <email> <phone-number>
 ```
 
 Ensure any API clients have been created:
 
 ```bash
 php artisan passport:client --password --name="Name of Application"
+```
+
+In a separate terminal on your host machine, pull the Elasticsearch docker image and start an instance of it:
+
+```bash
+docker pull docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+```
+
+Then back on the homestead VM, run the seeder and setup the Elasticsearch index:
+
+```bash
+# Create the index.
+php artisan elastic:create-index App\\Models\\IndexConfigurators\\ServicesIndexConfigurator
+
+# Set the fields mappings for the index.
+php artisan elastic:update-mapping App\\Models\\Service
+
+# Run the seeder.
+php artisan db:seed
+
+# Import all of the services from the database into the index.
+php artisan scout:import App\\Models\\Service
+```
+
+Finally, install the NPM dependencies and compile all assets:
+
+```bash
+npm install
+npm run dev
 ```
 
 ## Running the tests
@@ -71,7 +109,7 @@ php vendor/bin/phpcs
 
 ## Deployment
 
-TODO: Write deployment process for GOV.UK PaaS.
+Deployment is fully automated by pushing a commit to `develop` or `master`. More information on this process can be [found in the wiki](https://github.com/RoyalBoroughKingston/ck-api/wiki/Branching-and-Release-Strategy#continuous-delivery).
 
 ## Built With
 
@@ -84,13 +122,13 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/RoyalBoroughKingston/cwk-api/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/RoyalBoroughKingston/ck-api/tags). 
 
 ## Authors
 
 * [Ayup Digital](https://ayup.agency/)
 
-See also the list of [contributors](https://github.com/RoyalBoroughKingston/cwk-api/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/RoyalBoroughKingston/ck-api/contributors) who participated in this project.
 
 ## License
 

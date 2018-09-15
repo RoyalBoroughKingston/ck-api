@@ -3,95 +3,65 @@ root:
   get:
     tags: [Locations]
     summary: List all the locations
+    description: |
+      **Permission:** `Open`
+    security: []
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/filter-id.yaml
+    - name: filter[address_line_1]
+      in: query
+      description: Filter by address line 1
+      schema:
+        type: string
+    - name: filter[address_line_2]
+      in: query
+      description: Filter by address line 2
+      schema:
+        type: string
+    - name: filter[address_line_3]
+      in: query
+      description: Filter by address line 3
+      schema:
+        type: string
+    - name: filter[city]
+      in: query
+      description: Filter by city
+      schema:
+        type: string
+    - name: filter[county]
+      in: query
+      description: Filter by county
+      schema:
+        type: string
+    - name: filter[postcode]
+      in: query
+      description: Filter by postcode
+      schema:
+        type: string
+    - name: filter[country]
+      in: query
+      description: Filter by country
+      schema:
+        type: string
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/location.yaml
-
-# /locations/{location}
-nested:
-  get:
-    tags: [Locations]
-    summary: Get a specific location
-    parameters:
-      - name: location
-        in: path
-        description: The ID of the location
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/resources/location.yaml
-
-  put:
-    tags: [Locations]
-    summary: Update a specific location
-    parameters:
-      - name: location
-        in: path
-        description: The ID of the location
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: /docs/core/requests/location.yaml#/update
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/resources/location.yaml
-
-  delete:
-    tags: [Locations]
-    summary: Delete a specific location
-    parameters:
-      - name: location
-        in: path
-        description: The ID of the location
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              $ref: /docs/core/responses/resource-deleted.yaml
-
-# /services/{service}/locations
-services:
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/location.yaml
   post:
     tags: [Locations]
-    summary: Create a location for a service
-    parameters:
-      - name: service
-        in: path
-        description: The ID of the service
-        required: true
-        schema:
-          type: string
-          format: uuid
+    summary: Create a location
+    description: |
+      **Permission:** `Service Admin`
     requestBody:
       required: true
       content:
@@ -104,3 +74,78 @@ services:
           application/json:
             schema:
               $ref: /docs/core/resources/location.yaml
+
+# /locations/{location}
+nested:
+  get:
+    tags: [Locations]
+    summary: Get a specific location
+    description: |
+      **Permission:** `Open`
+    security: []
+    parameters:
+    - name: location
+      in: path
+      description: The ID of the location
+      required: true
+      schema:
+        type: string
+        format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/location.yaml
+
+  put:
+    tags: [Locations]
+    summary: Update a specific location
+    description: |
+      **Permission:** `Service Admin`
+    parameters:
+    - name: location
+      in: path
+      description: The ID of the location
+      required: true
+      schema:
+        type: string
+        format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/location.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The update request has been received and needs to be reviewed
+                data:
+                  $ref: /docs/core/requests/location.yaml#/update
+
+  delete:
+    tags: [Locations]
+    summary: Delete a specific location
+    description: |
+      **Permission:** `Global Admin`
+    parameters:
+    - name: location
+      in: path
+      description: The ID of the location
+      required: true
+      schema:
+        type: string
+        format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml

@@ -1,0 +1,5 @@
+name: filter[id]
+in: query
+description: Comma seperated list of IDs to filter by
+schema:
+  type: string

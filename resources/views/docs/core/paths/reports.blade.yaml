@@ -3,23 +3,30 @@ root:
   get:
     tags: [Reports]
     summary: List all the reports
+    description: |
+      **Permission:** `Global Admin`
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/filter-id.yaml
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/report.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/report.yaml
 
   post:
     tags: [Reports]
     summary: Create a report
+    description: |
+      **Permission:** `Global Admin`
     requestBody:
       required: true
       content:
@@ -38,14 +45,16 @@ nested:
   get:
     tags: [Reports]
     summary: Get a specific report
+    description: |
+      **Permission:** `Global Admin`
     parameters:
-      - name: report
-        in: path
-        description: The ID of the report
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: report
+      in: path
+      description: The ID of the report
+      required: true
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
@@ -56,14 +65,16 @@ nested:
   delete:
     tags: [Reports]
     summary: Delete a specific report
+    description: |
+      **Permission:** `Global Admin`
     parameters:
-      - name: report
-        in: path
-        description: The ID of the report
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: report
+      in: path
+      description: The ID of the report
+      required: true
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
@@ -76,14 +87,16 @@ download:
   get:
     tags: [Reports]
     summary: Download a specific report
+    description: |
+      **Permission:** `Global Admin`
     parameters:
-      - name: report
-        in: path
-        description: The ID of the report
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: report
+      in: path
+      description: The ID of the report
+      required: true
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:

@@ -1,45 +1,58 @@
 store:
   type: object
   required:
-    - first_name
-    - last_name
-    - email
-    - password
-    - roles
+  - first_name
+  - last_name
+  - email
+  - phone
+  - password
+  - roles
   properties:
     first_name:
       type: string
-    last_nane:
+      example: John
+    last_name:
       type: string
+      example: Doe
     email:
       type: string
+      example: john.doe@example.com
+    phone:
+      type: string
+      example: "07700000000"
     password:
       type: string
       format: password
+      example: password
     roles:
       type: array
       items:
         type: object
         required:
-          - role
+        - role
+        - organisation_id
+        - service_id
         properties:
           role:
             type: string
             enum:
-              - service_admin
-              - organisation_admin
-              - system_admin
-              - tier_1_worker
-              - tier_2_worker
+            - Service Worker
+            - Service Admin
+            - Organisation Admin
+            - Global Admin
+            - Super Admin
+            example: Service Worker
           organisation_id:
             type: string
             format: uuid
             nullable: true
+            example: null
           service_id:
             type: string
             format: uuid
             nullable: true
+            example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

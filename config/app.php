@@ -95,6 +95,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Faker Locale Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The faker locale determines the default locale that will be used
+    | by the faker library. You are free to set this value to any of
+    | the locales which will be supported by faker.
+    |
+    */
+
+    'faker_locale' => 'en_GB',
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |
@@ -139,7 +152,7 @@ return [
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
-        Illuminate\Queue\QueueServiceProvider::class,
+        // Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
@@ -158,9 +171,15 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\BladeServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\CloudFoundryServiceProvider::class,
         App\Providers\DatabaseServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\GovNotifyServiceProvider::class,
+        App\Providers\MigrationServiceProvider::class,
+        App\Providers\ModelServiceProvider::class,
+        App\Providers\QueueServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TestingServiceProvider::class,
 
     ],
 

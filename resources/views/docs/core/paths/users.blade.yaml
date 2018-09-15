@@ -3,23 +3,48 @@ root:
   get:
     tags: [Users]
     summary: List all the users
+    description: |
+      **Permission:** `Service Worker`
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/filter-id.yaml
+    - name: filter[first_name]
+      in: query
+      description: First name to filter by
+      schema:
+        type: string
+    - name: filter[last_name]
+      in: query
+      description: Last name to filter by
+      schema:
+        type: string
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-                - $ref: /docs/core/responses/resource-collection.yaml
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: /docs/core/resources/user.yaml
+              - $ref: /docs/core/responses/resource-collection.yaml
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: /docs/core/resources/user.yaml
 
   post:
     tags: [Users]
     summary: Create a user
+    description: |
+      **Permission:** `Service Admin`
+      - Can create service workers
+      - Can create other service admins
+
+      **Permission:** `Global Admin`
+      - Can create other global admins
+
+      **Permission:** `Super Admin`
+      - Can create other super admins
     requestBody:
       required: true
       content:
@@ -38,14 +63,16 @@ nested:
   get:
     tags: [Users]
     summary: Get a specific user
+    description: |
+      **Permission:** `Service Worker`
     parameters:
-      - name: user
-        in: path
-        description: The ID of the user
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: user
+      in: path
+      description: The ID of the user
+      required: true
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
@@ -56,14 +83,24 @@ nested:
   put:
     tags: [Users]
     summary: Update a specific user
+    description: |
+      **Permission:** `Service Admin`
+      - Can update service workers
+      - Can update other service admins
+
+      **Permission:** `Global Admin`
+      - Can update other global admins
+
+      **Permission:** `Super Admin`
+      - Can update other super admins
     parameters:
-      - name: user
-        in: path
-        description: The ID of the user
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: user
+      in: path
+      description: The ID of the user
+      required: true
+      schema:
+        type: string
+        format: uuid
     requestBody:
       required: true
       content:
@@ -80,14 +117,24 @@ nested:
   delete:
     tags: [Users]
     summary: Delete a specific user
+    description: |
+      **Permission:** `Service Admin`
+      - Can delete service workers
+      - Can delete other service admins
+
+      **Permission:** `Global Admin`
+      - Can delete other global admins
+
+      **Permission:** `Super Admin`
+      - Can delete other super admins
     parameters:
-      - name: user
-        in: path
-        description: The ID of the user
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: user
+      in: path
+      description: The ID of the user
+      required: true
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:

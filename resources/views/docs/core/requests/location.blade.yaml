@@ -1,29 +1,49 @@
 store:
   type: object
   required:
-    - address_line_1
-    - city
-    - county
-    - postcode
-    - country
+  - address_line_1
+  - address_line_2
+  - address_line_3
+  - city
+  - county
+  - postcode
+  - country
+  - accessibility_info
+  - has_wheelchair_access
+  - has_induction_loop
   properties:
     address_line_1:
       type: string
+      example: 30-34 Aire St
     address_line_2:
       type: string
       nullable: true
+      example: null
     address_line_3:
       type: string
       nullable: true
+      example: null
     city:
       type: string
+      example: Leeds
     county:
       type: string
+      example: West Yorkshire
     postcode:
       type: string
+      example: LS1 4HT
     country:
       type: string
+      example: United Kingdom
+    accessibility_info:
+      type: string
+      nullable: true
+      example: null
+    has_wheelchair_access:
+      type: boolean
+    has_induction_loop:
+      type: boolean
 
 update:
   allOf:
-    - $ref: "#/store"
+  - $ref: "#/store"

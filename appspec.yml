@@ -1,0 +1,19 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/html
+    overwrite: true
+permissions:
+  - object: /var/www/html/bootstrap/cache
+    group: apache
+    mode: 777
+  - object: /var/www/html/storage
+    group: apache
+    mode: 777
+hooks:
+  AfterInstall:
+    - location: scripts/AfterInstall.sh
+  ApplicationStart:
+    - location: scripts/ApplicationStart.sh
+      runas: ec2-user

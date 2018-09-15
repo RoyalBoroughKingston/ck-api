@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
+
+class ServiceLocationResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'service_id' => $this->service_id,
+            'location_id' => $this->location_id,
+            'name' => $this->name,
+            'is_open_now' => $this->isOpenNow(),
+            'regular_opening_hours' => RegularOpeningHourResource::collection($this->regularOpeningHours),
+            'holiday_opening_hours' => HolidayOpeningHourResource::collection($this->holidayOpeningHours),
+            'created_at' => $this->created_at->format(Carbon::ISO8601),
+            'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+
+            // Relationships.
+            'location' => new LocationResource($this->whenLoaded('location')),
+        ];
+    }
+}

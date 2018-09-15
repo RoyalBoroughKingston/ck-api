@@ -6,48 +6,51 @@ defaults: &defaults
   services:
   - ((db-service-name))
   - ((redis-service-name))
+  - ((search-service-name))
   env:
     APP_DEBUG: ((APP_DEBUG))
     APP_ENV: ((APP_ENV))
     APP_KEY: ((APP_KEY))
-    APP_NAME: Connect Well Kingston
+    APP_NAME: Connected Kingston
     APP_URL: ((APP_URL))
+    AWS_ACCESS_KEY_ID: ((AWS_ACCESS_KEY_ID))
+    AWS_SECRET_ACCESS_KEY: ((AWS_SECRET_ACCESS_KEY))
+    AWS_DEFAULT_REGION: ((AWS_DEFAULT_REGION))
+    AWS_BUCKET: ((AWS_BUCKET))
     CACHE_DRIVER: redis
     DB_CERT_PATH: /etc/ssl/certs
     DB_CONNECTION: mysql
-    DB_DATABASE: ((DB_DATABASE))
-    DB_HOST: ((DB_HOST))
-    DB_PASSWORD: ((DB_PASSWORD))
-    DB_PORT: ((DB_PORT))
-    DB_USERNAME: ((DB_USERNAME))
+    EMAIL_DRIVER: gov
+    GEOCODE_DRIVER: google
+    GOOGLE_API_KEY: ((GOOGLE_API_KEY))
+    GOV_NOTIFY_API_KEY: ((GOV_NOTIFY_API_KEY))
     LOG_CHANNEL: errorlog
-    MAIL_DRIVER: ((MAIL_DRIVER))
-    MAIL_ENCRYPTION: tls
-    MAIL_HOST: ((MAIL_HOST))
-    MAIL_PASSWORD: ((MAIL_PASSWORD))
-    MAIL_PORT: ((MAIL_PORT))
-    MAIL_USERNAME: ((MAIL_USERNAME))
-    QUEUE_DRIVER: redis
-    REDIS_HOST: ((REDIS_HOST))
-    REDIS_PASSWORD: ((REDIS_PASSWORD))
-    REDIS_PORT: ((REDIS_PORT))
+    QUEUE_DRIVER: sqs
+    SMS_DRIVER: gov
+    SQS_KEY: ((SQS_KEY))
+    SQS_PREFIX: ((SQS_PREFIX))
+    SQS_QUEUE: ((SQS_QUEUE))
+    SQS_REGION: ((SQS_REGION))
+    SQS_SECRET: ((SQS_SECRET))
+    REDIS_CLUSTER: true
     REDIS_SCHEME: tls
+    SCOUT_ELASTIC_DOCUMENT_REFRESH: "null"
     SESSION_DRIVER: redis
 
 applications:
-- name: cwk-api
+- name: ck-api
   <<: *defaults
   routes:
   - route: ((route))
 
-- name: cwk-queue-worker
+- name: ck-queue-worker
   <<: *defaults
   no-route: true
-  command: php artisan queue:work
+  command: php artisan queue:work --queue=default,search,notifications --tries=1
   health-check-type: process
 
-- name: cwk-scheduler
+- name: ck-scheduler
   <<: *defaults
   no-route: true
-  command: php artisan cwk:run-scheduler
+  command: php artisan ck:run-scheduler
   health-check-type: process

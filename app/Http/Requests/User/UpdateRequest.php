@@ -1,0 +1,212 @@
+<?php
+
+namespace App\Http\Requests\User;
+
+use App\Models\Organisation;
+use App\Models\Role;
+use App\Models\Service;
+use App\Models\UserRole;
+use App\Rules\Password;
+use App\Rules\UkPhoneNumber;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UpdateRequest extends FormRequest
+{
+    /**
+     * @var array|null
+     */
+    protected $existingRoles = null;
+
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        $canUpdate = $this->user()->canUpdate($this->user);
+        $canAddNewRoles = $this->canAddNewRoles($this->getNewRoles());
+        $canRevokeDeletedRoles = $this->canRevokeDeletedRoles($this->getDeletedRoles());
+
+        if ($canUpdate && $canAddNewRoles && $canRevokeDeletedRoles) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getExistingRoles(): array
+    {
+        if ($this->existingRoles === null) {
+            /** @var \App\Models\User $user */
+            $user = $this->user;
+
+            $exitingRoles = $user->userRoles->load('role');
+
+            $existingRolesArray = $exitingRoles->map(function (UserRole $userRole) {
+                return array_filter_null([
+                    'role' => $userRole->role->name,
+                    'organisation_id' => $userRole->organisation_id,
+                    'service_id' => $userRole->service_id,
+                ]);
+            })->toArray();
+
+            $this->existingRoles = $existingRolesArray;
+        }
+
+        return $this->existingRoles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNewRoles(): array
+    {
+        return array_diff_multi($this->roles, $this->getExistingRoles());
+    }
+
+    /**
+     * @return array
+     */
+    public function getDeletedRoles(): array
+    {
+        return array_diff_multi($this->getExistingRoles(), $this->roles);
+    }
+
+    /**
+     * @return bool
+     */
+    public function rolesHaveBeenUpdated(): bool
+    {
+        $hasNewRoles = count($this->getNewRoles()) > 0;
+        $hasDeletedRoles = count($this->getDeletedRoles()) > 0;
+
+        return $hasNewRoles || $hasDeletedRoles;
+    }
+
+    /**
+     * @param array $newRoles
+     * @return bool
+     */
+    protected function canAddNewRoles(array $newRoles): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = $this->user();
+
+        foreach ($newRoles as $newRole) {
+            switch ($newRole['role']) {
+                case Role::NAME_SERVICE_WORKER:
+                    $service = Service::findOrFail($newRole['service_id']);
+                    if (!$user->canMakeServiceWorker($service)) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_SERVICE_ADMIN:
+                    $service = Service::findOrFail($newRole['service_id']);
+                    if (!$user->canMakeServiceAdmin($service)) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_ORGANISATION_ADMIN:
+                    $organisation = Organisation::findOrFail($newRole['organisation_id']);
+                    if (!$user->canMakeOrganisationAdmin($organisation)) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_GLOBAL_ADMIN:
+                    if (!$user->canMakeGlobalAdmin()) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_SUPER_ADMIN:
+                    if (!$user->canMakeSuperAdmin()) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $deletedRoles
+     * @return bool
+     */
+    protected function canRevokeDeletedRoles(array $deletedRoles): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = $this->user()->load('userRoles');
+
+        /** @var \App\Models\User $subject */
+        $subject = $this->user->load('userRoles');
+
+        foreach ($deletedRoles as $deletedRole) {
+            switch ($deletedRole['role']) {
+                case Role::NAME_SERVICE_WORKER:
+                    $service = Service::findOrFail($deletedRole['service_id']);
+                    if (!$user->canRevokeServiceWorker($subject, $service)) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_SERVICE_ADMIN:
+                    $service = Service::findOrFail($deletedRole['service_id']);
+                    if (!$user->canRevokeServiceAdmin($subject, $service)) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_ORGANISATION_ADMIN:
+                    $organisation = Organisation::findOrFail($deletedRole['organisation_id']);
+                    if (!$user->canRevokeOrganisationAdmin($subject, $organisation)) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_GLOBAL_ADMIN:
+                    if (!$user->canRevokeGlobalAdmin($subject)) {
+                        return false;
+                    }
+                    break;
+                case Role::NAME_SUPER_ADMIN:
+                    if (!$user->canRevokeSuperAdmin($subject)) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'first_name' => ['required', 'string', 'min:1', 'max:255'],
+            'last_name' => ['required', 'string', 'min:1', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignoreModel($this->user)],
+            'phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
+            'password' => ['string', 'min:8', 'max:255', new Password()],
+
+            'roles' => ['required', 'array'],
+            'roles.*' => ['required', 'array'],
+            'roles.*.role' => ['required_with:roles.*', 'string', 'exists:roles,name'],
+            'roles.*.organisation_id' => [
+                'required_if:roles.*.role,'.Role::NAME_ORGANISATION_ADMIN,
+                'exists:organisations,id',
+            ],
+            'roles.*.service_id' => [
+                'required_if:roles.*.role,'.Role::NAME_SERVICE_WORKER,
+                'required_if:roles.*.role,'.Role::NAME_SERVICE_ADMIN,
+                'exists:services,id',
+            ],
+        ];
+    }
+}

@@ -3,19 +3,37 @@ properties:
   id:
     type: string
     format: uuid
-  user_id:
+    example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+  notifiable_type:
+    type: string
+    nullable: true
+    example: referrals
+  notifiable_id:
     type: string
     format: uuid
     nullable: true
+    example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
   channel:
     type: string
     enum:
-      - email
-      - sms
+    - email
+    - sms
+    example: email
   recipient:
     type: string
+    example: john.doe@example.com
   message:
     type: string
+    example: Lorem ipsum
+  sent_at:
+    type: string
+    format: date-time
+    nullable: true
+  failed_at:
+    type: string
+    format: date-time
+    nullable: true
+    example: null
   created_at:
     type: string
     format: date-time

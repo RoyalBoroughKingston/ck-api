@@ -7,14 +7,14 @@ keys:
     - ~/.ssh/id_rsa
 folders:
     -
-        map: ~/Sites/cwk-api
-        to: /home/vagrant/cwk-api
+        map: ~/Sites/ck-api
+        to: /home/vagrant/ck-api
 sites:
     -
-        map: api.connectwellkingston.test
-        to: /home/vagrant/cwk-api/public
+        map: api.connectedkingston.test
+        to: /home/vagrant/ck-api/public
 databases:
-    - cwk_dev
-    - cwk_testing
-name: cwk-api
-hostname: cwk-api
+    - ck_dev
+    - ck_testing
+name: ck-api
+hostname: ck-api

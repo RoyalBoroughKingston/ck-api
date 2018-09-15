@@ -1,0 +1,11 @@
+type: object
+properties:
+  title:
+    type: string
+    example: How to apply
+  description:
+    type: string
+    example: Lorem ipsum
+  order:
+    type: integer
+    example: 1

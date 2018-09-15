@@ -3,16 +3,16 @@ properties:
   id:
     type: string
     format: uuid
+    example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
   report_type:
     type: string
     enum:
-      - report_type_1
-      - report_type_2
+    - Commissioners Report
   repeat_type:
     type: string
     enum:
-      - weekly
-      - monthly
+    - weekly
+    - monthly
   created_at:
     type: string
     format: date-time

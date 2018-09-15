@@ -1,0 +1,46 @@
+type: object
+properties:
+  page:
+    type: integer
+    example: 1
+  per_page:
+    type: integer
+    example: {{ config('ck.pagination_results') }}
+  query:
+    type: string
+    example: Health and Social
+  category:
+    type: string
+    example: Self Help
+  persona:
+    type: string
+    example: Refugees
+  wait_time:
+    type: string
+    enum:
+    - one_week
+    - two_weeks
+    - three_weeks
+    - month
+    - longer
+  is_free:
+    type: boolean
+    example: true
+  order:
+    type: string
+    enum:
+    - relevance
+    - distance
+    default: relevance
+  location:
+    type: object
+    required:
+    - lat
+    - lon
+    properties:
+      lat:
+        type: float
+        example: 5.78263
+      lon:
+        type: float
+        example: -52.12710
