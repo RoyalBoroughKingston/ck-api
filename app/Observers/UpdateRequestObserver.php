@@ -50,7 +50,6 @@ class UpdateRequestObserver
         // Send notification to the global admins.
         Notification::sendEmail(
             new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
-                'RESOURCE_NAME' => $resourceName,
                 'RESOURCE_TYPE' => $resourceType,
                 'RESOURCE_ID' => $updateRequest->updateable_id,
                 'REQUEST_URL' => backend_uri("/update-requests/{$updateRequest->id}"),
