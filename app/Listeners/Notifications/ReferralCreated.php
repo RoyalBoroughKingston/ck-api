@@ -60,6 +60,9 @@ class ReferralCreated
             // Only send an email if email address was provided.
             $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, [
                 'REFEREE_NAME' => $referral->referee_name,
+                'REFERRAL_SERVICE_NAME' => $referral->service->name,
+                'REFERRAL_CONTACT_METHOD' => 'email',
+                'REFERRAL_ID' => $referral->reference,
             ]));
         } elseif ($referral->referee_phone) {
             // Resort to SMS, but only if phone number address was provided.
