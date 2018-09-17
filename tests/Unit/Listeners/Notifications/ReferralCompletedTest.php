@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Listeners\Notifications;
 
+use App\Emails\ReferralCompleted\NotifyClientEmail;
 use App\Emails\ReferralCompleted\NotifyRefereeEmail;
 use App\Events\EndpointHit;
 use App\Listeners\Notifications\ReferralCompleted;
@@ -13,11 +14,12 @@ use Tests\TestCase;
 
 class ReferralCompletedTest extends TestCase
 {
-    public function test_email_sent_to_referee()
+    public function test_emails_sent_out()
     {
         Queue::fake();
 
         $referral = factory(Referral::class)->create([
+            'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_COMPLETED,
         ]);
@@ -35,5 +37,6 @@ class ReferralCompletedTest extends TestCase
         $listener->handle($event);
 
         Queue::assertPushedOn('notifications', NotifyRefereeEmail::class);
+        Queue::assertPushedOn('notifications', NotifyClientEmail::class);
     }
 }
