@@ -27,7 +27,7 @@ class UpdateRequestObserver
             new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
                 'RESOURCE_TYPE' => $updateRequest->updateable_type,
                 'RESOURCE_ID' => $updateRequest->updateable_id,
-                'REQUEST' => json_encode($updateRequest->data),
+                'REQUEST_URL' => backend_uri("/update-requests/{$updateRequest->id}"),
             ])
         );
     }
