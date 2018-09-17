@@ -72,6 +72,7 @@ class ReferralCompleted
             $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, [
                 'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
+                'REFERRAL' => $referral->reference,
                 'SERVICE_PHONE' => $referral->service->contact_phone,
                 'SERVICE_EMAIL' => $referral->service->contact_email,
             ]));
