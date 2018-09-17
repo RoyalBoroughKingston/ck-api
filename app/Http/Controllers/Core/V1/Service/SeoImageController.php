@@ -24,7 +24,7 @@ class SeoImageController extends Controller
         event(EndpointHit::onRead($request, "Viewed SEO image for service [{$service->id}]", $service));
 
         return $service->seoImageFile ?? response()->make(
-            Storage::disk('local')->get('/placeholders/image.png'),
+            Storage::disk('local')->get('/placeholders/service.png'),
             Response::HTTP_OK,
             ['Content-Type' => 'image/png']
         );
