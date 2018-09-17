@@ -137,4 +137,32 @@ class Referral extends Model
             $this->dispatch($sms);
         });
     }
+
+    /**
+     * Get the initials of the client.
+     *
+     * @return string
+     */
+    public function initials(): string
+    {
+        $names = explode(' ', $this->name);
+        $names = array_filter($names);
+
+        $initials = '';
+        foreach ($names as $name) {
+            $initials .= $name[0];
+        }
+
+        return strtoupper($initials);
+    }
+
+    /**
+     * Determines whether this is a self referral or not.
+     *
+     * @return bool
+     */
+    public function isSelfReferral(): bool
+    {
+        return $this->referee_name === null;
+    }
 }
