@@ -33,8 +33,8 @@ class PageFeedbackReceived
     {
         Notification::sendEmail(
             new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
-                'URL' => $pageFeedback->url,
-                'FEEDBACK' => $pageFeedback->feedback,
+                'FEEDBACK_URL' => $pageFeedback->url,
+                'FEEDBACK_CONTENT' => $pageFeedback->feedback,
             ])
         );
     }
