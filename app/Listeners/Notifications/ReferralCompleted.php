@@ -69,7 +69,7 @@ class ReferralCompleted
             $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, [
                 'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
-                'REFERRAL' => $referral->reference,
+                'REFERRAL_ID' => $referral->reference,
                 'SERVICE_PHONE' => $referral->service->contact_phone,
                 'SERVICE_EMAIL' => $referral->service->contact_email,
             ]));
@@ -78,6 +78,7 @@ class ReferralCompleted
             $referral->sendSmsToReferee(new NotifyRefereeSms($referral->referee_phone, [
                 'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
+                'REFERRAL_ID' => $referral->reference,
                 'SERVICE_PHONE' => $referral->service->contact_phone,
                 'SERVICE_EMAIL' => $referral->service->contact_email,
             ]));
