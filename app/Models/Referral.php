@@ -6,13 +6,13 @@ use App\Emails\Email;
 use App\Models\Mutators\ReferralMutators;
 use App\Models\Relationships\ReferralRelationships;
 use App\Models\Scopes\ReferralScopes;
+use App\Notifications\Notifiable;
 use App\Notifications\Notifications;
 use App\Sms\Sms;
 use Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Support\Facades\DB;
 
-class Referral extends Model
+class Referral extends Model implements Notifiable
 {
     use DispatchesJobs;
     use Notifications;
@@ -67,18 +67,7 @@ class Referral extends Model
      */
     public function sendEmailToClient(Email $email)
     {
-        DB::transaction(function () use ($email) {
-            // Log a notification for the email in the database.
-            $notification = $this->notifications()->create([
-                'channel' => Notification::CHANNEL_EMAIL,
-                'recipient' => $this->email,
-                'message' => $email->getContent(),
-            ]);
-
-            // Add the email as a job on the queue to be sent.
-            $email->notification = $notification;
-            $this->dispatch($email);
-        });
+        Notification::sendEmail($email, $this);
     }
 
     /**
@@ -86,18 +75,7 @@ class Referral extends Model
      */
     public function sendSmsToClient(Sms $sms)
     {
-        DB::transaction(function () use ($sms) {
-            // Log a notification for the SMS in the database.
-            $notification = $this->notifications()->create([
-                'channel' => Notification::CHANNEL_SMS,
-                'recipient' => $this->phone,
-                'message' => $sms->getContent(),
-            ]);
-
-            // Add the SMS as a job on the queue to be sent.
-            $sms->notification = $notification;
-            $this->dispatch($sms);
-        });
+        Notification::sendSms($sms, $this);
     }
 
     /**
@@ -105,18 +83,7 @@ class Referral extends Model
      */
     public function sendEmailToReferee(Email $email)
     {
-        DB::transaction(function () use ($email) {
-            // Log a notification for the email in the database.
-            $notification = $this->notifications()->create([
-                'channel' => Notification::CHANNEL_EMAIL,
-                'recipient' => $this->referee_email,
-                'message' => $email->getContent(),
-            ]);
-
-            // Add the email as a job on the queue to be sent.
-            $email->notification = $notification;
-            $this->dispatch($email);
-        });
+        Notification::sendEmail($email, $this);
     }
 
     /**
@@ -124,18 +91,7 @@ class Referral extends Model
      */
     public function sendSmsToReferee(Sms $sms)
     {
-        DB::transaction(function () use ($sms) {
-            // Log a notification for the SMS in the database.
-            $notification = $this->notifications()->create([
-                'channel' => Notification::CHANNEL_SMS,
-                'recipient' => $this->referee_phone,
-                'message' => $sms->getContent(),
-            ]);
-
-            // Add the SMS as a job on the queue to be sent.
-            $sms->notification = $notification;
-            $this->dispatch($sms);
-        });
+        Notification::sendSms($sms, $this);
     }
 
     /**

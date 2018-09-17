@@ -6,6 +6,7 @@ use App\Emails\Email;
 use App\Models\Mutators\NotificationMutators;
 use App\Models\Relationships\NotificationRelationships;
 use App\Models\Scopes\NotificationScopes;
+use App\Notifications\Notifiable;
 use App\Sms\Sms;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\Facades\DB;
@@ -33,12 +34,12 @@ class Notification extends Model
 
     /**
      * @param \App\Emails\Email $email
-     * @param \App\Models\User|null $user
+     * @param \App\Notifications\Notifiable|null $notifiable
      */
-    public static function sendEmail(Email $email, User $user = null)
+    public static function sendEmail(Email $email, Notifiable $notifiable = null)
     {
-        DB::transaction(function () use ($email, $user) {
-            $query = $user ? $user->notifications() : static::query();
+        DB::transaction(function () use ($email, $notifiable) {
+            $query = $notifiable ? $notifiable->notifications() : static::query();
 
             // Log a notification for the email in the database.
             $notification = $query->create([
@@ -55,12 +56,12 @@ class Notification extends Model
 
     /**
      * @param \App\Sms\Sms $sms
-     * @param \App\Models\User|null $user
+     * @param \App\Notifications\Notifiable|null $notifiable
      */
-    public static function sendSms(Sms $sms, User $user = null)
+    public static function sendSms(Sms $sms, Notifiable $notifiable = null)
     {
-        DB::transaction(function () use ($sms, $user) {
-            $query = $user ? $user->notifications() : static::query();
+        DB::transaction(function () use ($sms, $notifiable) {
+            $query = $notifiable ? $notifiable->notifications() : static::query();
 
             // Log a notification for the SMS in the database.
             $notification = $query->create([
