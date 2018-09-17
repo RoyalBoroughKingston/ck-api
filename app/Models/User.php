@@ -91,7 +91,6 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->sendEmail(new UserEmail($this->email, [
-            'USER_NAME' => $this->first_name,
             'PASSWORD_RESET_LINK' => route('password.reset', ['token' => $token]),
         ]));
     }
