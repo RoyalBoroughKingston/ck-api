@@ -265,3 +265,13 @@ if (!function_exists('page')) {
         return $page;
     }
 }
+
+if (!function_exists('backend_uri')) {
+    /**
+     * @param string $path
+     * @return string
+     */
+    function backend_uri(string $path = ''): string {
+        return config('ck.backend_uri').$path;
+    }
+}
