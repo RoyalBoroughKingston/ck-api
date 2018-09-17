@@ -5,9 +5,8 @@ namespace App\Listeners\Notifications;
 use App\Emails\PageFeedbackReceived\NotifyGlobalAdminEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
+use App\Models\Notification;
 use App\Models\PageFeedback;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 
 class PageFeedbackReceived
 {
@@ -32,17 +31,11 @@ class PageFeedbackReceived
      */
     protected function notifyGlobalAdmins(PageFeedback $pageFeedback)
     {
-        User::query()
-            ->whereNotNull('email')
-            ->globalAdmins()
-            ->chunk(200, function (Collection $users) use ($pageFeedback) {
-                $users->each(function (User $user) use ($pageFeedback) {
-                    $user->sendEmail(new NotifyGlobalAdminEmail($user->email, [
-                        'NAME' => $user->first_name,
-                        'URL' => $pageFeedback->url,
-                        'FEEDBACK' => $pageFeedback->feedback,
-                    ]));
-                });
-            });
+        $email = new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
+            'URL' => $pageFeedback->url,
+            'FEEDBACK' => $pageFeedback->feedback,
+        ]);
+
+        send_email_to_global_admin($email);
     }
 }

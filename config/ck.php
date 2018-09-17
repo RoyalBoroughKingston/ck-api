@@ -3,6 +3,13 @@
 return [
 
     /*
+     * The contact details for the global admin team.
+     */
+    'global_admin' => [
+        'email' => env('GLOBAL_ADMIN_EMAIL'),
+    ],
+
+    /*
      * The default number of results to show in paginated responses.
      */
     'pagination_results' => 25,

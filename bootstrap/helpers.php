@@ -21,8 +21,8 @@ if (!function_exists('random_uk_phone')) {
     function random_uk_phone(): string
     {
         return array_random([
-            '0'.rand(1000000000,1999999999),
-            '0'.rand(7000000000,7999999999),
+            '0' . rand(1000000000, 1999999999),
+            '0' . rand(7000000000, 7999999999),
         ]);
     }
 }
@@ -87,7 +87,7 @@ if (!function_exists('table')) {
     function table(string $model, string $column = null): ?string
     {
         if (!is_subclass_of($model, \Illuminate\Database\Eloquent\Model::class)) {
-            throw new InvalidArgumentException("[$model] must be an instance of ".\Illuminate\Database\Eloquent\Model::class);
+            throw new InvalidArgumentException("[$model] must be an instance of " . \Illuminate\Database\Eloquent\Model::class);
         }
 
         $table = (new $model())->getTable();
@@ -263,5 +263,26 @@ if (!function_exists('page')) {
         $page = max(1, $page);
 
         return $page;
+    }
+}
+
+if (!function_exists('send_email_to_global_admin')) {
+    /**
+     * @param \App\Emails\Email $email
+     */
+    function send_email_to_global_admin(\App\Emails\Email $email)
+    {
+        \Illuminate\Support\Facades\DB::transaction(function () use ($email) {
+            // Log a notification for the email in the database.
+            $notification = \App\Models\Notification::query()->create([
+                'channel' => \App\Models\Notification::CHANNEL_EMAIL,
+                'recipient' => config('ck.global_admin.email'),
+                'message' => $email->getContent(),
+            ]);
+
+            // Add the email as a job on the queue to be sent.
+            $email->notification = $notification;
+            app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch($email);
+        });
     }
 }
