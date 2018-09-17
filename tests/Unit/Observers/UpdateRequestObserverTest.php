@@ -3,6 +3,7 @@
 namespace Tests\Unit\Observers;
 
 use App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail;
+use App\Emails\UpdateRequestReceived\NotifySubmitterEmail;
 use App\Models\Organisation;
 use App\Models\User;
 use Illuminate\Support\Facades\Queue;
@@ -10,7 +11,7 @@ use Tests\TestCase;
 
 class UpdateRequestObserverTest extends TestCase
 {
-    public function test_email_sent_to_global_admin_when_update_request_created()
+    public function test_emails_sent()
     {
         Queue::fake();
 
@@ -28,13 +29,7 @@ class UpdateRequestObserverTest extends TestCase
             ],
         ]);
 
+        Queue::assertPushedOn('notifications', NotifySubmitterEmail::class);
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
-        Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) {
-            if ($email->to !== config('ck.global_admin.email')){
-                return false;
-            }
-
-            return true;
-        });
     }
 }
