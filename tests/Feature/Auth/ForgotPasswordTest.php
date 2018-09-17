@@ -4,7 +4,6 @@ namespace Tests\Feature\Auth;
 
 use App\Emails\PasswordReset\UserEmail;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
