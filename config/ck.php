@@ -50,6 +50,11 @@ return [
     'backend_uri' => env('BACKEND_URI', ''),
 
     /*
+     * The number of working days a service must respond within.
+     */
+    'working_days_for_service_to_respond' => 10,
+
+    /*
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [
