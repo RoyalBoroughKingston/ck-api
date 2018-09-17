@@ -126,7 +126,11 @@ abstract class TestCase extends BaseTestCase
      */
     protected function tearDownElasticsearch()
     {
-        $this->artisan('scout:flush', ['model' => Service::class]);
+        try {
+            $this->artisan('scout:flush', ['model' => Service::class]);
+        } catch (\Exception $exception) {
+            // Do nothing.
+        }
     }
 
     /**
