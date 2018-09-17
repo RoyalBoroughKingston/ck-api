@@ -30,10 +30,13 @@ class PageFeedbackReceivedTest extends TestCase
         $listener->handle($event);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
-        Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) {
-            if ($email->to !== config('ck.global_admin.email')){
-                return false;
-            }
+        Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) use ($pageFeedback) {
+            $this->assertEquals(config('ck.global_admin.email'), $email->to);
+            $this->assertEquals(config('ck.notifications_template_ids.page_feedback_received.notify_global_admin.email'), $email->templateId);
+            $this->assertArraySubset([
+                'FEEDBACK_URL' => $pageFeedback->url,
+                'FEEDBACK_CONTENT' => $pageFeedback->feedback,
+            ], $email->values);
 
             return true;
         });
