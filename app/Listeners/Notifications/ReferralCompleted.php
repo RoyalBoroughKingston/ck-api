@@ -54,10 +54,7 @@ class ReferralCompleted
         } elseif ($referral->phone) {
             // Resort to SMS, but only if phone number address was provided.
             $referral->sendSmsToClient(new NotifyClientSms($referral->phone, [
-                'CLIENT_NAME' => $referral->name,
-                'SERVICE_NAME' => $referral->service->contact_name,
-                'SERVICE_PHONE' => $referral->service->contact_phone,
-                'SERVICE_EMAIL' => $referral->service->contact_email,
+                'REFERRAL_ID' => $referral->reference,
             ]));
         }
     }
