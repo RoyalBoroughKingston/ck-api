@@ -3,13 +3,6 @@
 return [
 
     /*
-     * The contact details for the global admin team.
-     */
-    'global_admin' => [
-        'email' => env('GLOBAL_ADMIN_EMAIL'),
-    ],
-
-    /*
      * The default number of results to show in paginated responses.
      */
     'pagination_results' => 25,
@@ -43,6 +36,18 @@ return [
      * The GOV.UK Notify API key.
      */
     'gov_notify_api_key' => env('GOV_NOTIFY_API_KEY'),
+
+    /*
+     * The contact details for the global admin team.
+     */
+    'global_admin' => [
+        'email' => env('GLOBAL_ADMIN_EMAIL'),
+    ],
+
+    /*
+     * The URI for the backend app.
+     */
+    'backend_uri' => env('BACKEND_URI', ''),
 
     /*
      * Used for GOV.UK Notify.

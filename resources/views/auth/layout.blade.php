@@ -17,7 +17,7 @@
         <div class="govuk-header__container govuk-width-container">
 
             <div class="govuk-header__logo">
-                <a href="{{ route('login') }}" class="govuk-header__link govuk-header__link--homepage">
+                <a href="{{ route('home') }}" class="govuk-header__link govuk-header__link--homepage">
                     <span class="govuk-header__logotype">
 
                       <svg role="presentation" focusable="false" class="govuk-header__logotype-crown" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 132 97" height="32" width="36">
@@ -33,7 +33,7 @@
             </div>
 
             <div class="govuk-header__content">
-                <a href="{{ route('login') }}" class="govuk-header__link govuk-header__link--service-name">
+                <a href="{{ route('home') }}" class="govuk-header__link govuk-header__link--service-name">
                     {{ config('app.name') }}
                 </a>
             </div>
