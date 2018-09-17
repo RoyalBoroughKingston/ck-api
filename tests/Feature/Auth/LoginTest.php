@@ -15,7 +15,7 @@ class LoginTest extends TestCase
 
         $user = factory(User::class)->create(['password' => bcrypt('password')]);
 
-        $response = $this->post(route('login'), [
+        $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'password',
         ]);
