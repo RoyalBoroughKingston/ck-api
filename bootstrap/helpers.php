@@ -21,8 +21,8 @@ if (!function_exists('random_uk_phone')) {
     function random_uk_phone(): string
     {
         return array_random([
-            '0'.rand(1000000000,1999999999),
-            '0'.rand(7000000000,7999999999),
+            '0' . rand(1000000000, 1999999999),
+            '0' . rand(7000000000, 7999999999),
         ]);
     }
 }
@@ -87,7 +87,7 @@ if (!function_exists('table')) {
     function table(string $model, string $column = null): ?string
     {
         if (!is_subclass_of($model, \Illuminate\Database\Eloquent\Model::class)) {
-            throw new InvalidArgumentException("[$model] must be an instance of ".\Illuminate\Database\Eloquent\Model::class);
+            throw new InvalidArgumentException("[$model] must be an instance of " . \Illuminate\Database\Eloquent\Model::class);
         }
 
         $table = (new $model())->getTable();
