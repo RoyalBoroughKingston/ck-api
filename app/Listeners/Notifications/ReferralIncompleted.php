@@ -73,7 +73,7 @@ class ReferralIncompleted
             // Resort to SMS, but only if phone number address was provided.
             $referral->sendSmsToClient(new NotifyRefereeSms($referral->referee_phone, [
                 'REFEREE_NAME' => $referral->referee_name,
-                'SERVICE_NAME' => $referral->service->contact_name,
+                'REFERRAL_ID' => $referral->reference,
             ]));
         }
     }
