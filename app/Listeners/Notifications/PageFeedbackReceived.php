@@ -31,11 +31,11 @@ class PageFeedbackReceived
      */
     protected function notifyGlobalAdmins(PageFeedback $pageFeedback)
     {
-        $email = new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
-            'URL' => $pageFeedback->url,
-            'FEEDBACK' => $pageFeedback->feedback,
-        ]);
-
-        send_email_to_global_admin($email);
+        Notification::sendEmail(
+            new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
+                'URL' => $pageFeedback->url,
+                'FEEDBACK' => $pageFeedback->feedback,
+            ])
+        );
     }
 }

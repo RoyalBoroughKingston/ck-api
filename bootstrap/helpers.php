@@ -265,24 +265,3 @@ if (!function_exists('page')) {
         return $page;
     }
 }
-
-if (!function_exists('send_email_to_global_admin')) {
-    /**
-     * @param \App\Emails\Email $email
-     */
-    function send_email_to_global_admin(\App\Emails\Email $email)
-    {
-        \Illuminate\Support\Facades\DB::transaction(function () use ($email) {
-            // Log a notification for the email in the database.
-            $notification = \App\Models\Notification::query()->create([
-                'channel' => \App\Models\Notification::CHANNEL_EMAIL,
-                'recipient' => config('ck.global_admin.email'),
-                'message' => $email->getContent(),
-            ]);
-
-            // Add the email as a job on the queue to be sent.
-            $email->notification = $notification;
-            app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch($email);
-        });
-    }
-}

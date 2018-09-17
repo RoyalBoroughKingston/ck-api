@@ -4,9 +4,8 @@ namespace App\Observers;
 
 use App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail;
 use App\Emails\UpdateRequestReceived\NotifySubmitterEmail;
+use App\Models\Notification;
 use App\Models\UpdateRequest;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 
 class UpdateRequestObserver
 {
@@ -24,18 +23,12 @@ class UpdateRequestObserver
         ]));
 
         // Send notification to the global admins.
-        User::query()
-            ->whereNotNull('email')
-            ->globalAdmins()
-            ->chunk(200, function (Collection $users) use ($updateRequest) {
-                $users->each(function (User $user) use ($updateRequest) {
-                    $user->sendEmail(new NotifyGlobalAdminEmail($user->email, [
-                        'NAME' => $user->first_name,
-                        'RESOURCE_TYPE' => $updateRequest->updateable_type,
-                        'RESOURCE_ID' => $updateRequest->updateable_id,
-                        'REQUEST' => json_encode($updateRequest->data),
-                    ]));
-                });
-            });
+        Notification::sendEmail(
+            new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
+                'RESOURCE_TYPE' => $updateRequest->updateable_type,
+                'RESOURCE_ID' => $updateRequest->updateable_id,
+                'REQUEST' => json_encode($updateRequest->data),
+            ])
+        );
     }
 }

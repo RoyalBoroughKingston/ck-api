@@ -5,7 +5,6 @@ namespace Tests\Unit\Listeners\Notifications;
 use App\Emails\PageFeedbackReceived\NotifyGlobalAdminEmail;
 use App\Events\EndpointHit;
 use App\Listeners\Notifications\PageFeedbackReceived;
-use App\Models\Notification;
 use App\Models\PageFeedback;
 use App\Models\User;
 use Illuminate\Http\Request;
