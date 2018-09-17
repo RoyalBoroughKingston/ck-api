@@ -77,10 +77,24 @@ class ReferralCreated
      */
     protected function notifyService(Referral $referral)
     {
+        $contactInfo = $referral->email ?? $referral->phone ?? $referral->other_contact ?? 'N/A';
+        if ($referral->email !== null) {
+            $contactMethod = 'email';
+        } elseif ($referral->phone !== null) {
+            $contactMethod = 'phone';
+        } elseif ($referral->other_contact) {
+            $contactMethod = 'other';
+        } else {
+            $contactMethod = 'N/A';
+        }
+
         $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->contact_email, [
-            'CONTACT_NAME' => $referral->service->contact_name,
-            'SERVICE_NAME' => $referral->service->name,
-            'REFERRAL_ID' => $referral->id,
+            'REFERRAL_ID' => $referral->reference,
+            'REFERRAL_SERVICE_NAME' => $referral->service->name,
+            'REFERRAL_INITIALS' => $referral->initials(),
+            'CONTACT_INFO' => $contactInfo,
+            'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
+            'REFERRAL_CONTACT_METHOD' => $contactMethod,
         ]));
     }
 }
