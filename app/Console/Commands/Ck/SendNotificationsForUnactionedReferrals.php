@@ -56,13 +56,26 @@ class SendNotificationsForUnactionedReferrals extends Command
     protected function sendEmail(Referral $referral)
     {
         try {
+            $contactMethod = null;
+            if ($referral->email !== null) {
+                $contactMethod = $referral->email;
+            } elseif ($referral->phone !== null) {
+                $contactMethod = $referral->email;
+            } elseif ($referral->other !== null) {
+                $contactMethod = $referral->other_contact;
+            } else {
+                $contactMethod = 'N/A';
+            }
+
             // Send the email.
             $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->contact_email, [
-                'CONTACT_NAME' => $referral->service->contact_name,
-                'SERVICE_NAME' => $referral->service->name,
-                'REFERRAL_ID' => $referral->id,
-                'DATE_CREATED' => $referral->created_at->format('jS F Y'),
-                'DAYS_OLD' => $referral->created_at->diffInDays(now()),
+                'REFERRAL_SERVICE_NAME' => $referral->service->name,
+                'REFERRAL_INITIALS' => $referral->initials(),
+                'REFERRAL_ID' => $referral->reference,
+                'REFERRAL_DAYS_AGO' => $referral->created_at->diffInWeekdays(now()),
+                'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
+                'REFERRAL_CONTACT_METHOD' => $contactMethod,
+                'REFERRAL_DAYS_LEFT' => now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('ck.working_days_for_service_to_respond'))),
             ]));
 
             // Output a success message.
