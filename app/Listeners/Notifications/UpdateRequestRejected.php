@@ -43,7 +43,7 @@ class UpdateRequestRejected
             $resourceName = $updateRequest->updateable->name;
             $resourceType = 'service';
         } elseif ($updateRequest->updateable instanceof ServiceLocation) {
-            $resourceName = $updateRequest->updateable->name || $updateRequest->updateable->id;
+            $resourceName = $updateRequest->updateable->name ?? $updateRequest->updateable->location->address_line_1;
             $resourceType = 'service location';
         } elseif ($updateRequest->updateable instanceof Organisation) {
             $resourceName = $updateRequest->updateable->name;
