@@ -43,7 +43,7 @@ class UpdateRequestApproved
             $resourceName = $updateRequest->updateable->name;
             $resourceType = 'service';
         } elseif ($updateRequest->updateable instanceof ServiceLocation) {
-            $resourceName = $updateRequest->updateable->name || $updateRequest->updateable->id;
+            $resourceName = $updateRequest->updateable->name ?? $updateRequest->updateable->id;
             $resourceType = 'service location';
         } elseif ($updateRequest->updateable instanceof Organisation) {
             $resourceName = $updateRequest->updateable->name;
