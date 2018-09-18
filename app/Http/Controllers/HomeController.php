@@ -9,6 +9,6 @@ class HomeController extends Controller
      */
     public function __invoke()
     {
-        return response()->json(['message' => 'API is fully operational']);
+        return view('auth.index');
     }
 }

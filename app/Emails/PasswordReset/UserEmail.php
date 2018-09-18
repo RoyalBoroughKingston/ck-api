@@ -35,6 +35,6 @@ class UserEmail extends Email
      */
     public function getContent(): string
     {
-        return '';
+        return 'Pending to be sent. Content will be filled once sent.';
     }
 }

@@ -38,6 +38,23 @@ return [
     'gov_notify_api_key' => env('GOV_NOTIFY_API_KEY'),
 
     /*
+     * The contact details for the global admin team.
+     */
+    'global_admin' => [
+        'email' => env('GLOBAL_ADMIN_EMAIL'),
+    ],
+
+    /*
+     * The URI for the backend app.
+     */
+    'backend_uri' => env('BACKEND_URI', ''),
+
+    /*
+     * The number of working days a service must respond within.
+     */
+    'working_days_for_service_to_respond' => 10,
+
+    /*
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [

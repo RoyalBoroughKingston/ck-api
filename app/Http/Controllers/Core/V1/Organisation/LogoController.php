@@ -24,7 +24,7 @@ class LogoController extends Controller
         event(EndpointHit::onRead($request, "Viewed logo for organisation [{$organisation->id}]", $organisation));
 
         return $organisation->logoFile ?? response()->make(
-            Storage::disk('local')->get('/placeholders/image.png'),
+            Storage::disk('local')->get('/placeholders/organisation.png'),
             Response::HTTP_OK,
             ['Content-Type' => 'image/png']
         );

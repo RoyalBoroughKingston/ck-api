@@ -46,18 +46,13 @@ class ReferralCompleted
         if ($referral->email) {
             // Only send an email if email address was provided.
             $referral->sendEmailToClient(new NotifyClientEmail($referral->email, [
-                'CLIENT_NAME' => $referral->name,
+                'REFERRAL_ID' => $referral->reference,
                 'SERVICE_NAME' => $referral->service->contact_name,
-                'SERVICE_PHONE' => $referral->service->contact_phone,
-                'SERVICE_EMAIL' => $referral->service->contact_email,
             ]));
         } elseif ($referral->phone) {
             // Resort to SMS, but only if phone number address was provided.
             $referral->sendSmsToClient(new NotifyClientSms($referral->phone, [
-                'CLIENT_NAME' => $referral->name,
-                'SERVICE_NAME' => $referral->service->contact_name,
-                'SERVICE_PHONE' => $referral->service->contact_phone,
-                'SERVICE_EMAIL' => $referral->service->contact_email,
+                'REFERRAL_ID' => $referral->reference,
             ]));
         }
     }
@@ -72,6 +67,7 @@ class ReferralCompleted
             $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, [
                 'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
+                'REFERRAL_ID' => $referral->reference,
                 'SERVICE_PHONE' => $referral->service->contact_phone,
                 'SERVICE_EMAIL' => $referral->service->contact_email,
             ]));
@@ -80,6 +76,7 @@ class ReferralCompleted
             $referral->sendSmsToReferee(new NotifyRefereeSms($referral->referee_phone, [
                 'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
+                'REFERRAL_ID' => $referral->reference,
                 'SERVICE_PHONE' => $referral->service->contact_phone,
                 'SERVICE_EMAIL' => $referral->service->contact_email,
             ]));
