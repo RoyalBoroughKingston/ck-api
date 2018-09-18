@@ -25,5 +25,15 @@ class SendNotificationsForUnactionedReferralsTest extends TestCase
         Artisan::call(SendNotificationsForUnactionedReferrals::class);
 
         Queue::assertPushedOn('notifications', NotifyServiceEmail::class);
+        Queue::assertPushed(NotifyServiceEmail::class, function (NotifyServiceEmail $email) {
+            $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
+            $this->assertArrayHasKey('REFERRAL_INITIALS', $email->values);
+            $this->assertArrayHasKey('REFERRAL_ID', $email->values);
+            $this->assertArrayHasKey('REFERRAL_DAYS_AGO', $email->values);
+            $this->assertArrayHasKey('REFERRAL_TYPE', $email->values);
+            $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
+            $this->assertArrayHasKey('REFERRAL_DAYS_LEFT', $email->values);
+            return true;
+        });
     }
 }

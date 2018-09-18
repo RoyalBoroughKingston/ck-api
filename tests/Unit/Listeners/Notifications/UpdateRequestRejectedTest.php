@@ -38,5 +38,12 @@ class UpdateRequestRejectedTest extends TestCase
         $listener->handle($event);
 
         Queue::assertPushedOn('notifications', NotifySubmitterEmail::class);
+        Queue::assertPushed(NotifySubmitterEmail::class, function (NotifySubmitterEmail $email) {
+            $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
+            $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
+            $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
+            $this->assertArrayHasKey('REQUEST_DATE', $email->values);
+            return true;
+        });
     }
 }

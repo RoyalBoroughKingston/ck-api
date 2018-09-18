@@ -66,6 +66,10 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
+        ],
+        "test": [
+            "phpcs",
+            "phpunit"
         ]
     },
     "config": {
