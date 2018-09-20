@@ -55,6 +55,11 @@ return [
     'working_days_for_service_to_respond' => 10,
 
     /*
+     * If one time password authentication should be enabled.
+     */
+    'otp_enabled' => env('OTP_ENABLED', true),
+
+    /*
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [
