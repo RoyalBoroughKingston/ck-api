@@ -15,6 +15,11 @@ class Base64EncodedPng implements Rule
      */
     public function passes($attribute, $value)
     {
+        // Immediately fail if the value is not a string.
+        if (!is_string($value)) {
+            return false;
+        }
+
         return preg_match('/^(data:image\/png;base64,)/', $value) > 0;
     }
 

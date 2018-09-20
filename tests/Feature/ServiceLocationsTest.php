@@ -176,7 +176,7 @@ class ServiceLocationsTest extends TestCase
             'holiday_opening_hours' => [],
         ]);
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_service_admin_can_create_one()

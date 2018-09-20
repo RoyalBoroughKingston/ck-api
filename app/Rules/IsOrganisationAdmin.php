@@ -2,24 +2,25 @@
 
 namespace App\Rules;
 
-use App\Models\Taxonomy;
+use App\Models\Organisation;
+use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 
-class RootTaxonomyIs implements Rule
+class IsOrganisationAdmin implements Rule
 {
     /**
-     * @var string
+     * @var \App\Models\User
      */
-    protected $rootTaxonomyName;
+    protected $user;
 
     /**
      * Create a new rule instance.
      *
-     * @param string $rootTaxonomyName
+     * @param \App\Models\User $user
      */
-    public function __construct(string $rootTaxonomyName)
+    public function __construct(User $user)
     {
-        $this->rootTaxonomyName = $rootTaxonomyName;
+        $this->user = $user;
     }
 
     /**
@@ -36,9 +37,9 @@ class RootTaxonomyIs implements Rule
             return false;
         }
 
-        $taxonomy = Taxonomy::query()->find($value);
+        $organisation = Organisation::query()->find($value);
 
-        return $taxonomy ? $taxonomy->rootIsCalled($this->rootTaxonomyName) : false;
+        return $organisation ? $this->user->isOrganisationAdmin($organisation) : false;
     }
 
     /**
@@ -48,6 +49,6 @@ class RootTaxonomyIs implements Rule
      */
     public function message()
     {
-        return "The root taxonomy must be called [{$this->rootTaxonomyName}].";
+        return 'The :attribute field must contain an ID for an organisation you are an organisation admin for.';
     }
 }

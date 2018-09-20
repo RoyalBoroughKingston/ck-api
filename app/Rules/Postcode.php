@@ -17,6 +17,11 @@ class Postcode implements Rule
      */
     public function passes($attribute, $value)
     {
+        // Immediately fail if the value is not a string.
+        if (!is_string($value)) {
+            return false;
+        }
+
         $matches = preg_match(static::PATTERN, $value);
 
         return $matches === 1;

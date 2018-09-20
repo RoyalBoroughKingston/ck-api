@@ -72,7 +72,7 @@ if (!function_exists('array_diff_multi')) {
             }
         }
 
-        return $arrayA;
+        return array_values($arrayA);
     }
 }
 

@@ -15,6 +15,11 @@ class Slug implements Rule
      */
     public function passes($attribute, $value)
     {
+        // Immediately fail if the value is not a string.
+        if (!is_string($value)) {
+            return false;
+        }
+
         $matches = preg_match('/^([a-z0-9]+[a-z0-9\-]*)*[a-z0-9]+$/', $value);
 
         return $matches === 1;

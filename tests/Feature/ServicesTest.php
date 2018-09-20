@@ -379,6 +379,57 @@ class ServicesTest extends TestCase
         ]);
     }
 
+    public function test_organisation_admin_for_another_organisation_cannot_create_one()
+    {
+        $anotherOrganisation = factory(Organisation::class)->create();
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $anotherOrganisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [],
+            'social_medias' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function test_audit_created_when_created()
     {
         $this->fakeEvents();

@@ -30,12 +30,17 @@ class InOrder implements Rule
      */
     public function passes($attribute, $value)
     {
+        // Immediately fail if the value is not a integer.
+        if (!is_int($value)) {
+            return false;
+        }
+
         // Initialise count to 0.
         $count = 0;
 
         // Loop through each order and increment count if the current value is in there.
         foreach ($this->orders as $order) {
-            if ($order == $value) {
+            if ($order === $value) {
                 $count++;
             }
         }

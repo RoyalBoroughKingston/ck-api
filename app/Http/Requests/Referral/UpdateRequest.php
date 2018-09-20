@@ -15,9 +15,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $referral = $this->referral;
-
-        if ($this->user()->isServiceWorker($referral->service)) {
+        if ($this->user()->isServiceWorker($this->referral->service)) {
             return true;
         }
 

@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Service;
 
-use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\Base64EncodedPng;
 use App\Rules\InOrder;
+use App\Rules\IsOrganisationAdmin;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
@@ -24,9 +24,11 @@ class StoreRequest extends FormRequest
      */
     public function authorize()
     {
-        $organisation = Organisation::find($this->organisation_id);
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
 
-        if ($organisation && $this->user()->isOrganisationAdmin($organisation)) {
+        if ($this->user()->isOrganisationAdmin()) {
             return true;
         }
 
@@ -41,7 +43,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'organisation_id' => ['required', 'exists:organisations,id'],
+            'organisation_id' => ['required', 'exists:organisations,id', new IsOrganisationAdmin($this->user())],
             'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:'.table(Service::class).',slug', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'status' => ['required', Rule::in([

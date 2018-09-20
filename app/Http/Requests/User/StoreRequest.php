@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests\User;
 
-use App\Models\Organisation;
 use App\Models\Role;
-use App\Models\Service;
+use App\Rules\CanAssignRoleToUser;
 use App\Rules\Password;
 use App\Rules\UkPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
@@ -18,44 +17,13 @@ class StoreRequest extends FormRequest
      */
     public function authorize()
     {
-        /** @var \App\Models\User $user */
-        $user = $this->user()->load('userRoles');
-
-        foreach ($this->roles as $role) {
-            switch ($role['role']) {
-                case Role::NAME_SERVICE_WORKER:
-                    $service = Service::findOrFail($role['service_id']);
-                    if (!$user->canMakeServiceWorker($service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SERVICE_ADMIN:
-                    $service = Service::findOrFail($role['service_id']);
-                    if (!$user->canMakeServiceAdmin($service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_ORGANISATION_ADMIN:
-                    $organisation = Organisation::findOrFail($role['organisation_id']);
-                    if (!$user->canMakeOrganisationAdmin($organisation)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_GLOBAL_ADMIN:
-                    if (!$user->canMakeGlobalAdmin()) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SUPER_ADMIN:
-                    if (!$user->canMakeSuperAdmin()) {
-                        return false;
-                    }
-                    break;
-            }
+        // Needed in case there are no services.
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
         }
 
-        // User must at least be a service worker.
-        if ($this->user()->isGlobalAdmin() || $this->user()->isServiceWorker()) {
+        // The minimum role needed to access this endpoint.
+        if ($this->user()->isServiceWorker()) {
             return true;
         }
 
@@ -77,7 +45,7 @@ class StoreRequest extends FormRequest
             'password' => ['required', 'string', 'min:8', 'max:255', new Password()],
 
             'roles' => ['required', 'array'],
-            'roles.*' => ['required', 'array'],
+            'roles.*' => ['required', 'array', new CanAssignRoleToUser($this->user()->load('userRoles'))],
             'roles.*.role' => ['required_with:roles.*', 'string', 'exists:roles,name'],
             'roles.*.organisation_id' => [
                 'required_if:roles.*.role,'.Role::NAME_ORGANISATION_ADMIN,

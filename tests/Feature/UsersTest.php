@@ -99,7 +99,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_SUPER_ADMIN]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /*
@@ -118,7 +118,7 @@ class UsersTest extends TestCase
             ]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_service_admin_can_create_service_worker_for_their_service()
@@ -154,7 +154,7 @@ class UsersTest extends TestCase
             ]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_service_admin_can_create_service_admin_for_their_service()
@@ -191,7 +191,7 @@ class UsersTest extends TestCase
             ]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /*
@@ -210,7 +210,7 @@ class UsersTest extends TestCase
             ]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_organisation_admin_can_create_service_worker_for_their_service()
@@ -246,7 +246,7 @@ class UsersTest extends TestCase
             ]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_organisation_admin_can_create_service_admin_for_their_service()
@@ -283,7 +283,7 @@ class UsersTest extends TestCase
             ]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_organisation_admin_can_create_organisation_admin_for_their_organisation()
@@ -318,7 +318,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_GLOBAL_ADMIN]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /*
@@ -416,7 +416,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_SUPER_ADMIN]
         ]));
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /*
