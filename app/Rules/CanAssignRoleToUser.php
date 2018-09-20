@@ -142,8 +142,11 @@ class CanAssignRoleToUser implements Rule
             return false;
         }
 
+        $newRoles = $this->parseRoles($this->newRoles);
+        $role = $this->parseRoles($role);
+
         // If new role provided, and the role is in the array, then don't skip.
-        foreach ($this->newRoles as $newRole) {
+        foreach ($newRoles as $newRole) {
             if ($newRole == $role) {
                 return false;
             }
@@ -151,5 +154,29 @@ class CanAssignRoleToUser implements Rule
 
         // If new roles provided, but the role is not in the array, then skip.
         return true;
+    }
+
+    /**
+     * @param array $roles
+     * @return array
+     */
+    protected function parseRoles(array $roles): array
+    {
+        $rolesCopy = isset($roles['role']) ? [$roles] : $roles;
+
+        foreach ($rolesCopy as &$role) {
+            switch ($role['role']) {
+                case Role::NAME_ORGANISATION_ADMIN:
+                    unset($role['service_id']);
+                    break;
+                case Role::NAME_GLOBAL_ADMIN:
+                case Role::NAME_SUPER_ADMIN:
+                    unset($role['service_id']);
+                    unset($role['organisation_id']);
+                    break;
+            }
+        }
+
+        return isset($roles['role']) ? $rolesCopy[0] : $rolesCopy;
     }
 }
