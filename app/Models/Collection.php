@@ -35,27 +35,11 @@ class Collection extends Model
         // Delete all existing collection taxonomies.
         $this->collectionTaxonomies()->delete();
 
-        // Create a collection taxonomy record for each taxonomy and their parents.
+        // Create a collection taxonomy record for each taxonomy.
         foreach ($taxonomies as $taxonomy) {
-            $this->createCollectionTaxonomy($taxonomy);
+            $this->collectionTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
         }
 
         return $this;
-    }
-
-    /**
-     * @param \App\Models\Taxonomy $taxonomy
-     * @return \App\Models\CollectionTaxonomy
-     */
-    protected function createCollectionTaxonomy(Taxonomy $taxonomy): CollectionTaxonomy
-    {
-        $hasParent = $taxonomy->parent !== null;
-        $parentIsNotTopLevel = $taxonomy->parent->id !== Taxonomy::category()->id;
-
-        if ($hasParent && $parentIsNotTopLevel) {
-            $this->createCollectionTaxonomy($taxonomy->parent);
-        }
-
-        return $this->collectionTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
     }
 }
