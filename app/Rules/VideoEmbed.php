@@ -16,6 +16,11 @@ class VideoEmbed implements Rule
      */
     public function passes($attribute, $value)
     {
+        // Immediately fail if the value is not a string.
+        if (!is_string($value)) {
+            return false;
+        }
+
         $validDomains = [
             "https://www.youtube.com",
             "https://player.vimeo.com",

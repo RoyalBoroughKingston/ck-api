@@ -31,7 +31,14 @@ class RootTaxonomyIs implements Rule
      */
     public function passes($attribute, $value)
     {
-        return Taxonomy::findOrFail($value)->rootIsCalled($this->rootTaxonomyName);
+        // Immediately fail if the value is not a string.
+        if (!is_string($value)) {
+            return false;
+        }
+
+        $taxonomy = Taxonomy::query()->find($value);
+
+        return $taxonomy ? $taxonomy->rootIsCalled($this->rootTaxonomyName) : false;
     }
 
     /**

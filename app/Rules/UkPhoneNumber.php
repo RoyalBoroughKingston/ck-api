@@ -15,6 +15,11 @@ class UkPhoneNumber implements Rule
      */
     public function passes($attribute, $value)
     {
+        // Immediately fail if the value is not a string.
+        if (!is_string($value)) {
+            return false;
+        }
+
         $matches = preg_match('/^(0[0-9]{10})$/', $value);
 
         return $matches === 1;
