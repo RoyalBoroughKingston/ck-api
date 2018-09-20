@@ -6,6 +6,8 @@ use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\UserRole;
+use App\Rules\CanAssignRoleToUser;
+use App\Rules\CanRevokeRoleFromUser;
 use App\Rules\Password;
 use App\Rules\UkPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,11 +27,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $canUpdate = $this->user()->canUpdate($this->user);
-        $canAddNewRoles = $this->canAddNewRoles($this->getNewRoles());
-        $canRevokeDeletedRoles = $this->canRevokeDeletedRoles($this->getDeletedRoles());
-
-        if ($canUpdate && $canAddNewRoles && $canRevokeDeletedRoles) {
+        if ($this->user()->canUpdate($this->user)) {
             return true;
         }
 
@@ -89,99 +87,6 @@ class UpdateRequest extends FormRequest
     }
 
     /**
-     * @param array $newRoles
-     * @return bool
-     */
-    protected function canAddNewRoles(array $newRoles): bool
-    {
-        /** @var \App\Models\User $user */
-        $user = $this->user();
-
-        foreach ($newRoles as $newRole) {
-            switch ($newRole['role']) {
-                case Role::NAME_SERVICE_WORKER:
-                    $service = Service::findOrFail($newRole['service_id']);
-                    if (!$user->canMakeServiceWorker($service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SERVICE_ADMIN:
-                    $service = Service::findOrFail($newRole['service_id']);
-                    if (!$user->canMakeServiceAdmin($service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_ORGANISATION_ADMIN:
-                    $organisation = Organisation::findOrFail($newRole['organisation_id']);
-                    if (!$user->canMakeOrganisationAdmin($organisation)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_GLOBAL_ADMIN:
-                    if (!$user->canMakeGlobalAdmin()) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SUPER_ADMIN:
-                    if (!$user->canMakeSuperAdmin()) {
-                        return false;
-                    }
-                    break;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param array $deletedRoles
-     * @return bool
-     */
-    protected function canRevokeDeletedRoles(array $deletedRoles): bool
-    {
-        /** @var \App\Models\User $user */
-        $user = $this->user()->load('userRoles');
-
-        /** @var \App\Models\User $subject */
-        $subject = $this->user->load('userRoles');
-
-        foreach ($deletedRoles as $deletedRole) {
-            switch ($deletedRole['role']) {
-                case Role::NAME_SERVICE_WORKER:
-                    $service = Service::findOrFail($deletedRole['service_id']);
-                    if (!$user->canRevokeServiceWorker($subject, $service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SERVICE_ADMIN:
-                    $service = Service::findOrFail($deletedRole['service_id']);
-                    if (!$user->canRevokeServiceAdmin($subject, $service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_ORGANISATION_ADMIN:
-                    $organisation = Organisation::findOrFail($deletedRole['organisation_id']);
-                    if (!$user->canRevokeOrganisationAdmin($subject, $organisation)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_GLOBAL_ADMIN:
-                    if (!$user->canRevokeGlobalAdmin($subject)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SUPER_ADMIN:
-                    if (!$user->canRevokeSuperAdmin($subject)) {
-                        return false;
-                    }
-                    break;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -196,7 +101,12 @@ class UpdateRequest extends FormRequest
             'password' => ['string', 'min:8', 'max:255', new Password()],
 
             'roles' => ['required', 'array'],
-            'roles.*' => ['required', 'array'],
+            'roles.*' => [
+                'required',
+                'array',
+                new CanAssignRoleToUser($this->user()->load('userRoles'), $this->getNewRoles()),
+                new CanRevokeRoleFromUser($this->user()->load('userRoles'), $this->user->load('userRoles'), $this->getDeletedRoles()),
+            ],
             'roles.*.role' => ['required_with:roles.*', 'string', 'exists:roles,name'],
             'roles.*.organisation_id' => [
                 'required_if:roles.*.role,'.Role::NAME_ORGANISATION_ADMIN,

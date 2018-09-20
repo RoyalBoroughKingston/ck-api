@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\User;
 
-use App\Models\Organisation;
 use App\Models\Role;
-use App\Models\Service;
 use App\Rules\CanAssignRoleToUser;
 use App\Rules\Password;
 use App\Rules\UkPhoneNumber;

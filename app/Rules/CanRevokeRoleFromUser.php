@@ -8,7 +8,7 @@ use App\Models\Service;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 
-class CanAssignRoleToUser implements Rule
+class CanRevokeRoleFromUser implements Rule
 {
     /**
      * @var \App\Models\User
@@ -16,20 +16,27 @@ class CanAssignRoleToUser implements Rule
     protected $user;
 
     /**
+     * @var \App\Models\User
+     */
+    protected $subject;
+
+    /**
      * @var array|null
      */
-    protected $newRoles;
+    protected $revokedRoles;
 
     /**
      * CanAssignRoleToUser constructor.
      *
      * @param \App\Models\User $user
-     * @param array|null $newRoles
+     * @param \App\Models\User $subject
+     * @param array|null $revokedRoles
      */
-    public function __construct(User $user, array $newRoles = null)
+    public function __construct(User $user, User $subject, array $revokedRoles = null)
     {
         $this->user = $user;
-        $this->newRoles = $newRoles;
+        $this->subject = $subject;
+        $this->revokedRoles = $revokedRoles;
     }
 
     /**
@@ -42,7 +49,7 @@ class CanAssignRoleToUser implements Rule
     public function passes($attribute, $value)
     {
         // Use the roles passed or fallback to the value.
-        $roles = $this->newRoles ?? [$value];
+        $roles = $this->revokedRoles ?? [$value];
 
         foreach ($roles as $role) {
             // Immediately fail if the value is not an array.
@@ -52,30 +59,30 @@ class CanAssignRoleToUser implements Rule
 
             switch ($role['role']) {
                 case Role::NAME_SERVICE_WORKER:
-                    $service = Service::findOrFail($role['service_id']);
-                    if (!$this->user->canMakeServiceWorker($service)) {
+                    $service = Service::query()->findOrFail($role['service_id']);
+                    if (!$this->user->canRevokeServiceWorker($this->subject, $service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_SERVICE_ADMIN:
-                    $service = Service::findOrFail($role['service_id']);
-                    if (!$this->user->canMakeServiceAdmin($service)) {
+                    $service = Service::query()->findOrFail($role['service_id']);
+                    if (!$this->user->canRevokeServiceAdmin($this->subject, $service)) {
                         return false;
                     }
                     break;
                 case Role::NAME_ORGANISATION_ADMIN:
-                    $organisation = Organisation::findOrFail($role['organisation_id']);
-                    if (!$this->user->canMakeOrganisationAdmin($organisation)) {
+                    $organisation = Organisation::query()->findOrFail($role['organisation_id']);
+                    if (!$this->user->canRevokeOrganisationAdmin($this->subject, $organisation)) {
                         return false;
                     }
                     break;
                 case Role::NAME_GLOBAL_ADMIN:
-                    if (!$this->user->canMakeGlobalAdmin()) {
+                    if (!$this->user->canRevokeGlobalAdmin($this->subject)) {
                         return false;
                     }
                     break;
                 case Role::NAME_SUPER_ADMIN:
-                    if (!$this->user->canMakeSuperAdmin()) {
+                    if (!$this->user->canRevokeSuperAdmin($this->subject)) {
                         return false;
                     }
                     break;
@@ -92,7 +99,7 @@ class CanAssignRoleToUser implements Rule
      */
     public function message()
     {
-        return 'You are unauthorised to assign these roles to this user.';
+        return 'You are unauthorised to revoke these roles for this user.';
     }
 
     /**
