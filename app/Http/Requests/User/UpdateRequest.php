@@ -16,6 +16,8 @@ use Illuminate\Validation\Rule;
 class UpdateRequest extends FormRequest
 {
     /**
+     * Cache the existing roles to prevent multiple database queries.
+     *
      * @var array|null
      */
     protected $existingRoles = null;
@@ -45,13 +47,15 @@ class UpdateRequest extends FormRequest
 
             $exitingRoles = $user->userRoles->load('role');
 
-            $existingRolesArray = $exitingRoles->map(function (UserRole $userRole) {
-                return array_filter_null([
-                    'role' => $userRole->role->name,
-                    'organisation_id' => $userRole->organisation_id,
-                    'service_id' => $userRole->service_id,
-                ]);
-            })->toArray();
+            $existingRolesArray = $exitingRoles
+                ->map(function (UserRole $userRole) {
+                    return array_filter_null([
+                        'role' => $userRole->role->name,
+                        'organisation_id' => $userRole->organisation_id,
+                        'service_id' => $userRole->service_id,
+                    ]);
+                })
+                ->toArray();
 
             $this->existingRoles = $existingRolesArray;
         }
@@ -60,11 +64,37 @@ class UpdateRequest extends FormRequest
     }
 
     /**
+     * @param array $roles
+     * @return array
+     */
+    protected function parseRoles(array $roles): array
+    {
+        foreach ($roles as &$role) {
+            switch ($role['role']) {
+                case Role::NAME_SERVICE_WORKER:
+                case Role::NAME_SERVICE_ADMIN:
+                    unset($role['organisation_id']);
+                    break;
+                case Role::NAME_ORGANISATION_ADMIN:
+                    unset($role['service_id']);
+                    break;
+                case Role::NAME_GLOBAL_ADMIN:
+                case Role::NAME_SUPER_ADMIN:
+                    unset($role['service_id']);
+                    unset($role['organisation_id']);
+                    break;
+            }
+        }
+
+        return $roles;
+    }
+
+    /**
      * @return array
      */
     public function getNewRoles(): array
     {
-        return array_diff_multi($this->roles, $this->getExistingRoles());
+        return array_diff_multi($this->parseRoles($this->roles), $this->getExistingRoles());
     }
 
     /**
@@ -72,7 +102,7 @@ class UpdateRequest extends FormRequest
      */
     public function getDeletedRoles(): array
     {
-        return array_diff_multi($this->getExistingRoles(), $this->roles);
+        return array_diff_multi($this->getExistingRoles(), $this->parseRoles($this->roles));
     }
 
     /**
