@@ -17,6 +17,8 @@ dist: trusty
 
 sudo: required
 
+if: tag IS blank
+
 branches:
   only:
     - master

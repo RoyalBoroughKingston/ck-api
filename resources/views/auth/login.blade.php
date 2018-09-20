@@ -34,7 +34,11 @@
             </div>
 
             <button type="submit" class="govuk-button">
-                Send code
+                @if(config('ck.otp_enabled'))
+                    Send code
+                @else
+                    Login
+                @endif
             </button>
 
         </form>

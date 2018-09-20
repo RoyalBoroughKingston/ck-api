@@ -53,6 +53,11 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, User $user)
     {
+        // If OTP is disabled then skip this method.
+        if (!config('ck.otp_enabled')) {
+            return null;
+        }
+
         // Log user out.
         $this->guard()->logout();
 
@@ -120,7 +125,7 @@ class LoginController extends Controller
     /**
      * Redirect the user after determining they are locked out.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return void
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -138,7 +143,7 @@ class LoginController extends Controller
     /**
      * Get the failed login response instance.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -153,7 +158,7 @@ class LoginController extends Controller
     /**
      * Get the throttle key for the given request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return string
      */
     protected function throttleKey(Request $request)
@@ -163,6 +168,6 @@ class LoginController extends Controller
             Str::lower($request->input($this->username()))
         );
 
-        return $key.'|'.$request->ip();
+        return $key . '|' . $request->ip();
     }
 }

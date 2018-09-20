@@ -42,7 +42,7 @@ class NotificationController extends Controller
             ])
             ->paginate(per_page($request->per_page));
 
-        event(EndpointHit::onRead($request, 'Viewed all Notifications'));
+        event(EndpointHit::onRead($request, 'Viewed all notifications'));
 
         return NotificationResource::collection($notifications);
     }
