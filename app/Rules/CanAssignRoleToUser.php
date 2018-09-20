@@ -36,50 +36,50 @@ class CanAssignRoleToUser implements Rule
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
-     * @param  mixed  $value
+     * @param  mixed $role
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $role)
     {
-        // Use the roles passed or fallback to the value.
-        $roles = $this->newRoles ?? [$value];
+        // Immediately fail if the value is not an array.
+        if (!$this->validate($role)) {
+            return false;
+        }
 
-        foreach ($roles as $role) {
-            // Immediately fail if the value is not an array.
-            if (!$this->validate($role)) {
-                return false;
-            }
+        // Skip if the role is not provided in the new roles array.
+        if ($this->shouldSkip($role)) {
+            return true;
+        }
 
-            switch ($role['role']) {
-                case Role::NAME_SERVICE_WORKER:
-                    $service = Service::findOrFail($role['service_id']);
-                    if (!$this->user->canMakeServiceWorker($service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SERVICE_ADMIN:
-                    $service = Service::findOrFail($role['service_id']);
-                    if (!$this->user->canMakeServiceAdmin($service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_ORGANISATION_ADMIN:
-                    $organisation = Organisation::findOrFail($role['organisation_id']);
-                    if (!$this->user->canMakeOrganisationAdmin($organisation)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_GLOBAL_ADMIN:
-                    if (!$this->user->canMakeGlobalAdmin()) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SUPER_ADMIN:
-                    if (!$this->user->canMakeSuperAdmin()) {
-                        return false;
-                    }
-                    break;
-            }
+        switch ($role['role']) {
+            case Role::NAME_SERVICE_WORKER:
+                $service = Service::findOrFail($role['service_id']);
+                if (!$this->user->canMakeServiceWorker($service)) {
+                    return false;
+                }
+                break;
+            case Role::NAME_SERVICE_ADMIN:
+                $service = Service::findOrFail($role['service_id']);
+                if (!$this->user->canMakeServiceAdmin($service)) {
+                    return false;
+                }
+                break;
+            case Role::NAME_ORGANISATION_ADMIN:
+                $organisation = Organisation::findOrFail($role['organisation_id']);
+                if (!$this->user->canMakeOrganisationAdmin($organisation)) {
+                    return false;
+                }
+                break;
+            case Role::NAME_GLOBAL_ADMIN:
+                if (!$this->user->canMakeGlobalAdmin()) {
+                    return false;
+                }
+                break;
+            case Role::NAME_SUPER_ADMIN:
+                if (!$this->user->canMakeSuperAdmin()) {
+                    return false;
+                }
+                break;
         }
 
         return true;
@@ -128,6 +128,28 @@ class CanAssignRoleToUser implements Rule
                 break;
         }
 
+        return true;
+    }
+
+    /**
+     * @param array $role
+     * @return bool
+     */
+    protected function shouldSkip(array $role): bool
+    {
+        // If no new roles where provided then don't skip.
+        if ($this->newRoles === null) {
+            return false;
+        }
+
+        // If new role provided, and the role is in the array, then don't skip.
+        foreach ($this->newRoles as $newRole) {
+            if ($newRole == $role) {
+                return false;
+            }
+        }
+
+        // If new roles provided, but the role is not in the array, then skip.
         return true;
     }
 }

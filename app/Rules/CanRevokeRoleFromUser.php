@@ -43,50 +43,50 @@ class CanRevokeRoleFromUser implements Rule
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
-     * @param  mixed  $value
+     * @param  mixed  $role
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $role)
     {
-        // Use the roles passed or fallback to the value.
-        $roles = $this->revokedRoles ?? [$value];
+        // Immediately fail if the value is not an array.
+        if (!$this->validate($role)) {
+            return false;
+        }
 
-        foreach ($roles as $role) {
-            // Immediately fail if the value is not an array.
-            if (!$this->validate($role)) {
-                return false;
-            }
+        // Skip if the role is not provided in the revoked roles array.
+        if ($this->shouldSkip($role)) {
+            return true;
+        }
 
-            switch ($role['role']) {
-                case Role::NAME_SERVICE_WORKER:
-                    $service = Service::query()->findOrFail($role['service_id']);
-                    if (!$this->user->canRevokeServiceWorker($this->subject, $service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SERVICE_ADMIN:
-                    $service = Service::query()->findOrFail($role['service_id']);
-                    if (!$this->user->canRevokeServiceAdmin($this->subject, $service)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_ORGANISATION_ADMIN:
-                    $organisation = Organisation::query()->findOrFail($role['organisation_id']);
-                    if (!$this->user->canRevokeOrganisationAdmin($this->subject, $organisation)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_GLOBAL_ADMIN:
-                    if (!$this->user->canRevokeGlobalAdmin($this->subject)) {
-                        return false;
-                    }
-                    break;
-                case Role::NAME_SUPER_ADMIN:
-                    if (!$this->user->canRevokeSuperAdmin($this->subject)) {
-                        return false;
-                    }
-                    break;
-            }
+        switch ($role['role']) {
+            case Role::NAME_SERVICE_WORKER:
+                $service = Service::query()->findOrFail($role['service_id']);
+                if (!$this->user->canRevokeServiceWorker($this->subject, $service)) {
+                    return false;
+                }
+                break;
+            case Role::NAME_SERVICE_ADMIN:
+                $service = Service::query()->findOrFail($role['service_id']);
+                if (!$this->user->canRevokeServiceAdmin($this->subject, $service)) {
+                    return false;
+                }
+                break;
+            case Role::NAME_ORGANISATION_ADMIN:
+                $organisation = Organisation::query()->findOrFail($role['organisation_id']);
+                if (!$this->user->canRevokeOrganisationAdmin($this->subject, $organisation)) {
+                    return false;
+                }
+                break;
+            case Role::NAME_GLOBAL_ADMIN:
+                if (!$this->user->canRevokeGlobalAdmin($this->subject)) {
+                    return false;
+                }
+                break;
+            case Role::NAME_SUPER_ADMIN:
+                if (!$this->user->canRevokeSuperAdmin($this->subject)) {
+                    return false;
+                }
+                break;
         }
 
         return true;
@@ -135,6 +135,28 @@ class CanRevokeRoleFromUser implements Rule
                 break;
         }
 
+        return true;
+    }
+
+    /**
+     * @param array $role
+     * @return bool
+     */
+    protected function shouldSkip(array $role): bool
+    {
+        // If no revoked roles where provided then don't skip.
+        if ($this->revokedRoles === null) {
+            return false;
+        }
+
+        // If revoked role provided, and the role is in the array, then don't skip.
+        foreach ($this->revokedRoles as $revokedRole) {
+            if ($revokedRole == $role) {
+                return false;
+            }
+        }
+
+        // If revoked roles provided, but the role is not in the array, then skip.
         return true;
     }
 }
