@@ -14,10 +14,13 @@ class IndexRequest extends FormRequest
      */
     public function authorize()
     {
-        $referral = Referral::find($this->filter['referral_id'] ?? null);
-        $service = $referral->service ?? null;
+        // Needed in case there are no services.
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
 
-        if ($service && $this->user()->isServiceWorker($service)) {
+        // The minimum role needed to access this endpoint.
+        if ($this->user()->isServiceWorker()) {
             return true;
         }
 

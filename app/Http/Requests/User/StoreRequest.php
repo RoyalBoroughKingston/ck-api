@@ -54,8 +54,13 @@ class StoreRequest extends FormRequest
             }
         }
 
-        // User must at least be a service worker.
-        if ($this->user()->isGlobalAdmin() || $this->user()->isServiceWorker()) {
+        // Needed in case there are no services.
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
+
+        // The minimum role needed to access this endpoint.
+        if ($this->user()->isServiceWorker()) {
             return true;
         }
 
