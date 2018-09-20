@@ -13,7 +13,11 @@ class IndexRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->user()->isServiceWorker() || $this->user()->isGlobalAdmin()) {
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
+
+        if ($this->user()->isServiceWorker()) {
             return true;
         }
 

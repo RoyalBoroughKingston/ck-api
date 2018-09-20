@@ -17,9 +17,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $organisation = $this->organisation;
-
-        if ($this->user()->isOrganisationAdmin($organisation)) {
+        if ($this->user()->isOrganisationAdmin($this->organisation)) {
             return true;
         }
 

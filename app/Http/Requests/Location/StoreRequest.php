@@ -14,7 +14,11 @@ class StoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->user()->isServiceAdmin() || $this->user()->isGlobalAdmin()) {
+        if ($this->user()->isGlobalAdmin()) {
+            return true;
+        }
+
+        if ($this->user()->isServiceAdmin()) {
             return true;
         }
 
