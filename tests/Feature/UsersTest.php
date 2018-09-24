@@ -608,6 +608,62 @@ class UsersTest extends TestCase
 
     /*
      * ==================================================
+     * Get the logged in user.
+     * ==================================================
+     */
+
+    public function test_guest_cannot_view_logged_in_user()
+    {
+        factory(Service::class)->create();
+
+        $response = $this->json('GET', '/core/v1/users/users');
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_can_view_logged_in_user()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', '/core/v1/users/user', ['include' => 'user-roles']);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => [
+                [
+                    'role' => Role::NAME_SERVICE_WORKER,
+                    'service_id' => $service->id,
+                ]
+            ],
+        ]);
+    }
+
+    public function test_audit_created_when_logged_in_user_viewed()
+    {
+        $this->fakeEvents();
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $this->json('GET', '/core/v1/users/user');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getUser()->id === $user->id) &&
+                ($event->getModel()->id === $user->id);
+        });
+    }
+
+    /*
+     * ==================================================
      * Update a specific user.
      * ==================================================
      */

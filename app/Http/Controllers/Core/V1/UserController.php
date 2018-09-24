@@ -152,6 +152,36 @@ class UserController extends Controller
     }
 
     /**
+     * Display the logged in user.
+     *
+     * @param \App\Http\Requests\User\ShowRequest $request
+     * @return \App\Http\Resources\UserResource
+     */
+    public function user(ShowRequest $request)
+    {
+        // Check if the request has asked for user roles to be included.
+        $userRolesIncluded = str_contains($request->include, 'user-roles');
+
+        $baseQuery = User::query()
+            ->where('id', $request->user()->id)
+            ->when($userRolesIncluded, function (Builder $query): Builder {
+                // If user roles included, then make sure the role is also eager loaded.
+                return $query->with('userRoles.role');
+            });
+
+        $user = QueryBuilder::for($baseQuery)
+            ->allowedIncludes([
+                'user-roles.organisation',
+                'user-roles.service',
+            ])
+            ->firstOrFail();
+
+        event(EndpointHit::onRead($request, "Viewed user [{$user->id}]", $user));
+
+        return new UserResource($user);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\User\UpdateRequest $request
