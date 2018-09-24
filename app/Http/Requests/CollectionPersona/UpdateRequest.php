@@ -33,7 +33,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:1', 'max:255'],
-            'intro' => ['required', 'string', 'min:1', 'max:255'],
+            'intro' => ['required', 'string', 'min:1', 'max:500'],
             'subtitle' => ['required', 'string', 'min:1', 'max:255'],
             'order' => ['required', 'integer', 'min:1', 'max:'.Collection::personas()->count()],
             'category_taxonomies' => ['present', 'array'],
