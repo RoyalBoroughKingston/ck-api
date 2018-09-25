@@ -13,9 +13,11 @@ trait UpdateRequestScopes
      */
     public function scopeServiceId(Builder $query, $id): Builder
     {
+        $ids = explode(',', $id);
+
         return $query
             ->where('updateable_type', 'services')
-            ->whereIn('updateable_id', (array)$id);
+            ->whereIn('updateable_id', $ids);
     }
 
     /**
@@ -25,9 +27,11 @@ trait UpdateRequestScopes
      */
     public function scopeServiceLocationId(Builder $query, $id): Builder
     {
+        $ids = explode(',', $id);
+
         return $query
             ->where('updateable_type', 'service_locations')
-            ->whereIn('updateable_id', (array)$id);
+            ->whereIn('updateable_id', $ids);
     }
 
     /**
@@ -37,9 +41,11 @@ trait UpdateRequestScopes
      */
     public function scopeLocationId(Builder $query, $id): Builder
     {
+        $ids = explode(',', $id);
+
         return $query
             ->where('updateable_type', 'locations')
-            ->whereIn('updateable_id', (array)$id);
+            ->whereIn('updateable_id', $ids);
     }
 
     /**
@@ -49,8 +55,10 @@ trait UpdateRequestScopes
      */
     public function scopeOrganisationId(Builder $query, $id): Builder
     {
+        $ids = explode(',', $id);
+
         return $query
             ->where('updateable_type', 'organisations')
-            ->whereIn('updateable_id', (array)$id);
+            ->whereIn('updateable_id', $ids);
     }
 }

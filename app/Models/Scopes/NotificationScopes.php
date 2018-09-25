@@ -13,9 +13,11 @@ trait NotificationScopes
      */
     public function scopeReferralId(Builder $query, string $id): Builder
     {
+        $ids = explode(',', $id);
+
         return $query
             ->where('notifiable_type', 'referrals')
-            ->whereIn('notifiable_id', (array)$id);
+            ->whereIn('notifiable_id', $ids);
     }
 
     /**
@@ -25,9 +27,11 @@ trait NotificationScopes
      */
     public function scopeServiceId(Builder $query, string $id): Builder
     {
+        $ids = explode(',', $id);
+
         return $query
             ->where('notifiable_type', 'services')
-            ->whereIn('notifiable_id', (array)$id);
+            ->whereIn('notifiable_id', $ids);
     }
 
     /**
@@ -37,8 +41,10 @@ trait NotificationScopes
      */
     public function scopeUserId(Builder $query, string $id): Builder
     {
+        $ids = explode(',', $id);
+
         return $query
             ->where('notifiable_type', 'users')
-            ->whereIn('notifiable_id', (array)$id);
+            ->whereIn('notifiable_id', $ids);
     }
 }
