@@ -60,7 +60,9 @@ php artisan ck:create-user <first-name> <last-name> <email> <phone-number>
 Ensure any API clients have been created:
 
 ```bash
-php artisan passport:client --password --name="Name of Application"
+php artisan passport:client
+
+# Make sure to leave the user ID blank when creating.
 ```
 
 In a separate terminal on your host machine, pull the Elasticsearch docker image and start an instance of it:

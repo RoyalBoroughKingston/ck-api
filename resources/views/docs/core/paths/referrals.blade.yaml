@@ -5,18 +5,28 @@ root:
     summary: List all the referrals
     description: |
       **Permission:** `Service Worker`
+
+      ---
+
+      Page feedbacks are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[service_id]
       in: query
-      description: The ID of the service
+      description: Comma seperated list of service IDs to filter by
       schema:
         type: string
         format: uuid
     - name: filter[reference]
       in: query
-      description: The reference for the referral
+      description: The reference for the referral to filter by
+      schema:
+        type: string
+    - name: include
+      in: query
+      description: The relationships to include with the response [`service`]
       schema:
         type: string
     responses:
@@ -67,6 +77,11 @@ nested:
       schema:
         type: string
         format: uuid
+    - name: include
+      in: query
+      description: The relationships to include with the response [`service`]
+      schema:
+        type: string
     responses:
       200:
         content:

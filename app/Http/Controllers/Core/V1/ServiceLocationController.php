@@ -39,7 +39,7 @@ class ServiceLocationController extends Controller
     {
         $baseQuery = ServiceLocation::query()
             ->with('regularOpeningHours', 'holidayOpeningHours')
-            ->orderByDesc('created_at');
+            ->orderBy('name');
 
         $serviceLocations = QueryBuilder::for($baseQuery)
             ->allowedFilters([

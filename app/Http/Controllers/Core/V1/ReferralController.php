@@ -35,7 +35,7 @@ class ReferralController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        // Check if the request has asked for user roles to be included.
+        // Check if the request has asked for the service to be included.
         $serviceIncluded = str_contains($request->include, 'service');
 
         // Constrain the user to only show services that they are a service worker for.

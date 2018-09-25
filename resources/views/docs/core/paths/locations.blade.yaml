@@ -5,9 +5,21 @@ root:
     summary: List all the locations
     description: |
       **Permission:** `Open`
+
+      ---
+
+      Locations are returned in ascending order of the following fields:
+      1. `address_line_1`
+      2. `address_line_2`
+      3. `address_line_3`
+      4. `city`
+      5. `county`
+      6. `postcode`
+      7. `country`
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[address_line_1]
       in: query

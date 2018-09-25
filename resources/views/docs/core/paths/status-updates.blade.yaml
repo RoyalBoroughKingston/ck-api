@@ -5,16 +5,26 @@ root:
     summary: List all of the status updates
     description: |
       **Permission:** `Service Worker`
+
+      ---
+
+      Status updates are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[referral_id]
       in: query
-      description: The ID of the referral
+      description: Comma seperated list of referral IDs to filter by
       required: true
       schema:
         type: string
         format: uuid
+    - name: include
+      in: query
+      description: The relationships to include with the response [`user`]
+      schema:
+        type: string
     responses:
       200:
         content:

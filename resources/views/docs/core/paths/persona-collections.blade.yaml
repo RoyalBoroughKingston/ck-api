@@ -5,9 +5,14 @@ root:
     summary: List all the persona collections
     description: |
       **Permission:** `Open`
+
+      ---
+
+      Collections are returned in ascending order of the order field.
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     responses:
       200:

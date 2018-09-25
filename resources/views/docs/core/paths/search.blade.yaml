@@ -6,6 +6,9 @@ root:
     description: |
       **Permission:** `Open`
     security: []
+    parameters:
+    - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     requestBody:
       required: true
       content:
