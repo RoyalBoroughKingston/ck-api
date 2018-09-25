@@ -5,34 +5,43 @@ root:
     summary: List all the update requests
     description: |
       **Permission:** `Global Admin`
+
+      ---
+
+      Update requests are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[service_id]
       in: query
-      description: The ID of the service
+      description: Comma seperated list of service IDs to filter by
       schema:
         type: string
         format: uuid
     - name: filter[service_location_id]
       in: query
-      description: The ID of the service location
+      description: Comma seperated list of service location IDs to filter by
       schema:
         type: string
         format: uuid
     - name: filter[location_id]
       in: query
-      description: The ID of the location
+      description: Comma seperated list of location IDs to filter by
       schema:
         type: string
         format: uuid
     - name: filter[organisation_id]
       in: query
-      description: The ID of the organisation
+      description: Comma seperated list of organisation IDs to filter by
       schema:
         type: string
         format: uuid
+    - name: include
+      in: query
+      description: The relationships to include with the response [`user`]
+      schema:
+        type: string
     responses:
       200:
         content:

@@ -5,6 +5,12 @@ root:
     summary: List all the users
     description: |
       **Permission:** `Service Worker`
+
+      ---
+
+      Users are returned in ascending order of the following fields:
+      1. `first_name`
+      2. `last_name`
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/per-page.yaml
@@ -17,6 +23,11 @@ root:
     - name: filter[last_name]
       in: query
       description: Last name to filter by
+      schema:
+        type: string
+    - name: include
+      in: query
+      description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
       schema:
         type: string
     responses:
@@ -74,6 +85,11 @@ nested:
       schema:
         type: string
         format: uuid
+    - name: include
+      in: query
+      description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
+      schema:
+        type: string
     responses:
       200:
         content:

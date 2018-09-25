@@ -5,6 +5,10 @@ root:
     summary: List all the organisation taxonomies
     description: |
       **Permission:** `Open`
+
+      ---
+
+      Taxonomies are returned in ascending order of the order field.
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
