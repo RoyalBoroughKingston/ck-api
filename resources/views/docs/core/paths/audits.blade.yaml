@@ -7,7 +7,7 @@ root:
       **Permission:** `Global Admin`
 
       ---
-      
+
       Audits are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
