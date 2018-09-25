@@ -8,6 +8,7 @@ root:
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[organisation_id]
       in: query

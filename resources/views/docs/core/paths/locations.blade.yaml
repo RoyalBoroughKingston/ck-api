@@ -8,6 +8,7 @@ root:
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[address_line_1]
       in: query

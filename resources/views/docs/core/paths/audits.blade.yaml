@@ -5,8 +5,13 @@ root:
     summary: List all the audits
     description: |
       **Permission:** `Global Admin`
+
+      ---
+      
+      Audits are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
+    - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[user_id]
       in: query
