@@ -5,23 +5,27 @@ root:
     summary: List all the notifications
     description: |
       **Permission:** `Global Admin`
+
+      ---
+
+      Notifications are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/per-page.yaml
     - $ref: /docs/core/parameters/filter-id.yaml
     - name: filter[referral_id]
       in: query
-      description: The ID of the referral
+      description: Comma seperated list of referral IDs to filter by
       schema:
         type: string
     - name: filter[service_id]
       in: query
-      description: The ID of the service
+      description: Comma seperated list of service IDs to filter by
       schema:
         type: string
     - name: filter[user_id]
       in: query
-      description: The ID of the user
+      description: Comma seperated list of user IDs to filter by
       schema:
         type: string
     responses:
