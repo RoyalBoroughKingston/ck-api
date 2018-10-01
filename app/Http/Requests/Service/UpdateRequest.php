@@ -9,7 +9,6 @@ use App\Rules\Base64EncodedPng;
 use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
-use App\Rules\UkPhoneNumber;
 use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

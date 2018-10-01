@@ -13,6 +13,7 @@ sites:
     -
         map: api.connectedkingston.test
         to: /home/vagrant/ck-api/public
+        php: "7.2"
 databases:
     - ck_dev
     - ck_testing

@@ -94,7 +94,7 @@ class ServiceController extends Controller
             ]);
 
             // Upload the logo if provided.
-            if ($request->has('logo')) {
+            if ($request->filled('logo')) {
                 // Create the file record.
                 $file = File::create([
                     'filename' => $service->id . '.png',
@@ -111,7 +111,7 @@ class ServiceController extends Controller
             }
 
             // Upload the SEO image if provided.
-            if ($request->has('seo_image')) {
+            if ($request->filled('seo_image')) {
                 // Create the file record.
                 $file = File::create([
                     'filename' => $service->id . '.png',

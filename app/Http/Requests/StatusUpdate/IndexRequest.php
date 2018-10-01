@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\StatusUpdate;
 
-use App\Models\Referral;
 use Illuminate\Foundation\Http\FormRequest;
 
 class IndexRequest extends FormRequest
@@ -14,12 +13,6 @@ class IndexRequest extends FormRequest
      */
     public function authorize()
     {
-        // Needed in case there are no services.
-        if ($this->user()->isGlobalAdmin()) {
-            return true;
-        }
-
-        // The minimum role needed to access this endpoint.
         if ($this->user()->isServiceWorker()) {
             return true;
         }
