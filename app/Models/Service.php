@@ -157,6 +157,9 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = (new UpdateServiceRequest())
+            ->setUserResolver(function () use ($updateRequest) {
+                return $updateRequest->user;
+            })
             ->merge(['service' => $this])
             ->merge($updateRequest->data)
             ->rules();
