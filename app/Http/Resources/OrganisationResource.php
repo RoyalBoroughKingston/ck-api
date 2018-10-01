@@ -17,6 +17,7 @@ class OrganisationResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'has_logo' => $this->hasLogo(),
             'slug' => $this->slug,
             'name' => $this->name,
             'description' => $this->description,

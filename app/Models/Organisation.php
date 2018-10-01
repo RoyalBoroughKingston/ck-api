@@ -63,4 +63,12 @@ class Organisation extends Model implements AppliesUpdateRequests
 
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasLogo(): bool
+    {
+        return $this->logo_file_id !== null;
+    }
 }

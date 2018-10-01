@@ -301,4 +301,12 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             static::WAIT_TIME_LONGER,
         ]);
     }
+
+    /**
+     * @return bool
+     */
+    public function hasLogo(): bool
+    {
+        return $this->logo_file_id !== null;
+    }
 }
