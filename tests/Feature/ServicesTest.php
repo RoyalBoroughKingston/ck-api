@@ -12,6 +12,7 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -718,6 +719,8 @@ class ServicesTest extends TestCase
     public function test_service_admin_can_update_one()
     {
         $service = factory(Service::class)->create();
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -768,7 +771,9 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
         ];
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
@@ -781,6 +786,8 @@ class ServicesTest extends TestCase
         $this->fakeEvents();
 
         $service = factory(Service::class)->create();
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -831,7 +838,9 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $service) {
@@ -839,6 +848,144 @@ class ServicesTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $service->id);
         });
+    }
+
+    public function test_service_admin_cannot_update_taxonomies()
+    {
+        $service = factory(Service::class)->create();
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $newTaxonomy = Taxonomy::category()
+            ->children()
+            ->where('id', '!=', $taxonomy->id)
+            ->firstOrFail();
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [
+                $taxonomy->id,
+                $newTaxonomy->id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_global_admin_can_update_taxonomies()
+    {
+        $service = factory(Service::class)->create();
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $newTaxonomy = Taxonomy::category()
+            ->children()
+            ->where('id', '!=', $taxonomy->id)
+            ->firstOrFail();
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [
+                $taxonomy->id,
+                $newTaxonomy->id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /*
