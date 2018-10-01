@@ -94,6 +94,10 @@ nested:
     summary: Update a specific service
     description: |
       **Permission:** `Service Admin`
+      - Can update a service location but not it's taxonomies
+
+      **Permission:** `Global Admin`
+      - Can update a service location
     parameters:
     - name: service
       in: path
