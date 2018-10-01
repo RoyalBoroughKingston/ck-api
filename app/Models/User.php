@@ -278,7 +278,7 @@ class User extends Authenticatable implements Notifiable
      */
     public function isServiceWorker(Service $service = null): bool
     {
-        return $this->hasRole(Role::serviceWorker(), $service);
+        return $this->hasRole(Role::serviceWorker(), $service) || $this->hasRole(Role::globalAdmin());
     }
 
     /**
@@ -287,7 +287,7 @@ class User extends Authenticatable implements Notifiable
      */
     public function isServiceAdmin(Service $service = null): bool
     {
-        return $this->hasRole(Role::serviceAdmin(), $service);
+        return $this->hasRole(Role::serviceAdmin(), $service) || $this->hasRole(Role::globalAdmin());
     }
 
     /**
@@ -296,7 +296,7 @@ class User extends Authenticatable implements Notifiable
      */
     public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
-        return $this->hasRole(Role::organisationAdmin(), null, $organisation);
+        return $this->hasRole(Role::organisationAdmin(), null, $organisation) || $this->hasRole(Role::globalAdmin());
     }
 
     /**

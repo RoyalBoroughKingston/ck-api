@@ -10,7 +10,6 @@ use App\Rules\InOrder;
 use App\Rules\IsOrganisationAdmin;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
-use App\Rules\UkPhoneNumber;
 use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,10 +23,6 @@ class StoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->user()->isGlobalAdmin()) {
-            return true;
-        }
-
         if ($this->user()->isOrganisationAdmin()) {
             return true;
         }

@@ -15,9 +15,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $service = $this->service_location->service;
-
-        if ($service && $this->user()->isServiceAdmin($service)) {
+        if ($this->user()->isServiceAdmin($this->service_location->service)) {
             return true;
         }
 
