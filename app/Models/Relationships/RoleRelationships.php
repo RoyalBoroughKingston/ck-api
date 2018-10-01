@@ -17,6 +17,6 @@ trait RoleRelationships
 
     public function users()
     {
-        return $this->belongsToMany(User::class, (new UserRole())->getTable());
+        return $this->belongsToMany(User::class, (new UserRole())->getTable())->withTrashed();
     }
 }

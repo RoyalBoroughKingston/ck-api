@@ -72,7 +72,7 @@ class OrganisationController extends Controller
             ]);
 
             // Upload the logo if provided.
-            if ($request->has('logo')) {
+            if ($request->filled('logo')) {
                 // Create the file record.
                 $file = File::create([
                     'filename' => $organisation->id . '.png',
