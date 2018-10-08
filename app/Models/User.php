@@ -568,7 +568,7 @@ class User extends Authenticatable implements Notifiable
     /**
      * @return \App\Models\User
      */
-    public function logout(): self
+    public function clearSessions(): self
     {
         DB::table('sessions')
             ->where('user_id', $this->id)

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Oauth;
+namespace App\Http\Controllers\Core\V1\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class LogoutController extends Controller
+class SessionController extends Controller
 {
     /**
-     * LogoutController constructor.
+     * SessionController constructor.
      */
     public function __construct()
     {
@@ -18,9 +18,9 @@ class LogoutController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke()
+    public function destroy()
     {
-        Auth::user()->logout();
+        Auth::user()->clearSessions();
 
         return response()->json(['message' => 'You have successfully logged out.']);
     }

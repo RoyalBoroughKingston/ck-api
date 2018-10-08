@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -11,13 +12,22 @@ class LogoutTest extends TestCase
 {
     public function test_logged_in_user_can_logout()
     {
-        $user = factory(User::class)->create();
+        Config::set('ck.otp_enabled', false);
+
+        $user = factory(User::class)->create(['password' => bcrypt('secret')]);
+
+        $this->post('/login', [
+            '_token' => csrf_token(),
+            'email' => $user->email,
+            'password' => 'secret',
+        ]);
+        $this->assertDatabaseHas('sessions', ['user_id' => $user->id]);
 
         Passport::actingAs($user);
-
-        $response = $this->json('POST', '/oauth/logout');
+        $response = $this->json('DELETE', '/core/v1/users/user/session');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson(['message' => 'You have successfully logged out.']);
+        $this->assertDatabaseMissing('sessions', ['user_id' => $user->id]);
     }
 }

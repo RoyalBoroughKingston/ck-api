@@ -50,8 +50,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapOauthRoutes();
-
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
@@ -85,19 +83,5 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
-    }
-
-    /**
-     * Define the "OAuth" routes for the application.
-     *
-     * These routes extend upon the OAuth standard.
-     *
-     * @return void
-     */
-    protected function mapOauthRoutes()
-    {
-        Route::middleware('api')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/oauth.php'));
     }
 }
