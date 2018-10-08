@@ -134,4 +134,4 @@ See also the list of [contributors](https://github.com/RoyalBoroughKingston/ck-a
 
 ## License
 
-This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the GNU AGPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.

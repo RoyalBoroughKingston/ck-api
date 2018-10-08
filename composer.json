@@ -2,7 +2,7 @@
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
-    "license": "MIT",
+    "license": "GNU AGPLv3",
     "type": "project",
     "require": {
         "php": "^7.2.0",
