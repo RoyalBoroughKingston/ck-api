@@ -109,6 +109,10 @@ paths:
     $ref: /docs/core/paths/users.yaml#/root
   /users/{user}:
     $ref: /docs/core/paths/users.yaml#/nested
+  /users/{user}/user:
+    $ref: /docs/core/paths/users.yaml#/user
+  /users/{user}/user/sessions:
+    $ref: /docs/core/paths/users.yaml#/sessions
 
 components:
   securitySchemes:

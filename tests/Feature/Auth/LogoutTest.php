@@ -24,10 +24,10 @@ class LogoutTest extends TestCase
         $this->assertDatabaseHas('sessions', ['user_id' => $user->id]);
 
         Passport::actingAs($user);
-        $response = $this->json('DELETE', '/core/v1/users/user/session');
+        $response = $this->json('DELETE', '/core/v1/users/user/sessions');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJson(['message' => 'You have successfully logged out.']);
+        $response->assertJson(['message' => 'All your sessions have been cleared.']);
         $this->assertDatabaseMissing('sessions', ['user_id' => $user->id]);
     }
 }

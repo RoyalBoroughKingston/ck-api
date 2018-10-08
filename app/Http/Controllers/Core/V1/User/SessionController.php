@@ -22,6 +22,6 @@ class SessionController extends Controller
     {
         Auth::user()->clearSessions();
 
-        return response()->json(['message' => 'You have successfully logged out.']);
+        return response()->json(['message' => 'All your sessions have been cleared.']);
     }
 }

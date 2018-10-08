@@ -158,3 +158,41 @@ nested:
           application/json:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
+
+# /users/{user}/user
+user:
+  get:
+    tags: [Users]
+    summary: Get the authenticate user
+    description: |
+      **Permission:** `Service Worker`
+    parameters:
+      - name: include
+        in: query
+        description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
+        schema:
+          type: string
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/resources/user.yaml
+
+# /users/{user}/user/sessions
+sessions:
+  delete:
+    tags: [Users]
+    summary: Clear the authenticated user's sessions
+    description: |
+      **Permission:** `Service Worker`
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: All your sessions have been cleared.

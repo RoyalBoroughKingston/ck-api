@@ -105,6 +105,6 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Users.
     Route::get('/users/user', 'UserController@user')->name('users.user');
-    Route::delete('/users/user/session', 'User\\SessionController@destroy')->name('users.user.session.destroy');
+    Route::delete('/users/user/sessions', 'User\\SessionController@destroy')->name('users.user.sessions.destroy');
     Route::apiResource('/users', 'UserController');
 });
