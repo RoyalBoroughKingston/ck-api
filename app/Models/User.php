@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Laravel\Passport\HasApiTokens;
 
@@ -544,17 +545,35 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * @param \App\Emails\Email $email
+     * @return \App\Models\User
      */
-    public function sendEmail(Email $email)
+    public function sendEmail(Email $email): self
     {
         Notification::sendEmail($email, $this);
+
+        return $this;
     }
 
     /**
      * @param \App\Sms\Sms $sms
+     * @return \App\Models\User
      */
-    public function sendSms(Sms $sms)
+    public function sendSms(Sms $sms): self
     {
         Notification::sendSms($sms, $this);
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\User
+     */
+    public function clearSessions(): self
+    {
+        DB::table('sessions')
+            ->where('user_id', $this->id)
+            ->delete();
+
+        return $this;
     }
 }

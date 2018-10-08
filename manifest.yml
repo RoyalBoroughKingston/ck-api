@@ -37,7 +37,6 @@ defaults: &defaults
     REDIS_CLUSTER: true
     REDIS_SCHEME: tls
     SCOUT_ELASTIC_DOCUMENT_REFRESH: "null"
-    SESSION_DRIVER: redis
 
 applications:
 - name: ck-api
