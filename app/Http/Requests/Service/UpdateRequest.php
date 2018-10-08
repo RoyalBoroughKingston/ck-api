@@ -7,6 +7,8 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\Base64EncodedPng;
 use App\Rules\CanUpdateServiceCategoryTaxonomies;
+use App\Rules\CanUpdateServiceSlug;
+use App\Rules\CanUpdateServiceStatus;
 use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
@@ -43,15 +45,19 @@ class UpdateRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique(table(Service::class), 'slug')
-                    ->ignoreModel($this->service),
+                Rule::unique(table(Service::class), 'slug')->ignoreModel($this->service),
                 new Slug(),
+                new CanUpdateServiceSlug($this->user(), $this->service),
             ],
             'name' => ['required', 'string', 'min:1', 'max:255'],
-            'status' => ['required', Rule::in([
-                Service::STATUS_ACTIVE,
-                Service::STATUS_INACTIVE,
-            ])],
+            'status' => [
+                'required',
+                Rule::in([
+                    Service::STATUS_ACTIVE,
+                    Service::STATUS_INACTIVE,
+                ]),
+                new CanUpdateServiceStatus($this->user(), $this->service),
+            ],
             'intro' => ['required', 'string', 'min:1', 'max:255'],
             'description' => ['required', 'string', 'min:1', 'max:10000'],
             'wait_time' => ['present', 'nullable', Rule::in([
@@ -95,21 +101,37 @@ class UpdateRequest extends FormRequest
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
             'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:10000'],
-            'useful_infos.*.order' => ['required_with:useful_infos.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->useful_infos, 'order'))],
+            'useful_infos.*.order' => [
+                'required_with:useful_infos.*',
+                'integer',
+                'min:1',
+                new InOrder(array_pluck_multi($this->useful_infos, 'order')),
+            ],
 
             'social_medias' => ['present', 'array'],
             'social_medias.*' => ['array'],
-            'social_medias.*.type' => ['required_with:social_medias.*', Rule::in([
-                SocialMedia::TYPE_TWITTER,
-                SocialMedia::TYPE_FACEBOOK,
-                SocialMedia::TYPE_INSTAGRAM,
-                SocialMedia::TYPE_YOUTUBE,
-                SocialMedia::TYPE_OTHER,
-            ])],
+            'social_medias.*.type' => [
+                'required_with:social_medias.*',
+                Rule::in([
+                    SocialMedia::TYPE_TWITTER,
+                    SocialMedia::TYPE_FACEBOOK,
+                    SocialMedia::TYPE_INSTAGRAM,
+                    SocialMedia::TYPE_YOUTUBE,
+                    SocialMedia::TYPE_OTHER,
+                ]),
+            ],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
-            'category_taxonomies' => ['required', 'array', new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service)],
-            'category_taxonomies.*' => ['required', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
+            'category_taxonomies' => [
+                'required',
+                'array',
+                new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
+            ],
+            'category_taxonomies.*' => [
+                'required',
+                'exists:taxonomies,id',
+                new RootTaxonomyIs(Taxonomy::NAME_CATEGORY),
+            ],
 
             'logo' => ['nullable', 'string', new Base64EncodedPng()],
             'seo_image' => ['nullable', 'string', new Base64EncodedPng()],

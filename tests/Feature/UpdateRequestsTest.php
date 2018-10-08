@@ -552,7 +552,7 @@ class UpdateRequestsTest extends TestCase
         $updateRequest = $service->updateRequests()->create([
             'user_id' => factory(User::class)->create()->id,
             'data' => [
-                'slug' => 'test-name',
+                'slug' => $service->slug,
                 'name' => 'Test Name',
                 'status' => $service->status,
                 'intro' => $service->intro,
