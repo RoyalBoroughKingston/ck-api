@@ -39,6 +39,7 @@ class UpdateRequestObserverTest extends TestCase
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
         Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) {
+            $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
             $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
             $this->assertArrayHasKey('RESOURCE_ID', $email->values);
             $this->assertArrayHasKey('REQUEST_URL', $email->values);
