@@ -2,16 +2,14 @@
 
 namespace App\Http\Requests\User;
 
-use App\Models\Organisation;
 use App\Models\Role;
-use App\Models\Service;
 use App\Models\UserRole;
 use App\Rules\CanAssignRoleToUser;
 use App\Rules\CanRevokeRoleFromUser;
 use App\Rules\Password;
 use App\Rules\UkPhoneNumber;
+use App\Rules\UserEmailNotTaken;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
@@ -126,7 +124,7 @@ class UpdateRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'min:1', 'max:255'],
             'last_name' => ['required', 'string', 'min:1', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignoreModel($this->user)],
+            'email' => ['required', 'email', 'max:255', new UserEmailNotTaken($this->user)],
             'phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
             'password' => ['string', 'min:8', 'max:255', new Password()],
 

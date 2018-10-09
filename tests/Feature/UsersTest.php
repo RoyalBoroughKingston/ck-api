@@ -527,6 +527,41 @@ class UsersTest extends TestCase
         $this->assertEquals(5, $createdUser->roles()->count());
     }
 
+    public function test_super_admin_can_create_super_admin_with_soft_deleted_users_email()
+    {
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $deletedUser = factory(User::class)->create(['email' => 'test@example.com'])->makeSuperAdmin();
+        $deletedUser->delete();
+
+        $response = $this->json('POST', '/core/v1/users', [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => 'test@example.com',
+            'phone' => random_uk_phone(),
+            'password' => 'Pa$$w0rd',
+            'roles' => [
+                ['role' => Role::NAME_SUPER_ADMIN]
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseHas(table(User::class), [
+            'id' => $deletedUser->id,
+            'email' => 'test@example.com',
+        ]);
+        $this->assertDatabaseMissing(table(User::class), [
+            'id' => $deletedUser->id,
+            'email' => 'test@example.com',
+            'deleted_at' => null,
+        ]);
+        $this->assertDatabaseHas(table(User::class), [
+            'email' => 'test@example.com',
+            'deleted_at' => null,
+        ]);
+    }
+
     /*
      * Audit.
      */
@@ -699,6 +734,22 @@ class UsersTest extends TestCase
         ]));
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_worker_can_update_their_own()
+    {
+        $service = factory(Service::class)->create();
+        $invoker = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($invoker);
+
+        $response = $this->json('PUT', "/core/v1/users/{$invoker->id}", $this->getCreateUserPayload([
+            [
+                'role' => Role::NAME_SERVICE_WORKER,
+                'service_id' => $service->id,
+            ]
+        ]));
+
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /*

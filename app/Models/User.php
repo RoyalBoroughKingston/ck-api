@@ -232,6 +232,14 @@ class User extends Authenticatable implements Notifiable
      */
     public function canUpdate(User $subject): bool
     {
+        /*
+         * If the invoker is also the subject, i.e. the user is updating
+         * their own account.
+         */
+        if ($this->id === $subject->id) {
+            return true;
+        }
+        
         // If the invoker is a super admin.
         if ($this->isSuperAdmin()) {
             return true;
