@@ -7,6 +7,14 @@ use Illuminate\Database\Migrations\Migration;
 class MakeContactNameAndContactPhoneAndContactEmailFieldsNullableOnServicesTable extends Migration
 {
     /**
+     * MakeContactNameAndContactPhoneAndContactEmailFieldsNullableOnServicesTable constructor.
+     */
+    public function __construct()
+    {
+        register_enum_type();
+    }
+
+    /**
      * Run the migrations.
      *
      * @return void
