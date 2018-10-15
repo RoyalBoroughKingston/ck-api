@@ -94,7 +94,12 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                     'keyword' => ['type' => 'keyword'],
                 ],
             ],
-            'taxonomy_categories' => ['type' => 'keyword'],
+            'taxonomy_categories' => [
+                'type' => 'text',
+                'fields' => [
+                    'keyword' => ['type' => 'keyword'],
+                ],
+            ],
             'collection_categories' => ['type' => 'keyword'],
             'collection_personas' => ['type' => 'keyword'],
             'service_locations' => [
