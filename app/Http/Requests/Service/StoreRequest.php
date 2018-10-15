@@ -60,7 +60,7 @@ class StoreRequest extends FormRequest
             'testimonial' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'video_embed' => ['present', 'nullable', 'url', 'max:255', new VideoEmbed()],
             'url' => ['required', 'url', 'max:255'],
-            'contact_name' => ['required', 'string', 'min:1', 'max:255'],
+            'contact_name' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_phone' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_email' => ['present', 'nullable', 'email', 'max:255'],
             'show_referral_disclaimer' => ['required', 'boolean'],
