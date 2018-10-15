@@ -28,6 +28,6 @@ class ReferralObserver
      */
     public function deleting(Referral $referral)
     {
-        $referral->statusUpdates()->delete();
+        $referral->statusUpdates->each->delete();
     }
 }

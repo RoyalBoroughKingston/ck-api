@@ -25,9 +25,9 @@ class ServiceLocationObserver
      */
     public function deleting(ServiceLocation $serviceLocation)
     {
-        $serviceLocation->updateRequests()->delete();
-        $serviceLocation->regularOpeningHours()->delete();
-        $serviceLocation->holidayOpeningHours()->delete();
+        $serviceLocation->updateRequests->each->delete();
+        $serviceLocation->regularOpeningHours->each->delete();
+        $serviceLocation->holidayOpeningHours->each->delete();
     }
 
     /**

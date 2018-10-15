@@ -23,12 +23,12 @@ return [
     'google_api_key' => env('GOOGLE_API_KEY'),
 
     /*
-     * Available drivers: 'log', 'gov'
+     * Available drivers: 'log', 'null', 'gov'
      */
     'email_driver' => env('EMAIL_DRIVER', 'log'),
 
     /*
-     * Available drivers: 'log', 'gov'
+     * Available drivers: 'log', 'null', 'gov'
      */
     'sms_driver' => env('SMS_DRIVER', 'log'),
 

@@ -33,13 +33,13 @@ class ServiceObserver
      */
     public function deleting(Service $service)
     {
-        $service->updateRequests()->delete();
-        $service->userRoles()->delete();
-        $service->referrals()->delete();
-        $service->serviceLocations()->delete();
-        $service->serviceCriterion()->delete();
-        $service->socialMedias()->delete();
-        $service->usefulInfos()->delete();
-        $service->serviceTaxonomies()->delete();
+        $service->updateRequests->each->delete();
+        $service->userRoles->each->delete();
+        $service->referrals->each->delete();
+        $service->serviceLocations->each->delete();
+        $service->serviceCriterion->delete();
+        $service->socialMedias->each->delete();
+        $service->usefulInfos->each->delete();
+        $service->serviceTaxonomies->each->delete();
     }
 }
