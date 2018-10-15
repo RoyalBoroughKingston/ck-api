@@ -5,8 +5,11 @@ namespace Tests\Feature;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\File;
+use App\Models\HolidayOpeningHour;
 use App\Models\Organisation;
+use App\Models\RegularOpeningHour;
 use App\Models\Service;
+use App\Models\ServiceLocation;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
@@ -1308,6 +1311,28 @@ class ServicesTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $service->id);
         });
+    }
+
+    public function test_service_can_be_deleted_when_service_location_has_opening_hours()
+    {
+        $service = factory(Service::class)->create();
+        $serviceLocation = factory(ServiceLocation::class)->create([
+            'service_id' => $service->id,
+        ]);
+        factory(RegularOpeningHour::class)->create([
+            'service_location_id' => $serviceLocation->id,
+        ]);
+        factory(HolidayOpeningHour::class)->create([
+            'service_location_id' => $serviceLocation->id,
+        ]);
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
     }
 
     /*

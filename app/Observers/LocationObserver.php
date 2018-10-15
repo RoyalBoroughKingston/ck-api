@@ -25,8 +25,8 @@ class LocationObserver
      */
     public function deleting(Location $location)
     {
-        $location->updateRequests()->delete();
-        $location->serviceLocations()->delete();
+        $location->updateRequests->each->delete();
+        $location->serviceLocations->each->delete();
     }
 
     /**

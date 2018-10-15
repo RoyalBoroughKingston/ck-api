@@ -79,7 +79,7 @@ class CollectionObserver
      */
     public function deleting(Collection $collection)
     {
-        $collection->collectionTaxonomies()->delete();
+        $collection->collectionTaxonomies->each->delete();
     }
 
     /**

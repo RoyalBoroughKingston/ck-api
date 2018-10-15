@@ -40,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
             case 'gov':
                 $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\GovNotifyEmailSender::class);
                 break;
+            case 'null':
+                $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\NullEmailSender::class);
+                break;
             case 'log':
             default:
                 $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\LogEmailSender::class);
@@ -50,6 +53,9 @@ class AppServiceProvider extends ServiceProvider
         switch (config('ck.sms_driver')) {
             case 'gov':
                 $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\GovNotifySmsSender::class);
+                break;
+            case 'null':
+                $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\NullSmsSender::class);
                 break;
             case 'log':
             default:

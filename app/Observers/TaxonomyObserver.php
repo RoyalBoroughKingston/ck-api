@@ -112,8 +112,8 @@ class TaxonomyObserver
      */
     public function deleting(Taxonomy $taxonomy)
     {
-        $taxonomy->collectionTaxonomies()->delete();
-        $taxonomy->serviceTaxonomies()->delete();
+        $taxonomy->collectionTaxonomies->each->delete();
+        $taxonomy->serviceTaxonomies->each->delete();
 
         // Set the parent ID to null for all children before deleting them.
         $children = $taxonomy->children;
