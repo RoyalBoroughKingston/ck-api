@@ -153,7 +153,10 @@ class ReferralsTest extends TestCase
 
     public function test_guest_can_create_referral()
     {
-        $service = factory(Service::class)->create();
+        $service = factory(Service::class)->create([
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
 
         $payload = [
             'service_id' => $service->id,
@@ -191,7 +194,10 @@ class ReferralsTest extends TestCase
 
     public function test_guest_can_create_self_referral()
     {
-        $service = factory(Service::class)->create();
+        $service = factory(Service::class)->create([
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
 
         $payload = [
             'service_id' => $service->id,
@@ -227,7 +233,10 @@ class ReferralsTest extends TestCase
     {
         $this->fakeEvents();
 
-        $service = factory(Service::class)->create();
+        $service = factory(Service::class)->create([
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
 
         $response = $this->json('POST', '/core/v1/referrals', [
             'service_id' => $service->id,

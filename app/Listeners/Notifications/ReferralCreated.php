@@ -88,7 +88,7 @@ class ReferralCreated
             $contactMethod = 'N/A';
         }
 
-        $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->contact_email, [
+        $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->referral_email, [
             'REFERRAL_ID' => $referral->reference,
             'REFERRAL_SERVICE_NAME' => $referral->service->name,
             'REFERRAL_INITIALS' => $referral->initials(),
