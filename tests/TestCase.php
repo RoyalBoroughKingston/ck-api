@@ -109,14 +109,7 @@ abstract class TestCase extends BaseTestCase
     protected function setUpElasticsearch()
     {
         if (!static::$elasticsearchInitialised) {
-            try {
-                $this->artisan('elastic:drop-index', ['index-configurator' => ServicesIndexConfigurator::class]);
-            } catch (Throwable $exception) {
-                // If the index already does not exist then do nothing.
-            }
-            $this->artisan('elastic:create-index', ['index-configurator' => ServicesIndexConfigurator::class]);
-            $this->artisan('elastic:update-mapping', ['model' => Service::class]);
-
+            $this->artisan('ck:reindex-elasticsearch');
             static::$elasticsearchInitialised = true;
         }
     }
