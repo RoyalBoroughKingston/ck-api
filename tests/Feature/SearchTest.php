@@ -126,7 +126,23 @@ class SearchTest extends TestCase
         $this->assertEquals($serviceWithRelevantOrganisationName->id, $results[1]['id']);
     }
 
-    public function test_query_matches_word_from_service_description()
+    public function test_query_matches_service_intro()
+    {
+        $service = factory(Service::class)->create([
+            'intro' => 'This is a service that helps to homeless find temporary housing.',
+        ]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'housing',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $service->id,
+        ]);
+    }
+
+    public function test_query_does_not_matches_single_word_from_service_description()
     {
         $service = factory(Service::class)->create([
             'description' => 'This is a service that helps to homeless find temporary housing.',
@@ -134,6 +150,20 @@ class SearchTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'homeless',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonMissing(['id' => $service->id]);
+    }
+
+    public function test_query_matches_multiple_words_from_service_description()
+    {
+        $service = factory(Service::class)->create([
+            'description' => 'This is a service that helps to homeless find temporary housing.',
+        ]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'temporary housing',
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
