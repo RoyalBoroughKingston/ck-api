@@ -68,8 +68,8 @@ class ReferralCompleted
                 'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
                 'REFERRAL_ID' => $referral->reference,
-                'SERVICE_PHONE' => $referral->service->contact_phone,
-                'SERVICE_EMAIL' => $referral->service->contact_email,
+                'SERVICE_PHONE' => $referral->service->contact_phone ?? '(not provided)',
+                'SERVICE_EMAIL' => $referral->service->contact_email ?? '(not provided)',
             ]));
         } elseif ($referral->referee_phone) {
             // Resort to SMS, but only if phone number address was provided.
@@ -77,8 +77,8 @@ class ReferralCompleted
                 'REFEREE_NAME' => $referral->referee_name,
                 'SERVICE_NAME' => $referral->service->contact_name,
                 'REFERRAL_ID' => $referral->reference,
-                'SERVICE_PHONE' => $referral->service->contact_phone,
-                'SERVICE_EMAIL' => $referral->service->contact_email,
+                'SERVICE_PHONE' => $referral->service->contact_phone ?? '(not provided)',
+                'SERVICE_EMAIL' => $referral->service->contact_email ?? '(not provided)',
             ]));
         }
     }
