@@ -47,7 +47,7 @@ class ReferralIncompleted
             // Only send an email if email address was provided.
             $referral->sendEmailToClient(new NotifyClientEmail($referral->email, [
                 'REFERRAL_ID' => $referral->reference,
-                'SERVICE_NAME' => $referral->service->contact_name,
+                'SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_STATUS' => $referral->statusUpdates()->latest()->firstOrFail()->comments ?? 'No comments left by user',
             ]));
         } elseif ($referral->phone) {
@@ -68,7 +68,7 @@ class ReferralIncompleted
             // Only send an email if email address was provided.
             $referral->sendEmailToClient(new NotifyRefereeEmail($referral->referee_email, [
                 'REFEREE_NAME' => $referral->referee_name,
-                'SERVICE_NAME' => $referral->service->contact_name,
+                'SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_STATUS' => $referral->statusUpdates()->latest()->firstOrFail()->comments ?? 'No comments left by user',
                 'REFERRAL_ID' => $referral->reference,
             ]));

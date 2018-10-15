@@ -47,7 +47,7 @@ class ReferralCompleted
             // Only send an email if email address was provided.
             $referral->sendEmailToClient(new NotifyClientEmail($referral->email, [
                 'REFERRAL_ID' => $referral->reference,
-                'SERVICE_NAME' => $referral->service->contact_name,
+                'SERVICE_NAME' => $referral->service->name,
             ]));
         } elseif ($referral->phone) {
             // Resort to SMS, but only if phone number address was provided.
@@ -66,7 +66,7 @@ class ReferralCompleted
             // Only send an email if email address was provided.
             $referral->sendEmailToReferee(new NotifyRefereeEmail($referral->referee_email, [
                 'REFEREE_NAME' => $referral->referee_name,
-                'SERVICE_NAME' => $referral->service->contact_name,
+                'SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_ID' => $referral->reference,
                 'SERVICE_PHONE' => $referral->service->contact_phone ?? '(not provided)',
                 'SERVICE_EMAIL' => $referral->service->contact_email ?? '(not provided)',
@@ -75,7 +75,7 @@ class ReferralCompleted
             // Resort to SMS, but only if phone number address was provided.
             $referral->sendSmsToReferee(new NotifyRefereeSms($referral->referee_phone, [
                 'REFEREE_NAME' => $referral->referee_name,
-                'SERVICE_NAME' => $referral->service->contact_name,
+                'SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_ID' => $referral->reference,
                 'SERVICE_PHONE' => $referral->service->contact_phone ?? '(not provided)',
                 'SERVICE_EMAIL' => $referral->service->contact_email ?? '(not provided)',
