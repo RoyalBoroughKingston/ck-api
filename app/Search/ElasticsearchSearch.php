@@ -56,16 +56,10 @@ class ElasticsearchSearch implements Search
      */
     public function applyQuery(string $term): Search
     {
-        $term = single_space($term);
-        $words = count(array_filter(explode(' ', $term), function (string $word) {
-            return $word !== '';
-        }));
-
         $criteria = [];
         $criteria[] = $this->match('name', $term, 4);
         $criteria[] = $this->match('intro', $term, 3);
-        if ($words > 1) {
-            // Only apply the description phrase criteria if more than 1 word is provided.
+        if (str_word_count($term) > 1) {
             $criteria[] = $this->matchPhrase('description', $term, 3);
         }
         $criteria[] = $this->match('taxonomy_categories', $term, 2);
