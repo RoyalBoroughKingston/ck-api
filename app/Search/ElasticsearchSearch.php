@@ -56,43 +56,62 @@ class ElasticsearchSearch implements Search
      */
     public function applyQuery(string $term): Search
     {
+        $term = single_space($term);
+        $words = count(array_filter(explode(' ', $term), function (string $word) {
+            return $word !== '';
+        }));
+
+        $criteria = [];
+        $criteria[] = $this->match('name', $term, 4);
+        $criteria[] = $this->match('intro', $term, 3);
+        if ($words > 1) {
+            // Only apply the description phrase criteria if more than 1 word is provided.
+            $criteria[] = $this->matchPhrase('description', $term, 3);
+        }
+        $criteria[] = $this->match('taxonomy_categories', $term, 2);
+        $criteria[] = $this->match('organisation_name', $term);
+
         $this->query['query']['bool']['must'] = [
-            'bool' => [
-                'should' => [
-                    [
-                        'match' => [
-                            'name' => [
-                                'query' => $term,
-                                'boost' => 4,
-                            ]
-                        ]
-                    ],
-                    [
-                        'match' => [
-                            'description' => [
-                                'query' => $term,
-                                'boost' => 3,
-                            ]
-                        ]
-                    ],
-                    [
-                        'match' => [
-                            'taxonomy_categories' => [
-                                'query' => $term,
-                                'boost' => 2,
-                            ]
-                        ]
-                    ],
-                    [
-                        'match' => [
-                            'organisation_name' => $term,
-                        ]
-                    ],
-                ]
-            ]
+            'bool' => ['should' => $criteria]
         ];
 
         return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param string $term
+     * @param int $boost
+     * @return array
+     */
+    protected function match(string $field, string $term, int $boost = 1): array
+    {
+        return [
+            'match' => [
+                $field => [
+                    'query' => $term,
+                    'boost' => $boost,
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param string $field
+     * @param string $term
+     * @param int $boost
+     * @return array
+     */
+    protected function matchPhrase(string $field, string $term, int $boost = 1): array
+    {
+        return [
+            'match_phrase' => [
+                $field => [
+                    'query' => $term,
+                    'boost' => $boost,
+                ]
+            ]
+        ];
     }
 
     /**
