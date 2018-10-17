@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
@@ -13,7 +12,6 @@ use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
-use Throwable;
 
 abstract class TestCase extends BaseTestCase
 {

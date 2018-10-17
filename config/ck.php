@@ -60,6 +60,11 @@ return [
     'otp_enabled' => env('OTP_ENABLED', true),
 
     /*
+     * The distance (in miles) that the search results should limit up to.
+     */
+    'search_distance' => 15,
+
+    /*
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [

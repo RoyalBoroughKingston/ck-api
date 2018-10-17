@@ -16,6 +16,16 @@ use InvalidArgumentException;
 
 class ElasticsearchSearch implements Search
 {
+    const MILES = 'mi';
+    const YARDS = 'yd';
+    const FEET = 'ft';
+    const INCHES = 'in';
+    const KILOMETERS = 'km';
+    const METERS = 'm';
+    const CENTIMETERS = 'cm';
+    const MILLIMETERS = 'mm';
+    const NAUTICAL_MILES = 'nmi';
+
     /**
      * @var array
      */
@@ -211,13 +221,34 @@ class ElasticsearchSearch implements Search
                     '_geo_distance' => [
                         'service_locations.location' => $location->toArray(),
                         'nested_path' => 'service_locations',
-                        'distance_type' => 'plane',
+                    ]
+                ]
+            ];
+
+            $this->query['query']['bool']['filter']['bool']['must'][] = [
+                'nested' => [
+                    'path' => 'service_locations',
+                    'query' => [
+                        'geo_distance' => [
+                            'distance' => $this->distance(config('ck.search_distance')),
+                            'service_locations.location' => $location->toArray(),
+                        ]
                     ]
                 ]
             ];
         }
 
         return $this;
+    }
+
+    /**
+     * @param int $distance
+     * @param string $units
+     * @return string
+     */
+    protected function distance(int $distance, string $units = self::MILES): string
+    {
+        return $distance . $units;
     }
 
     /**
