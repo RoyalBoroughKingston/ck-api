@@ -44,3 +44,6 @@ properties:
       lon:
         type: float
         example: -52.12710
+  distance:
+    type: integer
+    default: {{ config('ck.search_distance') }}

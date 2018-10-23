@@ -231,16 +231,17 @@ class ElasticsearchSearch implements Search
 
     /**
      * @param \App\Support\Coordinate $location
+     * @param int $radius
      * @return \App\Contracts\Search
      */
-    public function applyRadius(Coordinate $location): Search
+    public function applyRadius(Coordinate $location, int $radius): Search
     {
         $this->query['query']['bool']['filter']['bool']['must'][] = [
             'nested' => [
                 'path' => 'service_locations',
                 'query' => [
                     'geo_distance' => [
-                        'distance' => $this->distance(config('ck.search_distance')),
+                        'distance' => $this->distance($radius),
                         'service_locations.location' => $location->toArray(),
                     ]
                 ]

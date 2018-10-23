@@ -408,7 +408,7 @@ class SearchTest extends TestCase
 
         $data = $this->getResponseContent($response)['data'];
         $this->assertEquals(2, count($data));
-        $this->assertEquals($service2->id, $data[0]['id']);
-        $this->assertEquals($service3->id, $data[1]['id']);
+        $this->assertEquals($service3->id, $data[0]['id']);
+        $this->assertEquals($service2->id, $data[1]['id']);
     }
 }
