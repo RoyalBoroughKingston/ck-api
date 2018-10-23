@@ -748,10 +748,10 @@ class ServicesTest extends TestCase
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
             'show_referral_disclaimer' => true,
-            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
-            'referral_button_text' => null,
-            'referral_email' => $this->faker->safeEmail,
-            'referral_url' => null,
+            'referral_method' => $service->referral_method,
+            'referral_button_text' => $service->referral_button_text,
+            'referral_email' => $service->referral_email,
+            'referral_url' => $service->referral_url,
             'criteria' => [
                 'age_group' => '18+',
                 'disability' => null,
@@ -817,11 +817,11 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
-            'show_referral_disclaimer' => true,
-            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
-            'referral_button_text' => null,
-            'referral_email' => $this->faker->safeEmail,
-            'referral_url' => null,
+            'show_referral_disclaimer' => $service->show_referral_disclaimer,
+            'referral_method' => $service->referral_method,
+            'referral_button_text' => $service->referral_button_text,
+            'referral_email' => $service->referral_email,
+            'referral_url' => $service->referral_url,
             'criteria' => [
                 'age_group' => '18+',
                 'disability' => null,
@@ -1276,6 +1276,123 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertArrayHasKey('referral_email', $this->getResponseContent($response)['errors']);
+    }
+
+    public function test_service_admin_cannot_update_referral_details()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [],
+            'social_medias' => [],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(1, $this->getResponseContent($response)['errors']);
+        $this->assertArrayHasKey('referral_method', $this->getResponseContent($response)['errors']);
+    }
+
+    public function test_organisation_admin_can_update_referral_details()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => $service->show_referral_disclaimer,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'seo_title' => 'This is a SEO title',
+            'seo_description' => 'This is a SEO description',
+            'useful_infos' => [],
+            'social_medias' => [],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /*

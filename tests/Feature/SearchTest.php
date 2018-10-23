@@ -377,12 +377,13 @@ class SearchTest extends TestCase
         DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 0, 'lon' => 0]);
         $service1->save();
 
-        $service2 = factory(Service::class)->create(['name' => 'Good Software']);
+        $service2 = factory(Service::class)->create(['name' => 'Test Name']);
         $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 45.01, 'lon' => 90.01]);
         $service2->save();
 
-        $service3 = factory(Service::class)->create(['name' => 'Bad Software']);
+        $organisation3 = factory(Organisation::class)->create(['name' => 'Test Name']);
+        $service3 = factory(Service::class)->create(['organisation_id' => $organisation3->id]);
         $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 45, 'lon' => 90]);
         $service3->save();
@@ -393,7 +394,7 @@ class SearchTest extends TestCase
         $service4->save();
 
         $response = $this->json('POST', '/core/v1/search', [
-            'query' => 'Good Software',
+            'query' => 'Test Name',
             'order' => 'relevance',
             'location' => [
                 'lat' => 45,

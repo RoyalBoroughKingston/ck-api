@@ -2,16 +2,17 @@
 
 namespace App\Http\Requests\Service;
 
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
+use App\Models\UserRole;
 use App\Rules\Base64EncodedPng;
 use App\Rules\CanUpdateServiceCategoryTaxonomies;
-use App\Rules\CanUpdateServiceSlug;
-use App\Rules\CanUpdateServiceStatus;
 use App\Rules\InOrder;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
+use App\Rules\UserHasRole;
 use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -47,7 +48,14 @@ class UpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(table(Service::class), 'slug')->ignoreModel($this->service),
                 new Slug(),
-                new CanUpdateServiceSlug($this->user(), $this->service),
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->service->slug
+                )
             ],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'status' => [
@@ -56,7 +64,14 @@ class UpdateRequest extends FormRequest
                     Service::STATUS_ACTIVE,
                     Service::STATUS_INACTIVE,
                 ]),
-                new CanUpdateServiceStatus($this->user(), $this->service),
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->service->status
+                )
             ],
             'intro' => ['required', 'string', 'min:1', 'max:255'],
             'description' => ['required', 'string', 'min:1', 'max:10000'],
@@ -77,14 +92,71 @@ class UpdateRequest extends FormRequest
             'contact_phone' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_email' => ['present', 'nullable', 'email', 'max:255'],
             'show_referral_disclaimer' => ['required', 'boolean'],
-            'referral_method' => ['required', Rule::in([
-                Service::REFERRAL_METHOD_INTERNAL,
-                Service::REFERRAL_METHOD_EXTERNAL,
-                Service::REFERRAL_METHOD_NONE,
-            ])],
-            'referral_button_text' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'referral_email' => ['required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL, 'present', 'nullable', 'email', 'max:255'],
-            'referral_url' => ['required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL, 'present', 'nullable', 'url', 'max:255'],
+            'referral_method' => [
+                'required',
+                Rule::in([
+                    Service::REFERRAL_METHOD_INTERNAL,
+                    Service::REFERRAL_METHOD_EXTERNAL,
+                    Service::REFERRAL_METHOD_NONE,
+                ]),
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::organisationAdmin()->id,
+                        'organisation_id' => $this->service->organisation_id,
+                    ]),
+                    $this->service->referral_method
+                ),
+            ],
+            'referral_button_text' => [
+                'present',
+                'nullable',
+                'string',
+                'min:1',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::organisationAdmin()->id,
+                        'organisation_id' => $this->service->organisation_id,
+                    ]),
+                    $this->service->referral_button_text
+                ),
+            ],
+            'referral_email' => [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
+                'present',
+                'nullable',
+                'email',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::organisationAdmin()->id,
+                        'organisation_id' => $this->service->organisation_id,
+                    ]),
+                    $this->service->referral_email
+                ),
+            ],
+            'referral_url' => [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
+                'present',
+                'nullable',
+                'url',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::organisationAdmin()->id,
+                        'organisation_id' => $this->service->organisation_id,
+                    ]),
+                    $this->service->referral_url
+                ),
+            ],
             'criteria' => ['required', 'array'],
             'criteria.age_group' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'criteria.disability' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
