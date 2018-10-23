@@ -47,9 +47,15 @@ class SearchController extends Controller
             $search->applyIsFree($request->is_free);
         }
 
-        // If ordering by distance, then parse the location.
-        if ($request->order === 'distance') {
-            $location = new Coordinate($request->location['lat'], $request->location['lon']);
+        // If location was passed, then parse the location.
+        if ($request->has('location')) {
+            $location = new Coordinate(
+                $request->input('location.lat'),
+                $request->input('location.lon')
+            );
+
+            // Apply radius filtering.
+            $search->applyRadius($location, $request->radius ?? config('ck.search_distance'));
         }
 
         // Apply order.

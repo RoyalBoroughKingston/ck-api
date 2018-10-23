@@ -41,6 +41,7 @@ class Request extends FormRequest
             'location' => ['required_without_all:query,category,persona,wait_time,is_free', 'required_if:order,distance', 'array'],
             'location.lat' => ['required_with:location', 'numeric', 'min:-90', 'max:90'],
             'location.lon' => ['required_with:location', 'numeric', 'min:-180', 'max:180'],
+            'distance' => ['integer', 'min:0'],
         ];
     }
 }

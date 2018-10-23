@@ -45,6 +45,13 @@ interface Search
     public function applyOrder(string $order, Coordinate $location = null): Search;
 
     /**
+     * @param \App\Support\Coordinate $location
+     * @param int $radius
+     * @return \App\Contracts\Search
+     */
+    public function applyRadius(Coordinate $location, int $radius): Search;
+
+    /**
      * @param int|null $page
      * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
