@@ -339,7 +339,7 @@ class SearchTest extends TestCase
         $response->assertJsonMissing(['id' => $inactiveService->id]);
     }
 
-    public function test_order_by_location_does_not_return_services_grater_than_15_miles_away()
+    public function test_order_by_location_return_services_less_than_15_miles_away()
     {
         $service1 = factory(Service::class)->create();
         $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
@@ -368,5 +368,47 @@ class SearchTest extends TestCase
         $response->assertJsonFragment(['id' => $service2->id]);
         $response->assertJsonMissing(['id' => $service1->id]);
         $response->assertJsonMissing(['id' => $service3->id]);
+    }
+
+    public function test_order_by_relevance_with_location_return_services_less_than_15_miles_away()
+    {
+        $service1 = factory(Service::class)->create();
+        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 0, 'lon' => 0]);
+        $service1->save();
+
+        $service2 = factory(Service::class)->create();
+        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 45.01, 'lon' => 90.01]);
+        $service2->save();
+
+        $service3 = factory(Service::class)->create();
+        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 45, 'lon' => 90]);
+        $service3->save();
+
+        $service4 = factory(Service::class)->create();
+        $serviceLocation4 = factory(ServiceLocation::class)->create(['service_id' => $service4->id]);
+        DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 90, 'lon' => 180]);
+        $service4->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'order' => 'relevance',
+            'location' => [
+                'lat' => 45,
+                'lon' => 90,
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service2->id]);
+        $response->assertJsonFragment(['id' => $service3->id]);
+        $response->assertJsonMissing(['id' => $service1->id]);
+        $response->assertJsonMissing(['id' => $service4->id]);
+
+        $data = $this->getResponseContent($response)['data'];
+        $this->assertEquals(2, count($data));
+        $this->assertEquals($service2->id, $data[0]['id']);
+        $this->assertEquals($service3->id, $data[1]['id']);
     }
 }
