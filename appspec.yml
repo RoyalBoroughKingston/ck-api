@@ -6,10 +6,10 @@ files:
     overwrite: true
 permissions:
   - object: /var/www/html/bootstrap/cache
-    group: apache
+    group: nginx
     mode: 777
   - object: /var/www/html/storage
-    group: apache
+    group: nginx
     mode: 777
 hooks:
   AfterInstall:
