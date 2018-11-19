@@ -52,7 +52,8 @@ class ThesaurusController extends Controller
                         ->map(function (string $term) {
                             // Convert each term to lower case.
                             return strtolower($term);
-                        });
+                        })
+                        ->values();
                 })
                 ->toArray();
 
