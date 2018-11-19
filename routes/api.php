@@ -99,6 +99,9 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
             'destroy' => 'taxonomy-organisations.destroy',
         ]);
 
+    // Thesaurus.
+    Route::get('/thesaurus', 'ThesaurusController@index')->name('thesaurus.index');
+
     // Update Requests.
     Route::apiResource('/update-requests', 'UpdateRequestController')->only('index', 'show', 'destroy');
     Route::put('/update-requests/{update_request}/approve', 'UpdateRequest\\ApproveController@update')->name('update-requests.approve');
