@@ -2,6 +2,7 @@
 
 namespace App\Models\IndexConfigurators;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use ScoutElastic\IndexConfigurator;
@@ -21,11 +22,20 @@ class ServicesIndexConfigurator extends IndexConfigurator
             'analysis' => [
                 'analyzer' => [
                     'default' => [
-                        'type' => 'standard',
-                        'stopwords' => $this->getStopWords(),
+                        'tokenizer' => 'standard',
+                        'filter' => ['lowercase', 'synonym', 'stopwords'],
+                    ],
+                ],
+                'filter' => [
+                    'synonym' => [
+                        'type' => 'synonym',
                         'synonyms' => $this->getThesaurus(),
                     ],
-                ]
+                    'stopwords' => [
+                        'type' => 'stop',
+                        'stopwords' => $this->getStopWords(),
+                    ],
+                ],
             ],
         ];
     }
@@ -47,7 +57,11 @@ class ServicesIndexConfigurator extends IndexConfigurator
      */
     protected function getThesaurus(): array
     {
-        $content = Storage::cloud()->get('elasticsearch/thesaurus.csv');
+        try {
+            $content = Storage::cloud()->get('elasticsearch/thesaurus.csv');
+        } catch (FileNotFoundException $exception) {
+            return [];
+        }
         $thesaurus = csv_to_array($content);
 
         $thesaurus = collect($thesaurus)->map(function (array $synonyms) {

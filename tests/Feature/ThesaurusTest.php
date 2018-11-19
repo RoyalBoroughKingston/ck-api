@@ -136,4 +136,28 @@ class ThesaurusTest extends TestCase
             ]
         ]);
     }
+
+    public function test_thesaurus_works_with_search()
+    {
+        $service = factory(Service::class)->create([
+            'name' => 'Helping People',
+        ]);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $updateResponse = $this->json('PUT', '/core/v1/thesaurus', [
+            'synonyms' => [
+                ['persons', 'people'],
+            ],
+        ]);
+
+        $updateResponse->assertStatus(Response::HTTP_OK);
+
+        $searchResponse = $this->json('POST', '/core/v1/search', [
+            'query' => 'persons',
+        ]);
+        $searchResponse->assertJsonFragment([
+            'id' => $service->id,
+        ]);
+    }
 }
