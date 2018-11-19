@@ -1,0 +1,6 @@
+update:
+  type: array
+  items:
+    type: array
+    items:
+      type: string
