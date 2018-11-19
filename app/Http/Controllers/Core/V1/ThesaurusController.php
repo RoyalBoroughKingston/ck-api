@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Console\Commands\Ck\ReindexElasticsearch;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Thesaurus\IndexRequest;
 use App\Http\Requests\Thesaurus\UpdateRequest;
 use App\Http\Responses\Thesaurus;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class ThesaurusController extends Controller
@@ -66,9 +68,41 @@ class ThesaurusController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\Thesaurus\UpdateRequest $request
+     * @return \App\Http\Responses\Thesaurus
+     * @throws \Exception
      */
     public function update(UpdateRequest $request)
     {
-        //
+        $synonyms = $request->synonyms;
+
+        // Get the highest number of synonyms.
+        $highestCount = 0;
+        foreach ($synonyms as $synonym) {
+            $highestCount = count($synonym) > $highestCount ? count($synonym) : $highestCount;
+        }
+
+        // Fill out the arrays with empty strings to match the highest.
+        foreach ($synonyms as &$synonym) {
+            foreach (range(0, $highestCount - 1) as $index) {
+                if (!isset($synonym[$index])) {
+                    $synonym[$index] = '';
+                }
+            }
+        }
+
+        // Convert the array to a string.
+        $thesaurus = array_to_csv($synonyms);
+
+        // Save the string to the thesaurus.
+        Storage::cloud()->put('elasticsearch/thesaurus.csv', $thesaurus);
+
+        // Clear the cache.
+        cache()->forget(static::CACHE_KEY);
+
+        // Reindex elasticsearch.
+        Artisan::call(ReindexElasticsearch::class);
+
+        // Return the thesaurus.
+        return new Thesaurus($request->synonyms);
     }
 }

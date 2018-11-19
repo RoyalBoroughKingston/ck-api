@@ -271,8 +271,9 @@ if (!function_exists('backend_uri')) {
      * @param string $path
      * @return string
      */
-    function backend_uri(string $path = ''): string {
-        return config('ck.backend_uri').$path;
+    function backend_uri(string $path = ''): string
+    {
+        return config('ck.backend_uri') . $path;
     }
 }
 
@@ -281,13 +282,37 @@ if (!function_exists('csv_to_array')) {
      * @param string $content
      * @return array
      */
-    function csv_to_array(string $content): array {
+    function csv_to_array(string $content): array
+    {
         $rows = str_getcsv($content, "\n");
 
         foreach ($rows as &$row) {
-            $row =  str_getcsv($row);
+            $row = str_getcsv($row);
         }
 
         return $rows;
+    }
+}
+
+if (!function_exists('array_to_csv')) {
+    /**
+     * @see https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php For source of function
+     * @param array $data
+     * @return string
+     */
+    function array_to_csv(array $data): string
+    {
+        // Generate CSV data from array.
+        $fh = fopen('php://temp', 'rw');
+
+        // Write out the data.
+        foreach ($data as $row) {
+            fputcsv($fh, $row);
+        }
+        rewind($fh);
+        $csv = stream_get_contents($fh);
+        fclose($fh);
+
+        return $csv;
     }
 }

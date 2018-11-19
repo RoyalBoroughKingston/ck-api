@@ -117,4 +117,23 @@ class ThesaurusTest extends TestCase
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
+
+    public function test_global_admin_can_update_thesaurus()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', '/core/v1/thesaurus', [
+            'synonyms' => [
+                ['persons', 'people'],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                ['persons', 'people'],
+            ]
+        ]);
+    }
 }
