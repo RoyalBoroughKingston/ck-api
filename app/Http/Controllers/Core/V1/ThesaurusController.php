@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Thesaurus\IndexRequest;
+use App\Http\Requests\Thesaurus\UpdateRequest;
 use App\Http\Responses\Thesaurus;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -59,5 +60,15 @@ class ThesaurusController extends Controller
         event(EndpointHit::onRead($request, 'Viewed thesaurus'));
 
         return new Thesaurus($thesaurus);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \App\Http\Requests\Thesaurus\UpdateRequest $request
+     */
+    public function update(UpdateRequest $request)
+    {
+        //
     }
 }

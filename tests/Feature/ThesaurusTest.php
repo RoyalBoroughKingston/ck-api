@@ -70,4 +70,51 @@ class ThesaurusTest extends TestCase
             ['employment', 'jobs', 'job'],
         ]);
     }
+
+    /*
+     * Update the thesaurus.
+     */
+
+    public function test_guest_cannot_update_thesaurus()
+    {
+        $response = $this->json('PUT', '/core/v1/thesaurus');
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_update_thesaurus()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', '/core/v1/thesaurus');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_update_thesaurus()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', '/core/v1/thesaurus');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_cannot_update_thesaurus()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', '/core/v1/thesaurus');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
 }

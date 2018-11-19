@@ -101,6 +101,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Thesaurus.
     Route::get('/thesaurus', 'ThesaurusController@index')->name('thesaurus.index');
+    Route::put('/thesaurus', 'ThesaurusController@update')->name('thesaurus.update');
 
     // Update Requests.
     Route::apiResource('/update-requests', 'UpdateRequestController')->only('index', 'show', 'destroy');
