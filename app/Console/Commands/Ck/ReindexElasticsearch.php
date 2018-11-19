@@ -45,6 +45,6 @@ class ReindexElasticsearch extends Command
         $this->call('elastic:update-mapping', ['model' => Service::class]);
 
         $this->line('Importing models...');
-        $this->call('scout:import', ['model' => Service::class]);
+        $this->call('ck:scout-import', ['model' => Service::class]);
     }
 }

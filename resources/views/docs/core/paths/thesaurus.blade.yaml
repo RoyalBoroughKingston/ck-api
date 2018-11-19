@@ -1,0 +1,40 @@
+root:
+  get:
+    tags: [Thesaurus]
+    summary: List all the synonyms
+    description: |
+      **Permission:** `Super Admin`
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: /docs/core/resources/thesaurus.yaml
+
+  put:
+    tags: [Thesaurus]
+    summary: Update the list of synonyms
+    description: |
+      **Permission**: `Super Admin`
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/thesaurus.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: /docs/core/resources/thesaurus.yaml

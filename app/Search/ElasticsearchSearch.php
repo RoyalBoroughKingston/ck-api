@@ -8,7 +8,6 @@ use App\Support\Coordinate;
 use App\Http\Resources\ServiceResource;
 use App\Models\SearchHistory;
 use App\Models\Service;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
