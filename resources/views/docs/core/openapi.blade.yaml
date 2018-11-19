@@ -98,6 +98,9 @@ paths:
   /taxonomies/organisations/{organisation}:
     $ref: /docs/core/paths/organisation-taxonomies.yaml#/nested
 
+  /thesaurus:
+    $ref: /docs/core/paths/thesaurus.yaml#/root
+
   /update-requests:
     $ref: /docs/core/paths/update-requests.yaml#/root
   /update-requests/{update_request}:
@@ -142,6 +145,7 @@ tags:
 - name: Status Updates
 - name: "Taxonomy: Categories"
 - name: "Taxonomy: Organisations"
+- name: Thesaurus
 - name: Update Requests
 - name: Users
 

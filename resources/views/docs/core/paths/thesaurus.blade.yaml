@@ -1,0 +1,17 @@
+root:
+  get:
+    tags: [Thesaurus]
+    summary: List all the synonyms
+    description: |
+      **Permission:** `Super Admin`
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: /docs/core/resources/thesaurus.yaml
