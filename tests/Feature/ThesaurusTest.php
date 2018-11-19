@@ -58,20 +58,9 @@ class ThesaurusTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_view_thesaurus()
+    public function test_global_admin_can_view_thesaurus()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('GET', '/core/v1/thesaurus');
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_view_thesaurus()
-    {
-        $user = factory(User::class)->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
         $response = $this->json('GET', '/core/v1/thesaurus');
