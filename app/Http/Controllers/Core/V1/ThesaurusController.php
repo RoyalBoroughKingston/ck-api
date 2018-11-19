@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ThesaurusController extends Controller
 {
+    const CACHE_KEY = 'thesaurus';
+
     /**
      * ThesaurusController constructor.
      */
@@ -25,29 +27,34 @@ class ThesaurusController extends Controller
      *
      * @param \App\Http\Requests\Thesaurus\IndexRequest $request
      * @return \App\Http\Responses\Thesaurus
+     * @throws \Exception
      */
     public function index(IndexRequest $request)
     {
-        $content = Storage::cloud()->get('elasticsearch/thesaurus.csv');
-        $thesaurus = csv_to_array($content);
+        $thesaurus = cache()->rememberForever(static::CACHE_KEY, function (): array {
+            $content = Storage::cloud()->get('elasticsearch/thesaurus.csv');
+            $thesaurus = csv_to_array($content);
 
-        $thesaurus = collect($thesaurus)->map(function (array $synonyms) {
-            return collect($synonyms);
+            $thesaurus = collect($thesaurus)->map(function (array $synonyms) {
+                return collect($synonyms);
+            });
+
+            $thesaurus = $thesaurus
+                ->map(function (Collection $synonyms) {
+                    return $synonyms
+                        ->reject(function (string $term) {
+                            // Filter out any empty strings.
+                            return $term === '';
+                        })
+                        ->map(function (string $term) {
+                            // Convert each term to lower case.
+                            return strtolower($term);
+                        });
+                })
+                ->toArray();
+
+            return $thesaurus;
         });
-
-        $thesaurus = $thesaurus
-            ->map(function (Collection $synonyms) {
-                return $synonyms
-                    ->reject(function (string $term) {
-                        // Filter out any empty strings.
-                        return $term === '';
-                    })
-                    ->map(function (string $term) {
-                        // Convert each term to lower case.
-                        return strtolower($term);
-                    });
-            })
-            ->toArray();
 
         event(EndpointHit::onRead($request, 'Viewed thesaurus'));
 
