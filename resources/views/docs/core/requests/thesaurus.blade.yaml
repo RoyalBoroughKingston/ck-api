@@ -1,6 +1,11 @@
 update:
-  type: array
-  items:
-    type: array
-    items:
-      type: string
+  type: object
+  required:
+  - synonyms
+  properties:
+    synonyms:
+      type: array
+      items:
+        type: array
+        items:
+          type: string
