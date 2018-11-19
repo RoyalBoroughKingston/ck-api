@@ -275,3 +275,19 @@ if (!function_exists('backend_uri')) {
         return config('ck.backend_uri').$path;
     }
 }
+
+if (!function_exists('csv_to_array')) {
+    /**
+     * @param string $content
+     * @return array
+     */
+    function csv_to_array(string $content): array {
+        $rows = str_getcsv($content, "\n");
+
+        foreach ($rows as &$row) {
+            $row =  str_getcsv($row);
+        }
+
+        return $rows;
+    }
+}

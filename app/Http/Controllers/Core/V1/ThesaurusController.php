@@ -18,6 +18,8 @@ class ThesaurusController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @param \App\Http\Requests\Thesaurus\IndexRequest $request
      */
     public function index(IndexRequest $request)
     {
