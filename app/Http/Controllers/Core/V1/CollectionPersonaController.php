@@ -70,6 +70,8 @@ class CollectionPersonaController extends Controller
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
                     'image_file_id' => null,
+                    'sidebox_title' => $request->sidebox_title,
+                    'sidebox_content' => $request->sidebox_content,
                 ],
                 'order' => $request->order,
             ]);
@@ -142,6 +144,8 @@ class CollectionPersonaController extends Controller
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
                     'image_file_id' => $collection->meta['image_file_id'],
+                    'sidebox_title' => $request->sidebox_title,
+                    'sidebox_content' => $request->sidebox_content,
                 ],
                 'order' => $request->order,
             ]);
