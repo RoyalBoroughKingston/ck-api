@@ -3,6 +3,7 @@
 namespace App\Search;
 
 use App\Contracts\Search;
+use App\Models\Collection as CollectionModel;
 use App\Models\ServiceLocation;
 use App\Support\Coordinate;
 use App\Http\Resources\ServiceResource;
@@ -55,6 +56,13 @@ class ElasticsearchSearch implements Search
                             ],
                         ],
                     ],
+                    'must' => [
+                        'bool' => [
+                            'should' => [
+                                //
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -66,18 +74,15 @@ class ElasticsearchSearch implements Search
      */
     public function applyQuery(string $term): Search
     {
-        $criteria = [];
-        $criteria[] = $this->match('name', $term, 4);
-        $criteria[] = $this->match('intro', $term, 3);
-        if (str_word_count($term) > 1) {
-            $criteria[] = $this->matchPhrase('description', $term, 3);
-        }
-        $criteria[] = $this->match('taxonomy_categories', $term, 2);
-        $criteria[] = $this->match('organisation_name', $term);
+        $should = &$this->query['query']['bool']['must']['bool']['should'];
 
-        $this->query['query']['bool']['must'] = [
-            'bool' => ['should' => $criteria]
-        ];
+        $should[] = $this->match('name', $term, 4);
+        $should[] = $this->match('intro', $term, 3);
+        if (str_word_count($term) > 1) {
+            $should[] = $this->matchPhrase('description', $term, 3);
+        }
+        $should[] = $this->match('taxonomy_categories', $term, 2);
+        $should[] = $this->match('organisation_name', $term);
 
         return $this;
     }
@@ -124,10 +129,22 @@ class ElasticsearchSearch implements Search
      */
     public function applyCategory(string $category): Search
     {
+        $categoryModel = CollectionModel::query()
+            ->with('taxonomies')
+            ->categories()
+            ->where('name', $category)
+            ->firstOrFail();
+
+        $should = &$this->query['query']['bool']['must']['bool']['should'];
+
+        foreach ($categoryModel->taxonomies as $taxonomy) {
+            $should[] = $this->match('taxonomy_categories', $taxonomy->name);
+        }
+
         $this->query['query']['bool']['filter']['bool']['must'][] = [
             'term' => [
-                'collection_categories' => $category
-            ]
+                'collection_categories' => $category,
+            ],
         ];
 
         return $this;

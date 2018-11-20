@@ -315,7 +315,7 @@ class SearchTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonMissing(['id' => $service->id]);
+        $response->assertJsonFragment(['id' => $service->id]);
         $response->assertJsonMissing(['id' => $differentService->id]);
     }
 
@@ -412,5 +412,56 @@ class SearchTest extends TestCase
         $this->assertEquals(2, count($data));
         $this->assertEquals($service2->id, $data[0]['id']);
         $this->assertEquals($service3->id, $data[1]['id']);
+    }
+
+    public function test_services_with_more_taxonomies_in_a_category_collection_are_more_relevant()
+    {
+        // Create 3 taxonomies
+        $taxonomy1 = Taxonomy::category()->children()->create(['name' => 'Red', 'order' => 1]);
+        $taxonomy2 = Taxonomy::category()->children()->create(['name' => 'Blue', 'order' => 2]);
+        $taxonomy3 = Taxonomy::category()->children()->create(['name' => 'Green', 'order' => 3]);
+
+        // Create a collection
+        $collection = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'name' => 'Self Help',
+            'meta' => [],
+            'order' => 1,
+        ]);
+
+        // Link the taxonomies to the collection
+        $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
+
+        // Create 3 services
+        $service1 = factory(Service::class)->create(['name' => 'Gold Co.']);
+        $service2 = factory(Service::class)->create(['name' => 'Silver Co.']);
+        $service3 = factory(Service::class)->create(['name' => 'Bronze Co.']);
+
+        // Link the services to 1, 2 and 3 taxonomies respectively.
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
+        $service1->save(); // Update the Elasticsearch index.
+
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service2->save(); // Update the Elasticsearch index.
+
+        $service3->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service3->save(); // Update the Elasticsearch index.
+
+        // Assert that when searching by collection, the services with more taxonomies are ranked higher.
+        $response = $this->json('POST', '/core/v1/search', [
+            'category' => $collection->name,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $content = $this->getResponseContent($response)['data'];
+        $this->assertEquals($service1->id, $content[0]['id']);
+        $this->assertEquals($service2->id, $content[1]['id']);
+        $this->assertEquals($service3->id, $content[2]['id']);
     }
 }
