@@ -21,6 +21,8 @@ class CollectionCategoryResource extends JsonResource
             'intro' => $this->meta['intro'],
             'icon' => $this->meta['icon'],
             'order' => $this->order,
+            'sidebox_title' => $this->meta['sidebox_title'],
+            'sidebox_content' => $this->meta['sidebox_content'],
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
