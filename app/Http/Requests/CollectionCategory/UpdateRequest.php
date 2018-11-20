@@ -35,6 +35,8 @@ class UpdateRequest extends FormRequest
             'intro' => ['required', 'string', 'min:1', 'max:255'],
             'icon' => ['required', 'string', 'min:1', 'max:255'],
             'order' => ['required', 'integer', 'min:1', 'max:'.Collection::categories()->count()],
+            'sidebox_title' => ['present', 'required_with:sidebox_content', 'nullable', 'string'],
+            'sidebox_content' => ['present', 'required_with:sidebox_title', 'nullable', 'string'],
             'category_taxonomies' => ['present', 'array'],
             'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
         ];

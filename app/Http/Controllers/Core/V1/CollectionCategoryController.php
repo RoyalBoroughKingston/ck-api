@@ -68,6 +68,8 @@ class CollectionCategoryController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'icon' => $request->icon,
+                    'sidebox_title' => $request->sidebox_title,
+                    'sidebox_content' => $request->sidebox_content,
                 ],
                 'order' => $request->order,
             ]);
@@ -121,6 +123,8 @@ class CollectionCategoryController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'icon' => $request->icon,
+                    'sidebox_title' => $request->sidebox_title,
+                    'sidebox_content' => $request->sidebox_content,
                 ],
                 'order' => $request->order,
             ]);
