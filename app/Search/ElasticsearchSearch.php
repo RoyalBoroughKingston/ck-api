@@ -156,10 +156,22 @@ class ElasticsearchSearch implements Search
      */
     public function applyPersona(string $persona): Search
     {
+        $categoryModel = CollectionModel::query()
+            ->with('taxonomies')
+            ->personas()
+            ->where('name', $persona)
+            ->firstOrFail();
+
+        $should = &$this->query['query']['bool']['must']['bool']['should'];
+
+        foreach ($categoryModel->taxonomies as $taxonomy) {
+            $should[] = $this->match('taxonomy_categories', $taxonomy->name);
+        }
+
         $this->query['query']['bool']['filter']['bool']['must'][] = [
             'term' => [
-                'collection_personas' => $persona
-            ]
+                'collection_personas' => $persona,
+            ],
         ];
 
         return $this;
