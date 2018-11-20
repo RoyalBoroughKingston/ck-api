@@ -77,7 +77,7 @@ class CollectionPersonaController extends Controller
             ]);
 
             // Create the file record.
-            if ($request->has('image')) {
+            if ($request->filled('image')) {
                 $file = File::create([
                     'filename' => $persona->id . '.png',
                     'mime_type' => 'image/png',
