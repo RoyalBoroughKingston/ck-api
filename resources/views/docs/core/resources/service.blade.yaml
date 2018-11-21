@@ -126,12 +126,6 @@ properties:
         type: string
         nullable: true
         example: null
-  seo_title:
-    type: string
-    example: Helping The Homeless
-  seo_description:
-    type: string
-    example: Lorem ipsum
   useful_infos:
     type: array
     items:
