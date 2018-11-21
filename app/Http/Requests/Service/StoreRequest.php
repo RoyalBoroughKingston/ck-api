@@ -2,14 +2,17 @@
 
 namespace App\Http\Requests\Service;
 
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
+use App\Models\UserRole;
 use App\Rules\Base64EncodedPng;
 use App\Rules\InOrder;
 use App\Rules\IsOrganisationAdmin;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
+use App\Rules\UserHasRole;
 use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -41,10 +44,21 @@ class StoreRequest extends FormRequest
             'organisation_id' => ['required', 'exists:organisations,id', new IsOrganisationAdmin($this->user())],
             'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:'.table(Service::class).',slug', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
-            'status' => ['required', Rule::in([
-                Service::STATUS_ACTIVE,
-                Service::STATUS_INACTIVE,
-            ])],
+            'status' => [
+                'required',
+                Rule::in([
+                    Service::STATUS_ACTIVE,
+                    Service::STATUS_INACTIVE,
+                ]),
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    Service::STATUS_INACTIVE
+                ),
+            ],
             'intro' => ['required', 'string', 'min:1', 'max:255'],
             'description' => ['required', 'string', 'min:1', 'max:10000'],
             'wait_time' => ['present', 'nullable', Rule::in([
@@ -63,15 +77,79 @@ class StoreRequest extends FormRequest
             'contact_name' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_phone' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_email' => ['present', 'nullable', 'email', 'max:255'],
-            'show_referral_disclaimer' => ['required', 'boolean'],
-            'referral_method' => ['required', Rule::in([
-                Service::REFERRAL_METHOD_INTERNAL,
-                Service::REFERRAL_METHOD_EXTERNAL,
-                Service::REFERRAL_METHOD_NONE,
-            ])],
-            'referral_button_text' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'referral_email' => ['required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL, 'present', 'nullable', 'email', 'max:255'],
-            'referral_url' => ['required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL, 'present', 'nullable', 'url', 'max:255'],
+            'show_referral_disclaimer' => [
+                'required',
+                'boolean',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    false
+                ),
+            ],
+            'referral_method' => [
+                'required',
+                Rule::in([
+                    Service::REFERRAL_METHOD_INTERNAL,
+                    Service::REFERRAL_METHOD_EXTERNAL,
+                    Service::REFERRAL_METHOD_NONE,
+                ]),
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    Service::REFERRAL_METHOD_NONE
+                ),
+            ],
+            'referral_button_text' => [
+                'present',
+                'nullable',
+                'string',
+                'min:1',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    null
+                ),
+            ],
+            'referral_email' => [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
+                'present',
+                'nullable',
+                'email',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    null
+                ),
+            ],
+            'referral_url' => [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
+                'present',
+                'nullable',
+                'url',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    null
+                ),
+            ],
             'criteria' => ['required', 'array'],
             'criteria.age_group' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'criteria.disability' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
@@ -99,9 +177,23 @@ class StoreRequest extends FormRequest
             ])],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
-            'category_taxonomies' => ['required', 'array'],
-            'category_taxonomies.*' => ['required', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
+            'category_taxonomies' => $this->categoryTaxonomiesRules(),
+            'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'logo' => ['nullable', 'string', new Base64EncodedPng()],
         ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function categoryTaxonomiesRules(): array
+    {
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return ['required', 'array'];
+        }
+
+        // If not a global admin.
+        return ['present', 'array', 'size:0'];
     }
 }

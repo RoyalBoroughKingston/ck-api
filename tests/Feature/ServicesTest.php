@@ -237,7 +237,7 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_can_create_one()
+    public function test_organisation_admin_can_create_an_inactive_one()
     {
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
@@ -248,7 +248,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
-            'status' => Service::STATUS_ACTIVE,
+            'status' => Service::STATUS_INACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
             'wait_time' => null,
@@ -261,10 +261,10 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
-            'show_referral_disclaimer' => true,
-            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
-            'referral_email' => $this->faker->safeEmail,
+            'referral_email' => null,
             'referral_url' => null,
             'criteria' => [
                 'age_group' => '18+',
@@ -289,22 +289,71 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+            'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $responsePayload = $payload;
-        $responsePayload['category_taxonomies'] = [
-            [
-                'id' => Taxonomy::category()->children()->firstOrFail()->id,
-                'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
-                'name' => Taxonomy::category()->children()->firstOrFail()->name,
-                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
-                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
-            ]
+        $response->assertJsonFragment($payload);
+    }
+
+    public function test_organisation_admin_cannot_create_an_active_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [],
         ];
-        $response->assertJsonFragment($responsePayload);
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_taxonomy_hierarchy_works_when_creating()
@@ -312,7 +361,7 @@ class ServicesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->firstOrFail()->children()->firstOrFail();
 
         $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -431,7 +480,7 @@ class ServicesTest extends TestCase
         $this->fakeEvents();
 
         $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -488,6 +537,146 @@ class ServicesTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
         });
+    }
+
+    public function test_global_admin_can_create_an_active_one_with_taxonomies()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $responsePayload = $payload;
+        $responsePayload['category_taxonomies'] = [
+            [
+                'id' => Taxonomy::category()->children()->firstOrFail()->id,
+                'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
+                'name' => Taxonomy::category()->children()->firstOrFail()->name,
+                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
+                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
+            ]
+        ];
+        $response->assertJsonFragment($responsePayload);
+    }
+
+    public function test_global_admin_can_create_one_accepting_referrals()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_button_text' => null,
+            'referral_email' => $this->faker->safeEmail,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $responsePayload = $payload;
+        $responsePayload['category_taxonomies'] = [
+            [
+                'id' => Taxonomy::category()->children()->firstOrFail()->id,
+                'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
+                'name' => Taxonomy::category()->children()->firstOrFail()->name,
+                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
+                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
+            ]
+        ];
+        $response->assertJsonFragment($responsePayload);
     }
 
     /*
@@ -712,6 +901,72 @@ class ServicesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
         $service->syncServiceTaxonomies(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+    }
+
+    public function test_global_admin_can_update_all_fields_for_one()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -1273,7 +1528,7 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
@@ -1301,7 +1556,7 @@ class ServicesTest extends TestCase
         $this->assertArrayHasKey('referral_method', $this->getResponseContent($response)['errors']);
     }
 
-    public function test_organisation_admin_can_update_referral_details()
+    public function test_global_admin_can_update_referral_details()
     {
         $service = factory(Service::class)->create([
             'slug' => 'test-service',
@@ -1311,7 +1566,7 @@ class ServicesTest extends TestCase
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
         $service->syncServiceTaxonomies(new Collection([$taxonomy]));
-        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
