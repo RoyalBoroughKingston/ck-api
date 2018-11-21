@@ -34,8 +34,6 @@ update:
   - referral_email
   - referral_url
   - criteria
-  - seo_title
-  - seo_description
   - useful_infos
   - social_medias
   - category_taxonomies
@@ -125,12 +123,6 @@ update:
       description: Base64 encoded string of the PNG image
       nullable: true
       example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
-    seo_image:
-      type: string
-      format: binary
-      description: Base64 encoded string of the PNG image
-      nullable: true
-      example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
     criteria:
       type: object
       required:
@@ -175,12 +167,6 @@ update:
           type: string
           nullable: true
           example: null
-    seo_title:
-      type: string
-      example: Helping The Homeless
-    seo_description:
-      type: string
-      example: Lorem ipsum
     useful_infos:
       type: array
       items:
