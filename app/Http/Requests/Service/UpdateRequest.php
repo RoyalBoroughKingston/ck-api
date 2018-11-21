@@ -91,7 +91,18 @@ class UpdateRequest extends FormRequest
             'contact_name' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_phone' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_email' => ['present', 'nullable', 'email', 'max:255'],
-            'show_referral_disclaimer' => ['required', 'boolean'],
+            'show_referral_disclaimer' => [
+                'required',
+                'boolean',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->service->show_referral_disclaimer
+                ),
+            ],
             'referral_method' => [
                 'required',
                 Rule::in([
@@ -103,8 +114,7 @@ class UpdateRequest extends FormRequest
                     $this->user(),
                     new UserRole([
                         'user_id' => $this->user()->id,
-                        'role_id' => Role::organisationAdmin()->id,
-                        'organisation_id' => $this->service->organisation_id,
+                        'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_method
                 ),
@@ -119,8 +129,7 @@ class UpdateRequest extends FormRequest
                     $this->user(),
                     new UserRole([
                         'user_id' => $this->user()->id,
-                        'role_id' => Role::organisationAdmin()->id,
-                        'organisation_id' => $this->service->organisation_id,
+                        'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_button_text
                 ),
@@ -135,8 +144,7 @@ class UpdateRequest extends FormRequest
                     $this->user(),
                     new UserRole([
                         'user_id' => $this->user()->id,
-                        'role_id' => Role::organisationAdmin()->id,
-                        'organisation_id' => $this->service->organisation_id,
+                        'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_email
                 ),
@@ -151,8 +159,7 @@ class UpdateRequest extends FormRequest
                     $this->user(),
                     new UserRole([
                         'user_id' => $this->user()->id,
-                        'role_id' => Role::organisationAdmin()->id,
-                        'organisation_id' => $this->service->organisation_id,
+                        'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_url
                 ),
@@ -193,17 +200,38 @@ class UpdateRequest extends FormRequest
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
             'category_taxonomies' => [
-                'required',
+                'present',
                 'array',
                 new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
             ],
             'category_taxonomies.*' => [
-                'required',
                 'exists:taxonomies,id',
                 new RootTaxonomyIs(Taxonomy::NAME_CATEGORY),
             ],
 
             'logo' => ['nullable', 'string', new Base64EncodedPng()],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function categoryTaxonomiesRules(): array
+    {
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return [
+                'required',
+                'array',
+                new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
+            ];
+        }
+
+        // If not a global admin.
+        return [
+            'present',
+            'array',
+            new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
         ];
     }
 }

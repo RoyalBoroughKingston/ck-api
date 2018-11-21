@@ -9,7 +9,6 @@ use App\Models\Taxonomy;
 use App\Models\UserRole;
 use App\Rules\Base64EncodedPng;
 use App\Rules\InOrder;
-use App\Rules\Is;
 use App\Rules\IsOrganisationAdmin;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
@@ -57,7 +56,7 @@ class StoreRequest extends FormRequest
                         'user_id' => $this->user()->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
-                    Service::STATUS_INACTIVE,
+                    Service::STATUS_INACTIVE
                 ),
             ],
             'intro' => ['required', 'string', 'min:1', 'max:255'],
@@ -78,11 +77,79 @@ class StoreRequest extends FormRequest
             'contact_name' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_phone' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_email' => ['present', 'nullable', 'email', 'max:255'],
-            'show_referral_disclaimer' => $this->showReferralDisclaimerRules(),
-            'referral_method' => $this->referralMethodRules(),
-            'referral_button_text' => $this->referralButtonTextRules(),
-            'referral_email' => $this->referralEmailRules(),
-            'referral_url' => $this->referralUrlRules(),
+            'show_referral_disclaimer' => [
+                'required',
+                'boolean',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    false
+                ),
+            ],
+            'referral_method' => [
+                'required',
+                Rule::in([
+                    Service::REFERRAL_METHOD_INTERNAL,
+                    Service::REFERRAL_METHOD_EXTERNAL,
+                    Service::REFERRAL_METHOD_NONE,
+                ]),
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    Service::REFERRAL_METHOD_NONE
+                ),
+            ],
+            'referral_button_text' => [
+                'present',
+                'nullable',
+                'string',
+                'min:1',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    null
+                ),
+            ],
+            'referral_email' => [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
+                'present',
+                'nullable',
+                'email',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    null
+                ),
+            ],
+            'referral_url' => [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
+                'present',
+                'nullable',
+                'url',
+                'max:255',
+                new UserHasRole(
+                    $this->user(),
+                    new UserRole([
+                        'user_id' => $this->user()->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    null
+                ),
+            ],
             'criteria' => ['required', 'array'],
             'criteria.age_group' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'criteria.disability' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
@@ -114,98 +181,6 @@ class StoreRequest extends FormRequest
             'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'logo' => ['nullable', 'string', new Base64EncodedPng()],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    protected function showReferralDisclaimerRules(): array
-    {
-        // If global admin and above.
-        if ($this->user()->isGlobalAdmin()) {
-            return ['required', 'boolean'];
-        }
-
-        // If not a global admin.
-        return ['required', 'boolean', new Is(false)];
-    }
-
-    /**
-     * @return array
-     */
-    protected function referralMethodRules(): array
-    {
-        // If global admin and above.
-        if ($this->user()->isGlobalAdmin()) {
-            return [
-                'required',
-                Rule::in([
-                    Service::REFERRAL_METHOD_INTERNAL,
-                    Service::REFERRAL_METHOD_EXTERNAL,
-                    Service::REFERRAL_METHOD_NONE,
-                ]),
-            ];
-        }
-
-        // If not a global admin.
-        return [
-            'required',
-           new Is(Service::REFERRAL_METHOD_NONE),
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    protected function referralButtonTextRules(): array
-    {
-        // If global admin and above.
-        if ($this->user()->isGlobalAdmin()) {
-            return ['present', 'nullable', 'string', 'min:1', 'max:255'];
-        }
-
-        // If not a global admin.
-        return ['present', 'nullable', new Is(null)];
-    }
-
-    /**
-     * @return array
-     */
-    protected function referralEmailRules(): array
-    {
-        // If global admin and above.
-        if ($this->user()->isGlobalAdmin()) {
-            return [
-                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
-                'present',
-                'nullable',
-                'email',
-                'max:255',
-            ];
-        }
-
-        // If not a global admin.
-        return ['present', new Is(null)];
-    }
-
-    /**
-     * @return array
-     */
-    protected function referralUrlRules(): array
-    {
-        // If global admin and above.
-        if ($this->user()->isGlobalAdmin()) {
-            return [
-                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
-                'present',
-                'nullable',
-                'url',
-                'max:255',
-            ];
-        }
-
-        // If not a global admin.
-        return ['present', new Is(null)];
     }
 
     /**
