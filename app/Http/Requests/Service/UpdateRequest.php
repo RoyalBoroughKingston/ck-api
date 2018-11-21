@@ -199,11 +199,7 @@ class UpdateRequest extends FormRequest
             ],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
-            'category_taxonomies' => [
-                'present',
-                'array',
-                new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
-            ],
+            'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => [
                 'exists:taxonomies,id',
                 new RootTaxonomyIs(Taxonomy::NAME_CATEGORY),
