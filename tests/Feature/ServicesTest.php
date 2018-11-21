@@ -920,6 +920,72 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+    }
+
+    public function test_global_admin_can_update_all_fields_for_one()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
             'show_referral_disclaimer' => true,
             'referral_method' => $service->referral_method,
             'referral_button_text' => $service->referral_button_text,
@@ -1462,7 +1528,7 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
@@ -1490,7 +1556,7 @@ class ServicesTest extends TestCase
         $this->assertArrayHasKey('referral_method', $this->getResponseContent($response)['errors']);
     }
 
-    public function test_organisation_admin_can_update_referral_details()
+    public function test_global_admin_can_update_referral_details()
     {
         $service = factory(Service::class)->create([
             'slug' => 'test-service',
@@ -1500,7 +1566,7 @@ class ServicesTest extends TestCase
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
         $service->syncServiceTaxonomies(new Collection([$taxonomy]));
-        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
