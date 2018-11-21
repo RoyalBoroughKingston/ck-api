@@ -7,6 +7,7 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\Base64EncodedPng;
 use App\Rules\InOrder;
+use App\Rules\Is;
 use App\Rules\IsOrganisationAdmin;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
@@ -92,8 +93,8 @@ class StoreRequest extends FormRequest
             ])],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
-            'category_taxonomies' => ['required', 'array'],
-            'category_taxonomies.*' => ['required', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
+            'category_taxonomies' => $this->categoryTaxonomiesRules(),
+            'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'logo' => ['nullable', 'string', new Base64EncodedPng()],
         ];
     }
@@ -103,12 +104,21 @@ class StoreRequest extends FormRequest
      */
     protected function statusRules(): array
     {
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return [
+                'required',
+                Rule::in([
+                    Service::STATUS_ACTIVE,
+                    Service::STATUS_INACTIVE,
+                ]),
+            ];
+        }
+
+        // If not a global admin.
         return [
             'required',
-            Rule::in([
-                Service::STATUS_ACTIVE,
-                Service::STATUS_INACTIVE,
-            ]),
+            new Is(Service::STATUS_INACTIVE),
         ];
     }
 
@@ -117,7 +127,13 @@ class StoreRequest extends FormRequest
      */
     protected function showReferralDisclaimerRules(): array
     {
-        return ['required', 'boolean'];
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return ['required', 'boolean'];
+        }
+
+        // If not a global admin.
+        return ['required', 'boolean', new Is(false)];
     }
 
     /**
@@ -125,13 +141,22 @@ class StoreRequest extends FormRequest
      */
     protected function referralMethodRules(): array
     {
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return [
+                'required',
+                Rule::in([
+                    Service::REFERRAL_METHOD_INTERNAL,
+                    Service::REFERRAL_METHOD_EXTERNAL,
+                    Service::REFERRAL_METHOD_NONE,
+                ]),
+            ];
+        }
+
+        // If not a global admin.
         return [
             'required',
-            Rule::in([
-                Service::REFERRAL_METHOD_INTERNAL,
-                Service::REFERRAL_METHOD_EXTERNAL,
-                Service::REFERRAL_METHOD_NONE,
-            ]),
+           new Is(Service::REFERRAL_METHOD_NONE),
         ];
     }
 
@@ -140,7 +165,13 @@ class StoreRequest extends FormRequest
      */
     protected function referralButtonTextRules(): array
     {
-        return ['present', 'nullable', 'string', 'min:1', 'max:255'];
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return ['present', 'nullable', 'string', 'min:1', 'max:255'];
+        }
+
+        // If not a global admin.
+        return ['present', 'nullable', new Is(null)];
     }
 
     /**
@@ -148,13 +179,19 @@ class StoreRequest extends FormRequest
      */
     protected function referralEmailRules(): array
     {
-        return [
-            'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
-            'present',
-            'nullable',
-            'email',
-            'max:255',
-        ];
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
+                'present',
+                'nullable',
+                'email',
+                'max:255',
+            ];
+        }
+
+        // If not a global admin.
+        return ['present', new Is(null)];
     }
 
     /**
@@ -162,12 +199,32 @@ class StoreRequest extends FormRequest
      */
     protected function referralUrlRules(): array
     {
-        return [
-            'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
-            'present',
-            'nullable',
-            'url',
-            'max:255',
-        ];
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return [
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
+                'present',
+                'nullable',
+                'url',
+                'max:255',
+            ];
+        }
+
+        // If not a global admin.
+        return ['present', new Is(null)];
+    }
+
+    /**
+     * @return array
+     */
+    protected function categoryTaxonomiesRules(): array
+    {
+        // If global admin and above.
+        if ($this->user()->isGlobalAdmin()) {
+            return ['required', 'array'];
+        }
+
+        // If not a global admin.
+        return ['present', 'array', 'size:0'];
     }
 }

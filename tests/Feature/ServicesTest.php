@@ -261,10 +261,10 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
-            'show_referral_disclaimer' => true,
-            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
-            'referral_email' => $this->faker->safeEmail,
+            'referral_email' => null,
             'referral_url' => null,
             'criteria' => [
                 'age_group' => '18+',
@@ -361,7 +361,7 @@ class ServicesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->firstOrFail()->children()->firstOrFail();
 
         $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -480,7 +480,7 @@ class ServicesTest extends TestCase
         $this->fakeEvents();
 
         $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
