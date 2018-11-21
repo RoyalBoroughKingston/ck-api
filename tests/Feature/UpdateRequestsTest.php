@@ -582,8 +582,6 @@ class UpdateRequestsTest extends TestCase
                     'language' => $service->serviceCriterion->language,
                     'other' => $service->serviceCriterion->other,
                 ],
-                'seo_title' => $service->seo_title,
-                'seo_description' => $service->seo_description,
                 'useful_infos' => [],
                 'social_medias' => [],
                 'category_taxonomies' => $service->taxonomies()->pluck('taxonomies.id')->toArray(),

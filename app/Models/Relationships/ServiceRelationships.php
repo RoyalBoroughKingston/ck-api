@@ -33,14 +33,6 @@ trait ServiceRelationships
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function seoImageFile()
-    {
-        return $this->belongsTo(File::class, 'seo_image_file_id');
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function referrals()

@@ -166,8 +166,6 @@ class UpdateRequest extends FormRequest
             'criteria.income' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'criteria.language' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'criteria.other' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'seo_title' => ['required', 'string', 'min:1', 'max:255'],
-            'seo_description' => ['required', 'string', 'min:1', 'max:255'],
 
             'useful_infos' => ['present', 'array'],
             'useful_infos.*' => ['array'],
@@ -206,7 +204,6 @@ class UpdateRequest extends FormRequest
             ],
 
             'logo' => ['nullable', 'string', new Base64EncodedPng()],
-            'seo_image' => ['nullable', 'string', new Base64EncodedPng()],
         ];
     }
 }

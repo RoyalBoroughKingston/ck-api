@@ -89,8 +89,6 @@ class ServiceController extends Controller
                 'referral_button_text' => $request->referral_button_text,
                 'referral_email' => $request->referral_email,
                 'referral_url' => $request->referral_url,
-                'seo_title' => $request->seo_title,
-                'seo_description' => $request->seo_description,
             ]);
 
             // Upload the logo if provided.
@@ -107,23 +105,6 @@ class ServiceController extends Controller
 
                 // Link the file to the organisation.
                 $service->logo_file_id = $file->id;
-                $service->save();
-            }
-
-            // Upload the SEO image if provided.
-            if ($request->filled('seo_image')) {
-                // Create the file record.
-                $file = File::create([
-                    'filename' => $service->id . '.png',
-                    'mime_type' => 'image/png',
-                    'is_private' => false,
-                ]);
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->seo_image);
-
-                // Link the file to the organisation.
-                $service->seo_image_file_id = $file->id;
                 $service->save();
             }
 
@@ -232,8 +213,6 @@ class ServiceController extends Controller
                     'language' => $request->criteria['language'],
                     'other' => $request->criteria['other'],
                 ],
-                'seo_title' => $request->seo_title,
-                'seo_description' => $request->seo_description,
                 'useful_infos' => [],
                 'social_medias' => [],
                 'category_taxonomies' => $request->category_taxonomies,
@@ -255,24 +234,6 @@ class ServiceController extends Controller
             } else if ($request->has('logo')) {
                 // If the logo was removed.
                 $data['logo_file_id'] = null;
-            }
-
-            // Update the SEO image if the SEO image field was provided.
-            if ($request->filled('seo_image')) {
-                // If a new SEO image was uploaded.
-                $file = File::create([
-                    'filename' => $service->id.'.png',
-                    'mime_type' => 'image/png',
-                    'is_private' => false,
-                ]);
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->seo_image);
-
-                $data['seo_image_file_id'] = $file->id;
-            } else if ($request->has('seo_image')) {
-                // If the SEO image was removed.
-                $data['seo_image_file_id'] = null;
             }
 
             // Loop through each useful info.

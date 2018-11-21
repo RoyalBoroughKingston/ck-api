@@ -72,7 +72,6 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     // Services.
     Route::apiResource('/services', 'ServiceController');
     Route::get('/services/{service}/logo.png', 'Service\\LogoController')->name('services.logo.show');
-    Route::get('/services/{service}/seo-image.png', 'Service\\SeoImageController')->name('services.seo-image.show');
 
     // Status Updates.
     Route::apiResource('/status-updates', 'StatusUpdateController');

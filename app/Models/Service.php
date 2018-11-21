@@ -204,10 +204,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'referral_button_text' => $updateRequest->data['referral_button_text'],
             'referral_email' => $updateRequest->data['referral_email'],
             'referral_url' => $updateRequest->data['referral_url'],
-            'seo_title' => $updateRequest->data['seo_title'],
-            'seo_description' => $updateRequest->data['seo_description'],
             'logo_file_id' => $updateRequest->data['logo_file_id'] ?? $this->logo_file_id,
-            'seo_image_file_id' => $updateRequest->data['seo_image_file_id'] ?? $this->seo_image_file_id,
         ]);
 
         // Update the service criterion record.

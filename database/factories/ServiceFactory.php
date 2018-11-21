@@ -22,8 +22,6 @@ $factory->define(Service::class, function (Faker $faker) {
         'contact_email' => $faker->safeEmail,
         'show_referral_disclaimer' => false,
         'referral_method' => Service::REFERRAL_METHOD_NONE,
-        'seo_title' => $faker->sentence,
-        'seo_description' => $faker->sentence,
     ];
 });
 

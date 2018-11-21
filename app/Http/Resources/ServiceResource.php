@@ -40,8 +40,6 @@ class ServiceResource extends JsonResource
             'referral_email' => $this->referral_email,
             'referral_url' => $this->referral_url,
             'criteria' => new ServiceCriterionResource($this->serviceCriterion),
-            'seo_title' => $this->seo_title,
-            'seo_description' => $this->seo_description,
             'useful_infos' => UsefulInfoResource::collection($this->usefulInfos),
             'social_medias' => SocialMediaResource::collection($this->socialMedias),
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
