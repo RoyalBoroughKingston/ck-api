@@ -82,8 +82,6 @@ paths:
     $ref: /docs/core/paths/services.yaml#/nested
   /services/{service}/logo.png:
     $ref: /docs/core/paths/services.yaml#/logo
-  /services/{service}/seo-image.png:
-    $ref: /docs/core/paths/services.yaml#/seo-image
 
   /status-updates:
     $ref: /docs/core/paths/status-updates.yaml#/root

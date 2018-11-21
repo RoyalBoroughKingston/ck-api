@@ -162,23 +162,3 @@ logo:
       200:
         content:
           image/png:
-
-# /services/{service}/seo-image
-seo-image:
-  get:
-    tags: [Services]
-    summary: Get a specific service's SEO image
-    description: |
-      **Permission:** `Service Admin`
-    security: []
-    parameters:
-    - name: service
-      in: path
-      description: The ID or slug of the service
-      required: true
-      schema:
-        type: string
-    responses:
-      200:
-        content:
-          image/png:
