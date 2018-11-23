@@ -145,6 +145,11 @@ return [
                 'email' => '9018cd8d-46fd-47e7-baa3-1ac6d3b6d943',
             ],
         ],
+        'service_created' => [
+            'notify_global_admin' => [
+                'email' => 'e659e10a-f7b3-4f86-a5fa-289cfef1cf3f',
+            ],
+        ],
     ],
 
 ];

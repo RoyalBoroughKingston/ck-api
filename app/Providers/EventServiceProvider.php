@@ -17,6 +17,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Notifications\ReferralCreated::class,
             \App\Listeners\Notifications\ReferralCompleted::class,
             \App\Listeners\Notifications\ReferralIncompleted::class,
+            \App\Listeners\Notifications\ServiceCreated::class,
             \App\Listeners\Notifications\PageFeedbackReceived::class,
             \App\Listeners\Notifications\UpdateRequestApproved::class,
             \App\Listeners\Notifications\UpdateRequestRejected::class,
