@@ -45,4 +45,24 @@ class ServiceCreatedTest extends TestCase
             return true;
         });
     }
+
+    public function test_email_not_sent_to_global_admin_email_when_created_by_global_admin()
+    {
+        Queue::fake();
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        $request = Request::create('')->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+        $service = factory(Service::class)->create(['organisation_id' => $organisation->id]);
+
+        $event = EndpointHit::onCreate($request, "Created service [{$service->id}]", $service);
+        $listener = new ServiceCreated();
+        $listener->handle($event);
+
+        Queue::assertNotPushed(NotifyGlobalAdminEmail::class);
+    }
 }
