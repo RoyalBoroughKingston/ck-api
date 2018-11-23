@@ -15,6 +15,7 @@ use App\Models\File;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -40,6 +41,10 @@ class ServiceController extends Controller
     {
         $baseQuery = Service::query()
             ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
+            ->when(auth('api')->guest(), function (Builder $query) use ($request) {
+                // Limit to active services if requesting user is not authenticated.
+                $query->where('status', '=', Service::STATUS_ACTIVE);
+            })
             ->orderBy('name');
 
         $services = QueryBuilder::for($baseQuery)
@@ -47,6 +52,7 @@ class ServiceController extends Controller
                 Filter::exact('id'),
                 Filter::exact('organisation_id'),
                 'name',
+                Filter::exact('status'),
             ])
             ->allowedIncludes(['organisation'])
             ->paginate(per_page($request->per_page));

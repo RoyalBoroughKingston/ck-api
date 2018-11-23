@@ -9,6 +9,8 @@ root:
       ---
 
       Services are returned in ascending order of their name.
+
+      Guests are limited to only view active services.
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
@@ -25,6 +27,14 @@ root:
       description: Name to filter by
       schema:
         type: string
+    - name: filter[status]
+      in: query
+      description: Status to filter by
+      schema:
+        type: string
+        enum:
+        - active
+        - inactive
     - name: include
       in: query
       description: The relationships to include with the response [`organisation`]
