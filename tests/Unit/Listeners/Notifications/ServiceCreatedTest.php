@@ -38,6 +38,7 @@ class ServiceCreatedTest extends TestCase
 
             $this->assertEquals($service->name, $email->values['SERVICE_NAME']);
             $this->assertEquals($user->full_name, $email->values['ORGANISATION_ADMIN_NAME']);
+            $this->assertEquals($service->intro, $email->values['SERVICE_INTRO']);
             $this->assertEquals($service->organisation->name, $email->values['ORGANISATION_NAME']);
             $this->assertEquals($user->email, $email->values['ORGANISATION_ADMIN_EMAIL']);
             $this->assertEquals(backend_uri("/services/{$service->id}"), $email->values['SERVICE_URL']);

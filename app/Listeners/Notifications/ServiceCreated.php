@@ -40,6 +40,7 @@ class ServiceCreated
             new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
                 'SERVICE_NAME' => $service->name,
                 'ORGANISATION_ADMIN_NAME' => $user->full_name,
+                'SERVICE_INTRO' => $service->intro,
                 'ORGANISATION_NAME' => $service->organisation->name,
                 'ORGANISATION_ADMIN_EMAIL' => $user->email,
                 'SERVICE_URL' => backend_uri("/services/{$service->id}"),
