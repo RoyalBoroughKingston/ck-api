@@ -41,7 +41,7 @@ class ServiceController extends Controller
     {
         $baseQuery = Service::query()
             ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
-            ->when($request->user() === null, function (Builder $query) {
+            ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
                 $query->where('status', '=', Service::STATUS_ACTIVE);
             })
