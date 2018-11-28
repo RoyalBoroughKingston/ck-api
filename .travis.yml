@@ -81,7 +81,7 @@ deploy:
     secret_access_key:
       secure: Go8xNf3Z4+OOGyJ8NlwL9RUD8boyX1+5WN59L6nHUx3TYVKE0qtyBMb1m1SGyZVhvUN1vC+rYNX1AOA5hMhLBuG3VsSVJGjMBGWJfoXo1PfMg6AyinrCWeUuntR3TXA2RE3urt404QkF8hz+0Mbj4aBEa/qxciQ37eSK7d1T2kSeVcihJzVcXo8hYB1Z9Acq1XbQQAdxwQC1mrw7KfKWQi3hsYoVRXfbatCux9Tx/8F14BPsjHCL6zrEuw1KTzOf5RgAbAZWXbPIK/9kPtHKHWv007bhQ0gMP5A248fMRSHeqBmZ4t1IkCt61fvQUnR3kf7ZQvJHN5nsRRIJhMDbOvqqwKTy0inCMHB5EGW2vc9oF5Q/YQMyNITjSMrkwUn9E23geB7HFNASoUN4wH/FSiB++GC+8QbDpEzFi7vLTIxxDScjT8iFJozp8LIq6s1pkdvV07tiRwayx0R2HK4GkzJH9q0JN5e5DDLMPoaDQqshGm+mc3wu1L9hN9Z0wJqHbWMs6iBv3Zj5KJbyt++s26+DSo3VJgUlA66lSJRfxsFVO23uyBAsda09gLgRCqZjfNddoBcdys62qP0kyIcbNyEAsrMJI8irW6rkcIa9BxbXPmpYc2djJtHJdSAjWIbe+/F8rOl90YOsno3cbvjMNSDKimm4xB4CucN42gJkvkw=
     application: CK-API-Queue
-    deployment_group: CK-API-Queue-Deployment-Production
+    deployment_group: ck-queue-workers
     region: eu-west-1
     skip_cleanup: true
     on:
