@@ -5,9 +5,10 @@ files:
     destination: /var/www/html
     overwrite: true
 permissions:
-  - object: /var/www/html
-    owner: ec2-user
-    group: nginx
+  - object: /var/www/html/bootstrap/cache
+    mode: 775
+  - object: /var/www/html/storage
+    mode: 775
 hooks:
   AfterInstall:
     - location: scripts/AfterInstall.sh
