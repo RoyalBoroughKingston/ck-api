@@ -3,9 +3,6 @@
 # Exit on first error.
 set -e
 
-# Needed to set the paths.
-source /home/ec2-user/.bash_profile
-
 # Set variables.
 DOCUMENT_ROOT=/var/www/html
 SECRET_ID=ck-api-env-production

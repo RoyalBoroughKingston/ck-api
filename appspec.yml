@@ -14,6 +14,7 @@ permissions:
 hooks:
   AfterInstall:
     - location: scripts/AfterInstall.sh
+      runas: ec2-user
   ApplicationStart:
     - location: scripts/ApplicationStart.sh
       runas: ec2-user
