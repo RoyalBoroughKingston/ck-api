@@ -7,9 +7,6 @@ files:
 permissions:
   - object: /var/www/html
     owner: ec2-user
-  - object: /var/www/html/bootstrap/cache
-    group: nginx
-  - object: /var/www/html/storage
     group: nginx
 hooks:
   AfterInstall:
