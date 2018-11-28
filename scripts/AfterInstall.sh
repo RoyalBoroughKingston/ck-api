@@ -8,7 +8,8 @@ DOCUMENT_ROOT=/var/www/html
 SECRET_ID=ck-api-env-production
 SECRET_REGION=eu-west-1
 
-# Go to the install directory.
+# Go to the install directory and set permissions.
+sudo chown -R ec2-user:nginx ${DOCUMENT_ROOT}
 cd ${DOCUMENT_ROOT}
 
 # Download the .env file from AWS Secrets Manager.
