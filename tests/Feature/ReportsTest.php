@@ -150,15 +150,15 @@ class ReportsTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/reports', [
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
         ]);
         $this->assertDatabaseHas((new Report())->getTable(), [
-            'report_type_id' => ReportType::commissionersReport()->id,
+            'report_type_id' => ReportType::usersExport()->id,
         ]);
     }
 
@@ -171,7 +171,7 @@ class ReportsTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/reports', [
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
@@ -406,7 +406,7 @@ class ReportsTest extends TestCase
     public function test_global_admin_can_download_file()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $report = Report::generate(ReportType::commissionersReport());
+        $report = Report::generate(ReportType::usersExport());
 
         Passport::actingAs($user);
 
@@ -421,7 +421,7 @@ class ReportsTest extends TestCase
         $this->fakeEvents();
 
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $report = Report::generate(ReportType::commissionersReport());
+        $report = Report::generate(ReportType::usersExport());
 
         Passport::actingAs($user);
 
