@@ -106,3 +106,5 @@ download:
       200:
         content:
           application/pdf:
+            schema:
+              type: string

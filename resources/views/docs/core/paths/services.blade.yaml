@@ -172,3 +172,5 @@ logo:
       200:
         content:
           image/png:
+            schema:
+              type: string
