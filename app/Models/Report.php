@@ -73,6 +73,9 @@ class Report extends Model
      */
     public function generateServicesExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
+        // Parameters are unused for this report.
+        unset($startsAt, $endsAt);
+
         $headings = [
             'Organisation',
             'Org Reference ID',
@@ -94,7 +97,9 @@ class Report extends Model
         Service::query()
             ->with('organisation', 'serviceLocations.location')
             ->chunk(200, function (Collection $services) use (&$data) {
+                // Loop through each service in the chunk.
                 $services->each(function (Service $service) use (&$data) {
+                    // Append a row to the data array.
                     $data[] = [
                         $service->organisation->name,
                         $service->organisation->id,
