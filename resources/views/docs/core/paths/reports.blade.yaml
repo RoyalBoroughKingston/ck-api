@@ -43,7 +43,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/report.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/report.yaml
 
 # /reports/{report}
 nested:
@@ -65,7 +68,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/report.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/report.yaml
 
   delete:
     tags: [Reports]

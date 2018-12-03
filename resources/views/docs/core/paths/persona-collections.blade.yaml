@@ -44,7 +44,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/persona-collection.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/persona-collection.yaml
 
 # /collections/personas/{persona}
 nested:
@@ -67,7 +70,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/persona-collection.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/persona-collection.yaml
 
   put:
     tags: ["Collection: Personas"]
@@ -93,7 +99,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/persona-collection.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/persona-collection.yaml
 
   delete:
     tags: ["Collection: Personas"]

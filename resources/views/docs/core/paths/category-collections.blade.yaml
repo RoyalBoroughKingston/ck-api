@@ -38,13 +38,19 @@ root:
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/category-collection.yaml#/store
+            type: object
+            properties:
+              data:
+                $ref: /docs/core/requests/category-collection.yaml#/store
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/category-collection.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/category-collection.yaml
 
 # /collections/categories/{category}
 nested:
@@ -67,7 +73,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/category-collection.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/category-collection.yaml
 
   put:
     tags: ["Collection: Categories"]
@@ -87,13 +96,19 @@ nested:
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/category-collection.yaml#/update
+            type: object
+            properties:
+              data:
+                $ref: /docs/core/requests/category-collection.yaml#/update
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/category-collection.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/category-collection.yaml
 
   delete:
     tags: ["Collection: Categories"]

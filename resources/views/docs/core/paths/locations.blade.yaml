@@ -85,7 +85,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/location.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/location.yaml
 
 # /locations/{location}
 nested:
@@ -108,7 +111,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/location.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/location.yaml
 
   put:
     tags: [Locations]

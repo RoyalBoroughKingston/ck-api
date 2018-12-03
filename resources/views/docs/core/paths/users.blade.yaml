@@ -68,7 +68,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/user.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/user.yaml
 
 # /users/{user}
 nested:
@@ -95,7 +98,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/user.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/user.yaml
 
   put:
     tags: [Users]
@@ -129,7 +135,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/user.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/user.yaml
 
   delete:
     tags: [Users]
@@ -177,7 +186,10 @@ user:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/user.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/user.yaml
 
 # /users/{user}/user/sessions
 sessions:
