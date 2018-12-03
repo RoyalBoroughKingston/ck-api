@@ -50,7 +50,95 @@ class Report extends Model
     /**
      * @return \App\Models\Report
      */
-    public function generateCommissionersReport(): self
+    public function generateUsersExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateServicesExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateOrganisationsExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateLocationsExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateReferralsExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateFeedbackExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateAuditLogsExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateSearchHistoriesExport(): self
+    {
+        // TODO: Add report generation logic here.
+        $this->file->upload('This is a dummy report');
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Models\Report
+     */
+    public function generateThesaurusExport(): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
