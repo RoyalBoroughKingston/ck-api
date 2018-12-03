@@ -18,7 +18,8 @@ class ReportResource extends JsonResource
         return [
             'id' => $this->id,
             'report_type' => $this->reportType->name,
-            'repeat_type' => $this->repeat_type,
+            'starts_at' => optional($this->starts_at)->toDateString(),
+            'ends_at' => optional($this->ends_at)->toDateString(),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
         ];

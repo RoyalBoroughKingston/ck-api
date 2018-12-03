@@ -12,6 +12,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Models\Report;
 use App\Http\Controllers\Controller;
 use App\Models\ReportType;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -59,7 +60,13 @@ class ReportController extends Controller
     {
         return DB::transaction(function () use ($request) {
             $reportType = ReportType::where('name', $request->report_type)->firstOrFail();
-            $report = Report::generate($reportType);
+            $startsAt = $request->filled('starts_at')
+                ? Carbon::createFromFormat('Y-m-d', $request->starts_at)
+                : null;
+            $endsAt = $request->filled('ends_at')
+                ? Carbon::createFromFormat('Y-m-d', $request->ends_at)
+                : null;
+            $report = Report::generate($reportType, $startsAt, $endsAt);
 
             event(EndpointHit::onCreate($request, "Created report [{$report->id}]", $report));
 

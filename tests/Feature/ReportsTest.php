@@ -160,6 +160,16 @@ class ReportsTest extends TestCase
         $this->assertDatabaseHas((new Report())->getTable(), [
             'report_type_id' => ReportType::usersExport()->id,
         ]);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'report_type',
+                'starts_at',
+                'ends_at',
+                'created_at',
+                'updated_at',
+            ]
+        ]);
     }
 
     public function test_audit_created_when_created()
@@ -179,6 +189,31 @@ class ReportsTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
         });
+    }
+
+    public function test_global_admin_can_create_one_with_date_range()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/reports', [
+            'report_type' => ReportType::usersExport()->name,
+            'starts_at' => today()->startOfMonth()->toDateString(),
+            'ends_at' => today()->endOfMonth()->toDateString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment([
+            'report_type' => ReportType::usersExport()->name,
+            'starts_at' => today()->startOfMonth()->toDateString(),
+            'ends_at' => today()->endOfMonth()->toDateString(),
+        ]);
+        $this->assertDatabaseHas((new Report())->getTable(), [
+            'report_type_id' => ReportType::usersExport()->id,
+            'starts_at' => today()->startOfMonth()->toDateString(),
+            'ends_at' => today()->endOfMonth()->toDateString(),
+        ]);
     }
 
     /*

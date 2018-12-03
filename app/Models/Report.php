@@ -6,6 +6,7 @@ use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
 use Exception;
+use Illuminate\Support\Carbon;
 
 class Report extends Model
 {
@@ -18,10 +19,12 @@ class Report extends Model
      * Then delegates the physical file creation to a `generateReportName` method.
      *
      * @param \App\Models\ReportType $type
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      * @throws \Exception
      */
-    public static function generate(ReportType $type): self
+    public static function generate(ReportType $type, Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // Create the file record.
         $file = File::create([
@@ -34,6 +37,8 @@ class Report extends Model
         $report = static::create([
             'report_type_id' => $type->id,
             'file_id' => $file->id,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
         ]);
 
         // Get the name for the report generation method.
