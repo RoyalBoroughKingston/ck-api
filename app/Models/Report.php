@@ -49,13 +49,15 @@ class Report extends Model
             throw new Exception("The report type [{$type->name}] does not have a corresponding generate method");
         }
 
-        return $report->$methodName();
+        return $report->$methodName($startsAt, $endsAt);
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateUsersExport(): self
+    public function generateUsersExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -64,9 +66,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateServicesExport(): self
+    public function generateServicesExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -75,9 +79,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateOrganisationsExport(): self
+    public function generateOrganisationsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -86,9 +92,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateLocationsExport(): self
+    public function generateLocationsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -97,9 +105,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateReferralsExport(): self
+    public function generateReferralsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -108,9 +118,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateFeedbackExport(): self
+    public function generateFeedbackExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -119,9 +131,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateAuditLogsExport(): self
+    public function generateAuditLogsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -130,9 +144,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateSearchHistoriesExport(): self
+    public function generateSearchHistoriesExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -141,9 +157,11 @@ class Report extends Model
     }
 
     /**
+     * @param \Illuminate\Support\Carbon|null $startsAt
+     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateThesaurusExport(): self
+    public function generateThesaurusExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
