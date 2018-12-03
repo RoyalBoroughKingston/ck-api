@@ -7,12 +7,20 @@ properties:
   report_type:
     type: string
     enum:
-    - Commissioners Report
+      - Users Export
+      - Services Export
+      - Organisations Export
+      - Locations Export
+      - Referrals Export
+      - Feedback Export
+      - Audit Logs Export
+      - Search Histories Export
+      - Thesaurus Export
   repeat_type:
     type: string
     enum:
-    - weekly
-    - monthly
+      - weekly
+      - monthly
   created_at:
     type: string
     format: date-time

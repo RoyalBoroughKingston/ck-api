@@ -7,7 +7,23 @@ properties:
   report_type:
     type: string
     enum:
-    - Commissioners Report
+      - Users Export
+      - Services Export
+      - Organisations Export
+      - Locations Export
+      - Referrals Export
+      - Feedback Export
+      - Audit Logs Export
+      - Search Histories Export
+      - Thesaurus Export
+  starts_at:
+    type: string
+    format: date
+    nullable: true
+  ends_at:
+    type: string
+    format: date
+    nullable: true
   created_at:
     type: string
     format: date-time
