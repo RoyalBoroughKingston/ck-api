@@ -6,6 +6,7 @@ use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
 class Report extends Model
@@ -72,8 +73,49 @@ class Report extends Model
      */
     public function generateServicesExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        $headings = [
+            'Organisation',
+            'Org Reference ID',
+            'Org Email',
+            'Org Phone',
+            'Service Reference ID',
+            'Service Name',
+            'Service Web Address',
+            'Service Contact Name',
+            'Last Updated',
+            'Referral Type',
+            'Referral Contact',
+            'Status',
+            'Locations Delivered At',
+        ];
+
+        $data = [$headings];
+
+        Service::query()
+            ->with('organisation', 'serviceLocations.location')
+            ->chunk(200, function (Collection $services) use (&$data) {
+                $services->each(function (Service $service) use (&$data) {
+                    $data[] = [
+                        $service->organisation->name,
+                        $service->organisation->id,
+                        $service->organisation->email,
+                        $service->organisation->phone,
+                        $service->id,
+                        $service->name,
+                        $service->url,
+                        $service->contact_name,
+                        $service->updated_at->format(Carbon::ISO8601),
+                        $service->referral_method,
+                        $service->referral_email,
+                        $service->status,
+                        $service->serviceLocations->map(function (ServiceLocation $serviceLocation) {
+                            return $serviceLocation->location->full_address;
+                        })->implode('|'),
+                    ];
+                });
+            });
+
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }
