@@ -348,7 +348,36 @@ class ReportTest extends TestCase
 
     public function test_feedback_export_works_with_date_range()
     {
-        $this->markTestIncomplete();
+        // Create a single feedback.
+        $feedbackWithinRange = factory(PageFeedback::class)->create();
+        factory(PageFeedback::class)->create(['created_at' => today()->subMonths(2)]);
+
+        // Generate the report.
+        $report = Report::generate(
+            ReportType::feedbackExport(),
+            today()->startOfMonth(),
+            today()->endOfMonth()
+        );
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Date Submitted',
+            'Feedback Content',
+            'Page URL',
+        ], $csv[0]);
+
+        // Assert created feedback exported.
+        $this->assertEquals([
+            $feedbackWithinRange->created_at->toDateString(),
+            $feedbackWithinRange->feedback,
+            $feedbackWithinRange->url,
+        ], $csv[1]);
     }
 
     /*
