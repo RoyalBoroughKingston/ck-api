@@ -52,6 +52,13 @@ interface Search
     public function applyRadius(Coordinate $location, int $radius): Search;
 
     /**
+     * Returns the underlying query. Only intended for use in testing.
+     *
+     * @return array
+     */
+    public function getQuery(): array;
+
+    /**
      * @param int|null $page
      * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection

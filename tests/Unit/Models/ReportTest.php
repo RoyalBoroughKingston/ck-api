@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Contracts\Search;
 use App\Models\Audit;
 use App\Models\Location;
 use App\Models\Organisation;
@@ -9,6 +10,7 @@ use App\Models\PageFeedback;
 use App\Models\Referral;
 use App\Models\Report;
 use App\Models\ReportType;
+use App\Models\SearchHistory;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\User;
@@ -463,6 +465,53 @@ class ReportTest extends TestCase
     /*
      * Search histories export.
      */
+
+    public function test_search_histories_export_works()
+    {
+        /** @var \App\Contracts\Search $search */
+        $search = resolve(Search::class)->applyQuery('Health and Social');
+
+        // Create a single search history.
+        $searchHistory = SearchHistory::create([
+            'query' => $search->getQuery(),
+            'count' => 1,
+        ]);
+
+        // Generate the report.
+        $report = Report::generate(ReportType::searchHistoriesExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Date made',
+            'Search Text',
+            'Number Services Returned',
+            'Coordinates (Latitude,Longitude)',
+        ], $csv[0]);
+
+        // Assert created search history exported.
+        $this->assertEquals([
+            $searchHistory->created_at->toDateString(),
+            'Health and Social',
+            1,
+            '',
+        ], $csv[1]);
+    }
+
+    public function test_search_histories_export_works_with_location()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_search_histories_export_works_with_date_range()
+    {
+        $this->markTestIncomplete();
+    }
 
     /*
      * Thesaurus export.

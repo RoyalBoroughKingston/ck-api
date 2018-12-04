@@ -369,8 +369,43 @@ class Report extends Model
      */
     public function generateSearchHistoriesExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        // Update the date range fields if passed.
+        if ($startsAt && $endsAt) {
+            $this->update([
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
+            ]);
+        }
+
+        $headings = [
+            'Date made',
+            'Search Text',
+            'Number Services Returned',
+            'Coordinates (Latitude,Longitude)',
+        ];
+
+        $data = [$headings];
+
+        SearchHistory::query()
+            ->when($startsAt && $endsAt, function (Builder $query) use ($startsAt, $endsAt) {
+                // When date range provided, filter search history which were created between the date range.
+                $query->whereBetween(table(SearchHistory::class, 'created_at'), [$startsAt, $endsAt]);
+            })
+            ->chunk(200, function (Collection $searchHistories) use (&$data) {
+                // Loop through each search history in the chunk.
+                $searchHistories->each(function (SearchHistory $searchHistory) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        optional($searchHistory->created_at)->toDateString(),
+                        array_get($searchHistory->query, 'query.bool.must.bool.should.0.match.name.query'),
+                        $searchHistory->count,
+                        '', // TODO: Get the lat and long.
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }

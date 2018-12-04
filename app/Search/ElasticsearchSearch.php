@@ -291,6 +291,16 @@ class ElasticsearchSearch implements Search
     }
 
     /**
+     * Returns the underlying query. Only intended for use in testing.
+     *
+     * @return array
+     */
+    public function getQuery(): array
+    {
+        return $this->query;
+    }
+
+    /**
      * @param int|null $page
      * @param int|null $perPage
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
