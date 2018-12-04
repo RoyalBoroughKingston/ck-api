@@ -6,7 +6,6 @@ use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
@@ -39,8 +38,6 @@ class Report extends Model
         $report = static::create([
             'report_type_id' => $type->id,
             'file_id' => $file->id,
-            'starts_at' => $startsAt,
-            'ends_at' => $endsAt,
         ]);
 
         // Get the name for the report generation method.
@@ -55,11 +52,9 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateUsersExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateUsersExport(): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
@@ -68,15 +63,10 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateServicesExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateServicesExport(): self
     {
-        // Parameters are unused for this report.
-        unset($startsAt, $endsAt);
-
         $headings = [
             'Organisation',
             'Org Reference ID',
@@ -128,15 +118,10 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateOrganisationsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateOrganisationsExport(): self
     {
-        // Parameters are unused for this report.
-        unset($startsAt, $endsAt);
-
         $headings = [
             'Organisation Reference ID',
             'Organisation Name',
@@ -174,14 +159,44 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateLocationsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateLocationsExport(): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        $headings = [
+            'Address Line 1',
+            'Address Line 2',
+            'Address Line 3',
+            'City',
+            'County',
+            'Postcode',
+            'Country',
+            'Number of Services Delivered at The Location',
+        ];
+
+        $data = [$headings];
+
+        Location::query()
+            ->withCount('services')
+            ->chunk(200, function (Collection $locations) use (&$data) {
+                // Loop through each location in the chunk.
+                $locations->each(function (Location $location) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        $location->address_line_1,
+                        $location->address_line_2,
+                        $location->address_line_3,
+                        $location->city,
+                        $location->county,
+                        $location->postcode,
+                        $location->country,
+                        $location->services_count,
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }
@@ -239,11 +254,9 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateThesaurusExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateThesaurusExport(): self
     {
         // TODO: Add report generation logic here.
         $this->file->upload('This is a dummy report');
