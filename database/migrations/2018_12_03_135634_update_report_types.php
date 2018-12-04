@@ -71,13 +71,6 @@ class UpdateReportTypes extends Migration
             'created_at' => $now,
             'updated_at' => $now,
         ]);
-
-        DB::table('report_types')->insert([
-            'id' => uuid(),
-            'name' => 'Thesaurus Export',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
     }
 
     /**

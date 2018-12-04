@@ -75,12 +75,4 @@ class ReportType extends Model
     {
         return static::where('name', 'Search Histories Export')->firstOrFail();
     }
-
-    /**
-     * @return \App\Models\ReportType
-     */
-    public static function thesaurusExport(): self
-    {
-        return static::where('name', 'Thesaurus Export')->firstOrFail();
-    }
 }

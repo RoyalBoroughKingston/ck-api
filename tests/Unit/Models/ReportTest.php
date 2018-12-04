@@ -586,8 +586,4 @@ class ReportTest extends TestCase
             '',
         ], $csv[1]);
     }
-
-    /*
-     * Thesaurus export.
-     */
 }

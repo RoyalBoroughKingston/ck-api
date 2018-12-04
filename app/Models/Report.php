@@ -416,15 +416,4 @@ class Report extends Model
 
         return $this;
     }
-
-    /**
-     * @return \App\Models\Report
-     */
-    public function generateThesaurusExport(): self
-    {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
-
-        return $this;
-    }
 }
