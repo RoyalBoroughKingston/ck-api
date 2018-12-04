@@ -7,6 +7,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 interface Search
 {
+    const ORDER_RELEVANCE = 'relevance';
+    const ORDER_DISTANCE = 'distance';
+
     /**
      * @param string $term
      * @return \App\Contracts\Search

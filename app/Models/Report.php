@@ -394,12 +394,19 @@ class Report extends Model
             ->chunk(200, function (Collection $searchHistories) use (&$data) {
                 // Loop through each search history in the chunk.
                 $searchHistories->each(function (SearchHistory $searchHistory) use (&$data) {
+                    $query = array_dot($searchHistory->query);
+
+                    $searchQuery = $query['query.bool.must.bool.should.0.match.name.query'] ?? null;
+                    $lat = $query['sort.0._geo_distance.service_locations.location.lat'] ?? null;
+                    $lon = $query['sort.0._geo_distance.service_locations.location.lon'] ?? null;
+                    $coordinate = (!$lat !== null && $lon !== null) ? implode(',', [$lat, $lon]) : null;
+
                     // Append a row to the data array.
                     $data[] = [
                         optional($searchHistory->created_at)->toDateString(),
-                        array_get($searchHistory->query, 'query.bool.must.bool.should.0.match.name.query'),
+                        $searchQuery,
                         $searchHistory->count,
-                        '', // TODO: Get the lat and long.
+                        $coordinate,
                     ];
                 });
             });

@@ -244,7 +244,7 @@ class ElasticsearchSearch implements Search
      */
     public function applyOrder(string $order, Coordinate $location = null): Search
     {
-        if ($order === 'distance') {
+        if ($order === static::ORDER_DISTANCE) {
             $this->query['sort'] = [
                 [
                     '_geo_distance' => [

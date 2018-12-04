@@ -14,6 +14,7 @@ use App\Models\SearchHistory;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\User;
+use App\Support\Coordinate;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
@@ -505,7 +506,39 @@ class ReportTest extends TestCase
 
     public function test_search_histories_export_works_with_location()
     {
-        $this->markTestIncomplete();
+        /** @var \App\Contracts\Search $search */
+        $search = resolve(Search::class)->applyOrder(Search::ORDER_DISTANCE, new Coordinate(0, 0));
+
+        // Create a single search history.
+        $searchHistory = SearchHistory::create([
+            'query' => $search->getQuery(),
+            'count' => 1,
+        ]);
+
+        // Generate the report.
+        $report = Report::generate(ReportType::searchHistoriesExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Date made',
+            'Search Text',
+            'Number Services Returned',
+            'Coordinates (Latitude,Longitude)',
+        ], $csv[0]);
+
+        // Assert created search history exported.
+        $this->assertEquals([
+            $searchHistory->created_at->toDateString(),
+            '',
+            1,
+            '0,0',
+        ], $csv[1]);
     }
 
     public function test_search_histories_export_works_with_date_range()
