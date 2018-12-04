@@ -72,7 +72,7 @@ class ReportTest extends TestCase
             $service->contact_name,
             $service->updated_at->format(Carbon::ISO8601),
             $service->referral_method,
-            $service->referral_email,
+            $service->referral_email ?? '',
             $service->status,
             $service->serviceLocations->map(function (ServiceLocation $serviceLocation) {
                 return $serviceLocation->location->full_address;
