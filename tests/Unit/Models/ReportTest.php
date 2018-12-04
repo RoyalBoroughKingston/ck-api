@@ -10,6 +10,7 @@ use App\Models\PageFeedback;
 use App\Models\Referral;
 use App\Models\Report;
 use App\Models\ReportType;
+use App\Models\Role;
 use App\Models\SearchHistory;
 use App\Models\Service;
 use App\Models\ServiceLocation;
@@ -25,6 +26,43 @@ class ReportTest extends TestCase
      */
 
     public function test_users_export_works()
+    {
+        // Create a single user.
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        // Generate the report.
+        $report = Report::generate(ReportType::usersExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'User Reference ID',
+            'User First Name',
+            'User Last Name',
+            'Email address',
+            'Highest Permission Level',
+            'Organisation/Service Permission Levels',
+            'Organisation/Service IDs',
+        ], $csv[0]);
+
+        // Assert created user exported.
+        $this->assertEquals([
+            $user->id,
+            $user->first_name,
+            $user->last_name,
+            $user->email,
+            Role::NAME_SUPER_ADMIN,
+            '',
+            '',
+        ], $csv[1]);
+    }
+
+    public function test_users_export_works_with_organisation_admin()
     {
         $this->markTestIncomplete();
     }

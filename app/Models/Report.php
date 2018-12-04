@@ -57,8 +57,38 @@ class Report extends Model
      */
     public function generateUsersExport(): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        $headings = [
+            'User Reference ID',
+            'User First Name',
+            'User Last Name',
+            'Email address',
+            'Highest Permission Level',
+            'Organisation/Service Permission Levels',
+            'Organisation/Service IDs',
+        ];
+
+        $data = [$headings];
+
+        User::query()
+            ->with('userRoles.role')
+            ->chunk(200, function (Collection $users) use (&$data) {
+                // Loop through each user in the chunk.
+                $users->each(function (User $user) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        $user->id,
+                        $user->first_name,
+                        $user->last_name,
+                        $user->email,
+                        optional($user->highestRole())->name,
+                        null, // TODO
+                        null, // TODO
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }
