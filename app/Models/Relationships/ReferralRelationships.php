@@ -33,13 +33,12 @@ trait ReferralRelationships
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function latestCompletedStatusUpdate()
     {
-        return $this->hasMany(StatusUpdate::class)
+        return $this->hasOne(StatusUpdate::class)
             ->orderByDesc(table(StatusUpdate::class, 'created_at'))
-            ->where(table(StatusUpdate::class, 'to'), '=', StatusUpdate::TO_COMPLETED)
-            ->take(1);
+            ->where(table(StatusUpdate::class, 'to'), '=', StatusUpdate::TO_COMPLETED);
     }
 }

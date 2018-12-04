@@ -175,7 +175,7 @@ class ReportTest extends TestCase
     public function test_referrals_export_works()
     {
         // Create a single referral.
-        $referral = factory(Referral::class)->create();
+        $referral = factory(Referral::class)->create(['referral_consented_at' => now()]);
 
         // Generate the report.
         $report = Report::generate(ReportType::referralsExport());
@@ -205,24 +205,59 @@ class ReportTest extends TestCase
             $referral->service->organisation->name,
             $referral->service->id,
             $referral->service->name,
-            optional($referral->created_at)->format(Carbon::ISO8601) ?? '',
-            $referral->status === Referral::STATUS_COMPLETED
-                ? $referral->statusUpdates()
-                ->orderByDesc('created_at')
-                ->where('to', '=', StatusUpdate::TO_COMPLETED)
-                ->first()
-                ->created_at
-                ->format(Carbon::ISO8601)
-                : '',
-            $referral->isSelfReferral() ? 'Self' : 'Champion',
-            $referral->isSelfReferral() ? '' : $referral->organisationTaxonomy->name,
-            optional($referral->referral_consented_at)->format(Carbon::ISO8601) ?? '',
+            $referral->created_at->format(Carbon::ISO8601),
+            '',
+            'Self',
+            '',
+            $referral->referral_consented_at->format(Carbon::ISO8601),
         ], $csv[1]);
     }
 
     public function test_referrals_export_works_when_completed()
     {
-        $this->markTestIncomplete();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        // Create a single referral.
+        $referral = factory(Referral::class)->create(['referral_consented_at' => now()]);
+
+        // Update the referral.
+        Carbon::setTestNow(now()->addHour());
+        $statusUpdate = $referral->updateStatus($user, Referral::STATUS_COMPLETED);
+
+        // Generate the report.
+        $report = Report::generate(ReportType::referralsExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Referred to Organisation ID',
+            'Referred to Organisation',
+            'Referred to Service ID',
+            'Referred to Service Name',
+            'Date Made',
+            'Date Complete',
+            'Self/Champion',
+            'Refer from organisation',
+            'Date Consent Provided',
+        ], $csv[0]);
+
+        // Assert created referral   exported.
+        $this->assertEquals([
+            $referral->service->organisation->id,
+            $referral->service->organisation->name,
+            $referral->service->id,
+            $referral->service->name,
+            $referral->created_at->format(Carbon::ISO8601),
+            $statusUpdate->created_at->format(Carbon::ISO8601),
+            'Self',
+            '',
+            $referral->referral_consented_at->format(Carbon::ISO8601),
+        ], $csv[1]);
     }
 
     public function test_referrals_export_works_with_date_range()
