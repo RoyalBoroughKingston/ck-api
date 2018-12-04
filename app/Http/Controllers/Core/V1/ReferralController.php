@@ -158,7 +158,7 @@ class ReferralController extends Controller
         return DB::transaction(function () use ($request, $referral) {
             $referral->updateStatus(
                 $request->user(),
-                $referral->status,
+                $request->status,
                 $request->comments
             );
 

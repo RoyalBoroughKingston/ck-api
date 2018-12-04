@@ -198,19 +198,19 @@ class ReportsTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/reports', [
-            'report_type' => ReportType::usersExport()->name,
+            'report_type' => ReportType::referralsExport()->name,
             'starts_at' => today()->startOfMonth()->toDateString(),
             'ends_at' => today()->endOfMonth()->toDateString(),
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
-            'report_type' => ReportType::usersExport()->name,
+            'report_type' => ReportType::referralsExport()->name,
             'starts_at' => today()->startOfMonth()->toDateString(),
             'ends_at' => today()->endOfMonth()->toDateString(),
         ]);
         $this->assertDatabaseHas((new Report())->getTable(), [
-            'report_type_id' => ReportType::usersExport()->id,
+            'report_type_id' => ReportType::referralsExport()->id,
             'starts_at' => today()->startOfMonth()->toDateString(),
             'ends_at' => today()->endOfMonth()->toDateString(),
         ]);
