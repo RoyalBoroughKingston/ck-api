@@ -4,10 +4,12 @@ namespace Tests\Unit\Models;
 
 use App\Models\Location;
 use App\Models\Organisation;
+use App\Models\Referral;
 use App\Models\Report;
 use App\Models\ReportType;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\StatusUpdate;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -169,6 +171,64 @@ class ReportTest extends TestCase
     /*
      * Referrals export.
      */
+
+    public function test_referrals_export_works()
+    {
+        // Create a single referral.
+        $referral = factory(Referral::class)->create();
+
+        // Generate the report.
+        $report = Report::generate(ReportType::referralsExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Referred to Organisation ID',
+            'Referred to Organisation',
+            'Referred to Service ID',
+            'Referred to Service Name',
+            'Date Made',
+            'Date Complete',
+            'Self/Champion',
+            'Refer from organisation',
+            'Date Consent Provided',
+        ], $csv[0]);
+
+        // Assert created referral   exported.
+        $this->assertEquals([
+            $referral->service->organisation->id,
+            $referral->service->organisation->name,
+            $referral->service->id,
+            $referral->service->name,
+            optional($referral->created_at)->format(Carbon::ISO8601) ?? '',
+            $referral->status === Referral::STATUS_COMPLETED
+                ? $referral->statusUpdates()
+                ->orderByDesc('created_at')
+                ->where('to', '=', StatusUpdate::TO_COMPLETED)
+                ->first()
+                ->created_at
+                ->format(Carbon::ISO8601)
+                : '',
+            $referral->isSelfReferral() ? 'Self' : 'Champion',
+            $referral->isSelfReferral() ? '' : $referral->organisationTaxonomy->name,
+            optional($referral->referral_consented_at)->format(Carbon::ISO8601) ?? '',
+        ], $csv[1]);
+    }
+
+    public function test_referrals_export_works_when_completed()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_referrals_export_works_with_date_range()
+    {
+        $this->markTestIncomplete();
+    }
 
     /*
      * Feedback export.

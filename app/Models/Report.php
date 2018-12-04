@@ -6,6 +6,7 @@ use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
@@ -208,8 +209,56 @@ class Report extends Model
      */
     public function generateReferralsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        // Update the date range fields if passed.
+        if ($startsAt && $endsAt) {
+            $this->update([
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
+            ]);
+        }
+
+        $headings = [
+            'Referred to Organisation ID',
+            'Referred to Organisation',
+            'Referred to Service ID',
+            'Referred to Service Name',
+            'Date Made',
+            'Date Complete',
+            'Self/Champion',
+            'Refer from organisation',
+            'Date Consent Provided',
+        ];
+
+        $data = [$headings];
+
+        Referral::query()
+            ->with('service.organisation', 'latestCompletedStatusUpdate', 'organisationTaxonomy')
+            ->when($startsAt && $endsAt, function (Builder $query) use ($startsAt, $endsAt) {
+                // When date range provided, filter referrals which were created between the date range.
+                $query->whereBetween(table(Referral::class, 'created_at'), [$startsAt, $endsAt]);
+            })
+            ->chunk(200, function (Collection $referrals) use (&$data) {
+                // Loop through each referral in the chunk.
+                $referrals->each(function (Referral $referral) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        $referral->service->organisation->id,
+                        $referral->service->organisation->name,
+                        $referral->service->id,
+                        $referral->service->name,
+                        optional($referral->created_at)->format(Carbon::ISO8601) ?? '',
+                        $referral->isCompleted()
+                            ? $referral->latestCompletedStatusUpdate->created_at->format(Carbon::ISO8601)
+                            : '',
+                        $referral->isSelfReferral() ? 'Self' : 'Champion',
+                        $referral->isSelfReferral() ? '' : $referral->organisationTaxonomy->name,
+                        optional($referral->referral_consented_at)->format(Carbon::ISO8601) ?? '',
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }

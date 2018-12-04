@@ -121,4 +121,12 @@ class Referral extends Model implements Notifiable
     {
         return $this->referee_name === null;
     }
+
+    /**
+     * @return bool
+     */
+    public function isCompleted(): bool
+    {
+        return $this->status === static::STATUS_COMPLETED;
+    }
 }

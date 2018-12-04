@@ -31,4 +31,15 @@ trait ReferralRelationships
     {
         return $this->belongsTo(Taxonomy::class, 'organisation_taxonomy_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function latestCompletedStatusUpdate()
+    {
+        return $this->hasMany(StatusUpdate::class)
+            ->orderByDesc(table(StatusUpdate::class, 'created_at'))
+            ->where(table(StatusUpdate::class, 'to'), '=', StatusUpdate::TO_COMPLETED)
+            ->take(1);
+    }
 }
