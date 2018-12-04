@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Models\Audit;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\PageFeedback;
@@ -383,6 +384,41 @@ class ReportTest extends TestCase
     /*
      * Audit logs export.
      */
+
+    public function test_audit_logs_export_works()
+    {
+        // Create a single audit log.
+        $audit = factory(Audit::class)->create();
+
+        // Generate the report.
+        $report = Report::generate(ReportType::auditLogsExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Action',
+            'Description',
+            'User',
+            'Date/Time',
+            'IP Address',
+            'User Agent',
+        ], $csv[0]);
+
+        // Assert created audit log exported.
+        $this->assertEquals([
+            $audit->action,
+            $audit->description,
+            '',
+            $audit->created_at->format(Carbon::ISO8601),
+            $audit->ip_address,
+            $audit->user_agent ?? '',
+        ], $csv[1]);
+    }
 
     /*
      * Search histories export.

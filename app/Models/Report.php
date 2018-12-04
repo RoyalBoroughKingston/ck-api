@@ -246,13 +246,13 @@ class Report extends Model
                         $referral->service->organisation->name,
                         $referral->service->id,
                         $referral->service->name,
-                        optional($referral->created_at)->format(Carbon::ISO8601) ?? '',
+                        optional($referral->created_at)->format(Carbon::ISO8601),
                         $referral->isCompleted()
                             ? $referral->latestCompletedStatusUpdate->created_at->format(Carbon::ISO8601)
                             : '',
                         $referral->isSelfReferral() ? 'Self' : 'Champion',
-                        $referral->isSelfReferral() ? '' : $referral->organisationTaxonomy->name,
-                        optional($referral->referral_consented_at)->format(Carbon::ISO8601) ?? '',
+                        $referral->isSelfReferral() ? null : $referral->organisationTaxonomy->name,
+                        optional($referral->referral_consented_at)->format(Carbon::ISO8601),
                     ];
                 });
             });
@@ -296,7 +296,7 @@ class Report extends Model
                 $pageFeedbacks->each(function (PageFeedback $pageFeedback) use (&$data) {
                     // Append a row to the data array.
                     $data[] = [
-                        optional($pageFeedback->created_at)->toDateString() ?? '',
+                        optional($pageFeedback->created_at)->toDateString(),
                         $pageFeedback->feedback,
                         $pageFeedback->url,
                     ];
@@ -316,8 +316,48 @@ class Report extends Model
      */
     public function generateAuditLogsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        // Update the date range fields if passed.
+        if ($startsAt && $endsAt) {
+            $this->update([
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
+            ]);
+        }
+
+        $headings = [
+            'Action',
+            'Description',
+            'User',
+            'Date/Time',
+            'IP Address',
+            'User Agent',
+        ];
+
+        $data = [$headings];
+
+        Audit::query()
+            ->with('user')
+            ->when($startsAt && $endsAt, function (Builder $query) use ($startsAt, $endsAt) {
+                // When date range provided, filter page feedback which were created between the date range.
+                $query->whereBetween(table(Audit::class, 'created_at'), [$startsAt, $endsAt]);
+            })
+            ->chunk(200, function (Collection $audits) use (&$data) {
+                // Loop through each audit in the chunk.
+                $audits->each(function (Audit $audit) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        $audit->action,
+                        $audit->description,
+                        optional($audit->user)->full_name,
+                        optional($audit->created_at)->format(Carbon::ISO8601),
+                        $audit->ip_address,
+                        $audit->user_agent,
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }
