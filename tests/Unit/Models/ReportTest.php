@@ -262,7 +262,55 @@ class ReportTest extends TestCase
 
     public function test_referrals_export_works_with_date_range()
     {
-        $this->markTestIncomplete();
+        // Create an in range referral.
+        $referralInRange = factory(Referral::class)->create([
+            'referral_consented_at' => now(),
+        ]);
+
+        // Create an out of range referral.
+        factory(Referral::class)->create([
+            'referral_consented_at' => now(),
+            'created_at' => today()->subMonths(2),
+        ]);
+
+        // Generate the report.
+        $report = Report::generate(
+            ReportType::referralsExport(),
+            today()->startOfMonth(),
+            today()->endOfMonth()
+        );
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Referred to Organisation ID',
+            'Referred to Organisation',
+            'Referred to Service ID',
+            'Referred to Service Name',
+            'Date Made',
+            'Date Complete',
+            'Self/Champion',
+            'Refer from organisation',
+            'Date Consent Provided',
+        ], $csv[0]);
+
+        // Assert created referral   exported.
+        $this->assertEquals([
+            $referralInRange->service->organisation->id,
+            $referralInRange->service->organisation->name,
+            $referralInRange->service->id,
+            $referralInRange->service->name,
+            $referralInRange->created_at->format(Carbon::ISO8601),
+            '',
+            'Self',
+            '',
+            $referralInRange->referral_consented_at->format(Carbon::ISO8601),
+        ], $csv[1]);
     }
 
     /*
