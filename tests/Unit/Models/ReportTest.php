@@ -420,6 +420,46 @@ class ReportTest extends TestCase
         ], $csv[1]);
     }
 
+    public function test_audit_logs_export_work_with_date_range()
+    {
+        // Create a single audit log.
+        $auditWithinRange = factory(Audit::class)->create();
+        factory(Audit::class)->create(['created_at' => today()->subMonths(2)]);
+
+        // Generate the report.
+        $report = Report::generate(
+            ReportType::auditLogsExport(),
+            today()->startOfMonth(),
+            today()->endOfMonth()
+        );
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Action',
+            'Description',
+            'User',
+            'Date/Time',
+            'IP Address',
+            'User Agent',
+        ], $csv[0]);
+
+        // Assert created audit log exported.
+        $this->assertEquals([
+            $auditWithinRange->action,
+            $auditWithinRange->description,
+            '',
+            $auditWithinRange->created_at->format(Carbon::ISO8601),
+            $auditWithinRange->ip_address,
+            $auditWithinRange->user_agent ?? '',
+        ], $csv[1]);
+    }
+
     /*
      * Search histories export.
      */
