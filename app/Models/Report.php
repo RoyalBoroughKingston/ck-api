@@ -6,6 +6,7 @@ use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
@@ -120,6 +121,7 @@ class Report extends Model
                 });
             });
 
+        // Upload the report.
         $this->file->upload(array_to_csv($data));
 
         return $this;
@@ -132,8 +134,41 @@ class Report extends Model
      */
     public function generateOrganisationsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        // Parameters are unused for this report.
+        unset($startsAt, $endsAt);
+
+        $headings = [
+            'Organisation Reference ID',
+            'Organisation Name',
+            'Number of Services',
+            'Organisation Email',
+            'Organisation Phone',
+            'Organisation URL',
+            'Number of Accounts Attributed',
+        ];
+
+        $data = [$headings];
+
+        Organisation::query()
+            ->withCount('services', 'nonAdminUsers')
+            ->chunk(200, function (Collection $organisations) use (&$data) {
+                // Loop through each service in the chunk.
+                $organisations->each(function (Organisation $organisation) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        $organisation->id,
+                        $organisation->name,
+                        $organisation->services_count,
+                        $organisation->email,
+                        $organisation->phone,
+                        $organisation->url,
+                        $organisation->non_admin_users_count,
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }

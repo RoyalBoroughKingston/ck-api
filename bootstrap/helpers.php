@@ -288,6 +288,11 @@ if (!function_exists('csv_to_array')) {
 
         foreach ($rows as &$row) {
             $row = str_getcsv($row);
+
+            // Remove quotes from quotes cells.
+            foreach ($row as &$cell) {
+                $cell = trim($cell, '"');
+            }
         }
 
         return $rows;

@@ -2,10 +2,14 @@
 
 namespace Tests\Unit\Models;
 
+use App\Models\Organisation;
 use App\Models\Report;
 use App\Models\ReportType;
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
@@ -83,6 +87,47 @@ class ReportTest extends TestCase
     /*
      * Organisations export.
      */
+
+    public function test_organisations_export_works()
+    {
+        // Create a single organisation.
+        $organisation = factory(Organisation::class)->create();
+
+        // Create an admin and non-admin user.
+        factory(User::class)->create()->makeSuperAdmin();
+        factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        // Generate the report.
+        $report = Report::generate(ReportType::organisationsExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Organisation Reference ID',
+            'Organisation Name',
+            'Number of Services',
+            'Organisation Email',
+            'Organisation Phone',
+            'Organisation URL',
+            'Number of Accounts Attributed',
+        ], $csv[0]);
+
+        // Assert created organisation exported.
+        $this->assertEquals([
+            $organisation->id,
+            $organisation->name,
+            0,
+            $organisation->email,
+            $organisation->phone,
+            $organisation->url,
+            1,
+        ], $csv[1]);
+    }
 
     /*
      * Locations export.
