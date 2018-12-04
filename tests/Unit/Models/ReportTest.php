@@ -4,12 +4,12 @@ namespace Tests\Unit\Models;
 
 use App\Models\Location;
 use App\Models\Organisation;
+use App\Models\PageFeedback;
 use App\Models\Referral;
 use App\Models\Report;
 use App\Models\ReportType;
 use App\Models\Service;
 use App\Models\ServiceLocation;
-use App\Models\StatusUpdate;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -199,7 +199,7 @@ class ReportTest extends TestCase
             'Date Consent Provided',
         ], $csv[0]);
 
-        // Assert created referral   exported.
+        // Assert created referral exported.
         $this->assertEquals([
             $referral->service->organisation->id,
             $referral->service->organisation->name,
@@ -246,7 +246,7 @@ class ReportTest extends TestCase
             'Date Consent Provided',
         ], $csv[0]);
 
-        // Assert created referral   exported.
+        // Assert created referral exported.
         $this->assertEquals([
             $referral->service->organisation->id,
             $referral->service->organisation->name,
@@ -299,7 +299,7 @@ class ReportTest extends TestCase
             'Date Consent Provided',
         ], $csv[0]);
 
-        // Assert created referral   exported.
+        // Assert created referral exported.
         $this->assertEquals([
             $referralInRange->service->organisation->id,
             $referralInRange->service->organisation->name,
@@ -316,6 +316,40 @@ class ReportTest extends TestCase
     /*
      * Feedback export.
      */
+
+    public function test_feedback_export_works()
+    {
+        // Create a single feedback.
+        $feedback = factory(PageFeedback::class)->create();
+
+        // Generate the report.
+        $report = Report::generate(ReportType::feedbackExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Date Submitted',
+            'Feedback Content',
+            'Page URL',
+        ], $csv[0]);
+
+        // Assert created feedback exported.
+        $this->assertEquals([
+            $feedback->created_at->toDateString(),
+            $feedback->feedback,
+            $feedback->url,
+        ], $csv[1]);
+    }
+
+    public function test_feedback_export_works_with_date_range()
+    {
+        $this->markTestIncomplete();
+    }
 
     /*
      * Audit logs export.

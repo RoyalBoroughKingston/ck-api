@@ -270,8 +270,41 @@ class Report extends Model
      */
     public function generateFeedbackExport(Carbon $startsAt = null, Carbon $endsAt = null): self
     {
-        // TODO: Add report generation logic here.
-        $this->file->upload('This is a dummy report');
+        // Update the date range fields if passed.
+        if ($startsAt && $endsAt) {
+            $this->update([
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
+            ]);
+        }
+
+        $headings = [
+            'Date Submitted',
+            'Feedback Content',
+            'Page URL',
+        ];
+
+        $data = [$headings];
+
+        PageFeedback::query()
+            ->when($startsAt && $endsAt, function (Builder $query) use ($startsAt, $endsAt) {
+                // When date range provided, filter page feedback which were created between the date range.
+                $query->whereBetween(table(PageFeedback::class, 'created_at'), [$startsAt, $endsAt]);
+            })
+            ->chunk(200, function (Collection $pageFeedbacks) use (&$data) {
+                // Loop through each page feedback in the chunk.
+                $pageFeedbacks->each(function (PageFeedback $pageFeedback) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        optional($pageFeedback->created_at)->toDateString() ?? '',
+                        $pageFeedback->feedback,
+                        $pageFeedback->url,
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
 
         return $this;
     }
