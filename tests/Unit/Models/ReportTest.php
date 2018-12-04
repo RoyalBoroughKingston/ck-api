@@ -543,7 +543,48 @@ class ReportTest extends TestCase
 
     public function test_search_histories_export_works_with_date_range()
     {
-        $this->markTestIncomplete();
+        /** @var \App\Contracts\Search $search */
+        $search = resolve(Search::class)->applyQuery('Health and Social');
+
+        // Create a single search history.
+        $searchHistoryWithinRange = SearchHistory::create([
+            'query' => $search->getQuery(),
+            'count' => 1,
+        ]);
+        SearchHistory::create([
+            'query' => $search->getQuery(),
+            'count' => 1,
+            'created_at' => today()->subMonths(2),
+        ]);
+
+        // Generate the report.
+        $report = Report::generate(
+            ReportType::searchHistoriesExport(),
+            today()->startOfMonth(),
+            today()->endOfMonth()
+        );
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Date made',
+            'Search Text',
+            'Number Services Returned',
+            'Coordinates (Latitude,Longitude)',
+        ], $csv[0]);
+
+        // Assert created search history exported.
+        $this->assertEquals([
+            $searchHistoryWithinRange->created_at->toDateString(),
+            'Health and Social',
+            1,
+            '',
+        ], $csv[1]);
     }
 
     /*
