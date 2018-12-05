@@ -3,7 +3,6 @@
 namespace App\Models\Relationships;
 
 use App\Models\Audit;
-use App\Models\Notification;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
@@ -58,7 +57,8 @@ trait UserRelationships
      */
     public function organisations()
     {
-        return $this->belongsToMany(Organisation::class, table(UserRole::class));
+        return $this->belongsToMany(Organisation::class, table(UserRole::class))
+            ->distinct();
     }
 
     /**
@@ -66,6 +66,7 @@ trait UserRelationships
      */
     public function services()
     {
-        return $this->belongsToMany(Service::class, table(UserRole::class));
+        return $this->belongsToMany(Service::class, table(UserRole::class))
+            ->distinct();
     }
 }
