@@ -288,6 +288,11 @@ if (!function_exists('csv_to_array')) {
 
         foreach ($rows as &$row) {
             $row = str_getcsv($row);
+
+            // Remove quotes from quotes cells.
+            foreach ($row as &$cell) {
+                $cell = trim($cell, '"');
+            }
         }
 
         return $rows;
@@ -307,6 +312,11 @@ if (!function_exists('array_to_csv')) {
 
         // Write out the data.
         foreach ($data as $row) {
+            // Wrap cells with coma's in double quotes.
+            foreach ($row as &$cell) {
+                $cell = str_contains($cell, ',') ? '"' . $cell . '"' : $cell;
+            }
+
             fputcsv($fh, $row);
         }
         rewind($fh);

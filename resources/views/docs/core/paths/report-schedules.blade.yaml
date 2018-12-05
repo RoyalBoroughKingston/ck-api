@@ -43,7 +43,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/report-schedule.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/report-schedule.yaml
 
 # /report-schedules/{report_schedule}
 nested:
@@ -65,7 +68,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/report-schedule.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/report-schedule.yaml
 
   put:
     tags: [Report Schedules]
@@ -91,7 +97,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/report-schedule.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/report-schedule.yaml
 
   delete:
     tags: [Report Schedules]

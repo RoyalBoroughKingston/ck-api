@@ -70,7 +70,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/service.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/service.yaml
 
 # /services/{service}
 nested:
@@ -97,7 +100,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/service.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/service.yaml
 
   put:
     tags: [Services]
@@ -172,3 +178,5 @@ logo:
       200:
         content:
           image/png:
+            schema:
+              type: string

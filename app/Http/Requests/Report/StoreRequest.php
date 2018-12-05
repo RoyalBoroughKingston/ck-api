@@ -29,6 +29,8 @@ class StoreRequest extends FormRequest
     {
         return [
             'report_type' => ['required', 'exists:report_types,name'],
+            'starts_at' => ['nullable', 'date_format:Y-m-d', 'before:ends_at'],
+            'ends_at' => ['nullable', 'date_format:Y-m-d', 'after:starts_at'],
         ];
     }
 }

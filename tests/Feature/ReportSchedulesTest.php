@@ -72,7 +72,7 @@ class ReportSchedulesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
         $reportSchedule = ReportSchedule::create([
-            'report_type_id' => ReportType::commissionersReport()->id,
+            'report_type_id' => ReportType::usersExport()->id,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
 
@@ -83,7 +83,7 @@ class ReportSchedulesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $reportSchedule->id,
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
             'created_at' => $reportSchedule->created_at->format(Carbon::ISO8601),
         ]);
@@ -164,17 +164,17 @@ class ReportSchedulesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/report-schedules', [
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
         $this->assertDatabaseHas((new ReportSchedule())->getTable(), [
-            'report_type_id' => ReportType::commissionersReport()->id,
+            'report_type_id' => ReportType::usersExport()->id,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
     }
@@ -189,7 +189,7 @@ class ReportSchedulesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/report-schedules', [
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
 

@@ -62,4 +62,7 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/notification.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/notification.yaml

@@ -60,7 +60,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/referral.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/referral.yaml
 
 # /referrals/{referral}
 nested:
@@ -87,7 +90,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/referral.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/referral.yaml
 
   put:
     tags: [Referrals]
@@ -113,4 +119,7 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/referral.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/referral.yaml

@@ -15,8 +15,64 @@ class ReportType extends Model
     /**
      * @return \App\Models\ReportType
      */
-    public static function commissionersReport(): self
+    public static function usersExport(): self
     {
-        return static::where('name', 'Commissioners Report')->firstOrFail();
+        return static::where('name', 'Users Export')->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function servicesExport(): self
+    {
+        return static::where('name', 'Services Export')->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function organisationsExport(): self
+    {
+        return static::where('name', 'Organisations Export')->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function locationsExport(): self
+    {
+        return static::where('name', 'Locations Export')->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function referralsExport(): self
+    {
+        return static::where('name', 'Referrals Export')->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function feedbackExport(): self
+    {
+        return static::where('name', 'Feedback Export')->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function auditLogsExport(): self
+    {
+        return static::where('name', 'Audit Logs Export')->firstOrFail();
+    }
+
+    /**
+     * @return \App\Models\ReportType
+     */
+    public static function searchHistoriesExport(): self
+    {
+        return static::where('name', 'Search Histories Export')->firstOrFail();
     }
 }

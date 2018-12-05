@@ -12,6 +12,7 @@ use App\Notifications\Notifiable;
 use App\Notifications\Notifications;
 use App\Sms\Sms;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -117,6 +118,34 @@ class User extends Authenticatable implements Notifiable
                 return $query->where('organisation_id', $organisation->id);
             })
             ->exists();
+    }
+
+    /**
+     * This method is functionally the same as hasRole(), however this uses the
+     * userRoles relationship as a collection, so it's more efficient when this
+     * relationship has been eager loaded. This can also cause caching issues
+     * where the userRoles might be out of date if they have been modified.
+     *
+     * @param \App\Models\Role $role
+     * @param \App\Models\Service|null $service
+     * @param \App\Models\Organisation|null $organisation
+     * @return bool
+     */
+    public function hasRoleCached(Role $role, Service $service = null, Organisation $organisation = null): bool
+    {
+        if ($service !== null && $organisation !== null) {
+            throw new InvalidArgumentException('A role cannot be assigned to both a service and an organisation');
+        }
+
+        return $this->userRoles
+            ->where('role_id', $role->id)
+            ->when($service, function (Collection $collection) use ($service) {
+                return $collection->where('service_id', $service->id);
+            })
+            ->when($organisation, function (Collection $collection) use ($organisation) {
+                return $collection->where('organisation_id', $organisation->id);
+            })
+            ->isNotEmpty();
     }
 
     /**
@@ -583,5 +612,49 @@ class User extends Authenticatable implements Notifiable
             ->delete();
 
         return $this;
+    }
+
+    /**
+     * @return \App\Models\Role|null
+     */
+    public function highestRole(): ?Role
+    {
+        // Check for super admin.
+        $superAdminRole = $this->userRoles->where('role.name', Role::NAME_SUPER_ADMIN)->first();
+
+        if ($superAdminRole) {
+            return Role::superAdmin();
+        }
+
+        // Check for global admin.
+        $globalAdminRole = $this->userRoles->where('role.name', Role::NAME_GLOBAL_ADMIN)->first();
+
+        if ($globalAdminRole) {
+            return Role::globalAdmin();
+        }
+
+        // Check for organisation admin.
+        $organisationAdminRole = $this->userRoles->where('role.name', Role::NAME_ORGANISATION_ADMIN)->first();
+
+        if ($organisationAdminRole) {
+            return Role::organisationAdmin();
+        }
+
+        // Check for service admin.
+        $serviceAdminRole = $this->userRoles->where('role.name', Role::NAME_SERVICE_ADMIN)->first();
+
+        if ($serviceAdminRole) {
+            return Role::serviceAdmin();
+        }
+
+        // Check for service worker.
+        $serviceWorkerRole = $this->userRoles->where('role.name', Role::NAME_SERVICE_WORKER)->first();
+
+        if ($serviceWorkerRole) {
+            return Role::serviceWorker();
+        }
+
+        // If the user has no roles.
+        return null;
     }
 }

@@ -156,14 +156,11 @@ class ReferralController extends Controller
     public function update(UpdateRequest $request, Referral $referral)
     {
         return DB::transaction(function () use ($request, $referral) {
-            $referral->statusUpdates()->create([
-                'user_id' => $request->user()->id,
-                'from' => $referral->status,
-                'to' => $request->status,
-                'comments' => $request->comments,
-            ]);
-
-            $referral->update(['status' => $request->status]);
+            $referral->updateStatus(
+                $request->user(),
+                $request->status,
+                $request->comments
+            );
 
             event(EndpointHit::onUpdate($request, "Updated referral [{$referral->id}]", $referral));
 

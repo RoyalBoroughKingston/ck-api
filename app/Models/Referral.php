@@ -121,4 +121,33 @@ class Referral extends Model implements Notifiable
     {
         return $this->referee_name === null;
     }
+
+    /**
+     * @return bool
+     */
+    public function isCompleted(): bool
+    {
+        return $this->status === static::STATUS_COMPLETED;
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param string $to
+     * @param string|null $comments
+     * @return \App\Models\StatusUpdate
+     */
+    public function updateStatus(User $user, string $to, string $comments = null): StatusUpdate
+    {
+        /** @var \App\Models\StatusUpdate $statusUpdate */
+        $statusUpdate = $this->statusUpdates()->create([
+            'user_id' => $user->id,
+            'from' => $this->status,
+            'to' => $to,
+            'comments' => $comments,
+        ]);
+
+        $this->update(['status' => $to]);
+
+        return $statusUpdate;
+    }
 }

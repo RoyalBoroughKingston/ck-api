@@ -34,12 +34,18 @@ class File extends Model implements Responsable
      */
     public function toResponse($request)
     {
-        $content = Storage::cloud()->get($this->path());
-
-        return response()->make($content, Response::HTTP_OK, [
+        return response()->make($this->getContent(), Response::HTTP_OK, [
             'Content-Type' => $this->mime_type,
             'Content-Disposition' => sprintf('inline; filename="%s"', $this->filename),
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return Storage::cloud()->get($this->path());
     }
 
     /**

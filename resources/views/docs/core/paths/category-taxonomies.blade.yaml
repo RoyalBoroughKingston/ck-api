@@ -47,7 +47,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/category-taxonomy.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/category-taxonomy.yaml
 
 # /taxonomies/categories/{category}
 nested:
@@ -70,7 +73,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/category-taxonomy.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/category-taxonomy.yaml
 
   put:
     tags: ["Taxonomy: Categories"]
@@ -96,7 +102,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/category-taxonomy.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/category-taxonomy.yaml
 
   delete:
     tags: ["Taxonomy: Categories"]

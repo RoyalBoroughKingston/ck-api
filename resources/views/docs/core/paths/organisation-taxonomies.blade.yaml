@@ -41,7 +41,10 @@ root:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/organisation-taxonomy.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/organisation-taxonomy.yaml
 
 # /taxonomies/organisations/{organisation}
 nested:
@@ -64,7 +67,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/organisation-taxonomy.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/organisation-taxonomy.yaml
 
   put:
     tags: ["Taxonomy: Organisations"]
@@ -90,7 +96,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/organisation-taxonomy.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/organisation-taxonomy.yaml
 
   delete:
     tags: ["Taxonomy: Organisations"]

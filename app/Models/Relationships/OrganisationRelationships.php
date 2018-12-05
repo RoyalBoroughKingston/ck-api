@@ -3,9 +3,11 @@
 namespace App\Models\Relationships;
 
 use App\Models\File;
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Database\Eloquent\Builder;
 
 trait OrganisationRelationships
 {
@@ -39,5 +41,17 @@ trait OrganisationRelationships
     public function services()
     {
         return $this->hasMany(Service::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function nonAdminUsers()
+    {
+        return $this->belongsToMany(User::class, (new UserRole())->getTable())
+            ->withTrashed()
+            ->whereDoesntHave('userRoles', function (Builder $query) {
+                $query->whereIn('user_roles.role_id', [Role::superAdmin()->id, Role::globalAdmin()->id]);
+            });
     }
 }

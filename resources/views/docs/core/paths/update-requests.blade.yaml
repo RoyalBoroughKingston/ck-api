@@ -76,7 +76,10 @@ nested:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/update-request.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/update-request.yaml
 
   delete:
     tags: [Update Requests]
@@ -118,4 +121,7 @@ approve:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/update-request.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/update-request.yaml

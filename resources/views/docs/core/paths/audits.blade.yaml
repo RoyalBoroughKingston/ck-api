@@ -10,27 +10,27 @@ root:
 
       Audits are returned in descending order of the date they were created.
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
-    - name: filter[user_id]
-      in: query
-      description: Comma seperated list of user IDs to filter by
-      schema:
-        type: string
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
+      - name: filter[user_id]
+        in: query
+        description: Comma seperated list of user IDs to filter by
+        schema:
+          type: string
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/audit.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/audit.yaml
 
 # /audits/{audit}
 nested:
@@ -40,16 +40,19 @@ nested:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: audit
-      in: path
-      description: The ID of the audit
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: audit
+        in: path
+        description: The ID of the audit
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
           application/json:
             schema:
-              $ref: /docs/core/resources/audit.yaml
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/audit.yaml

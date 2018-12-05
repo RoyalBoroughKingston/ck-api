@@ -150,15 +150,25 @@ class ReportsTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/reports', [
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
         ]);
         $this->assertDatabaseHas((new Report())->getTable(), [
-            'report_type_id' => ReportType::commissionersReport()->id,
+            'report_type_id' => ReportType::usersExport()->id,
+        ]);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'report_type',
+                'starts_at',
+                'ends_at',
+                'created_at',
+                'updated_at',
+            ]
         ]);
     }
 
@@ -171,7 +181,7 @@ class ReportsTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/reports', [
-            'report_type' => ReportType::commissionersReport()->name,
+            'report_type' => ReportType::usersExport()->name,
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
@@ -179,6 +189,31 @@ class ReportsTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
         });
+    }
+
+    public function test_global_admin_can_create_one_with_date_range()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/reports', [
+            'report_type' => ReportType::referralsExport()->name,
+            'starts_at' => today()->startOfMonth()->toDateString(),
+            'ends_at' => today()->endOfMonth()->toDateString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment([
+            'report_type' => ReportType::referralsExport()->name,
+            'starts_at' => today()->startOfMonth()->toDateString(),
+            'ends_at' => today()->endOfMonth()->toDateString(),
+        ]);
+        $this->assertDatabaseHas((new Report())->getTable(), [
+            'report_type_id' => ReportType::referralsExport()->id,
+            'starts_at' => today()->startOfMonth()->toDateString(),
+            'ends_at' => today()->endOfMonth()->toDateString(),
+        ]);
     }
 
     /*
@@ -406,7 +441,7 @@ class ReportsTest extends TestCase
     public function test_global_admin_can_download_file()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $report = Report::generate(ReportType::commissionersReport());
+        $report = Report::generate(ReportType::usersExport());
 
         Passport::actingAs($user);
 
@@ -421,7 +456,7 @@ class ReportsTest extends TestCase
         $this->fakeEvents();
 
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $report = Report::generate(ReportType::commissionersReport());
+        $report = Report::generate(ReportType::usersExport());
 
         Passport::actingAs($user);
 

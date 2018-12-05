@@ -7,6 +7,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 interface Search
 {
+    const ORDER_RELEVANCE = 'relevance';
+    const ORDER_DISTANCE = 'distance';
+
     /**
      * @param string $term
      * @return \App\Contracts\Search
@@ -50,6 +53,13 @@ interface Search
      * @return \App\Contracts\Search
      */
     public function applyRadius(Coordinate $location, int $radius): Search;
+
+    /**
+     * Returns the underlying query. Only intended for use in testing.
+     *
+     * @return array
+     */
+    public function getQuery(): array;
 
     /**
      * @param int|null $page
