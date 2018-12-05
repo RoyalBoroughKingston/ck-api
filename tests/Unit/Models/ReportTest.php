@@ -64,7 +64,42 @@ class ReportTest extends TestCase
 
     public function test_users_export_works_with_organisation_admin()
     {
-        $this->markTestIncomplete();
+        // Create an organisation.
+        $organisation = factory(Organisation::class)->create();
+
+        // Create a single user.
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        // Generate the report.
+        $report = Report::generate(ReportType::usersExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'User Reference ID',
+            'User First Name',
+            'User Last Name',
+            'Email address',
+            'Highest Permission Level',
+            'Organisation/Service Permission Levels',
+            'Organisation/Service IDs',
+        ], $csv[0]);
+
+        // Assert created user exported.
+        $this->assertEquals([
+            $user->id,
+            $user->first_name,
+            $user->last_name,
+            $user->email,
+            Role::NAME_ORGANISATION_ADMIN,
+            Role::NAME_ORGANISATION_ADMIN,
+            $organisation->id,
+        ], $csv[1]);
     }
 
     /*

@@ -4,6 +4,7 @@ namespace App\Models\Relationships;
 
 use App\Models\Audit;
 use App\Models\Notification;
+use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\StatusUpdate;
@@ -50,6 +51,14 @@ trait UserRelationships
     public function statusUpdated()
     {
         return $this->hasMany(StatusUpdate::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function organisations()
+    {
+        return $this->belongsToMany(Organisation::class, table(UserRole::class));
     }
 
     /**
