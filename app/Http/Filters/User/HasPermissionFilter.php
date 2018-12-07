@@ -32,19 +32,26 @@ class HasPermissionFilter implements Filter
         $organisationIds = $this->getAdministeredOrganisationIds($user);
 
         // Get the ID's of the services that belong to the organisations.
-        $serviceIdsForOrganisations = $this->getServiceIdsForOrganisations($organisationIds);
+        $serviceIdsForOrganisations = $this->getServiceIdsForAdministeredOrganisations($organisationIds);
 
         // Get the ID's of the users that work in that organisation.
-        $userIdsForOrganisations = $this->getUserIdsForServicesInOrganisations($serviceIdsForOrganisations);
+        $userIdsForOrganisations = $this->getUserIdsForServices($serviceIdsForOrganisations, [
+            Role::globalAdmin()->id,
+            Role::superAdmin()->id,
+        ]);
 
         // Get the ID's of the services the user is an admin of.
         $serviceIdsForServices = $this->getAdministeredServiceIds($user);
 
         // Get the ID's of the users that work in that service.
-        $userIdsForServices = $this->getUserIdsForServices($serviceIdsForServices);
+        $userIdsForServices = $this->getUserIdsForServices($serviceIdsForServices, [
+            Role::organisationAdmin()->id,
+            Role::globalAdmin()->id,
+            Role::superAdmin()->id,
+        ]);
 
         // Merge the user ID's into a single array.
-        $userIds = array_merge($userIdsForOrganisations, $userIdsForServices);
+        $userIds = array_merge([$user->id], $userIdsForOrganisations, $userIdsForServices);
 
         return $query->whereIn(table(User::class, 'id'), $userIds);
     }
@@ -68,34 +75,11 @@ class HasPermissionFilter implements Filter
      * @param array $organisationIds
      * @return array
      */
-    protected function getServiceIdsForOrganisations(array $organisationIds): array
+    protected function getServiceIdsForAdministeredOrganisations(array $organisationIds): array
     {
         return Service::query()
             ->whereIn(table(Service::class, 'organisation_id'), $organisationIds)
             ->pluck(table(Service::class, 'id'))
-            ->toArray();
-    }
-
-    /**
-     * Gets the ID's of the users that belong to the services within organisations.
-     *
-     * @param array $serviceIds
-     * @return array
-     */
-    protected function getUserIdsForServicesInOrganisations(array $serviceIds): array
-    {
-        return User::query()
-            ->whereHas('userRoles', function (Builder $query) use ($serviceIds) {
-                $query->whereIn(table(UserRole::class, 'service_id'), $serviceIds);
-            })
-            ->whereDoesntHave('userRoles', function (Builder $query) {
-                // Where the user is not a global or super admin.
-                $query->whereIn(table(UserRole::class, 'role_id'), [
-                    Role::globalAdmin()->id,
-                    Role::superAdmin()->id,
-                ]);
-            })
-            ->pluck(table(User::class, 'id'))
             ->toArray();
     }
 
@@ -117,22 +101,19 @@ class HasPermissionFilter implements Filter
      * Get the ID's for the users.
      *
      * @param array $serviceIds
+     * @param array $blacklistedRoleIds Exclude users who have these roles
      * @return array
      */
-    protected function getUserIdsForServices(array $serviceIds): array
+    protected function getUserIdsForServices(array $serviceIds, array $blacklistedRoleIds): array
     {
         return User::query()
             ->whereHas('userRoles', function (Builder $query) use ($serviceIds) {
                 // Where the user has a permission for the service.
                 $query->whereIn(table(UserRole::class, 'service_id'), $serviceIds);
             })
-            ->whereDoesntHave('userRoles', function (Builder $query) use ($serviceIds) {
-                // Where the user is not an organisation, global or super admin.
-                $query->whereIn(table(UserRole::class, 'role_id'), [
-                    Role::organisationAdmin()->id,
-                    Role::globalAdmin()->id,
-                    Role::superAdmin()->id,
-                ]);
+            ->whereDoesntHave('userRoles', function (Builder $query) use ($blacklistedRoleIds) {
+                // Exclude users who have these roles.
+                $query->whereIn(table(UserRole::class, 'role_id'), $blacklistedRoleIds);
             })
             ->pluck(table(User::class, 'id'))
             ->toArray();
