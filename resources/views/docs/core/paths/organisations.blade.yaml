@@ -19,6 +19,11 @@ root:
       description: Name to filter by
       schema:
         type: string
+    - name: filter[has_permission]
+      in: query
+      description: Filter organisations to only ones they have permissions for
+      schema:
+        type: boolean
     responses:
       200:
         content:

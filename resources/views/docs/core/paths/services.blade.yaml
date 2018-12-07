@@ -40,6 +40,11 @@ root:
       description: The relationships to include with the response [`organisation`]
       schema:
         type: string
+    - name: filter[has_permission]
+      in: query
+      description: Filter services to only ones they have permissions for
+      schema:
+        type: boolean
     responses:
       200:
         content:
