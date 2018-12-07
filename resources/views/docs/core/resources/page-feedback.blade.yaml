@@ -22,6 +22,10 @@ properties:
     type: string
     nullable: true
     example: "07700000000"
+  consented_at:
+    type: string
+    format: date-time
+    nullable: true
   created_at:
     type: string
     format: date-time
