@@ -84,7 +84,24 @@ class LoginController extends Controller
         $user = User::findOrFail($userId);
         $phoneLastFour = substr($user->phone, -4);
 
-        return view('auth.code', ['phoneLastFour' => $phoneLastFour]);
+        $email = config('ck.global_admin.email');
+        $appName = config('app.name');
+        $subject = "{$user->full_name} - New Phone Number";
+        $subject = rawurlencode($subject);
+        $body = <<< EOT
+{$user->full_name}:
+
+Requires a new phone number for their account on $appName.
+
+New number: xxxx-xxx-xxxx
+EOT;
+        $body = rawurlencode($body);
+        $newNumberLink = "mailto:$email?subject=$subject&body=$body";
+
+        return view('auth.code', [
+            'phoneLastFour' => $phoneLastFour,
+            'newNumberLink' => $newNumberLink,
+        ]);
     }
 
     /**
