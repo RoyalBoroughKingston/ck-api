@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\EndpointHit;
 use App\Events\UserRolesUpdated;
 use App\Exceptions\CannotRevokeRoleException;
+use App\Http\Filters\User\HasPermissionFilter;
 use App\Http\Requests\User\DestroyRequest;
 use App\Http\Requests\User\IndexRequest;
 use App\Http\Requests\User\ShowRequest;
@@ -57,6 +58,7 @@ class UserController extends Controller
                 Filter::exact('id'),
                 'first_name',
                 'last_name',
+                Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes([
                 'user-roles.organisation',
