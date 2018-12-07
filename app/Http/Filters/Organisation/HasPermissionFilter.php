@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Filters\Organisations;
+namespace App\Http\Filters\Organisation;
 
 use App\Models\Organisation;
 use App\Models\Service;

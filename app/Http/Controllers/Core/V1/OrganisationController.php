@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
-use App\Http\Filters\Organisations\HasPermissionFilter;
+use App\Http\Filters\Organisation\HasPermissionFilter;
 use App\Http\Requests\Organisation\DestroyRequest;
 use App\Http\Requests\Organisation\IndexRequest;
 use App\Http\Requests\Organisation\ShowRequest;
