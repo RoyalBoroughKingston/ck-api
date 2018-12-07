@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Filters\Organisations\HasPermissionFilter;
 use App\Http\Requests\Organisation\DestroyRequest;
 use App\Http\Requests\Organisation\IndexRequest;
 use App\Http\Requests\Organisation\ShowRequest;
@@ -44,6 +45,7 @@ class OrganisationController extends Controller
             ->allowedFilters([
                 Filter::exact('id'),
                 'name',
+                Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->paginate(per_page($request->per_page));
 

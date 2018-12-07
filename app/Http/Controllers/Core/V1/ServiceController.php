@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\v1;
 
 use App\Events\EndpointHit;
+use App\Http\Filters\Service\HasPermissionFilter;
 use App\Http\Requests\Service\DestroyRequest;
 use App\Http\Requests\Service\IndexRequest;
 use App\Http\Requests\Service\ShowRequest;
@@ -53,6 +54,7 @@ class ServiceController extends Controller
                 Filter::exact('organisation_id'),
                 'name',
                 Filter::exact('status'),
+                Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes(['organisation'])
             ->paginate(per_page($request->per_page));

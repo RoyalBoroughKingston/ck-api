@@ -69,7 +69,7 @@ In a separate terminal on your host machine, pull the Elasticsearch docker image
 
 ```bash
 docker pull docker.elastic.co/elasticsearch/elasticsearch:6.3.2
-docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+docker run --rm -d -p 9200:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
 ```
 
 Then back on the homestead VM, run the seeder and setup the Elasticsearch index:
