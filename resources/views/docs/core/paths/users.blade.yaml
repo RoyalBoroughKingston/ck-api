@@ -25,6 +25,11 @@ root:
       description: Last name to filter by
       schema:
         type: string
+    - name: filter[has_permission]
+      in: query
+      description: Filter users to only ones they have permissions for
+      schema:
+        type: boolean
     - name: include
       in: query
       description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
