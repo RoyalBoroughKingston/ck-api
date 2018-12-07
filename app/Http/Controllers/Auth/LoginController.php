@@ -80,7 +80,11 @@ class LoginController extends Controller
      */
     public function showOtpForm()
     {
-        return view('auth.code');
+        $userId = session()->get('otp.user_id');
+        $user = User::findOrFail($userId);
+        $phoneLastFour = substr($user->phone, -4);
+
+        return view('auth.code', ['phoneLastFour' => $phoneLastFour]);
     }
 
     /**
