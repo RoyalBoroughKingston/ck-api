@@ -10,6 +10,22 @@ properties:
   feedback:
     type: string
     example: This does not work on my browser
+  name:
+    type: string
+    nullable: true
+    example: John Doe
+  email:
+    type: string
+    nullable: true
+    example: john.doe@example.com
+  phone:
+    type: string
+    nullable: true
+    example: "07700000000"
+  consented_at:
+    type: string
+    format: date-time
+    nullable: true
   created_at:
     type: string
     format: date-time

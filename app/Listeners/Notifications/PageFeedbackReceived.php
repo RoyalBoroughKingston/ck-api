@@ -35,6 +35,7 @@ class PageFeedbackReceived
             new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
                 'FEEDBACK_URL' => $pageFeedback->url,
                 'FEEDBACK_CONTENT' => $pageFeedback->feedback,
+                'CONTACT_DETAILS_PROVIDED' => $pageFeedback->userDetailsProvided(),
             ])
         );
     }

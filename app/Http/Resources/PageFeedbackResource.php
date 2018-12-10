@@ -19,6 +19,10 @@ class PageFeedbackResource extends JsonResource
             'id' => $this->id,
             'url' => $this->url,
             'feedback' => $this->feedback,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'consented_at' => $this->consented_at->format(Carbon::ISO8601),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
         ];
