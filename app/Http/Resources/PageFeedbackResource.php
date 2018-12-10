@@ -22,9 +22,9 @@ class PageFeedbackResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'consented_at' => $this->consented_at->format(Carbon::ISO8601),
-            'created_at' => $this->created_at->format(Carbon::ISO8601),
-            'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+            'consented_at' => optional($this->consented_at)->format(Carbon::ISO8601),
+            'created_at' => optional($this->created_at)->format(Carbon::ISO8601),
+            'updated_at' => optional($this->updated_at)->format(Carbon::ISO8601),
         ];
     }
 }
