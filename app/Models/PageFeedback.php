@@ -22,4 +22,12 @@ class PageFeedback extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * @return bool
+     */
+    public function userDetailsProvided(): bool
+    {
+        return ($this->name !== null) || ($this->email !== null) || ($this->phone !== null);
+    }
 }

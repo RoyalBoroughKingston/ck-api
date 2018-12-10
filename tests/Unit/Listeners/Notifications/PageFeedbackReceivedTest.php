@@ -35,6 +35,7 @@ class PageFeedbackReceivedTest extends TestCase
             $this->assertEquals(config('ck.notifications_template_ids.page_feedback_received.notify_global_admin.email'), $email->templateId);
             $this->assertArrayHasKey('FEEDBACK_URL', $email->values);
             $this->assertArrayHasKey('FEEDBACK_CONTENT', $email->values);
+            $this->assertArrayHasKey('CONTACT_DETAILS_PROVIDED', $email->values);
             return true;
         });
     }
