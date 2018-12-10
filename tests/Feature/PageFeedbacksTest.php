@@ -88,6 +88,7 @@ class PageFeedbacksTest extends TestCase
         $pageFeedback = PageFeedback::create([
             'url' => url('/test'),
             'feedback' => 'This page does not work',
+            'consented_at' => $this->now,
             'created_at' => $this->now,
             'updated_at' => $this->now,
         ]);
@@ -102,6 +103,10 @@ class PageFeedbacksTest extends TestCase
                 'id' => $pageFeedback->id,
                 'url' => url('/test'),
                 'feedback' => 'This page does not work',
+                'name' => null,
+                'email' => null,
+                'phone' => null,
+                'consented_at' => $pageFeedback->consented_at->format(Carbon::ISO8601),
                 'created_at' => $pageFeedback->created_at->format(Carbon::ISO8601),
                 'updated_at' => $pageFeedback->updated_at->format(Carbon::ISO8601),
             ]
@@ -137,6 +142,9 @@ class PageFeedbacksTest extends TestCase
         $payload = [
             'url' => url('test-page'),
             'feedback' => 'This page does not work',
+            'name' => null,
+            'email' => null,
+            'phone' => null,
         ];
 
         $response = $this->json('POST', '/core/v1/page-feedbacks', $payload);
@@ -152,6 +160,9 @@ class PageFeedbacksTest extends TestCase
         $response = $this->json('POST', '/core/v1/page-feedbacks', [
             'url' => url('test-page'),
             'feedback' => 'This page does not work',
+            'name' => null,
+            'email' => null,
+            'phone' => null,
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
@@ -257,6 +268,7 @@ class PageFeedbacksTest extends TestCase
         $pageFeedback = PageFeedback::create([
             'url' => url('/test'),
             'feedback' => 'This page does not work',
+            'consented_at' => $this->now,
             'created_at' => $this->now,
             'updated_at' => $this->now,
         ]);
@@ -271,6 +283,10 @@ class PageFeedbacksTest extends TestCase
                 'id' => $pageFeedback->id,
                 'url' => url('/test'),
                 'feedback' => 'This page does not work',
+                'name' => null,
+                'email' => null,
+                'phone' => null,
+                'consented_at' => $pageFeedback->consented_at->format(Carbon::ISO8601),
                 'created_at' => $pageFeedback->created_at->format(Carbon::ISO8601),
                 'updated_at' => $pageFeedback->updated_at->format(Carbon::ISO8601),
             ]
@@ -289,6 +305,7 @@ class PageFeedbacksTest extends TestCase
         $pageFeedback = PageFeedback::create([
             'url' => url('/test'),
             'feedback' => 'This page does not work',
+            'consented_at' => $this->now,
             'created_at' => $this->now,
             'updated_at' => $this->now,
         ]);

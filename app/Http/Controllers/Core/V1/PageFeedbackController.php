@@ -58,6 +58,10 @@ class PageFeedbackController extends Controller
             $pageFeedback = PageFeedback::create([
                 'url' => $request->url,
                 'feedback' => $request->feedback,
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'consented_at' => now(),
             ]);
 
             event(EndpointHit::onCreate($request, "Created page feedback [{$pageFeedback->id}]", $pageFeedback));

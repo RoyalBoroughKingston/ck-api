@@ -26,6 +26,9 @@ class StoreRequest extends FormRequest
         return [
             'url' => ['required', 'url', 'max:255'],
             'feedback' => ['required', 'string', 'min:1', 'max:10000'],
+            'name' => ['present', 'nullable', 'string', 'max:255'],
+            'email' => ['present', 'nullable', 'email', 'max:255'],
+            'phone' => ['present', 'nullable', 'string', 'max:255'],
         ];
     }
 }
