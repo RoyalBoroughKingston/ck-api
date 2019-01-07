@@ -30,14 +30,23 @@ class AuditController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Audit::query()
-            ->orderByDesc('created_at');
+        $baseQuery = Audit::query();
 
         $audits = QueryBuilder::for($baseQuery)
+            ->withUserFullName() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('user_id'),
+                Filter::exact('action'),
+                'description',
             ])
+            ->allowedSorts([
+                'action',
+                'description',
+                'user_full_name',
+                'created_at',
+            ])
+            ->defaultSort('-created_at')
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all audits'));
