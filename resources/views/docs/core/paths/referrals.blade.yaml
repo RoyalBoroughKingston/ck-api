@@ -5,10 +5,6 @@ root:
     summary: List all the referrals
     description: |
       **Permission:** `Service Worker`
-
-      ---
-
-      Page feedbacks are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/per-page.yaml
