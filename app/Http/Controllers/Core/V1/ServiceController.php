@@ -13,6 +13,7 @@ use App\Http\Resources\ServiceResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
+use App\Models\Organisation;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
@@ -41,14 +42,21 @@ class ServiceController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = Service::query()
+            ->select('services.*')
             ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
             ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
                 $query->where('status', '=', Service::STATUS_ACTIVE);
-            })
-            ->orderBy('name');
+            });
 
         $services = QueryBuilder::for($baseQuery)
+            ->selectSub(
+                DB::table('organisations')
+                    ->select('organisations.name')
+                    ->whereRaw('`services`.`organisation_id` = `organisations`.`id`')
+                    ->take(1),
+                'organisation_name'
+            )
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('organisation_id'),
@@ -58,6 +66,13 @@ class ServiceController extends Controller
                 Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes(['organisation'])
+            ->allowedSorts([
+                'name',
+                'organisation_name',
+                'status',
+                'referral_method',
+            ])
+            ->defaultSort('name')
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all services'));

@@ -202,6 +202,38 @@ class ServicesTest extends TestCase
         });
     }
 
+    public function test_guest_can_sort_by_service_name()
+    {
+        $serviceOne = factory(Service::class)->create(['name' => 'Service A']);
+        $serviceTwo = factory(Service::class)->create(['name' => 'Service B']);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-name');
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceOne->id, $data['data'][1]['id']);
+        $this->assertEquals($serviceTwo->id, $data['data'][0]['id']);
+    }
+
+    public function test_guest_can_sort_by_organisation_name()
+    {
+        $serviceOne = factory(Service::class)->create([
+            'organisation_id' => factory(Organisation::class)
+                ->create(['name' => 'Organisation A'])
+                ->id,
+        ]);
+        $serviceTwo = factory(Service::class)->create([
+            'organisation_id' => factory(Organisation::class)
+                ->create(['name' => 'Organisation B'])
+                ->id,
+        ]);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-organisation_name');
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceOne->organisation_id, $data['data'][1]['organisation_id']);
+        $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
+    }
+
     /*
      * Create a service.
      */
