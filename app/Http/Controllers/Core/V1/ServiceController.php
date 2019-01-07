@@ -13,7 +13,6 @@ use App\Http\Resources\ServiceResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
-use App\Models\Organisation;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
@@ -50,13 +49,7 @@ class ServiceController extends Controller
             });
 
         $services = QueryBuilder::for($baseQuery)
-            ->selectSub(
-                DB::table('organisations')
-                    ->select('organisations.name')
-                    ->whereRaw('`services`.`organisation_id` = `organisations`.`id`')
-                    ->take(1),
-                'organisation_name'
-            )
+            ->withOrganisationName()
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('organisation_id'),
