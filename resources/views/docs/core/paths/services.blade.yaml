@@ -35,6 +35,15 @@ root:
         enum:
         - active
         - inactive
+    - name: filter[referral_method]
+      in: query
+      description: Referral method to filter by
+      schema:
+        type: string
+        enum:
+          - internal
+          - external
+          - none
     - name: filter[has_permission]
       in: query
       description: Filter services to only ones they have permissions for

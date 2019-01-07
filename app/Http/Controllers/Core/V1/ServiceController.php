@@ -54,6 +54,7 @@ class ServiceController extends Controller
                 Filter::exact('organisation_id'),
                 'name',
                 Filter::exact('status'),
+                Filter::exact('referral_method'),
                 Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes(['organisation'])
