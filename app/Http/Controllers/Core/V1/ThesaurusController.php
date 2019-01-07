@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Console\Commands\Ck\ReindexElasticsearch;
+use App\Console\Commands\Ck\ReindexElasticsearchCommand;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Thesaurus\IndexRequest;
@@ -101,7 +101,7 @@ class ThesaurusController extends Controller
         cache()->forget(static::CACHE_KEY);
 
         // Reindex elasticsearch.
-        Artisan::call(ReindexElasticsearch::class);
+        Artisan::call(ReindexElasticsearchCommand::class);
 
         // Return the thesaurus.
         return new Thesaurus($request->synonyms);

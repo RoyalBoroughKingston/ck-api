@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  api:
+    ports:
+      - "${APP_PORT}:80"
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASS}"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-net
+    ports:
+      - "${DB_PORT}:3306"
+
+  elasticsearch:
+    ports:
+      - "${ELASTICSEARCH_PORT}:9200"
+
+volumes:
+  mysql-data:
+    driver: local
