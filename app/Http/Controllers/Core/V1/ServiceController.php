@@ -41,7 +41,6 @@ class ServiceController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = Service::query()
-            ->select('services.*')
             ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
             ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
@@ -49,7 +48,7 @@ class ServiceController extends Controller
             });
 
         $services = QueryBuilder::for($baseQuery)
-            ->withOrganisationName()
+            ->withOrganisationName() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('organisation_id'),
