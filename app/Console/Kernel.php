@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\Ck\SendNotificationsForUnactionedReferrals;
+use App\Console\Commands\Ck\SendNotificationsForUnactionedReferralsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(SendNotificationsForUnactionedReferrals::class)
+        $schedule->command(SendNotificationsForUnactionedReferralsCommand::class)
             ->dailyAt('09:00');
     }
 

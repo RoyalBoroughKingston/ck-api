@@ -6,7 +6,7 @@ use App\BatchUpload\BatchUploader;
 use App\BatchUpload\ValidationFailedException;
 use Illuminate\Console\Command;
 
-class BatchUpload extends Command
+class BatchUploadCommand extends Command
 {
     /**
      * The name and signature of the console command.

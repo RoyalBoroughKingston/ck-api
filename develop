@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# Set script scope environment variables for dev or CI.
+export APP_PORT=${APP_PORT:-80}
+export DB_PORT=${DB_PORT:-3306}
+export DB_ROOT_PASS=${DB_ROOT_PASS:-secret}
+export DB_NAME=${DB_NAME:-connected_kingston}
+export DB_USER=${DB_USER:-connected_kingston}
+export DB_PASS=${DB_PASS:-secret}
+export ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
+
+# Decide which docker-compose file to use.
+COMPOSE_FILE="dev"
+
+# Disable pseudo-TTY allocation for CI (Travis).
+# The -T flag removes interaction.
+TTY=""
+
+# Travis CI provides a CI flag which can be used to check
+# if this is running in a CI environment.
+if [ ${CI:-false} == "true" ]; then
+    COMPOSE_FILE="ci"
+    TTY="-T"
+fi
+
+COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.$COMPOSE_FILE.yml"
+
+# Pass arguments to docker-compose, or default to docker-compose ps.
+if [ $# -gt 0  ]; then
+    # If the first argument is "art" or "artisan".
+    if [ "$1" == "art" ] || [ "$1" == "artisan"  ]; then
+        # Shift the parameters past the first one.
+        shift 1
+        ${COMPOSE} run --rm ${TTY} \
+            -w /var/www/html \
+            api \
+            php artisan "$@"
+    # If "composer" is used, pass-through to "composer" inside a new container.
+    elif [ "$1" == "composer"  ]; then
+        shift 1
+        ${COMPOSE} run --rm ${TTY} \
+            -w /var/www/html \
+            api \
+            composer "$@"
+    # If "phpunit" is used, run unit tests.
+    # Pass-through any arguments to PHPUnit.
+    elif [ "$1" == "phpunit" ]; then
+        shift 1
+        ${COMPOSE} run --rm ${TTY} \
+            -w /var/www/html \
+            api \
+            php vendor/bin/phpunit "$@"
+    # If "phpcs" is used, run the linter.
+    # Pass-through any arguments to code sniffer.
+    elif [ "$1" == "phpcs" ]; then
+        shift 1
+        ${COMPOSE} run --rm ${TTY} \
+            -w /var/www/html \
+            api \
+            php vendor/bin/phpcs "$@"
+    # If "phpcbf" is used, run the code fixer.
+    # Pass-through any arguments to code fixer.
+    elif [ "$1" == "phpcbf" ]; then
+        shift 1
+        ${COMPOSE} run --rm ${TTY} \
+            -w /var/www/html \
+            api \
+            php vendor/bin/phpcbf "$@"
+    # If "npm" is used, run NPM from the node container.
+    elif [ "$1" == "npm"  ]; then
+        shift 1
+        ${COMPOSE} run --rm ${TTY} \
+            -w /var/www/html \
+            node \
+            npm "$@"
+    else
+        ${COMPOSE} "$@"
+    fi
+else
+    ${COMPOSE} ps
+fi

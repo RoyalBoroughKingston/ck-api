@@ -27,7 +27,7 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="CACHE_PREFIX" value="testing"/>
-        <env name="DB_DATABASE" value="ck_testing"/>
+        <env name="DB_HOST" value="mysql-testing"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="SCOUT_PREFIX" value="testing_"/>

@@ -7,7 +7,7 @@ use App\Models\Service;
 use Illuminate\Console\Command;
 use Throwable;
 
-class ReindexElasticsearch extends Command
+class ReindexElasticsearchCommand extends Command
 {
     /**
      * The name and signature of the console command.
