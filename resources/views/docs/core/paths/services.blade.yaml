@@ -27,6 +27,11 @@ root:
       description: Name to filter by
       schema:
         type: string
+    - name: filter[organisation_name]
+      in: query
+      description: Organisation name to filter by
+      schema:
+        type: string
     - name: filter[status]
       in: query
       description: Status to filter by

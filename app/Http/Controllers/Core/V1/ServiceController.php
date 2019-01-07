@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Core\v1;
 
 use App\Events\EndpointHit;
 use App\Http\Filters\Service\HasPermissionFilter;
+use App\Http\Filters\Service\OrganisationNameFilter;
 use App\Http\Requests\Service\DestroyRequest;
 use App\Http\Requests\Service\IndexRequest;
 use App\Http\Requests\Service\ShowRequest;
@@ -53,6 +54,7 @@ class ServiceController extends Controller
                 Filter::exact('id'),
                 Filter::exact('organisation_id'),
                 'name',
+                Filter::custom('organisation_name', OrganisationNameFilter::class),
                 Filter::exact('status'),
                 Filter::exact('referral_method'),
                 Filter::custom('has_permission', HasPermissionFilter::class),
