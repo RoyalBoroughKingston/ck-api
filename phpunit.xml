@@ -32,5 +32,7 @@
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="SCOUT_PREFIX" value="testing_"/>
         <env name="GEOCODE_DRIVER" value="stub"/>
+        <env name="EMAIL_DRIVER" value='"null"'/>
+        <env name="SMS_DRIVER" value='"null"'/>
     </php>
 </phpunit>
