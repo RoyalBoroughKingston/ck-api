@@ -82,30 +82,26 @@ trait UpdateRequestScopes
     {
         return <<< EOT
 CASE `update_requests`.`updateable_type`
-    WHEN "services"
-    THEN (
+    WHEN "services" THEN (
         SELECT `update_requests`.`data`->>"$.name"
         FROM `services`
         WHERE `update_requests`.`updateable_id` = `services`.`id`
         LIMIT 1
     )
-    WHEN "locations"
-    THEN (
+    WHEN "locations" THEN (
         SELECT `update_requests`.`data`->>"$.address_line_1"
         FROM `locations`
         WHERE `update_requests`.`updateable_id` = `locations`.`id`
         LIMIT 1
     )
-    WHEN "service_locations"
-    THEN (
+    WHEN "service_locations" THEN (
         SELECT IFNULL(`update_requests`.`data`->>"$.name", `locations`.`address_line_1`)
         FROM `service_locations`
         LEFT JOIN `locations` ON `service_locations`.`location_id` = `locations`.`id`
         WHERE `update_requests`.`updateable_id` = `service_locations`.`id`
         LIMIT 1
     )
-    WHEN "organisations"
-    THEN (
+    WHEN "organisations" THEN (
         SELECT `update_requests`.`data`->>"$.name"
         FROM `organisations`
         WHERE `update_requests`.`updateable_id` = `organisations`.`id`

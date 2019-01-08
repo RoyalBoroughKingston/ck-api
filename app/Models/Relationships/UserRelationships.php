@@ -25,7 +25,37 @@ trait UserRelationships
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, (new UserRole())->getTable());
+        return $this->belongsToMany(Role::class, (new UserRole())->getTable())->distinct();
+    }
+
+    /**
+     * This returns a collection of the roles assigned to the user
+     * ordered by the highest role first.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function orderedRoles()
+    {
+        $sql = <<< EOT
+CASE `roles`.`id`
+    WHEN ? THEN 1
+    WHEN ? THEN 2
+    WHEN ? THEN 3
+    WHEN ? THEN 4
+    WHEN ? THEN 5
+    ELSE 6
+END
+EOT;
+
+        $bindings = [
+            Role::superAdmin()->id,
+            Role::globalAdmin()->id,
+            Role::organisationAdmin()->id,
+            Role::serviceAdmin()->id,
+            Role::serviceWorker()->id,
+        ];
+
+        return $this->roles()->orderByRaw($sql, $bindings);
     }
 
     /**
