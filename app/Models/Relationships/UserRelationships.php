@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Service;
 use App\Models\StatusUpdate;
 use App\Models\UpdateRequest;
+use App\Models\User;
 use App\Models\UserRole;
 
 trait UserRelationships
@@ -36,26 +37,9 @@ trait UserRelationships
      */
     public function orderedRoles()
     {
-        $sql = <<< EOT
-CASE `roles`.`id`
-    WHEN ? THEN 1
-    WHEN ? THEN 2
-    WHEN ? THEN 3
-    WHEN ? THEN 4
-    WHEN ? THEN 5
-    ELSE 6
-END
-EOT;
+        $sql = (new User())->getHighestRoleOrderSql();
 
-        $bindings = [
-            Role::superAdmin()->id,
-            Role::globalAdmin()->id,
-            Role::organisationAdmin()->id,
-            Role::serviceAdmin()->id,
-            Role::serviceWorker()->id,
-        ];
-
-        return $this->roles()->orderByRaw($sql, $bindings);
+        return $this->roles()->orderByRaw($sql['sql'], $sql['bindings']);
     }
 
     /**

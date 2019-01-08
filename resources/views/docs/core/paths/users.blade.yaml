@@ -5,12 +5,6 @@ root:
     summary: List all the users
     description: |
       **Permission:** `Service Worker`
-
-      ---
-
-      Users are returned in ascending order of the following fields:
-      1. `first_name`
-      2. `last_name`
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/per-page.yaml
@@ -25,6 +19,16 @@ root:
       description: Last name to filter by
       schema:
         type: string
+    - name: filter[email]
+      in: query
+      description: Email name to filter by
+      schema:
+        type: string
+    - name: filter[highest_role_id]
+      in: query
+      description: Comma seperated list of highest role IDs to filter by
+      schema:
+        type: string
     - name: filter[has_permission]
       in: query
       description: Filter users to only ones they have permissions for
@@ -35,6 +39,12 @@ root:
       description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
       schema:
         type: string
+    - name: sort
+      in: query
+      description: The fields to sort by [`first_name`, `last_name`, `highest_role`]
+      schema:
+        type: string
+        default: first_name,last_name
     responses:
       200:
         content:

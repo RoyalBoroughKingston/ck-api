@@ -6,6 +6,7 @@ use App\Events\EndpointHit;
 use App\Events\UserRolesUpdated;
 use App\Exceptions\CannotRevokeRoleException;
 use App\Http\Filters\User\HasPermissionFilter;
+use App\Http\Filters\User\RoleIdFilter;
 use App\Http\Requests\User\DestroyRequest;
 use App\Http\Requests\User\IndexRequest;
 use App\Http\Requests\User\ShowRequest;
@@ -46,23 +47,33 @@ class UserController extends Controller
         $userRolesIncluded = str_contains($request->include, 'user-roles');
 
         $baseQuery = User::query()
-            ->orderBy('first_name')
-            ->orderBy('last_name')
             ->when($userRolesIncluded, function (Builder $query): Builder {
                 // If user roles included, then make sure the role is also eager loaded.
                 return $query->with('userRoles.role');
             });
 
         $users = QueryBuilder::for($baseQuery)
+            ->withHighestRoleOrder('highest_role')
             ->allowedFilters([
                 Filter::exact('id'),
                 'first_name',
                 'last_name',
+                'email',
+                Filter::custom('role_id', RoleIdFilter::class),
                 Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes([
                 'user-roles.organisation',
                 'user-roles.service',
+            ])
+            ->allowedSorts([
+                'first_name',
+                'last_name',
+                'highest_role',
+            ])
+            ->defaultSort([
+                'first_name',
+                'last_name',
             ])
             ->paginate(per_page($request->per_page));
 
