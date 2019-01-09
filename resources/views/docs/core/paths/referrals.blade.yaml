@@ -37,7 +37,7 @@ root:
         type: string
     - name: include
       in: query
-      description: The relationships to include with the response [`service`]
+      description: The relationships to include with the response [`service.organisation`]
       schema:
         type: string
     - name: sort
