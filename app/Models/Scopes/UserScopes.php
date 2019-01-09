@@ -47,7 +47,7 @@ trait UserScopes
     public function getHighestRoleOrderSql(): array
     {
         $sql = <<< EOT
-CASE `user_roles`.`id`
+CASE `user_roles`.`role_id`
     WHEN ? THEN 1
     WHEN ? THEN 2
     WHEN ? THEN 3

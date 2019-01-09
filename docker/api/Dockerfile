@@ -33,9 +33,6 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
 
-COPY packaged /var/www/html
-RUN chown -R www-data: /var/www/html
-
 EXPOSE 80
 
 CMD ["start-container"]

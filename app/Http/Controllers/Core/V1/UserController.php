@@ -6,7 +6,7 @@ use App\Events\EndpointHit;
 use App\Events\UserRolesUpdated;
 use App\Exceptions\CannotRevokeRoleException;
 use App\Http\Filters\User\HasPermissionFilter;
-use App\Http\Filters\User\RoleIdFilter;
+use App\Http\Filters\User\HighestRoleIdFilter;
 use App\Http\Requests\User\DestroyRequest;
 use App\Http\Requests\User\IndexRequest;
 use App\Http\Requests\User\ShowRequest;
@@ -59,7 +59,7 @@ class UserController extends Controller
                 'first_name',
                 'last_name',
                 'email',
-                Filter::custom('role_id', RoleIdFilter::class),
+                Filter::custom('highest_role_id', HighestRoleIdFilter::class),
                 Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes([
