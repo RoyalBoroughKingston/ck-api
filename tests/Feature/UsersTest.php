@@ -86,6 +86,22 @@ class UsersTest extends TestCase
         $this->assertEquals($serviceAdmin->id, $data['data'][0]['id']);
     }
 
+    public function test_service_worker_can_sort_by_highest_role()
+    {
+        $service = factory(Service::class)->create();
+        $serviceAdmin = factory(User::class)->create()->makeServiceAdmin($service);
+        $serviceWorker = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($serviceWorker);
+
+        $response = $this->json('GET', '/core/v1/users?sort=-highest_role');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceAdmin->id, $data['data'][1]['id']);
+        $this->assertEquals($serviceWorker->id, $data['data'][0]['id']);
+    }
+
     /*
      * ==================================================
      * Create a user.
