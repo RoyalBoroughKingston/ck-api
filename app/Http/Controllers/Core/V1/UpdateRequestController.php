@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Filters\UpdateRequest\EntryFilter;
 use App\Http\Requests\UpdateRequest\DestroyRequest;
 use App\Http\Requests\UpdateRequest\IndexRequest;
 use App\Http\Requests\UpdateRequest\ShowRequest;
@@ -34,18 +35,24 @@ class UpdateRequestController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = UpdateRequest::query()
-            ->whereNull('approved_at')
-            ->orderByDesc('created_at');
+            ->whereNull('approved_at');
 
         $updateRequests = QueryBuilder::for($baseQuery)
+            ->withEntry() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::scope('service_id'),
                 Filter::scope('service_location_id'),
                 Filter::scope('location_id'),
                 Filter::scope('organisation_id'),
+                Filter::custom('entry', EntryFilter::class),
             ])
             ->allowedIncludes(['user'])
+            ->allowedSorts([
+                'entry',
+                'created_at',
+            ])
+            ->defaultSort('-created_at')
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all update requests'));

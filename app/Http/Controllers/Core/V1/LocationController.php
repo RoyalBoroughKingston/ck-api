@@ -56,6 +56,24 @@ class LocationController extends Controller
                 'postcode',
                 'country',
             ])
+            ->allowedSorts([
+                'address_line_1',
+                'address_line_2',
+                'address_line_3',
+                'city',
+                'county',
+                'postcode',
+                'country',
+            ])
+            ->defaultSort([
+                'address_line_1',
+                'address_line_2',
+                'address_line_3',
+                'city',
+                'county',
+                'postcode',
+                'country',
+            ])
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all locations'));

@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
-use App\Models\File;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
@@ -154,6 +153,81 @@ class UpdateRequestsTest extends TestCase
             return ($event->getAction() === Audit::ACTION_READ) &&
                 ($event->getUser()->id === $user->id);
         });
+    }
+
+    public function test_can_filter_by_entry()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $location = factory(Location::class)->create();
+        $locationUpdateRequest = $location->updateRequests()->create([
+            'user_id' => $user->id,
+            'data' => [
+                'address_line_1' => $this->faker->streetAddress,
+                'address_line_2' => null,
+                'address_line_3' => null,
+                'city' => $this->faker->city,
+                'county' => 'West Yorkshire',
+                'postcode' => $this->faker->postcode,
+                'country' => 'United Kingdom',
+                'accessibility_info' => null,
+            ]
+        ]);
+        $organisation = factory(Organisation::class)->create();
+        $organisationUpdateRequest = $organisation->updateRequests()->create([
+            'user_id' => $user->id,
+            'data' => [
+                'name' => 'Test Name',
+                'description' => 'Lorem ipsum',
+                'url' => 'https://example.com',
+                'email' => 'phpunit@example.com',
+                'phone' => '07700000000',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+        $response = $this->json('GET', '/core/v1/update-requests?filter[entry]=Test Name');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonMissing(['id' => $locationUpdateRequest->id]);
+        $response->assertJsonFragment(['id' => $organisationUpdateRequest->id]);
+    }
+
+    public function test_can_sort_by_entry()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $location = factory(Location::class)->create();
+        $locationUpdateRequest = $location->updateRequests()->create([
+            'user_id' => $user->id,
+            'data' => [
+                'address_line_1' => 'Entry A',
+                'address_line_2' => null,
+                'address_line_3' => null,
+                'city' => $this->faker->city,
+                'county' => 'West Yorkshire',
+                'postcode' => $this->faker->postcode,
+                'country' => 'United Kingdom',
+                'accessibility_info' => null,
+            ]
+        ]);
+        $organisation = factory(Organisation::class)->create();
+        $organisationUpdateRequest = $organisation->updateRequests()->create([
+            'user_id' => $user->id,
+            'data' => [
+                'name' => 'Entry B',
+                'description' => 'Lorem ipsum',
+                'url' => 'https://example.com',
+                'email' => 'phpunit@example.com',
+                'phone' => '07700000000',
+            ],
+        ]);
+
+        Passport::actingAs($user);
+        $response = $this->json('GET', '/core/v1/update-requests?sort=-entry');
+        $data = $this->getResponseContent($response);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals($locationUpdateRequest->id, $data['data'][1]['id']);
+        $this->assertEquals($organisationUpdateRequest->id, $data['data'][0]['id']);
     }
 
     /*

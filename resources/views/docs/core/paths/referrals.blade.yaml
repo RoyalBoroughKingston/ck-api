@@ -5,10 +5,6 @@ root:
     summary: List all the referrals
     description: |
       **Permission:** `Service Worker`
-
-      ---
-
-      Page feedbacks are returned in descending order of the date they were created.
     parameters:
     - $ref: /docs/core/parameters/page.yaml
     - $ref: /docs/core/parameters/per-page.yaml
@@ -24,11 +20,32 @@ root:
       description: The reference for the referral to filter by
       schema:
         type: string
+    - name: filter[service_name]
+      in: query
+      description: The service name for the referral to filter by
+      schema:
+        type: string
+    - name: filter[organisation_name]
+      in: query
+      description: The organisation name for the referral to filter by
+      schema:
+        type: string
+    - name: filter[status]
+      in: query
+      description: The status for the referral to filter by
+      schema:
+        type: string
     - name: include
       in: query
       description: The relationships to include with the response [`service`]
       schema:
         type: string
+    - name: sort
+      in: query
+      description: The fields to sort by [`reference`, `service_name`, `organisation_name`, `status`, `created_at`]
+      schema:
+        type: string
+        default: -created_at
     responses:
       200:
         content:

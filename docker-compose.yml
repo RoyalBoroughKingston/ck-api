@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api:
-    image: BookATest.hiv/api
+    image: connected-kingston/api
     build:
       context: ./docker/api
       dockerfile: Dockerfile
@@ -12,7 +12,7 @@ services:
       - app-net
 
   queue-worker:
-    image: BookATest.hiv/api
+    image: connected-kingston/api
     volumes:
       - .:/var/www/html
     networks:
@@ -21,7 +21,7 @@ services:
     command: php artisan queue:work --tries=1
 
   scheduler:
-    image: BookATest.hiv/api
+    image: connected-kingston/api
     volumes:
       - .:/var/www/html
     networks:
@@ -30,7 +30,7 @@ services:
     command: php artisan schedule:loop
 
   node:
-    image: BookATest.hiv/node
+    image: connected-kingston/node
     build:
       context: ./docker/node
       dockerfile: Dockerfile

@@ -619,42 +619,6 @@ class User extends Authenticatable implements Notifiable
      */
     public function highestRole(): ?Role
     {
-        // Check for super admin.
-        $superAdminRole = $this->userRoles->where('role.name', Role::NAME_SUPER_ADMIN)->first();
-
-        if ($superAdminRole) {
-            return Role::superAdmin();
-        }
-
-        // Check for global admin.
-        $globalAdminRole = $this->userRoles->where('role.name', Role::NAME_GLOBAL_ADMIN)->first();
-
-        if ($globalAdminRole) {
-            return Role::globalAdmin();
-        }
-
-        // Check for organisation admin.
-        $organisationAdminRole = $this->userRoles->where('role.name', Role::NAME_ORGANISATION_ADMIN)->first();
-
-        if ($organisationAdminRole) {
-            return Role::organisationAdmin();
-        }
-
-        // Check for service admin.
-        $serviceAdminRole = $this->userRoles->where('role.name', Role::NAME_SERVICE_ADMIN)->first();
-
-        if ($serviceAdminRole) {
-            return Role::serviceAdmin();
-        }
-
-        // Check for service worker.
-        $serviceWorkerRole = $this->userRoles->where('role.name', Role::NAME_SERVICE_WORKER)->first();
-
-        if ($serviceWorkerRole) {
-            return Role::serviceWorker();
-        }
-
-        // If the user has no roles.
-        return null;
+        return $this->orderedRoles()->first();
     }
 }

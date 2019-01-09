@@ -5,10 +5,6 @@ root:
     summary: List all the audits
     description: |
       **Permission:** `Global Admin`
-
-      ---
-
-      Audits are returned in descending order of the date they were created.
     parameters:
       - $ref: /docs/core/parameters/page.yaml
       - $ref: /docs/core/parameters/per-page.yaml
@@ -18,6 +14,27 @@ root:
         description: Comma seperated list of user IDs to filter by
         schema:
           type: string
+      - name: filter[action]
+        in: query
+        description: Action to filter by
+        schema:
+          type: string
+          enum:
+            - create
+            - read
+            - update
+            - delete
+      - name: filter[description]
+        in: query
+        description: Description to filter by
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: The fields to sort by [`action`, `description`, `user_full_name`, `created_at`]
+        schema:
+          type: string
+          default: -created_at
     responses:
       200:
         content:

@@ -27,6 +27,11 @@ root:
       description: Name to filter by
       schema:
         type: string
+    - name: filter[organisation_name]
+      in: query
+      description: Organisation name to filter by
+      schema:
+        type: string
     - name: filter[status]
       in: query
       description: Status to filter by
@@ -35,6 +40,15 @@ root:
         enum:
         - active
         - inactive
+    - name: filter[referral_method]
+      in: query
+      description: Referral method to filter by
+      schema:
+        type: string
+        enum:
+          - internal
+          - external
+          - none
     - name: filter[has_permission]
       in: query
       description: Filter services to only ones they have permissions for
@@ -45,6 +59,12 @@ root:
       description: The relationships to include with the response [`organisation`]
       schema:
         type: string
+    - name: sort
+      in: query
+      description: The fields to sort by [`name`, `organisation_name`, `status`, `referral_method`]
+      schema:
+        type: string
+        default: name
     responses:
       200:
         content:

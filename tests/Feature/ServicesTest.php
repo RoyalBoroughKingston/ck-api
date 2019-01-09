@@ -108,7 +108,7 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_guest_can_list_them_for_organisation()
+    public function test_guest_can_filter_by_organisation_id()
     {
         $anotherService = factory(Service::class)->create();
         $service = factory(Service::class)->create();
@@ -128,67 +128,36 @@ class ServicesTest extends TestCase
         $response = $this->json('GET', "/core/v1/services?filter[organisation_id]={$service->organisation_id}");
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            'id' => $service->id,
-            'organisation_id' => $service->organisation_id,
-            'has_logo' => $service->hasLogo(),
-            'slug' => $service->slug,
-            'name' => $service->name,
-            'status' => $service->status,
-            'intro' => $service->intro,
-            'description' => $service->description,
-            'wait_time' => $service->wait_time,
-            'is_free' => $service->is_free,
-            'fees_text' => $service->fees_text,
-            'fees_url' => $service->fees_url,
-            'testimonial' => $service->testimonial,
-            'video_embed' => $service->video_embed,
-            'url' => $service->url,
-            'contact_name' => $service->contact_name,
-            'contact_phone' => $service->contact_phone,
-            'contact_email' => $service->contact_email,
-            'show_referral_disclaimer' => $service->show_referral_disclaimer,
-            'referral_method' => $service->referral_method,
-            'referral_button_text' => $service->referral_button_text,
-            'referral_email' => $service->referral_email,
-            'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => $service->serviceCriterion->age_group,
-                'disability' => $service->serviceCriterion->disability,
-                'employment' => $service->serviceCriterion->employment,
-                'gender' => $service->serviceCriterion->gender,
-                'housing' => $service->serviceCriterion->housing,
-                'income' => $service->serviceCriterion->income,
-                'language' => $service->serviceCriterion->language,
-                'other' => $service->serviceCriterion->other,
-            ],
-            'useful_infos' => [
-                [
-                    'title' => 'Did You Know?',
-                    'description' => 'This is a test description',
-                    'order' => 1,
-                ]
-            ],
-            'social_medias' => [
-                [
-                    'type' => SocialMedia::TYPE_INSTAGRAM,
-                    'url' => 'https://www.instagram.com/ayupdigital/'
-                ]
-            ],
-            'category_taxonomies' => [
-                [
-                    'id' => Taxonomy::category()->children()->first()->id,
-                    'parent_id' => Taxonomy::category()->children()->first()->parent_id,
-                    'name' => Taxonomy::category()->children()->first()->name,
-                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
-                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
-                ]
-            ],
-            'created_at' => $service->created_at->format(Carbon::ISO8601)
+        $response->assertJsonFragment(['id' => $service->id]);
+        $response->assertJsonMissing(['id' => $anotherService->id]);
+    }
+
+    public function test_guest_can_filter_by_organisation_name()
+    {
+        $anotherService = factory(Service::class)->create([
+            'organisation_id' => factory(Organisation::class)->create(['name' => 'Amazing Place']),
         ]);
-        $response->assertJsonMissing([
-            'id' => $anotherService->id,
+        $service = factory(Service::class)->create([
+            'organisation_id' => factory(Organisation::class)->create(['name' => 'Interesting House']),
         ]);
+        $service->usefulInfos()->create([
+            'title' => 'Did You Know?',
+            'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital/'
+        ]);
+        $service->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->first()->id,
+        ]);
+
+        $response = $this->json('GET', "/core/v1/services?filter[organisation_name]={$service->organisation->name}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service->id]);
+        $response->assertJsonMissing(['id' => $anotherService->id]);
     }
 
     public function test_audit_created_when_listed()
@@ -200,6 +169,38 @@ class ServicesTest extends TestCase
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return ($event->getAction() === Audit::ACTION_READ);
         });
+    }
+
+    public function test_guest_can_sort_by_service_name()
+    {
+        $serviceOne = factory(Service::class)->create(['name' => 'Service A']);
+        $serviceTwo = factory(Service::class)->create(['name' => 'Service B']);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-name');
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceOne->id, $data['data'][1]['id']);
+        $this->assertEquals($serviceTwo->id, $data['data'][0]['id']);
+    }
+
+    public function test_guest_can_sort_by_organisation_name()
+    {
+        $serviceOne = factory(Service::class)->create([
+            'organisation_id' => factory(Organisation::class)
+                ->create(['name' => 'Organisation A'])
+                ->id,
+        ]);
+        $serviceTwo = factory(Service::class)->create([
+            'organisation_id' => factory(Organisation::class)
+                ->create(['name' => 'Organisation B'])
+                ->id,
+        ]);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-organisation_name');
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceOne->organisation_id, $data['data'][1]['organisation_id']);
+        $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
     }
 
     /*

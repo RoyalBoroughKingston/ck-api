@@ -38,8 +38,7 @@ class OrganisationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Organisation::query()
-            ->orderBy('name');
+        $baseQuery = Organisation::query();
 
         $organisations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
@@ -47,6 +46,8 @@ class OrganisationController extends Controller
                 'name',
                 Filter::custom('has_permission', HasPermissionFilter::class),
             ])
+            ->allowedSorts('name')
+            ->defaultSort('name')
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all organisations'));

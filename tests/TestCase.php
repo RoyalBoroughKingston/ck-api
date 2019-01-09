@@ -41,6 +41,9 @@ abstract class TestCase extends BaseTestCase
         // Set the log path.
         Config::set('logging.channels.single.path', storage_path('logs/testing.log'));
 
+        // Clear the cache.
+        $this->artisan('cache:clear');
+
         // Disable the API throttle middleware.
         $this->withoutMiddleware('throttle');
 
