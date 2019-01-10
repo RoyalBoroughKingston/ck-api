@@ -68,16 +68,16 @@ class UsersTest extends TestCase
         });
     }
 
-    public function test_service_worker_can_filter_by_highest_role_id()
+    public function test_service_worker_can_filter_by_highest_role_name()
     {
         $service = factory(Service::class)->create();
         $serviceAdmin = factory(User::class)->create()->makeServiceAdmin($service);
         $user = factory(User::class)->create()->makeServiceWorker($service);
         Passport::actingAs($user);
 
-        $serviceAdminRoleId = Role::serviceAdmin()->id;
+        $serviceAdminRoleName = Role::serviceAdmin()->name;
 
-        $response = $this->json('GET', "/core/v1/users?filter[highest_role_id]={$serviceAdminRoleId}");
+        $response = $this->json('GET', "/core/v1/users?filter[highest_role]={$serviceAdminRoleName}");
 
         $response->assertStatus(Response::HTTP_OK);
         $data = $this->getResponseContent($response);

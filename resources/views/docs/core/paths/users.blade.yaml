@@ -24,11 +24,12 @@ root:
       description: Email name to filter by
       schema:
         type: string
-    - name: filter[highest_role_id]
+    - name: filter[highest_role]
       in: query
-      description: Comma seperated list of highest role IDs to filter by
+      description: Comma seperated list of highest role to filter by
       schema:
         type: string
+        example: Super Admin
     - name: filter[has_permission]
       in: query
       description: Filter users to only ones they have permissions for
