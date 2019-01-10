@@ -29,6 +29,11 @@ root:
         description: Description to filter by
         schema:
           type: string
+      - name: include
+        in: query
+        description: The relationships to include with the response [`user`]
+        schema:
+          type: string
       - name: sort
         in: query
         description: The fields to sort by [`action`, `description`, `user_full_name`, `created_at`]

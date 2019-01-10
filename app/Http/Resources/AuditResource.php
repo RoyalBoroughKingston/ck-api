@@ -24,6 +24,9 @@ class AuditResource extends JsonResource
             'user_agent' => $this->user_agent,
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+
+            // Relationships.
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

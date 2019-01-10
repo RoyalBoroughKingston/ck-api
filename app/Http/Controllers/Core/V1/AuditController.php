@@ -40,6 +40,7 @@ class AuditController extends Controller
                 Filter::exact('action'),
                 'description',
             ])
+            ->allowedIncludes(['user'])
             ->allowedSorts([
                 'action',
                 'description',
