@@ -59,6 +59,7 @@ class UserController extends Controller
                 'first_name',
                 'last_name',
                 'email',
+                'phone',
                 Filter::custom('highest_role', HighestRoleFilter::class),
                 Filter::custom('has_permission', HasPermissionFilter::class),
             ])

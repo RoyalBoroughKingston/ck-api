@@ -21,7 +21,12 @@ root:
         type: string
     - name: filter[email]
       in: query
-      description: Email name to filter by
+      description: Email to filter by
+      schema:
+        type: string
+    - name: filter[phone]
+      in: query
+      description: Phone to filter by
       schema:
         type: string
     - name: filter[highest_role]
