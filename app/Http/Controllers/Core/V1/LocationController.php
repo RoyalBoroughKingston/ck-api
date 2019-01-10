@@ -36,14 +36,7 @@ class LocationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Location::query()
-            ->orderBy('address_line_1')
-            ->orderBy('address_line_2')
-            ->orderBy('address_line_3')
-            ->orderBy('city')
-            ->orderBy('county')
-            ->orderBy('postcode')
-            ->orderBy('country');
+        $baseQuery = Location::query();
 
         $locations = QueryBuilder::for($baseQuery)
             ->allowedFilters([

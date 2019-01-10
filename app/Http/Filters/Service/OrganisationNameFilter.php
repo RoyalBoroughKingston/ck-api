@@ -16,7 +16,7 @@ class OrganisationNameFilter implements Filter
     public function __invoke(Builder $query, $value, string $property): Builder
     {
         return $query->whereHas('organisation', function (Builder $query) use ($value) {
-            $query->where('organisations.name', '=', $value);
+            $query->where('organisations.name', 'LIKE', "%{$value}%");
         });
     }
 }

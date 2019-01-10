@@ -95,7 +95,7 @@ CASE `update_requests`.`updateable_type`
         LIMIT 1
     )
     WHEN "service_locations" THEN (
-        SELECT IFNULL(`update_requests`.`data`->>"$.name", `locations`.`address_line_1`)
+        SELECT IF(`update_requests`.`data`->>"$.name" = "null", `locations`.`address_line_1`, `update_requests`.`data`->>"$.name")
         FROM `service_locations`
         LEFT JOIN `locations` ON `service_locations`.`location_id` = `locations`.`id`
         WHERE `update_requests`.`updateable_id` = `service_locations`.`id`

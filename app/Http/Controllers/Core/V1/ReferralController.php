@@ -70,7 +70,7 @@ class ReferralController extends Controller
                 Filter::custom('organisation_name', OrganisationNameFilter::class),
                 Filter::exact('status'),
             ])
-            ->allowedIncludes(['service'])
+            ->allowedIncludes(['service.organisation'])
             ->allowedSorts([
                 'reference',
                 'service_name',
