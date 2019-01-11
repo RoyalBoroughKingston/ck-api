@@ -28,9 +28,17 @@ class Report extends Model
      */
     public static function generate(ReportType $type, Carbon $startsAt = null, Carbon $endsAt = null): self
     {
+        // Generate the file name.
+        $filename = sprintf(
+            '%s_%s_%s.csv',
+            now()->format('Y-m-d_H-i'),
+            str_slug(config('app.name')),
+            str_slug($type->name)
+        );
+
         // Create the file record.
         $file = File::create([
-            'filename' => 'temp.csv',
+            'filename' => $filename,
             'mime_type' => 'text/csv',
             'is_private' => true,
         ]);
