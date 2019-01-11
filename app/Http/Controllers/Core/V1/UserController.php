@@ -203,7 +203,9 @@ class UserController extends Controller
             }
 
             // Revoke the deleted roles.
-            foreach ($request->getDeletedRoles() as $role) {
+            $deletedRoles = $request->getDeletedRoles();
+            $orderedDeletedRoles = $request->orderRoles($deletedRoles);
+            foreach ($orderedDeletedRoles as $role) {
                 try {
                     $service = isset($role['service_id']) ? Service::findOrFail($role['service_id']) : null;
                     $organisation = isset($role['organisation_id']) ? Organisation::findOrFail($role['organisation_id']) : null;

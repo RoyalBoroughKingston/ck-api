@@ -104,6 +104,32 @@ class UpdateRequest extends FormRequest
     }
 
     /**
+     * Orders the roles array with the highest first.
+     *
+     * @param array $roles
+     * @return array
+     */
+    public function orderRoles(array $roles): array
+    {
+        return array_sort($roles, function (array $role) {
+            switch ($role['role']) {
+                case Role::NAME_SUPER_ADMIN:
+                    return 1;
+                case Role::NAME_GLOBAL_ADMIN:
+                    return 2;
+                case Role::NAME_ORGANISATION_ADMIN:
+                    return 3;
+                case Role::NAME_SERVICE_ADMIN:
+                    return 4;
+                case Role::NAME_SERVICE_WORKER:
+                    return 5;
+                default:
+                    return 6;
+            }
+        });
+    }
+
+    /**
      * @return bool
      */
     public function rolesHaveBeenUpdated(): bool

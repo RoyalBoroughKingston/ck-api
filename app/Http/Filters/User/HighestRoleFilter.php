@@ -49,15 +49,15 @@ EOT;
         // Convert the role names into the corresponding role IDs.
         $roleIds = array_map(function (string $roleName): string {
             switch ($roleName) {
-                case Role::superAdmin()->name:
+                case Role::NAME_SUPER_ADMIN:
                     return Role::superAdmin()->id;
-                case Role::globalAdmin()->name:
+                case Role::NAME_GLOBAL_ADMIN:
                     return Role::globalAdmin()->id;
-                case Role::organisationAdmin()->name:
+                case Role::NAME_ORGANISATION_ADMIN:
                     return Role::organisationAdmin()->id;
-                case Role::serviceAdmin()->name:
+                case Role::NAME_SERVICE_ADMIN:
                     return Role::serviceAdmin()->id;
-                case Role::serviceWorker()->name:
+                case Role::NAME_SERVICE_WORKER:
                     return Role::serviceWorker()->id;
                 default:
                     return null;
