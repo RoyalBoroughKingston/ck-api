@@ -26,17 +26,17 @@ body {
 
 .govuk-header__logo {
   @include mq ($from: desktop) {
-      width: 50%;
-    }
+    width: 50%;
+  }
 }
 
-.govuk-header__logotype-crown{
+.govuk-header__logotype-crown {
   max-width: 100%;
 }
 
 .govuk-header__content {
   @include mq ($from: desktop) {
-      width: 50%;
-      padding-top: 2.5em;
-    }
+    width: 50%;
+    padding-top: 2.5em;
+  }
 }
