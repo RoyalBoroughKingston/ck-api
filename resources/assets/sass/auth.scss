@@ -14,3 +14,15 @@ body {
     }
   }
 }
+
+.govuk-header {
+  background-color: #485b7f;
+
+  &__link--homepage {
+    margin-right: 1rem;
+  }
+}
+
+.govuk-header__logotype-crown {
+  width: 100%;
+}
