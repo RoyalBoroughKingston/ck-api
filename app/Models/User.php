@@ -458,7 +458,7 @@ class User extends Authenticatable implements Notifiable
             throw new CannotRevokeRoleException('Cannot revoke organisation admin role when user is an global admin');
         }
 
-        $this->removeRoll(Role::organisationAdmin(), $organisation);
+        $this->removeRoll(Role::organisationAdmin(), null, $organisation);
 
         return $this;
     }
