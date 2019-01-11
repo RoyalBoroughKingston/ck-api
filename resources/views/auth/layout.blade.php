@@ -24,6 +24,12 @@
                 </a>
             </div>
 
+            <div class="govuk-header__content">
+                <a href="{{ route('home') }}" class="govuk-header__link govuk-header__link--service-name">
+                    {{ config('app.name') }}
+                </a>
+            </div>
+
         </div>
     </header>
 
