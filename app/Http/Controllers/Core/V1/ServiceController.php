@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Core\v1;
 
 use App\Events\EndpointHit;
 use App\Http\Filters\Service\HasPermissionFilter;
+use App\Http\Filters\Service\OrganisationNameFilter;
 use App\Http\Requests\Service\DestroyRequest;
 use App\Http\Requests\Service\IndexRequest;
 use App\Http\Requests\Service\ShowRequest;
@@ -45,18 +46,27 @@ class ServiceController extends Controller
             ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
                 $query->where('status', '=', Service::STATUS_ACTIVE);
-            })
-            ->orderBy('name');
+            });
 
         $services = QueryBuilder::for($baseQuery)
+            ->withOrganisationName() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('organisation_id'),
                 'name',
+                Filter::custom('organisation_name', OrganisationNameFilter::class),
                 Filter::exact('status'),
+                Filter::exact('referral_method'),
                 Filter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes(['organisation'])
+            ->allowedSorts([
+                'name',
+                'organisation_name',
+                'status',
+                'referral_method',
+            ])
+            ->defaultSort('name')
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all services'));

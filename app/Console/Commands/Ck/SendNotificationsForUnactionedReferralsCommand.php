@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
-class SendNotificationsForUnactionedReferrals extends Command
+class SendNotificationsForUnactionedReferralsCommand extends Command
 {
     /**
      * The name and signature of the console command.

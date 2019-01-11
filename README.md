@@ -10,89 +10,52 @@ See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-* PHP
-* Composer
-* Vagrant
-* Docker
+* [Docker](https://docker.com/)
 
 ### Installing
 
-Start by cloning the example configuration files and configuring as needed. For more information about configuring the 
-`Homestead.yaml` file, please consult the [Laravel Docs](https://laravel.com/docs/5.6/homestead):
+Start by spinning up the docker containers using the convenience script:
 
 ```bash
-cp Homestead.yaml.example Homestead.yaml
+# Once copied, edit this file to configure as needed.
 cp .env.example .env
 
-# Installs Laravel Homestead.
-composer install --ignore-platform-reqs
+# Spin up the docker containers and detach so they run the background.
+./develop up -d
 
-# Update your hosts file.
-sudo vim /etc/hosts
+# Install dependencies.
+./develop composer install
+./develop npm install
 
-# Append this to the end (use the IP and hostname set in Homestead.yaml).
-192.168.10.12 api.connectedkingston.test
+# Compile static assets.
+./develop npm run dev
 ```
 
-You should then be able to start the VM and SSH into it:
+> After starting the Docker containers as described above, you should
+wait a minute or two before progressing to the next steps. This is due
+to the MySQL and Elasticsearch containers taking a few minutes to fully
+boot up.
+
+You should then be able to run the setup commands using the convenience script:
 
 ```bash
-vagrant up
-
-# Allows access to Elasticsearch on host machine
-vagrant ssh -- -R 9200:localhost:9200
-
-cd ck-api
-
 # Generate the application key.
-php artisan key:generate
+./develop artisan key:generate
 
 # Run the migrations.
-php artisan migrate
+./develop artisan migrate
 
 # Install the OAuth 2.0 keys.
-php artisan passport:keys
+./develop artisan passport:keys
 
 # Create the first Global Admin user (take a note of the password outputted).
-php artisan ck:create-user <first-name> <last-name> <email> <phone-number>
-```
+./develop artisan ck:create-user <first-name> <last-name> <email> <phone-number>
 
-Ensure any API clients have been created:
+# Create the OAuth client for the admin app (and any other clients).
+./develop artisan ck:create-oauth-client <name> <redirect-uri>
 
-```bash
-php artisan passport:client
-
-# Make sure to leave the user ID blank when creating.
-```
-
-In a separate terminal on your host machine, pull the Elasticsearch docker image and start an instance of it:
-
-```bash
-docker pull docker.elastic.co/elasticsearch/elasticsearch:6.3.2
-docker run --rm -d -p 9200:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
-```
-
-Then back on the homestead VM, run the seeder and setup the Elasticsearch index:
-
-```bash
-# Create the index.
-php artisan elastic:create-index App\\Models\\IndexConfigurators\\ServicesIndexConfigurator
-
-# Set the fields mappings for the index.
-php artisan elastic:update-mapping App\\Models\\Service
-
-# Run the seeder.
-php artisan db:seed
-
-# Import all of the services from the database into the index.
-php artisan scout:import App\\Models\\Service
-```
-
-Finally, install the NPM dependencies and compile all assets:
-
-```bash
-npm install
-npm run dev
+# Create/update the Elasticsearch index.
+./develop artisan ck:reindex-elasticsearch
 ```
 
 ## Running the tests
@@ -100,23 +63,28 @@ npm run dev
 To run the PHPUnit tests:
  
 ```bash
-php vendor/bin/phpunit
+./develop phpunit
 ```
 
 To run the code style tests:
 
 ```bash
-php vendor/bin/phpcs
+# Run linter.
+./develop phpcs
+
+# Fix linting errors.
+./develop phpcbf
 ```
 
 ## Deployment
 
 Deployment is fully automated by pushing a commit to `develop` or `master`. More information on this process can be [found in the wiki](https://github.com/RoyalBoroughKingston/ck-api/wiki/Branching-and-Release-Strategy#continuous-delivery).
 
-## Built With
+## Built with
 
 * [Laravel](https://laravel.com/docs/) - The Web Framework Used
 * [Composer](https://getcomposer.org/doc/) - Dependency Management
+* [Docker](https://www.docker.com/) - Containerisation
 
 ## Contributing
 

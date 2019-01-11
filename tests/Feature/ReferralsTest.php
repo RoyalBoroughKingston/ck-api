@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
+use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\Service;
 use App\Models\StatusUpdate;
@@ -145,6 +146,208 @@ class ReferralsTest extends TestCase
             return ($event->getAction() === Audit::ACTION_READ) &&
                 ($event->getUser()->id === $user->id);
         });
+    }
+
+    public function test_global_admin_can_filter_by_organisation_name()
+    {
+        /**
+         * @var \App\Models\Organisation $organisationOne
+         * @var \App\Models\Service $serviceOne
+         */
+        $organisationOne = factory(Organisation::class)->create([
+            'name' => 'Organisation One',
+        ]);
+        $serviceOne = factory(Service::class)->create([
+            'organisation_id' => $organisationOne->id,
+        ]);
+        $referralOne = factory(Referral::class)->create([
+            'service_id' => $serviceOne->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /**
+         * @var \App\Models\Organisation $organisationTwo
+         * @var \App\Models\Service $serviceTwo
+         */
+        $organisationTwo = factory(Organisation::class)->create([
+            'name' => 'Organisation Two',
+        ]);
+        $serviceTwo = factory(Service::class)->create([
+            'organisation_id' => $organisationTwo->id,
+        ]);
+        $referralTwo = factory(Referral::class)->create([
+            'service_id' => $serviceTwo->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals?filter[organisation_name]={$organisationOne->name}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $referralOne->id]);
+        $response->assertJsonMissing(['id' => $referralTwo->id]);
+    }
+
+    public function test_global_admin_can_filter_by_service_name()
+    {
+        /** @var \App\Models\Service $serviceOne */
+        $serviceOne = factory(Service::class)->create([
+            'name' => 'Service One',
+        ]);
+        $referralOne = factory(Referral::class)->create([
+            'service_id' => $serviceOne->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /** @var \App\Models\Service $serviceTwo */
+        $serviceTwo = factory(Service::class)->create([
+            'name' => 'Service Two',
+        ]);
+        $referralTwo = factory(Referral::class)->create([
+            'service_id' => $serviceTwo->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals?filter[service_name]={$serviceOne->name}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $referralOne->id]);
+        $response->assertJsonMissing(['id' => $referralTwo->id]);
+    }
+
+    public function test_global_admin_can_sort_by_organisation_name()
+    {
+        /**
+         * @var \App\Models\Organisation $organisationOne
+         * @var \App\Models\Service $serviceOne
+         */
+        $organisationOne = factory(Organisation::class)->create([
+            'name' => 'Organisation A',
+        ]);
+        $serviceOne = factory(Service::class)->create([
+            'organisation_id' => $organisationOne->id,
+        ]);
+        $referralOne = factory(Referral::class)->create([
+            'service_id' => $serviceOne->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /**
+         * @var \App\Models\Organisation $organisationTwo
+         * @var \App\Models\Service $serviceTwo
+         */
+        $organisationTwo = factory(Organisation::class)->create([
+            'name' => 'Organisation B',
+        ]);
+        $serviceTwo = factory(Service::class)->create([
+            'organisation_id' => $organisationTwo->id,
+        ]);
+        $referralTwo = factory(Referral::class)->create([
+            'service_id' => $serviceTwo->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', '/core/v1/referrals?sort=-organisation_name');
+        $data = $this->getResponseContent($response);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals($referralOne->id, $data['data'][1]['id']);
+        $this->assertEquals($referralTwo->id, $data['data'][0]['id']);
+    }
+
+    public function test_global_admin_can_sort_by_service_name()
+    {
+        /** @var \App\Models\Service $serviceOne */
+        $serviceOne = factory(Service::class)->create([
+            'name' => 'Service A',
+        ]);
+        $referralOne = factory(Referral::class)->create([
+            'service_id' => $serviceOne->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /** @var \App\Models\Organisation $organisationTwo */
+        $serviceTwo = factory(Service::class)->create([
+            'name' => 'Service B',
+        ]);
+        $referralTwo = factory(Referral::class)->create([
+            'service_id' => $serviceTwo->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', '/core/v1/referrals?sort=-service_name');
+        $data = $this->getResponseContent($response);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals($referralOne->id, $data['data'][1]['id']);
+        $this->assertEquals($referralTwo->id, $data['data'][0]['id']);
     }
 
     /*

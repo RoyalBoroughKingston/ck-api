@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Filters\Referral\OrganisationNameFilter;
+use App\Http\Filters\Referral\ServiceNameFilter;
 use App\Http\Requests\Referral\IndexRequest;
 use App\Http\Requests\Referral\ShowRequest;
 use App\Http\Requests\Referral\StoreRequest;
@@ -54,17 +56,29 @@ class ReferralController extends Controller
                     'service.socialMedias',
                     'service.taxonomies',
                 ]);
-            })
-            ->orderByDesc('created_at');
+            });
 
         // Filtering by the service ID here will only work for the IDs retrieved above. Others will be discarded.
         $referrals = QueryBuilder::for($baseQuery)
+            ->withServiceName() // This scope has to be chained on here, after the QueryBuilder.
+            ->withOrganisationName() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('service_id'),
                 Filter::exact('reference'),
+                Filter::custom('service_name', ServiceNameFilter::class),
+                Filter::custom('organisation_name', OrganisationNameFilter::class),
+                Filter::exact('status'),
             ])
-            ->allowedIncludes(['service'])
+            ->allowedIncludes(['service.organisation'])
+            ->allowedSorts([
+                'reference',
+                'service_name',
+                'organisation_name',
+                'status',
+                'created_at',
+            ])
+            ->defaultSort('-created_at')
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all referrals'));

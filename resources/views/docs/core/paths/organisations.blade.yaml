@@ -5,10 +5,6 @@ root:
     summary: List all the organisations
     description: |
       **Permission:** `Open`
-
-      ---
-
-      Organisations are returned in ascending order of their name.
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
@@ -24,6 +20,12 @@ root:
       description: Filter organisations to only ones they have permissions for
       schema:
         type: boolean
+    - name: sort
+      in: query
+      description: The fields to sort by [`name`]
+      schema:
+        type: string
+        default: name
     responses:
       200:
         content:

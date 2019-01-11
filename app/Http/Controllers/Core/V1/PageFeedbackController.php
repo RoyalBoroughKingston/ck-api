@@ -32,13 +32,18 @@ class PageFeedbackController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = PageFeedback::query()
-            ->orderByDesc('created_at');
+        $baseQuery = PageFeedback::query();
 
         $pageFeedbacks = QueryBuilder::for($baseQuery)
             ->allowedFilters([
                 Filter::exact('id'),
+                'url',
             ])
+            ->allowedSorts([
+                'url',
+                'created_at',
+            ])
+            ->defaultSort('-created_at')
             ->paginate(per_page($request->per_page));
 
         event(EndpointHit::onRead($request, 'Viewed all page feedbacks'));

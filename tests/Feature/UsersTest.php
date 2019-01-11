@@ -68,6 +68,40 @@ class UsersTest extends TestCase
         });
     }
 
+    public function test_service_worker_can_filter_by_highest_role_name()
+    {
+        $service = factory(Service::class)->create();
+        $serviceAdmin = factory(User::class)->create()->makeServiceAdmin($service);
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($user);
+
+        $serviceAdminRoleName = Role::serviceAdmin()->name;
+
+        $response = $this->json('GET', "/core/v1/users?filter[highest_role]={$serviceAdminRoleName}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals(1, count($data['data']));
+        $this->assertEquals($serviceAdmin->id, $data['data'][0]['id']);
+    }
+
+    public function test_service_worker_can_sort_by_highest_role()
+    {
+        $service = factory(Service::class)->create();
+        $serviceAdmin = factory(User::class)->create()->makeServiceAdmin($service);
+        $serviceWorker = factory(User::class)->create()->makeServiceWorker($service);
+        Passport::actingAs($serviceWorker);
+
+        $response = $this->json('GET', '/core/v1/users?sort=-highest_role');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceAdmin->id, $data['data'][1]['id']);
+        $this->assertEquals($serviceWorker->id, $data['data'][0]['id']);
+    }
+
     /*
      * ==================================================
      * Create a user.
