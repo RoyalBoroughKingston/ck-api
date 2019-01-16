@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Console\Commands\Ck;
 
-use App\Console\Commands\Ck\SendNotificationsForUnactionedReferrals;
+use App\Console\Commands\Ck\SendNotificationsForUnactionedReferralsCommand;
 use App\Emails\ReferralUnactioned\NotifyServiceEmail;
 use App\Models\Referral;
 use Illuminate\Support\Facades\Artisan;
@@ -22,7 +22,7 @@ class SendNotificationsForUnactionedReferralsTest extends TestCase
             'created_at' => now()->subWeekdays(6),
         ]);
 
-        Artisan::call(SendNotificationsForUnactionedReferrals::class);
+        Artisan::call(SendNotificationsForUnactionedReferralsCommand::class);
 
         Queue::assertPushedOn('notifications', NotifyServiceEmail::class);
         Queue::assertPushed(NotifyServiceEmail::class, function (NotifyServiceEmail $email) {

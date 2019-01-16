@@ -56,6 +56,23 @@ class OrganisationsTest extends TestCase
         });
     }
 
+    public function test_guest_can_sort_by_name()
+    {
+        $organisationOne = factory(Organisation::class)->create([
+            'name' => 'Organisation A',
+        ]);
+        $organisationTwo = factory(Organisation::class)->create([
+            'name' => 'Organisation B',
+        ]);
+
+        $response = $this->json('GET', '/core/v1/organisations?sort=-name');
+        $data = $this->getResponseContent($response);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals($organisationOne->id, $data['data'][1]['id']);
+        $this->assertEquals($organisationTwo->id, $data['data'][0]['id']);
+    }
+
     /*
      * Create an organisation.
      */

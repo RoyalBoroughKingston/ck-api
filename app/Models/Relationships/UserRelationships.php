@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Service;
 use App\Models\StatusUpdate;
 use App\Models\UpdateRequest;
+use App\Models\User;
 use App\Models\UserRole;
 
 trait UserRelationships
@@ -25,7 +26,20 @@ trait UserRelationships
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, (new UserRole())->getTable());
+        return $this->belongsToMany(Role::class, (new UserRole())->getTable())->distinct();
+    }
+
+    /**
+     * This returns a collection of the roles assigned to the user
+     * ordered by the highest role first.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function orderedRoles()
+    {
+        $sql = (new User())->getHighestRoleOrderSql();
+
+        return $this->roles()->orderByRaw($sql['sql'], $sql['bindings']);
     }
 
     /**

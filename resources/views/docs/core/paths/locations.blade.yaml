@@ -5,17 +5,6 @@ root:
     summary: List all the locations
     description: |
       **Permission:** `Open`
-
-      ---
-
-      Locations are returned in ascending order of the following fields:
-      1. `address_line_1`
-      2. `address_line_2`
-      3. `address_line_3`
-      4. `city`
-      5. `county`
-      6. `postcode`
-      7. `country`
     security: []
     parameters:
     - $ref: /docs/core/parameters/page.yaml
@@ -56,6 +45,12 @@ root:
       description: Filter by country
       schema:
         type: string
+    - name: sort
+      in: query
+      description: The fields to sort by [`address_line_1`, `address_line_2`, `address_line_3`, `city`, `county`, `postcode`, `country`]
+      schema:
+        type: string
+        default: address_line_1,address_line_2,address_line_3,city,county,postcode,country
     responses:
       200:
         content:

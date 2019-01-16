@@ -326,3 +326,21 @@ if (!function_exists('array_to_csv')) {
         return $csv;
     }
 }
+
+if (!function_exists('combine_query')) {
+    /**
+     * Outputs the query with bindings inserted.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return string
+     */
+    function combine_query(\Illuminate\Database\Eloquent\Builder $query): string
+    {
+        return vsprintf(
+            str_replace('?', '%s', $query->toSql()),
+            collect($query->getBindings())->map(function ($binding) {
+                return is_numeric($binding) ? $binding : "'{$binding}'";
+            })->toArray()
+        );
+    }
+}

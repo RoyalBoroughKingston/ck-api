@@ -4,7 +4,7 @@ namespace App\Console\Commands\Ck;
 
 use Laravel\Scout\Console\ImportCommand;
 
-class ScoutImport extends ImportCommand
+class ScoutImportCommand extends ImportCommand
 {
     /**
      * The name and signature of the console command.

@@ -4,7 +4,7 @@ namespace App\Console\Commands\Ck;
 
 use Illuminate\Console\Command;
 
-class DecryptOauthKeys extends Command
+class DecryptOauthKeysCommand extends Command
 {
     /**
      * The name and signature of the console command.

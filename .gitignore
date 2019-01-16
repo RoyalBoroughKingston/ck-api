@@ -1,8 +1,9 @@
 /database/diagrams/*.bak
 /node_modules
-/public/css
-/public/js
-/public/assets
+/public/css/*
+/public/js/*
+/public/assets/*
+/public/img/*
 /public/hot
 /public/storage
 /public/mix-manifest.json

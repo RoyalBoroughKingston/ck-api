@@ -1,6 +1,6 @@
 <?php
 
-use App\Console\Commands\Ck\ReindexElasticsearch;
+use App\Console\Commands\Ck\ReindexElasticsearchCommand;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +18,7 @@ class UploadThesaurus extends Migration
         $thesaurus = Storage::disk('local')->get('elasticsearch/thesaurus.csv');
         Storage::cloud()->put('elasticsearch/thesaurus.csv', $thesaurus);
 
-        Artisan::call(ReindexElasticsearch::class);
+        Artisan::call(ReindexElasticsearchCommand::class);
     }
 
     /**
@@ -30,6 +30,6 @@ class UploadThesaurus extends Migration
     {
         Storage::cloud()->delete('elasticsearch/thesaurus.csv');
 
-        Artisan::call(ReindexElasticsearch::class);
+        Artisan::call(ReindexElasticsearchCommand::class);
     }
 }
