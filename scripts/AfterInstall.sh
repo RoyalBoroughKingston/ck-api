@@ -18,6 +18,7 @@ aws secretsmanager get-secret-value --secret-id ${SECRET_ID} --region ${SECRET_R
     python -c "import json,sys;obj=json.load(sys.stdin);print obj['SecretString'];" > .env
 
 # Install NPM dependencies.
+echo $(whereis npm)
 /usr/bin/npm install
 /usr/bin/npm run prod
 
