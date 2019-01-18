@@ -18,8 +18,8 @@ aws secretsmanager get-secret-value --secret-id ${SECRET_ID} --region ${SECRET_R
     python -c "import json,sys;obj=json.load(sys.stdin);print obj['SecretString'];" > .env
 
 # Install NPM dependencies.
-/usr/bin/npm install
-/usr/bin/npm run prod
+npm install
+npm run prod
 
 # Install composer dependencies.
 export COMPOSER_HOME="$HOME/.config/composer/"
