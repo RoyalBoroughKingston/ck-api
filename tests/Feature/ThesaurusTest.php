@@ -218,6 +218,26 @@ class ThesaurusTest extends TestCase
 
     public function test_simple_contraction_works_with_further_synonyms_with_search()
     {
-        $this->markTestIncomplete();
+        $service = factory(Service::class)->create([
+            'name' => 'People Not Drinking Enough',
+        ]);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $updateResponse = $this->json('PUT', '/core/v1/thesaurus', [
+            'synonyms' => [
+                ['not drinking', 'dehydration'],
+                ['dehydration', 'thirsty', 'drought'],
+            ],
+        ]);
+
+        $updateResponse->assertStatus(Response::HTTP_OK);
+
+        $searchResponse = $this->json('POST', '/core/v1/search', [
+            'query' => 'thirsty',
+        ]);
+        $searchResponse->assertJsonFragment([
+            'id' => $service->id,
+        ]);
     }
 }
