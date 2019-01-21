@@ -164,4 +164,22 @@ class ThesaurusTest extends TestCase
             'id' => $service->id,
         ]);
     }
+
+    /*
+     * Multi-word synonyms.
+     */
+
+    public function test_invalid_multi_word_upload_fails()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', '/core/v1/thesaurus', [
+            'synonyms' => [
+                ['multi word', 'another here'],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 }
