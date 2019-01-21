@@ -70,7 +70,8 @@ class ServicesIndexConfigurator extends IndexConfigurator
 
         $thesaurus = $thesaurus
             ->map(function (Collection $synonyms) {
-                return $synonyms
+                // Parse the synonyms.
+                $parsedSynonyms = $synonyms
                     ->reject(function (string $term) {
                         // Filter out any empty strings.
                         return $term === '';
@@ -78,8 +79,23 @@ class ServicesIndexConfigurator extends IndexConfigurator
                     ->map(function (string $term) {
                         // Convert each term to lower case.
                         return strtolower($term);
-                    })
-                    ->implode(', ');
+                    });
+
+                // Check if the synonyms are using simple contraction.
+                $usingSimpleContraction = $parsedSynonyms->filter(function (string $term) {
+                    return preg_match('/\s/', $term);
+                })->isNotEmpty();
+
+                // If using simple contraction, then format accordingly.
+                if ($usingSimpleContraction) {
+                    $lastTerm = $parsedSynonyms->pop();
+                    $allWords = $parsedSynonyms->implode(',');
+
+                    return "$allWords => $lastTerm";
+                }
+
+                // Otherwise, format as normal.
+                return $parsedSynonyms->implode(',');
             })
             ->toArray();
 

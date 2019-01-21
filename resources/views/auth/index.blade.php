@@ -1,11 +1,13 @@
-@extends('auth.layout')
+@extends('layout')
 
 @section('content')
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Connected Kingston API</h1>
 
-        <p class="govuk-body">Click here to go to the <a class="govuk-link govuk-link--no-visited-state" href="{{ backend_uri()  }}">Admin Portal</a>.</p>
+        <p class="govuk-body">Click here to go to the <a class="govuk-link govuk-link--no-visited-state" href="{{ backend_uri() }}">Admin Portal</a>.</p>
+
+        <p class="govuk-body">Click here to go to the <a class="govuk-link govuk-link--no-visited-state" href="{{ route('docs.index') }}">API documentation</a>.</p>
 
         @guest
             <p class="govuk-body">Click here to <a class="govuk-link govuk-link--no-visited-state" href="{{ route('login') }}">Login</a>.</p>

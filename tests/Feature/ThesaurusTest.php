@@ -66,8 +66,12 @@ class ThesaurusTest extends TestCase
         $response = $this->json('GET', '/core/v1/thesaurus');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            ['employment', 'jobs', 'job'],
+        $response->assertJson([
+            'data' => [
+                ['autism', 'autistic', 'asd'],
+                ['not drinking', 'dehydration'],
+                ['dehydration', 'thirsty', 'drought'],
+            ],
         ]);
     }
 
@@ -155,6 +159,82 @@ class ThesaurusTest extends TestCase
 
         $searchResponse = $this->json('POST', '/core/v1/search', [
             'query' => 'persons',
+        ]);
+        $searchResponse->assertJsonFragment([
+            'id' => $service->id,
+        ]);
+    }
+
+    /*
+     * Multi-word synonyms.
+     */
+
+    public function test_invalid_multi_word_upload_fails()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $response = $this->json('PUT', '/core/v1/thesaurus', [
+            'synonyms' => [
+                ['multi word', 'another here'],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_simple_contraction_works_with_search()
+    {
+        $service = factory(Service::class)->create([
+            'name' => 'People Not Drinking Enough',
+        ]);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $updateResponse = $this->json('PUT', '/core/v1/thesaurus', [
+            'synonyms' => [
+                ['not drinking', 'dehydration'],
+            ],
+        ]);
+
+        $updateResponse->assertStatus(Response::HTTP_OK);
+
+        // Using single word.
+        $searchResponse = $this->json('POST', '/core/v1/search', [
+            'query' => 'dehydration',
+        ]);
+        $searchResponse->assertJsonFragment([
+            'id' => $service->id,
+        ]);
+
+        // Using multi-word.
+        $searchResponse = $this->json('POST', '/core/v1/search', [
+            'query' => 'not drinking',
+        ]);
+        $searchResponse->assertJsonFragment([
+            'id' => $service->id,
+        ]);
+    }
+
+    public function test_simple_contraction_works_with_further_synonyms_with_search()
+    {
+        $service = factory(Service::class)->create([
+            'name' => 'People Not Drinking Enough',
+        ]);
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $updateResponse = $this->json('PUT', '/core/v1/thesaurus', [
+            'synonyms' => [
+                ['not drinking', 'dehydration'],
+                ['dehydration', 'thirsty', 'drought'],
+            ],
+        ]);
+
+        $updateResponse->assertStatus(Response::HTTP_OK);
+
+        $searchResponse = $this->json('POST', '/core/v1/search', [
+            'query' => 'thirsty',
         ]);
         $searchResponse->assertJsonFragment([
             'id' => $service->id,

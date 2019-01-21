@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Thesaurus;
 
+use App\Rules\Synonyms;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -25,7 +26,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'synonyms' => ['present', 'array'],
-            'synonyms.*' => ['present', 'array'],
+            'synonyms.*' => ['present', 'array', new Synonyms()],
             'synonyms.*.*' => ['string'],
         ];
     }
