@@ -138,18 +138,18 @@ class LocationController extends Controller
         return DB::transaction(function () use ($request, $location) {
             $location->updateRequests()->create([
                 'user_id' => $request->user()->id,
-                'data' => [
-                    'address_line_1' => $request->address_line_1,
-                    'address_line_2' => $request->address_line_2,
-                    'address_line_3' => $request->address_line_3,
-                    'city' => $request->city,
-                    'county' => $request->county,
-                    'postcode' => $request->postcode,
-                    'country' => $request->country,
-                    'accessibility_info' => $request->accessibility_info,
-                    'has_wheelchair_access' => $request->has_wheelchair_access,
-                    'has_induction_loop' => $request->has_induction_loop,
-                ]
+                'data' => array_filter_missing([
+                    'address_line_1' => $request->missing('address_line_1'),
+                    'address_line_2' => $request->missing('address_line_2'),
+                    'address_line_3' => $request->missing('address_line_3'),
+                    'city' => $request->missing('city'),
+                    'county' => $request->missing('county'),
+                    'postcode' => $request->missing('postcode'),
+                    'country' => $request->missing('country'),
+                    'accessibility_info' => $request->missing('accessibility_info'),
+                    'has_wheelchair_access' => $request->missing('has_wheelchair_access'),
+                    'has_induction_loop' => $request->missing('has_induction_loop'),
+                ]),
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated location [{$location->id}]", $location));

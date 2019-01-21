@@ -328,6 +328,38 @@ class LocationsTest extends TestCase
         });
     }
 
+    public function test_only_partial_fields_can_be_updated()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'address_line_1' => '30-34 Aire St',
+        ];
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'locations',
+            'updateable_id' => $location->id,
+        ]);
+        $data = UpdateRequest::where('updateable_type', 'locations')
+            ->where('updateable_id', $location->id)
+            ->firstOrFail()
+            ->data;
+        $this->assertEquals($data, $payload);
+    }
+
     /*
      * Delete a specific location.
      */
