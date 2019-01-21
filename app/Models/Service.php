@@ -184,63 +184,69 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     {
         // Update the service record.
         $this->update([
-            'slug' => $updateRequest->data['slug'],
-            'name' => $updateRequest->data['name'],
-            'status' => $updateRequest->data['status'],
-            'intro' => $updateRequest->data['intro'],
-            'description' => $updateRequest->data['description'],
-            'wait_time' => $updateRequest->data['wait_time'],
-            'is_free' => $updateRequest->data['is_free'],
-            'fees_text' => $updateRequest->data['fees_text'],
-            'fees_url' => $updateRequest->data['fees_url'],
-            'testimonial' => $updateRequest->data['testimonial'],
-            'video_embed' => $updateRequest->data['video_embed'],
-            'url' => $updateRequest->data['url'],
-            'contact_name' => $updateRequest->data['contact_name'],
-            'contact_phone' => $updateRequest->data['contact_phone'],
-            'contact_email' => $updateRequest->data['contact_email'],
-            'show_referral_disclaimer' => $updateRequest->data['show_referral_disclaimer'],
-            'referral_method' => $updateRequest->data['referral_method'],
-            'referral_button_text' => $updateRequest->data['referral_button_text'],
-            'referral_email' => $updateRequest->data['referral_email'],
-            'referral_url' => $updateRequest->data['referral_url'],
+            'slug' => $updateRequest->data['slug'] ?? $this->slug,
+            'name' => $updateRequest->data['name'] ?? $this->name,
+            'status' => $updateRequest->data['status'] ?? $this->status,
+            'intro' => $updateRequest->data['intro'] ?? $this->intro,
+            'description' => $updateRequest->data['description'] ?? $this->description,
+            'wait_time' => $updateRequest->data['wait_time'] ?? $this->wait_time,
+            'is_free' => $updateRequest->data['is_free'] ?? $this->is_free,
+            'fees_text' => $updateRequest->data['fees_text'] ?? $this->fees_text,
+            'fees_url' => $updateRequest->data['fees_url'] ?? $this->fees_url,
+            'testimonial' => $updateRequest->data['testimonial'] ?? $this->testimonial,
+            'video_embed' => $updateRequest->data['video_embed'] ?? $this->video_embed,
+            'url' => $updateRequest->data['url'] ?? $this->url,
+            'contact_name' => $updateRequest->data['contact_name'] ?? $this->contact_name,
+            'contact_phone' => $updateRequest->data['contact_phone'] ?? $this->contact_phone,
+            'contact_email' => $updateRequest->data['contact_email'] ?? $this->contact_email,
+            'show_referral_disclaimer' => $updateRequest->data['show_referral_disclaimer'] ?? $this->show_referral_disclaimer,
+            'referral_method' => $updateRequest->data['referral_method'] ?? $this->referral_method,
+            'referral_button_text' => $updateRequest->data['referral_button_text'] ?? $this->referral_button_text,
+            'referral_email' => $updateRequest->data['referral_email'] ?? $this->referral_email,
+            'referral_url' => $updateRequest->data['referral_url'] ?? $this->referral_url,
             'logo_file_id' => $updateRequest->data['logo_file_id'] ?? $this->logo_file_id,
         ]);
 
         // Update the service criterion record.
         $this->serviceCriterion()->update([
-            'age_group' => $updateRequest->data['criteria']['age_group'],
-            'disability' => $updateRequest->data['criteria']['disability'],
-            'employment' => $updateRequest->data['criteria']['employment'],
-            'gender' => $updateRequest->data['criteria']['gender'],
-            'housing' => $updateRequest->data['criteria']['housing'],
-            'income' => $updateRequest->data['criteria']['income'],
-            'language' => $updateRequest->data['criteria']['language'],
-            'other' => $updateRequest->data['criteria']['other'],
+            'age_group' => array_get($updateRequest->data, 'criteria.age_group', $this->serviceCriterion->age_group),
+            'disability' => array_get($updateRequest->data, 'criteria.disability', $this->serviceCriterion->disability),
+            'employment' => array_get($updateRequest->data, 'criteria.employment', $this->serviceCriterion->employment),
+            'gender' => array_get($updateRequest->data, 'criteria.gender', $this->serviceCriterion->gender),
+            'housing' => array_get($updateRequest->data, 'criteria.housing', $this->serviceCriterion->housing),
+            'income' => array_get($updateRequest->data, 'criteria.income', $this->serviceCriterion->income),
+            'language' => array_get($updateRequest->data, 'criteria.language', $this->serviceCriterion->language),
+            'other' => array_get($updateRequest->data, 'criteria.other', $this->serviceCriterion->other),
         ]);
 
         // Update the useful info records.
-        $this->usefulInfos()->delete();
-        foreach ($updateRequest->data['useful_infos'] as $usefulInfo) {
-            $this->usefulInfos()->create([
-                'title' => $usefulInfo['title'],
-                'description' => $usefulInfo['description'],
-                'order' => $usefulInfo['order'],
-            ]);
+        if (array_key_exists('useful_infos', $updateRequest->data)) {
+            $this->usefulInfos()->delete();
+            foreach ($updateRequest->data['useful_infos'] as $usefulInfo) {
+                $this->usefulInfos()->create([
+                    'title' => $usefulInfo['title'],
+                    'description' => $usefulInfo['description'],
+                    'order' => $usefulInfo['order'],
+                ]);
+            }
         }
 
         // Update the social media records.
-        $this->socialMedias()->delete();
-        foreach ($updateRequest->data['social_medias'] as $socialMedia) {
-            $this->socialMedias()->create([
-                'type' => $socialMedia['type'],
-                'url' => $socialMedia['url'],
-            ]);
+        if (array_key_exists('social_medias', $updateRequest->data)) {
+            $this->socialMedias()->delete();
+            foreach ($updateRequest->data['social_medias'] as $socialMedia) {
+                $this->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ]);
+            }
         }
 
         // Update the category taxonomy records.
-        $taxonomies = Taxonomy::whereIn('id', $updateRequest->data['category_taxonomies'])->get();
-        $this->syncServiceTaxonomies($taxonomies);
+        if (array_key_exists('category_taxonomies', $updateRequest->data)) {
+            $taxonomies = Taxonomy::whereIn('id', $updateRequest->data['category_taxonomies'])->get();
+            $this->syncServiceTaxonomies($taxonomies);
+        }
 
         return $updateRequest;
     }
