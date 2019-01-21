@@ -91,6 +91,13 @@ class ThesaurusController extends Controller
             }
         }
 
+        // Convert each word to lowercase.
+        foreach ($synonyms as &$synonym) {
+            foreach ($synonym as &$word) {
+                $word = strtolower($word);
+            }
+        }
+
         // Convert the array to a string.
         $thesaurus = array_to_csv($synonyms);
 
