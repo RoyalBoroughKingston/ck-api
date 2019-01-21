@@ -321,6 +321,32 @@ class OrganisationsTest extends TestCase
         $this->assertEquals($data, $payload);
     }
 
+    public function test_only_partial_fields_can_be_updated()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $payload = [
+            'slug' => 'test-org',
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'organisations',
+            'updateable_id' => $organisation->id,
+        ]);
+        $data = UpdateRequest::query()
+            ->where('updateable_type', 'organisations')
+            ->where('updateable_id', $organisation->id)
+            ->firstOrFail()->data;
+        $this->assertEquals($data, $payload);
+    }
+
     public function test_audit_created_when_updated()
     {
         $this->fakeEvents();

@@ -15,6 +15,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\Organisation;
 use App\Http\Controllers\Controller;
+use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -127,14 +128,14 @@ class OrganisationController extends Controller
     public function update(UpdateRequest $request, Organisation $organisation)
     {
         return DB::transaction(function () use ($request, $organisation) {
-            $data = [
-                'slug' => $request->slug,
-                'name' => $request->name,
-                'description' => $request->description,
-                'url' => $request->url,
-                'email' => $request->email,
-                'phone' => $request->phone,
-            ];
+            $data = array_filter_missing([
+                'slug' => $request->missing('slug'),
+                'name' => $request->missing('name'),
+                'description' => $request->missing('description'),
+                'url' => $request->missing('url'),
+                'email' => $request->missing('email'),
+                'phone' => $request->missing('phone'),
+            ]);
 
             // Update the logo if the logo field was provided.
             if ($request->filled('logo')) {
