@@ -66,8 +66,12 @@ class ThesaurusTest extends TestCase
         $response = $this->json('GET', '/core/v1/thesaurus');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            ['employment', 'jobs', 'job'],
+        $response->assertJson([
+            'data' => [
+                ['autism', 'autistic', 'asd'],
+                ['not drinking', 'dehydration'],
+                ['dehydration', 'thirsty', 'drought'],
+            ],
         ]);
     }
 
