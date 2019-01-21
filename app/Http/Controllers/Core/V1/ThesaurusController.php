@@ -93,8 +93,8 @@ class ThesaurusController extends Controller
 
         // Convert each word to lowercase.
         foreach ($synonyms as &$synonym) {
-            foreach ($synonym as &$word) {
-                $word = strtolower($word);
+            foreach ($synonym as &$term) {
+                $term = strtolower($term);
             }
         }
 
