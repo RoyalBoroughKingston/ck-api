@@ -14,6 +14,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
 use App\Http\Controllers\Controller;
+use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -140,14 +141,14 @@ class ServiceLocationController extends Controller
     {
         return DB::transaction(function () use ($request, $serviceLocation) {
             // Initialise the data array.
-            $data = [
-                'name' => $request->name,
-                'regular_opening_hours' => [],
-                'holiday_opening_hours' => [],
-            ];
+            $data = array_filter_missing([
+                'name' => $request->missing('name'),
+                'regular_opening_hours' => $request->has('regular_opening_hours') ? [] : new MissingValue(),
+                'holiday_opening_hours' => $request->has('holiday_opening_hours') ? [] : new MissingValue(),
+            ]);
 
             // Loop through each regular opening hour to normalise and then append to the array.
-            foreach ($request->regular_opening_hours as $regularOpeningHour) {
+            foreach ($request->input('regular_opening_hours', []) as $regularOpeningHour) {
                 $data['regular_opening_hours'][] = array_filter_null([
                     'frequency' => $regularOpeningHour['frequency'],
                     'weekday' => in_array($regularOpeningHour['frequency'], [RegularOpeningHour::FREQUENCY_WEEKLY, RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH])
@@ -168,7 +169,7 @@ class ServiceLocationController extends Controller
             }
 
             // Loop through each holiday opening hour to normalise and then append to the array.
-            foreach ($request->holiday_opening_hours as $holidayOpeningHour) {
+            foreach ($request->input('holiday_opening_hours', []) as $holidayOpeningHour) {
                 $data['holiday_opening_hours'][] = [
                     'is_closed' => $holidayOpeningHour['is_closed'],
                     'starts_at' => $holidayOpeningHour['starts_at'],

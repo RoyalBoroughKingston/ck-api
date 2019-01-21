@@ -454,6 +454,24 @@ class ServiceLocationsTest extends TestCase
         });
     }
 
+    public function test_only_partial_fields_can_be_updated()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($serviceLocation->service);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'name' => 'New Company Name',
+        ];
+        $response = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $data = $serviceLocation->updateRequests()->firstOrFail()->data;
+        $this->assertEquals($data, $payload);
+    }
+
     /*
      * Delete a specific service location.
      */

@@ -141,40 +141,47 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
         // Update the service location.
-        $this->update(['name' => $updateRequest->data['name']]);
+        $this->update([
+            'name' => $updateRequest->data['name'] ?? $this->name,
+        ]);
 
         // Attach the regular opening hours.
-        $this->regularOpeningHours()->delete();
-        foreach ($updateRequest->data['regular_opening_hours'] as $regularOpeningHour) {
-            $this->regularOpeningHours()->create([
-                'frequency' => $regularOpeningHour['frequency'],
-                'weekday' => in_array($regularOpeningHour['frequency'], [RegularOpeningHour::FREQUENCY_WEEKLY, RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH])
-                    ? $regularOpeningHour['weekday']
-                    : null,
-                'day_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_MONTHLY)
-                    ? $regularOpeningHour['day_of_month']
-                    : null,
-                'occurrence_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH)
-                    ? $regularOpeningHour['occurrence_of_month']
-                    : null,
-                'starts_at' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_FORTNIGHTLY)
-                    ? $regularOpeningHour['starts_at']
-                    : null,
-                'opens_at' => $regularOpeningHour['opens_at'],
-                'closes_at' => $regularOpeningHour['closes_at'],
-            ]);
+        if (array_key_exists('regular_opening_hours', $updateRequest->data)) {
+            $this->regularOpeningHours()->delete();
+            foreach ($updateRequest->data['regular_opening_hours'] as $regularOpeningHour) {
+                $this->regularOpeningHours()->create([
+                    'frequency' => $regularOpeningHour['frequency'],
+                    'weekday' => in_array($regularOpeningHour['frequency'],
+                        [RegularOpeningHour::FREQUENCY_WEEKLY, RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH])
+                        ? $regularOpeningHour['weekday']
+                        : null,
+                    'day_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_MONTHLY)
+                        ? $regularOpeningHour['day_of_month']
+                        : null,
+                    'occurrence_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH)
+                        ? $regularOpeningHour['occurrence_of_month']
+                        : null,
+                    'starts_at' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_FORTNIGHTLY)
+                        ? $regularOpeningHour['starts_at']
+                        : null,
+                    'opens_at' => $regularOpeningHour['opens_at'],
+                    'closes_at' => $regularOpeningHour['closes_at'],
+                ]);
+            }
         }
 
         // Attach the holiday opening hours.
-        $this->holidayOpeningHours()->delete();
-        foreach ($updateRequest->data['holiday_opening_hours'] as $holidayOpeningHour) {
-            $this->holidayOpeningHours()->create([
-                'is_closed' => $holidayOpeningHour['is_closed'],
-                'starts_at' => $holidayOpeningHour['starts_at'],
-                'ends_at' => $holidayOpeningHour['ends_at'],
-                'opens_at' => $holidayOpeningHour['opens_at'],
-                'closes_at' => $holidayOpeningHour['closes_at'],
-            ]);
+        if (array_key_exists('holiday_opening_hours', $updateRequest->data)) {
+            $this->holidayOpeningHours()->delete();
+            foreach ($updateRequest->data['holiday_opening_hours'] as $holidayOpeningHour) {
+                $this->holidayOpeningHours()->create([
+                    'is_closed' => $holidayOpeningHour['is_closed'],
+                    'starts_at' => $holidayOpeningHour['starts_at'],
+                    'ends_at' => $holidayOpeningHour['ends_at'],
+                    'opens_at' => $holidayOpeningHour['opens_at'],
+                    'closes_at' => $holidayOpeningHour['closes_at'],
+                ]);
+            }
         }
 
         return $updateRequest;
