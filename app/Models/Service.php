@@ -248,7 +248,44 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             $this->syncServiceTaxonomies($taxonomies);
         }
 
+        // Ensure conditional fields are reset if needed.
+        $this->resetConditionalFields();
+
         return $updateRequest;
+    }
+
+    /**
+     * Ensures conditional fields are reset to expected values.
+     *
+     * @return \App\Models\Service
+     */
+    public function resetConditionalFields(): Service
+    {
+        if ($this->is_free) {
+            $this->update([
+                'fees_text' => null,
+                'fees_url' => null,
+            ]);
+        }
+
+        if ($this->referral_method === static::REFERRAL_METHOD_NONE) {
+            $this->update([
+                'referral_button_text' => null,
+                'referral_email' => null,
+                'referral_url' => null,
+                'show_referral_disclaimer' => false,
+            ]);
+        }
+
+        if ($this->referral_method === static::REFERRAL_METHOD_INTERNAL) {
+            $this->update(['referral_url' => null]);
+        }
+
+        if ($this->referral_method === static::REFERRAL_METHOD_EXTERNAL) {
+            $this->update(['referral_email' => null]);
+        }
+
+        return $this;
     }
 
     /**
