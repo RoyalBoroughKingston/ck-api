@@ -1675,7 +1675,7 @@ class ServicesTest extends TestCase
 
         $updateRequestOne = UpdateRequest::withTrashed()->findOrFail($this->getResponseContent($responseOne)['id']);
         $updateRequestTwo = UpdateRequest::findOrFail($this->getResponseContent($responseTwo)['id']);
-        
+
         $this->assertArrayNotHasKey('useful_infos', $updateRequestOne->data);
         $this->assertArrayHasKey('useful_infos', $updateRequestTwo->data);
         $this->assertArrayHasKey('useful_infos.0.title', array_dot($updateRequestTwo->data));
