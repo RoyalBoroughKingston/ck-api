@@ -155,14 +155,14 @@ class OrganisationController extends Controller
                 $data['logo_file_id'] = null;
             }
 
-            $organisation->updateRequests()->create([
+            $updateRequest = $organisation->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated organisation [{$organisation->id}]", $organisation));
 
-            return new UpdateRequestReceived($data);
+            return new UpdateRequestReceived($updateRequest);
         });
     }
 

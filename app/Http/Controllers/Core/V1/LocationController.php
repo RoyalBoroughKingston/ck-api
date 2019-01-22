@@ -136,7 +136,7 @@ class LocationController extends Controller
     public function update(UpdateRequest $request, Location $location)
     {
         return DB::transaction(function () use ($request, $location) {
-            $location->updateRequests()->create([
+            $updateRequest = $location->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => array_filter_missing([
                     'address_line_1' => $request->missing('address_line_1'),
@@ -154,7 +154,7 @@ class LocationController extends Controller
 
             event(EndpointHit::onUpdate($request, "Updated location [{$location->id}]", $location));
 
-            return new UpdateRequestReceived($request->all());
+            return new UpdateRequestReceived($updateRequest);
         });
     }
 

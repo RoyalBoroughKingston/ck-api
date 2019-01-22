@@ -179,14 +179,14 @@ class ServiceLocationController extends Controller
                 ];
             }
 
-            $serviceLocation->updateRequests()->create([
+            $updateRequest = $serviceLocation->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated service location [{$serviceLocation->id}]", $serviceLocation));
 
-            return new UpdateRequestReceived($data);
+            return new UpdateRequestReceived($updateRequest);
         });
     }
 

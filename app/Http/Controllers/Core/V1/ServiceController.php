@@ -274,14 +274,14 @@ class ServiceController extends Controller
                 ];
             }
 
-            $service->updateRequests()->create([
+            $updateRequest = $service->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
 
-            return new UpdateRequestReceived($data);
+            return new UpdateRequestReceived($updateRequest);
         });
     }
 
