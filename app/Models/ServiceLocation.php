@@ -151,8 +151,10 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
             foreach ($updateRequest->data['regular_opening_hours'] as $regularOpeningHour) {
                 $this->regularOpeningHours()->create([
                     'frequency' => $regularOpeningHour['frequency'],
-                    'weekday' => in_array($regularOpeningHour['frequency'],
-                        [RegularOpeningHour::FREQUENCY_WEEKLY, RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH])
+                    'weekday' => in_array(
+                        $regularOpeningHour['frequency'],
+                        [RegularOpeningHour::FREQUENCY_WEEKLY, RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH]
+                    )
                         ? $regularOpeningHour['weekday']
                         : null,
                     'day_of_month' => ($regularOpeningHour['frequency'] === RegularOpeningHour::FREQUENCY_MONTHLY)
