@@ -38,16 +38,13 @@ class UpdateRequestObserver
         $data = array_dot($updateRequest->data);
         $dataKeys = array_keys($data);
         foreach ($dataKeys as &$dataKey) {
-            /*
-             * Replace array index with square brackets:
-             * From: services.social_medias.0.title
-             * To: services.social_medias[0]title
-             */
-            $dataKey = preg_replace('/.([0-9]+)./', '[$1]', $dataKey);
+            // Delete entire arrays if provided.
+            $dataKey = preg_replace('/.([0-9]+)(.*)$/', '', $dataKey);
 
             // Format for MySQL.
             $dataKey = "\"$.{$dataKey}\"";
         }
+        $dataKeys = array_unique($dataKeys);
         $implodedDataKeys = implode(', ', $dataKeys);
 
         UpdateRequest::query()
