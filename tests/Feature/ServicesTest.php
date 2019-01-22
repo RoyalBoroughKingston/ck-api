@@ -1634,6 +1634,59 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
+    public function test_fields_removed_for_existing_update_requests()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $responseOne = $this->json('PUT', "/core/v1/services/{$service->id}", [
+            'useful_infos' => [
+                [
+                    'title' => 'Title 1',
+                    'description' => 'Description 1',
+                    'order' => 1,
+                ],
+            ],
+        ]);
+        $responseOne->assertStatus(Response::HTTP_OK);
+
+        $responseTwo = $this->json('PUT', "/core/v1/services/{$service->id}", [
+            'useful_infos' => [
+                [
+                    'title' => 'Title 1',
+                    'description' => 'Description 1',
+                    'order' => 1,
+                ],
+                [
+                    'title' => 'Title 2',
+                    'description' => 'Description 2',
+                    'order' => 2,
+                ],
+            ],
+        ]);
+        $responseTwo->assertStatus(Response::HTTP_OK);
+
+        $updateRequestOne = UpdateRequest::withTrashed()->findOrFail($this->getResponseContent($responseOne)['id']);
+        $updateRequestTwo = UpdateRequest::findOrFail($this->getResponseContent($responseTwo)['id']);
+        
+        $this->assertArrayNotHasKey('useful_infos', $updateRequestOne->data);
+        $this->assertArrayHasKey('useful_infos', $updateRequestTwo->data);
+        $this->assertArrayHasKey('useful_infos.0.title', array_dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.description', array_dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.order', array_dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.title', array_dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.description', array_dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.order', array_dot($updateRequestTwo->data));
+        $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
+    }
+
     /*
      * Delete a specific service.
      */
