@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\RegularOpeningHour;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -470,6 +471,31 @@ class ServiceLocationsTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
         $data = $serviceLocation->updateRequests()->firstOrFail()->data;
         $this->assertEquals($data, $payload);
+    }
+
+    public function test_fields_removed_for_existing_update_requests()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($serviceLocation->service);
+
+        Passport::actingAs($user);
+
+        $responseOne = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", [
+            'name' => 'New Company Name',
+        ]);
+        $responseOne->assertStatus(Response::HTTP_OK);
+
+        $responseTwo = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", [
+            'name' => 'New Company Name',
+        ]);
+        $responseTwo->assertStatus(Response::HTTP_OK);
+
+        $updateRequestOne = UpdateRequest::withTrashed()->findOrFail($this->getResponseContent($responseOne)['id']);
+        $updateRequestTwo = UpdateRequest::findOrFail($this->getResponseContent($responseTwo)['id']);
+
+        $this->assertArrayNotHasKey('name', $updateRequestOne->data);
+        $this->assertArrayHasKey('name', $updateRequestTwo->data);
+        $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
     }
 
     /*
