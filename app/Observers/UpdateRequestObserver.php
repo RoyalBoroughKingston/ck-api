@@ -39,7 +39,7 @@ class UpdateRequestObserver
         $dataKeys = array_keys($data);
         foreach ($dataKeys as &$dataKey) {
             // Delete entire arrays if provided.
-            $dataKey = preg_replace('/.([0-9]+).(.*)$/', '', $dataKey);
+            $dataKey = preg_replace('/\.([0-9]+)(.*)$/', '', $dataKey);
 
             // Format for MySQL.
             $dataKey = "\"$.{$dataKey}\"";
