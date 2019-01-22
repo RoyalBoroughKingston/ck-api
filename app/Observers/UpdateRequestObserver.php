@@ -10,6 +10,7 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
+use Illuminate\Support\Facades\DB;
 
 class UpdateRequestObserver
 {
@@ -20,6 +21,65 @@ class UpdateRequestObserver
      * @return void
      */
     public function created(UpdateRequest $updateRequest)
+    {
+        $this->sendCreatedNotifications($updateRequest);
+        $this->removeSameFieldsForPending($updateRequest);
+        $this->deleteEmptyPending($updateRequest);
+    }
+
+    /**
+     * Removes the field present in the new update request from any
+     * pending ones, for the same resource.
+     *
+     * @param \App\Models\UpdateRequest $updateRequest
+     */
+    protected function removeSameFieldsForPending(UpdateRequest $updateRequest)
+    {
+        $data = array_dot($updateRequest->data);
+        $dataKeys = array_keys($data);
+        foreach ($dataKeys as &$dataKey) {
+            /*
+             * Replace array index with square brackets:
+             * From: services.social_medias.0.title
+             * To: services.social_medias[0]title
+             */
+            $dataKey = preg_replace('/.([0-9]+)./', '[$1]', $dataKey);
+
+            // Format for MySQL.
+            $dataKey = "\"$.{$dataKey}\"";
+        }
+        $implodedDataKeys = implode(', ', $dataKeys);
+
+        UpdateRequest::query()
+            ->where('updateable_type', '=', $updateRequest->updateable_type)
+            ->where('updateable_id', '=', $updateRequest->updateable_id)
+            ->where('id', '!=', $updateRequest->id)
+            ->pending()
+            ->update(['data' => DB::raw("JSON_REMOVE(`update_requests`.`data`, {$implodedDataKeys})")]);
+    }
+
+    /**
+     * Soft deletes / rejects pending update requests that have empty
+     * data objects. This is called after removing the same fields
+     * for new update requests.
+     *
+     * @param \App\Models\UpdateRequest $updateRequest
+     */
+    protected function deleteEmptyPending(UpdateRequest $updateRequest)
+    {
+        // Uses JSON_DEPTH to determine if the data object is empty (depth of 1).
+        UpdateRequest::query()
+            ->where('updateable_type', '=', $updateRequest->updateable_type)
+            ->where('updateable_id', '=', $updateRequest->updateable_id)
+            ->whereRaw('JSON_DEPTH(`update_requests`.`data`) = ?', [1])
+            ->pending()
+            ->delete();
+    }
+
+    /**
+     * @param \App\Models\UpdateRequest $updateRequest
+     */
+    protected function sendCreatedNotifications(UpdateRequest $updateRequest)
     {
         $resourceName = null;
         $resourceType = null;

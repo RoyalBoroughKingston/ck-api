@@ -110,4 +110,15 @@ CASE `update_requests`.`updateable_type`
 END
 EOT;
     }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePending(Builder $query): Builder
+    {
+        return $query
+            ->whereNull('approved_at')
+            ->whereNull('deleted_at');
+    }
 }

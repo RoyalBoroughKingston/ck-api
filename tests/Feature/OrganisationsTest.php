@@ -372,6 +372,33 @@ class OrganisationsTest extends TestCase
         });
     }
 
+    public function test_fields_removed_for_existing_update_requests()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $responseOne = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", [
+            'name' => 'Random 1',
+        ]);
+        $responseOne->assertStatus(Response::HTTP_OK);
+
+        $responseTwo = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", [
+            'name' => 'Random 2',
+            'slug' => 'random-1',
+        ]);
+        $responseTwo->assertStatus(Response::HTTP_OK);
+
+        $updateRequestOne = UpdateRequest::withTrashed()->findOrFail($this->getResponseContent($responseOne)['id']);
+        $updateRequestTwo = UpdateRequest::findOrFail($this->getResponseContent($responseTwo)['id']);
+
+        $this->assertArrayNotHasKey('name', $updateRequestOne->data);
+        $this->assertArrayHasKey('name', $updateRequestTwo->data);
+        $this->assertArrayHasKey('slug', $updateRequestTwo->data);
+        $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
+    }
+
     /*
      * Delete a specific organisation.
      */
