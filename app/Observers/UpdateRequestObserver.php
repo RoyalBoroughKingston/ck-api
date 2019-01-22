@@ -35,6 +35,11 @@ class UpdateRequestObserver
      */
     protected function removeSameFieldsForPending(UpdateRequest $updateRequest)
     {
+        // Skip if there is no data in the update request.
+        if (count($updateRequest->data) === 0) {
+            return;
+        }
+
         $data = array_dot($updateRequest->data);
         $dataKeys = array_keys($data);
         foreach ($dataKeys as &$dataKey) {
