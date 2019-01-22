@@ -42,6 +42,21 @@ if (!function_exists('array_filter_null')) {
     }
 }
 
+if (!function_exists('array_filter_missing')) {
+    /**
+     * Removed any array values with an empty value.
+     *
+     * @param array $array
+     * @return array
+     */
+    function array_filter_missing(array $array): array
+    {
+        return array_filter($array, function ($value) {
+            return !($value instanceof \App\Support\MissingValue);
+        });
+    }
+}
+
 if (!function_exists('array_pluck_multi')) {
     /**
      * Plucks a key from a multidimensional array.

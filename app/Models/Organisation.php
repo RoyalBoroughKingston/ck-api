@@ -42,12 +42,12 @@ class Organisation extends Model implements AppliesUpdateRequests
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
         $this->update([
-            'slug' => $updateRequest->data['slug'],
-            'name' => $updateRequest->data['name'],
-            'description' => $updateRequest->data['description'],
-            'url' => $updateRequest->data['url'],
-            'email' => $updateRequest->data['email'],
-            'phone' => $updateRequest->data['phone'],
+            'slug' => $updateRequest->data['slug'] ?? $this->slug,
+            'name' => $updateRequest->data['name'] ?? $this->name,
+            'description' => $updateRequest->data['description'] ?? $this->description,
+            'url' => $updateRequest->data['url'] ?? $this->url,
+            'email' => $updateRequest->data['email'] ?? $this->email,
+            'phone' => $updateRequest->data['phone'] ?? $this->phone,
             'logo_file_id' => $updateRequest->data['logo_file_id'] ?? $this->logo_file_id,
         ]);
 

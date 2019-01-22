@@ -24,7 +24,7 @@ class ShowRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'update_request_id' => ['exists:update_requests,id'],
         ];
     }
 }

@@ -119,6 +119,10 @@ nested:
                 message:
                   type: string
                   example: The update request has been received and needs to be reviewed
+                id:
+                  type: string
+                  format: uuid
+                  description: The ID of the update request
                 data:
                   $ref: /docs/core/requests/service-location.yaml#/update
 

@@ -162,6 +162,10 @@ nested:
                 message:
                   type: string
                   example: The update request has been received and needs to be reviewed
+                id:
+                  type: string
+                  format: uuid
+                  description: The ID of the update request
                 data:
                   $ref: /docs/core/requests/service.yaml#/update
 
@@ -199,6 +203,12 @@ logo:
       required: true
       schema:
         type: string
+    - name: update_request_id
+      in: query
+      description: File to use from update request
+      schema:
+        type: string
+        format: uuid
     responses:
       200:
         content:
