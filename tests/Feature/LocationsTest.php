@@ -360,6 +360,39 @@ class LocationsTest extends TestCase
         $this->assertEquals($data, $payload);
     }
 
+    public function test_fields_removed_for_existing_update_requests()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $responseOne = $this->json('PUT', "/core/v1/locations/{$location->id}", [
+            'address_line_1' => '1 Old Street',
+        ]);
+        $responseOne->assertStatus(Response::HTTP_OK);
+
+        $responseTwo = $this->json('PUT', "/core/v1/locations/{$location->id}", [
+            'address_line_1' => '2 New Street',
+            'address_line_2' => 'Floor 3',
+        ]);
+        $responseTwo->assertStatus(Response::HTTP_OK);
+
+        $updateRequestOne = UpdateRequest::withTrashed()->findOrFail($this->getResponseContent($responseOne)['id']);
+        $updateRequestTwo = UpdateRequest::findOrFail($this->getResponseContent($responseTwo)['id']);
+
+        $this->assertArrayNotHasKey('address_line_1', $updateRequestOne->data);
+        $this->assertArrayHasKey('address_line_1', $updateRequestTwo->data);
+        $this->assertArrayHasKey('address_line_2', $updateRequestTwo->data);
+        $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
+    }
+
     /*
      * Delete a specific location.
      */
