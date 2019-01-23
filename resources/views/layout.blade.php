@@ -7,7 +7,10 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@section('title'){{ config('app.name', 'Laravel') }}@endsection</title>
+    <title>@yield('title', config('app.name', 'Laravel'))</title>
+
+    <!-- Favicon -->
+    @include('partials.favicons')
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
