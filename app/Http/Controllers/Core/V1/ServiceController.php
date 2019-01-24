@@ -160,6 +160,9 @@ class ServiceController extends Controller
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
             $service->syncServiceTaxonomies($taxonomies);
 
+            // Ensure conditional fields are reset if needed.
+            $service->resetConditionalFields();
+
             event(EndpointHit::onCreate($request, "Created service [{$service->id}]", $service));
 
             $service->load('usefulInfos', 'socialMedias', 'taxonomies');
