@@ -54,6 +54,9 @@ script:
   - vendor/bin/phpcs
   - vendor/bin/phpunit
 
+after_failure:
+  - cat storage/logs/testing.log
+
 deploy:
   - provider: script
     script: bash scripts/Deploy.sh
