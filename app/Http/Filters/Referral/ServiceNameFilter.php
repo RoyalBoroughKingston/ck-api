@@ -15,6 +15,9 @@ class ServiceNameFilter implements Filter
      */
     public function __invoke(Builder $query, $value, string $property): Builder
     {
+        // Don't treat comma's as an array separator.
+        $value = implode(',', array_wrap($value));
+
         return $query->whereHas('service', function (Builder $query) use ($value) {
             $query->where('services.name', 'LIKE', "%{$value}%");
         });

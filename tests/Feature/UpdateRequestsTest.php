@@ -172,7 +172,9 @@ class UpdateRequestsTest extends TestCase
                 'accessibility_info' => null,
             ]
         ]);
-        $organisation = factory(Organisation::class)->create();
+        $organisation = factory(Organisation::class)->create([
+            'name' => 'Name with, comma',
+        ]);
         $organisationUpdateRequest = $organisation->updateRequests()->create([
             'user_id' => $user->id,
             'data' => [
