@@ -20,6 +20,8 @@ class Referral extends Model implements Notifiable
     use ReferralRelationships;
     use ReferralScopes;
 
+    const AUTO_DELETE_MONTHS = 6;
+
     /**
      * The attributes that should be cast to native types.
      *
