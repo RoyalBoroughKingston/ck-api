@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\Ck\AutoDeleteAuditsCommand;
+use App\Console\Commands\Ck\AutoDeletePageFeedbacksCommand;
 use App\Console\Commands\Ck\AutoDeleteReferralsCommand;
 use App\Console\Commands\Ck\SendNotificationsForUnactionedReferralsCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -34,6 +35,9 @@ class Kernel extends ConsoleKernel
             ->daily();
 
         $schedule->command(AutoDeleteAuditsCommand::class)
+            ->daily();
+
+        $schedule->command(AutoDeletePageFeedbacksCommand::class)
             ->daily();
     }
 
