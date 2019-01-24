@@ -19,6 +19,6 @@ class EntryFilter implements Filter
         $sql = (new UpdateRequest())->getEntrySql();
         $value = "%{$value}%";
 
-        return $query->whereRaw("({$sql}) LIKE ?", [$value]);
+        return $query->whereRaw("({$sql}) LIKE ?", $value);
     }
 }
