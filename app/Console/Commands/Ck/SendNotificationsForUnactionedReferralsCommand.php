@@ -24,7 +24,7 @@ class SendNotificationsForUnactionedReferralsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Send ';
+    protected $description = 'Send notifications to the service contacts for unactioned referrals';
 
     /**
      * Execute the console command.
