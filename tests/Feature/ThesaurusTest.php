@@ -6,11 +6,28 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 class ThesaurusTest extends TestCase
 {
+    /**
+     * Clean up the testing environment before the next test.
+     *
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function tearDown()
+    {
+        // Reindex to prevent synonyms persisting.
+        $synonyms = Storage::disk('local')->get('elasticsearch/thesaurus.csv');
+        Storage::cloud()->put('elasticsearch/thesaurus.csv', $synonyms);
+        $this->artisan('ck:reindex-elasticsearch');
+
+        parent::tearDown();
+    }
+
     /*
      * View the thesaurus.
      */

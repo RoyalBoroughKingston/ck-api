@@ -34,5 +34,6 @@
         <env name="GEOCODE_DRIVER" value="stub"/>
         <env name="EMAIL_DRIVER" value='"null"'/>
         <env name="SMS_DRIVER" value='"null"'/>
+        <env name="FILESYSTEM_CLOUD" value="testing_cloud"/>
     </php>
 </phpunit>
