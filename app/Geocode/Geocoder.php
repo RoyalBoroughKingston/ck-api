@@ -44,10 +44,10 @@ abstract class Geocoder implements GeocoderContract
      */
     protected function normaliseAddress(Address $address): string
     {
-        $postcode = strtolower($address->postcode);
+        $postcode = mb_strtolower($address->postcode);
         $postcode = single_space($postcode);
 
-        $country = strtolower($address->country);
+        $country = mb_strtolower($address->country);
         $country = single_space($country);
 
         return "$postcode, $country";

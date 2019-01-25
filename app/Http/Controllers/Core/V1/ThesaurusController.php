@@ -51,7 +51,7 @@ class ThesaurusController extends Controller
                         })
                         ->map(function (string $term) {
                             // Convert each term to lower case.
-                            return strtolower($term);
+                            return mb_strtolower($term);
                         })
                         ->values();
                 })
@@ -94,7 +94,7 @@ class ThesaurusController extends Controller
         // Convert each word to lowercase.
         foreach ($synonyms as &$synonym) {
             foreach ($synonym as &$term) {
-                $term = strtolower($term);
+                $term = mb_strtolower($term);
             }
         }
 
