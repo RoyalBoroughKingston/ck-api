@@ -63,7 +63,11 @@ class StopWordsController extends Controller
         }, $request->stop_words);
 
         // Convert the array to a string.
-        $stopWordsCsv = array_to_csv($stopWords);
+        $stopWordsCsv = array_to_csv(
+            array_map(function (string $stopWord) {
+                return array_wrap($stopWord);
+            }, $stopWords)
+        );
 
         // Save the string to the stop words.
         Storage::cloud()->put('elasticsearch/stop-words.csv', $stopWordsCsv);
