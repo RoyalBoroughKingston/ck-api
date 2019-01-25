@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -59,6 +60,8 @@ abstract class TestCase extends BaseTestCase
      */
     public function tearDown()
     {
+        Storage::cloud()->deleteDirectory('testing-cloud/files');
+
         $this->tearDownElasticsearch();
 
         parent::tearDown();

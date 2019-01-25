@@ -82,7 +82,7 @@ class LoginController extends Controller
     {
         $userId = session()->get('otp.user_id');
         $user = User::findOrFail($userId);
-        $phoneLastFour = substr($user->phone, -4);
+        $phoneLastFour = mb_substr($user->phone, -4);
 
         $email = config('ck.global_admin.email');
         $appName = config('app.name');

@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Requests\Thesaurus;
+namespace App\Http\Requests\StopWords;
 
-use App\Rules\Synonyms;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -25,9 +24,8 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'synonyms' => ['present', 'array'],
-            'synonyms.*' => ['present', 'array', new Synonyms()],
-            'synonyms.*.*' => ['string'],
+            'stop_words' => ['present', 'array'],
+            'stop_words.*' => ['string', 'max:255'],
         ];
     }
 }

@@ -14,7 +14,6 @@ class ServicesIndexConfigurator extends IndexConfigurator
 
     /**
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getSettings(): array
     {
@@ -42,14 +41,21 @@ class ServicesIndexConfigurator extends IndexConfigurator
 
     /**
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getStopWords(): array
     {
-        $json = Storage::disk('local')->get('elasticsearch/stopwords.json');
-        $stopWords = json_decode($json, true);
+        try {
+            $content = Storage::cloud()->get('elasticsearch/stop-words.csv');
+        } catch (FileNotFoundException $exception) {
+            return [];
+        }
+        $stopWords = csv_to_array($content);
 
-        return $stopWords;
+        $stopWords = collect($stopWords)->map(function (array $stopWord) {
+            return mb_strtolower($stopWord[0]);
+        });
+
+        return $stopWords->toArray();
     }
 
     /**
@@ -78,7 +84,7 @@ class ServicesIndexConfigurator extends IndexConfigurator
                     })
                     ->map(function (string $term) {
                         // Convert each term to lower case.
-                        return strtolower($term);
+                        return mb_strtolower($term);
                     });
 
                 // Check if the synonyms are using simple contraction.
@@ -96,9 +102,8 @@ class ServicesIndexConfigurator extends IndexConfigurator
 
                 // Otherwise, format as normal.
                 return $parsedSynonyms->implode(',');
-            })
-            ->toArray();
+            });
 
-        return $thesaurus;
+        return $thesaurus->toArray();
     }
 }
