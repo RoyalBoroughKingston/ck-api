@@ -1,6 +1,6 @@
 root:
   get:
-    tags: [Thesaurus]
+    tags: [Search Engine]
     summary: List all the synonyms
     description: |
       **Permission:** `Super Admin`
@@ -17,7 +17,7 @@ root:
                     $ref: /docs/core/resources/thesaurus.yaml
 
   put:
-    tags: [Thesaurus]
+    tags: [Search Engine]
     summary: Update the list of synonyms
     description: |
       **Permission**: `Super Admin`
