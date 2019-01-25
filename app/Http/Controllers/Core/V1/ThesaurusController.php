@@ -107,6 +107,8 @@ class ThesaurusController extends Controller
         // Clear the cache.
         cache()->forget(static::CACHE_KEY);
 
+        event(EndpointHit::onUpdate($request, 'Updated thesaurus'));
+
         // Reindex elasticsearch.
         Artisan::call(ReindexElasticsearchCommand::class);
 
