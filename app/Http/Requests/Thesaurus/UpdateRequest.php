@@ -14,7 +14,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->isGlobalAdmin();
+        return $this->user('api')->isGlobalAdmin();
     }
 
     /**

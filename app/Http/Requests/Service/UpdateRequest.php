@@ -51,9 +51,9 @@ class UpdateRequest extends FormRequest
                 Rule::unique(table(Service::class), 'slug')->ignoreModel($this->service),
                 new Slug(),
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->slug
@@ -66,9 +66,9 @@ class UpdateRequest extends FormRequest
                     Service::STATUS_INACTIVE,
                 ]),
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->status
@@ -95,9 +95,9 @@ class UpdateRequest extends FormRequest
             'show_referral_disclaimer' => [
                 'boolean',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->show_referral_disclaimer
@@ -110,9 +110,9 @@ class UpdateRequest extends FormRequest
                     Service::REFERRAL_METHOD_NONE,
                 ]),
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_method
@@ -124,9 +124,9 @@ class UpdateRequest extends FormRequest
                 'min:1',
                 'max:255',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_button_text
@@ -138,9 +138,9 @@ class UpdateRequest extends FormRequest
                 'email',
                 'max:255',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_email
@@ -152,9 +152,9 @@ class UpdateRequest extends FormRequest
                 'url',
                 'max:255',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->referral_url

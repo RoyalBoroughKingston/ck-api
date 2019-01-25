@@ -14,7 +14,7 @@ class StopWordsTest extends TestCase
     public function test_guest_cannot_view_stop_words()
     {
         $response = $this->json('GET', '/core/v1/stop-words');
-
+        
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 }
