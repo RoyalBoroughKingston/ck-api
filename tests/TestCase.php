@@ -60,7 +60,7 @@ abstract class TestCase extends BaseTestCase
      */
     public function tearDown()
     {
-        Storage::cloud()->deleteDirectory('testing-cloud/files');
+        Storage::cloud()->deleteDirectory('files');
 
         $this->tearDownElasticsearch();
 
