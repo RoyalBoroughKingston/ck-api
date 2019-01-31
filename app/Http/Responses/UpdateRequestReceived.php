@@ -2,15 +2,16 @@
 
 namespace App\Http\Responses;
 
+use App\Models\UpdateRequest;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Response;
 
 class UpdateRequestReceived implements Responsable
 {
     /**
-     * @var array
+     * @var \App\Models\UpdateRequest
      */
-    protected $data;
+    protected $updateRequest;
 
     /**
      * @var int
@@ -20,12 +21,12 @@ class UpdateRequestReceived implements Responsable
     /**
      * UpdateRequestReceived constructor.
      *
-     * @param array $data
+     * @param \App\Models\UpdateRequest $updateRequest
      * @param int $code
      */
-    public function __construct(array $data = [], int $code = Response::HTTP_OK)
+    public function __construct(UpdateRequest $updateRequest, int $code = Response::HTTP_OK)
     {
-        $this->data = $data;
+        $this->updateRequest = $updateRequest;
         $this->code = $code;
     }
 
@@ -39,7 +40,8 @@ class UpdateRequestReceived implements Responsable
     {
         return response()->json([
             'message' => 'The update request has been received and needs to be reviewed',
-            'data' => $this->data,
+            'id' => $this->updateRequest->id,
+            'data' => $this->updateRequest->data,
         ], $this->code);
     }
 }

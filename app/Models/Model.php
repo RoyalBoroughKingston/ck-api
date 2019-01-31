@@ -58,4 +58,13 @@ abstract class Model extends BaseModel
             }
         });
     }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasAppend(string $name): bool
+    {
+        return in_array($name, $this->appends);
+    }
 }

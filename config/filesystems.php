@@ -53,6 +53,11 @@ return [
             'root' => storage_path('cloud'),
         ],
 
+        'testing_cloud' => [
+            'driver' => 'local',
+            'root' => storage_path('testing-cloud'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

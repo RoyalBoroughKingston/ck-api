@@ -73,6 +73,7 @@ class UpdateRequestController extends Controller
             ->where('id', $updateRequest->id);
 
         $updateRequest = QueryBuilder::for($baseQuery)
+            ->withEntry()
             ->firstOrFail();
 
         event(EndpointHit::onRead($request, "Viewed update request [{$updateRequest->id}]", $updateRequest));

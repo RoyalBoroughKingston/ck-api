@@ -51,7 +51,7 @@ class ThesaurusController extends Controller
                         })
                         ->map(function (string $term) {
                             // Convert each term to lower case.
-                            return strtolower($term);
+                            return mb_strtolower($term);
                         })
                         ->values();
                 })
@@ -91,6 +91,13 @@ class ThesaurusController extends Controller
             }
         }
 
+        // Convert each word to lowercase.
+        foreach ($synonyms as &$synonym) {
+            foreach ($synonym as &$term) {
+                $term = mb_strtolower($term);
+            }
+        }
+
         // Convert the array to a string.
         $thesaurus = array_to_csv($synonyms);
 
@@ -102,6 +109,8 @@ class ThesaurusController extends Controller
 
         // Reindex elasticsearch.
         Artisan::call(ReindexElasticsearchCommand::class);
+
+        event(EndpointHit::onUpdate($request, 'Updated thesaurus'));
 
         // Return the thesaurus.
         return new Thesaurus($request->synonyms);

@@ -17,8 +17,10 @@ class EntryFilter implements Filter
     public function __invoke(Builder $query, $value, string $property): Builder
     {
         $sql = (new UpdateRequest())->getEntrySql();
-        $value = "%{$value}%";
 
-        return $query->whereRaw("({$sql}) LIKE ?", [$value]);
+        // Don't treat comma's as an array separator.
+        $value = implode(',', array_wrap($value));
+
+        return $query->whereRaw("({$sql}) LIKE ?", "%{$value}%");
     }
 }

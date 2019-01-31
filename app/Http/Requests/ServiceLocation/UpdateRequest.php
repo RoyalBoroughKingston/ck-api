@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests\ServiceLocation;
 
+use App\Http\Requests\HasMissingValues;
 use App\Models\RegularOpeningHour;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
+    use HasMissingValues;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -30,9 +33,9 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+            'name' => ['nullable', 'string', 'min:1', 'max:255'],
 
-            'regular_opening_hours' => ['present', 'array'],
+            'regular_opening_hours' => ['array'],
             'regular_opening_hours.*' => ['array'],
             'regular_opening_hours.*.frequency' => ['required_with:regular_opening_hours.*', Rule::in([
                 RegularOpeningHour::FREQUENCY_WEEKLY,
@@ -47,7 +50,7 @@ class UpdateRequest extends FormRequest
             'regular_opening_hours.*.opens_at' => ['required_with:regular_opening_hours.*', 'date_format:H:i:s'],
             'regular_opening_hours.*.closes_at' => ['required_with:regular_opening_hours.*', 'date_format:H:i:s'],
 
-            'holiday_opening_hours' => ['present', 'array'],
+            'holiday_opening_hours' => ['array'],
             'holiday_opening_hours.*' => ['array'],
             'holiday_opening_hours.*.is_closed' => ['required_with:holiday_opening_hours.*', 'boolean'],
             'holiday_opening_hours.*.starts_at' => ['required_with:holiday_opening_hours.*', 'date_format:Y-m-d'],

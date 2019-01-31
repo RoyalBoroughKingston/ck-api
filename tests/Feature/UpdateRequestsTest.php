@@ -172,7 +172,9 @@ class UpdateRequestsTest extends TestCase
                 'accessibility_info' => null,
             ]
         ]);
-        $organisation = factory(Organisation::class)->create();
+        $organisation = factory(Organisation::class)->create([
+            'name' => 'Name with, comma',
+        ]);
         $organisationUpdateRequest = $organisation->updateRequests()->create([
             'user_id' => $user->id,
             'data' => [
@@ -185,7 +187,7 @@ class UpdateRequestsTest extends TestCase
         ]);
 
         Passport::actingAs($user);
-        $response = $this->json('GET', '/core/v1/update-requests?filter[entry]=Test Name');
+        $response = $this->json('GET', "/core/v1/update-requests?filter[entry]={$organisation->name}");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonMissing(['id' => $locationUpdateRequest->id]);
@@ -195,7 +197,9 @@ class UpdateRequestsTest extends TestCase
     public function test_can_sort_by_entry()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $location = factory(Location::class)->create();
+        $location = factory(Location::class)->create([
+            'address_line_1' => 'Entry A',
+        ]);
         $locationUpdateRequest = $location->updateRequests()->create([
             'user_id' => $user->id,
             'data' => [
@@ -209,7 +213,9 @@ class UpdateRequestsTest extends TestCase
                 'accessibility_info' => null,
             ]
         ]);
-        $organisation = factory(Organisation::class)->create();
+        $organisation = factory(Organisation::class)->create([
+            'name' => 'Entry B',
+        ]);
         $organisationUpdateRequest = $organisation->updateRequests()->create([
             'user_id' => $user->id,
             'data' => [

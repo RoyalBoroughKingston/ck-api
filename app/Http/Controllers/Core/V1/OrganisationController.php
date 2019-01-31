@@ -127,14 +127,14 @@ class OrganisationController extends Controller
     public function update(UpdateRequest $request, Organisation $organisation)
     {
         return DB::transaction(function () use ($request, $organisation) {
-            $data = [
-                'slug' => $request->slug,
-                'name' => $request->name,
-                'description' => $request->description,
-                'url' => $request->url,
-                'email' => $request->email,
-                'phone' => $request->phone,
-            ];
+            $data = array_filter_missing([
+                'slug' => $request->missing('slug'),
+                'name' => $request->missing('name'),
+                'description' => $request->missing('description'),
+                'url' => $request->missing('url'),
+                'email' => $request->missing('email'),
+                'phone' => $request->missing('phone'),
+            ]);
 
             // Update the logo if the logo field was provided.
             if ($request->filled('logo')) {
@@ -154,14 +154,14 @@ class OrganisationController extends Controller
                 $data['logo_file_id'] = null;
             }
 
-            $organisation->updateRequests()->create([
+            $updateRequest = $organisation->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated organisation [{$organisation->id}]", $organisation));
 
-            return new UpdateRequestReceived($data);
+            return new UpdateRequestReceived($updateRequest);
         });
     }
 

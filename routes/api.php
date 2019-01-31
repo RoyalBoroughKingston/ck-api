@@ -76,6 +76,10 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     // Status Updates.
     Route::apiResource('/status-updates', 'StatusUpdateController');
 
+    // Stop words.
+    Route::get('/stop-words', 'StopWordsController@index')->name('stop-words.index');
+    Route::put('/stop-words', 'StopWordsController@update')->name('stop-words.update');
+
     // Taxonomy Categories.
     Route::apiResource('/taxonomies/categories', 'TaxonomyCategoryController')
         ->parameter('categories', 'taxonomy')

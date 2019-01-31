@@ -51,9 +51,9 @@ class StoreRequest extends FormRequest
                     Service::STATUS_INACTIVE,
                 ]),
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     Service::STATUS_INACTIVE
@@ -81,9 +81,9 @@ class StoreRequest extends FormRequest
                 'required',
                 'boolean',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     false
@@ -97,9 +97,9 @@ class StoreRequest extends FormRequest
                     Service::REFERRAL_METHOD_NONE,
                 ]),
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     Service::REFERRAL_METHOD_NONE
@@ -112,9 +112,9 @@ class StoreRequest extends FormRequest
                 'min:1',
                 'max:255',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     null
@@ -127,9 +127,9 @@ class StoreRequest extends FormRequest
                 'email',
                 'max:255',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     null
@@ -142,9 +142,9 @@ class StoreRequest extends FormRequest
                 'url',
                 'max:255',
                 new UserHasRole(
-                    $this->user(),
+                    $this->user('api'),
                     new UserRole([
-                        'user_id' => $this->user()->id,
+                        'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     null

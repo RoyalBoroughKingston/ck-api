@@ -7,10 +7,14 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title', config('app.name', 'Laravel'))</title>
+
+    <!-- Favicon -->
+    @include('partials.favicons')
 
     <!-- Styles -->
-    <link href="{{ asset('css/auth.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @yield('css')
 </head>
 <body>
     <header class="govuk-header" role="banner" data-module="header">
@@ -38,5 +42,7 @@
             @yield('content')
         </main>
     </div>
+
+    @yield('js')
 </body>
 </html>

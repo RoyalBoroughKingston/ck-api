@@ -28,6 +28,7 @@ defaults: &defaults
     GOOGLE_API_KEY: ((GOOGLE_API_KEY))
     GOV_NOTIFY_API_KEY: ((GOV_NOTIFY_API_KEY))
     LOG_CHANNEL: errorlog
+    OTP_ENABLED: ((OTP_ENABLED))
     QUEUE_DRIVER: sqs
     SMS_DRIVER: gov
     SQS_KEY: ((SQS_KEY))

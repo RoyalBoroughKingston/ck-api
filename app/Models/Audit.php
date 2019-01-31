@@ -16,4 +16,6 @@ class Audit extends Model
     const ACTION_READ = 'read';
     const ACTION_UPDATE = 'update';
     const ACTION_DELETE = 'delete';
+
+    const AUTO_DELETE_MONTHS = 24;
 }

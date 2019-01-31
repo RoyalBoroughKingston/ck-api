@@ -328,6 +328,71 @@ class LocationsTest extends TestCase
         });
     }
 
+    public function test_only_partial_fields_can_be_updated()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'address_line_1' => '30-34 Aire St',
+        ];
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => 'locations',
+            'updateable_id' => $location->id,
+        ]);
+        $data = UpdateRequest::where('updateable_type', 'locations')
+            ->where('updateable_id', $location->id)
+            ->firstOrFail()
+            ->data;
+        $this->assertEquals($data, $payload);
+    }
+
+    public function test_fields_removed_for_existing_update_requests()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $responseOne = $this->json('PUT', "/core/v1/locations/{$location->id}", [
+            'address_line_1' => '1 Old Street',
+        ]);
+        $responseOne->assertStatus(Response::HTTP_OK);
+
+        $responseTwo = $this->json('PUT', "/core/v1/locations/{$location->id}", [
+            'address_line_1' => '2 New Street',
+            'address_line_2' => 'Floor 3',
+        ]);
+        $responseTwo->assertStatus(Response::HTTP_OK);
+
+        $updateRequestOne = UpdateRequest::withTrashed()->findOrFail($this->getResponseContent($responseOne)['id']);
+        $updateRequestTwo = UpdateRequest::findOrFail($this->getResponseContent($responseTwo)['id']);
+
+        $this->assertArrayNotHasKey('address_line_1', $updateRequestOne->data);
+        $this->assertArrayHasKey('address_line_1', $updateRequestTwo->data);
+        $this->assertArrayHasKey('address_line_2', $updateRequestTwo->data);
+        $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
+    }
+
     /*
      * Delete a specific location.
      */

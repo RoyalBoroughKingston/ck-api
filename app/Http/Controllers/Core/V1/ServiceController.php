@@ -17,6 +17,7 @@ use App\Models\File;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
+use App\Support\MissingValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -159,6 +160,9 @@ class ServiceController extends Controller
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
             $service->syncServiceTaxonomies($taxonomies);
 
+            // Ensure conditional fields are reset if needed.
+            $service->resetConditionalFields();
+
             event(EndpointHit::onCreate($request, "Created service [{$service->id}]", $service));
 
             $service->load('usefulInfos', 'socialMedias', 'taxonomies');
@@ -200,41 +204,43 @@ class ServiceController extends Controller
     {
         return DB::transaction(function () use ($request, $service) {
             // Initialise the data array.
-            $data = [
-                'slug' => $request->slug,
-                'name' => $request->name,
-                'status' => $request->status,
-                'intro' => $request->intro,
-                'description' => $request->description,
-                'wait_time' => $request->wait_time,
-                'is_free' => $request->is_free,
-                'fees_text' => $request->fees_text,
-                'fees_url' => $request->fees_url,
-                'testimonial' => $request->testimonial,
-                'video_embed' => $request->video_embed,
-                'url' => $request->url,
-                'contact_name' => $request->contact_name,
-                'contact_phone' => $request->contact_phone,
-                'contact_email' => $request->contact_email,
-                'show_referral_disclaimer' => $request->show_referral_disclaimer,
-                'referral_method' => $request->referral_method,
-                'referral_button_text' => $request->referral_button_text,
-                'referral_email' => $request->referral_email,
-                'referral_url' => $request->referral_url,
-                'criteria' => [
-                    'age_group' => $request->criteria['age_group'],
-                    'disability' => $request->criteria['disability'],
-                    'employment' => $request->criteria['employment'],
-                    'gender' => $request->criteria['gender'],
-                    'housing' => $request->criteria['housing'],
-                    'income' => $request->criteria['income'],
-                    'language' => $request->criteria['language'],
-                    'other' => $request->criteria['other'],
-                ],
-                'useful_infos' => [],
-                'social_medias' => [],
-                'category_taxonomies' => $request->category_taxonomies,
-            ];
+            $data = array_filter_missing([
+                'slug' => $request->missing('slug'),
+                'name' => $request->missing('name'),
+                'status' => $request->missing('status'),
+                'intro' => $request->missing('intro'),
+                'description' => $request->missing('description'),
+                'wait_time' => $request->missing('wait_time'),
+                'is_free' => $request->missing('is_free'),
+                'fees_text' => $request->missing('fees_text'),
+                'fees_url' => $request->missing('fees_url'),
+                'testimonial' => $request->missing('testimonial'),
+                'video_embed' => $request->missing('video_embed'),
+                'url' => $request->missing('url'),
+                'contact_name' => $request->missing('contact_name'),
+                'contact_phone' => $request->missing('contact_phone'),
+                'contact_email' => $request->missing('contact_email'),
+                'show_referral_disclaimer' => $request->missing('show_referral_disclaimer'),
+                'referral_method' => $request->missing('referral_method'),
+                'referral_button_text' => $request->missing('referral_button_text'),
+                'referral_email' => $request->missing('referral_email'),
+                'referral_url' => $request->missing('referral_url'),
+                'criteria' => $request->has('criteria')
+                    ? array_filter_missing([
+                        'age_group' => $request->missing('criteria.age_group'),
+                        'disability' => $request->missing('criteria.disability'),
+                        'employment' => $request->missing('criteria.employment'),
+                        'gender' => $request->missing('criteria.gender'),
+                        'housing' => $request->missing('criteria.housing'),
+                        'income' => $request->missing('criteria.income'),
+                        'language' => $request->missing('criteria.language'),
+                        'other' => $request->missing('criteria.other'),
+                    ])
+                    : new MissingValue(),
+                'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
+                'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
+                'category_taxonomies' => $request->missing('category_taxonomies'),
+            ]);
 
             // Update the logo if the logo field was provided.
             if ($request->filled('logo')) {
@@ -255,7 +261,7 @@ class ServiceController extends Controller
             }
 
             // Loop through each useful info.
-            foreach ($request->useful_infos as $usefulInfo) {
+            foreach ($request->input('useful_infos', []) as $usefulInfo) {
                 $data['useful_infos'][] = [
                     'title' => $usefulInfo['title'],
                     'description' => $usefulInfo['description'],
@@ -264,21 +270,21 @@ class ServiceController extends Controller
             }
 
             // Loop through each social media.
-            foreach ($request->social_medias as $socialMedia) {
+            foreach ($request->input('social_medias', []) as $socialMedia) {
                 $data['social_medias'][] = [
                     'type' => $socialMedia['type'],
                     'url' => $socialMedia['url'],
                 ];
             }
 
-            $service->updateRequests()->create([
+            $updateRequest = $service->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
 
-            return new UpdateRequestReceived($data);
+            return new UpdateRequestReceived($updateRequest);
         });
     }
 

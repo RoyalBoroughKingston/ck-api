@@ -28,6 +28,9 @@ class UpdateRequestResource extends JsonResource
 
             // Relationships.
             'user' => new UserResource($this->whenLoaded('user')),
+
+            // Appends.
+            'entry' => $this->entry,
         ];
     }
 }

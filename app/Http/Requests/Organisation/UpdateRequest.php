@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Organisation;
 
+use App\Http\Requests\HasMissingValues;
 use App\Models\Organisation;
 use App\Rules\Base64EncodedPng;
 use App\Rules\Slug;
@@ -10,6 +11,8 @@ use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
+    use HasMissingValues;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -33,7 +36,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'slug' => [
-                'required',
                 'string',
                 'min:1',
                 'max:255',
@@ -41,12 +43,12 @@ class UpdateRequest extends FormRequest
                     ->ignoreModel($this->organisation),
                 new Slug(),
             ],
-            'name' => ['required', 'string', 'min:1', 'max:255'],
-            'description' => ['required', 'string', 'min:1', 'max:10000'],
-            'url' => ['required', 'url', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'phone' => ['required', 'string', 'min:1', 'max:255'],
-            'logo' => ['nullable', 'string', new Base64EncodedPng()],
+            'name' => ['string', 'min:1', 'max:255'],
+            'description' => ['string', 'min:1', 'max:10000'],
+            'url' => ['url', 'max:255'],
+            'email' => ['email', 'max:255'],
+            'phone' => ['string', 'min:1', 'max:255'],
+            'logo' => [new Base64EncodedPng(true)],
         ];
     }
 }

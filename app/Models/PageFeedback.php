@@ -12,6 +12,8 @@ class PageFeedback extends Model
     use PageFeedbackRelationships;
     use PageFeedbackScopes;
 
+    const AUTO_DELETE_MONTHS = 6;
+
     /**
      * The attributes that should be cast to native types.
      *

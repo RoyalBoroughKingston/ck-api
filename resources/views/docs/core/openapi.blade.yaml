@@ -86,6 +86,9 @@ paths:
   /status-updates:
     $ref: /docs/core/paths/status-updates.yaml#/root
 
+  /stop-words:
+    $ref: /docs/core/paths/stop-words.yaml#/root
+
   /taxonomies/categories:
     $ref: /docs/core/paths/category-taxonomies.yaml#/root
   /taxonomies/categories/{category}:
@@ -138,12 +141,12 @@ tags:
 - name: Report Schedules
 - name: Reports
 - name: Search
+- name: Search Engine
 - name: Service Locations
 - name: Services
 - name: Status Updates
 - name: "Taxonomy: Categories"
 - name: "Taxonomy: Organisations"
-- name: Thesaurus
 - name: Update Requests
 - name: Users
 

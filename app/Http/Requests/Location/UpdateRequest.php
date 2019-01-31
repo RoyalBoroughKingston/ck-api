@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests\Location;
 
+use App\Http\Requests\HasMissingValues;
 use App\Rules\Postcode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
 {
+    use HasMissingValues;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,16 +32,16 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'address_line_1' => ['required', 'string', 'min:1', 'max:255'],
-            'address_line_2' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'address_line_3' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'city' => ['required', 'string', 'min:1', 'max:255'],
-            'county' => ['required', 'string', 'min:1', 'max:255'],
-            'postcode' => ['required', 'string', 'min:1', 'max:255', new Postcode()],
-            'country' => ['required', 'string', 'min:1', 'max:255'],
-            'accessibility_info' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
-            'has_wheelchair_access' => ['required', 'boolean'],
-            'has_induction_loop' => ['required', 'boolean'],
+            'address_line_1' => ['string', 'min:1', 'max:255'],
+            'address_line_2' => ['nullable', 'string', 'min:1', 'max:255'],
+            'address_line_3' => ['nullable', 'string', 'min:1', 'max:255'],
+            'city' => ['string', 'min:1', 'max:255'],
+            'county' => ['string', 'min:1', 'max:255'],
+            'postcode' => ['string', 'min:1', 'max:255', new Postcode()],
+            'country' => ['string', 'min:1', 'max:255'],
+            'accessibility_info' => ['nullable', 'string', 'min:1', 'max:10000'],
+            'has_wheelchair_access' => ['boolean'],
+            'has_induction_loop' => ['boolean'],
         ];
     }
 }

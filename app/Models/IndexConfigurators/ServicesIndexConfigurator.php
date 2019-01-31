@@ -14,7 +14,6 @@ class ServicesIndexConfigurator extends IndexConfigurator
 
     /**
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getSettings(): array
     {
@@ -42,14 +41,21 @@ class ServicesIndexConfigurator extends IndexConfigurator
 
     /**
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getStopWords(): array
     {
-        $json = Storage::disk('local')->get('elasticsearch/stopwords.json');
-        $stopWords = json_decode($json, true);
+        try {
+            $content = Storage::cloud()->get('elasticsearch/stop-words.csv');
+        } catch (FileNotFoundException $exception) {
+            return [];
+        }
+        $stopWords = csv_to_array($content);
 
-        return $stopWords;
+        $stopWords = collect($stopWords)->map(function (array $stopWord) {
+            return mb_strtolower($stopWord[0]);
+        });
+
+        return $stopWords->toArray();
     }
 
     /**
@@ -70,19 +76,34 @@ class ServicesIndexConfigurator extends IndexConfigurator
 
         $thesaurus = $thesaurus
             ->map(function (Collection $synonyms) {
-                return $synonyms
+                // Parse the synonyms.
+                $parsedSynonyms = $synonyms
                     ->reject(function (string $term) {
                         // Filter out any empty strings.
                         return $term === '';
                     })
                     ->map(function (string $term) {
                         // Convert each term to lower case.
-                        return strtolower($term);
-                    })
-                    ->implode(', ');
-            })
-            ->toArray();
+                        return mb_strtolower($term);
+                    });
 
-        return $thesaurus;
+                // Check if the synonyms are using simple contraction.
+                $usingSimpleContraction = $parsedSynonyms->filter(function (string $term) {
+                    return preg_match('/\s/', $term);
+                })->isNotEmpty();
+
+                // If using simple contraction, then format accordingly.
+                if ($usingSimpleContraction) {
+                    $lastTerm = $parsedSynonyms->pop();
+                    $allWords = $parsedSynonyms->implode(',');
+
+                    return "$allWords => $lastTerm";
+                }
+
+                // Otherwise, format as normal.
+                return $parsedSynonyms->implode(',');
+            });
+
+        return $thesaurus->toArray();
     }
 }
