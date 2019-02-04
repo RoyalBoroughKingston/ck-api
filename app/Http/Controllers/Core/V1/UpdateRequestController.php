@@ -35,10 +35,11 @@ class UpdateRequestController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = UpdateRequest::query()
+            ->select('*')
+            ->withEntry()
             ->whereNull('approved_at');
 
         $updateRequests = QueryBuilder::for($baseQuery)
-            ->withEntry() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::scope('service_id'),
@@ -70,10 +71,11 @@ class UpdateRequestController extends Controller
     public function show(ShowRequest $request, UpdateRequest $updateRequest)
     {
         $baseQuery = UpdateRequest::query()
+            ->select('*')
+            ->withEntry()
             ->where('id', $updateRequest->id);
 
         $updateRequest = QueryBuilder::for($baseQuery)
-            ->withEntry()
             ->firstOrFail();
 
         event(EndpointHit::onRead($request, "Viewed update request [{$updateRequest->id}]", $updateRequest));

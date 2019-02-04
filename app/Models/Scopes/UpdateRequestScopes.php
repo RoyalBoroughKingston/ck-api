@@ -3,6 +3,7 @@
 namespace App\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 trait UpdateRequestScopes
 {
@@ -69,7 +70,7 @@ trait UpdateRequestScopes
      */
     public function scopeWithEntry(Builder $query, string $alias = 'entry'): Builder
     {
-        return $query->selectSub($this->getEntrySql(), $alias);
+        return $query->addSelect(DB::raw("({$this->getEntrySql()}) AS {$alias}"));
     }
 
     /**
