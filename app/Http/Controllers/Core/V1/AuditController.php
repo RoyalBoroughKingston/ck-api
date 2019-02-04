@@ -6,10 +6,12 @@ use App\Events\EndpointHit;
 use App\Http\Requests\Audit\IndexRequest;
 use App\Http\Requests\Audit\ShowRequest;
 use App\Http\Resources\AuditResource;
+use App\Http\Sorts\Audit\UserFullNameSort;
 use App\Models\Audit;
 use App\Http\Controllers\Controller;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Sort;
 
 class AuditController extends Controller
 {
@@ -33,7 +35,6 @@ class AuditController extends Controller
         $baseQuery = Audit::query();
 
         $audits = QueryBuilder::for($baseQuery)
-            ->withUserFullName() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('user_id'),
@@ -44,7 +45,7 @@ class AuditController extends Controller
             ->allowedSorts([
                 'action',
                 'description',
-                'user_full_name',
+                Sort::custom('user_full_name', UserFullNameSort::class),
                 'created_at',
             ])
             ->defaultSort('-created_at')

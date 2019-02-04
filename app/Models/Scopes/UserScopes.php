@@ -35,7 +35,10 @@ trait UserScopes
             ->orderByRaw($sql['sql'], $sql['bindings'])
             ->take(1);
 
-        return $query->selectSub($subQuery, $alias);
+        return $query->selectRaw(
+            "({$subQuery->toSql()}) AS `{$alias}`",
+            $subQuery->getBindings()
+        );
     }
 
     /**

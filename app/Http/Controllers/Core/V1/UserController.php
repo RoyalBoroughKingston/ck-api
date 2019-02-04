@@ -47,13 +47,14 @@ class UserController extends Controller
         $userRolesIncluded = str_contains($request->include, 'user-roles');
 
         $baseQuery = User::query()
+            ->select('*')
+            ->withHighestRoleOrder('highest_role')
             ->when($userRolesIncluded, function (Builder $query): Builder {
                 // If user roles included, then make sure the role is also eager loaded.
                 return $query->with('userRoles.role');
             });
 
         $users = QueryBuilder::for($baseQuery)
-            ->withHighestRoleOrder('highest_role')
             ->allowedFilters([
                 Filter::exact('id'),
                 'first_name',
