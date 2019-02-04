@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Sorts\Audit;
+namespace App\Http\Sorts\Referral;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Sorts\Sort;
 
-class UserFullNameSort implements Sort
+class ServiceNameSort implements Sort
 {
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -18,9 +18,9 @@ class UserFullNameSort implements Sort
     {
         $descending = $descending ? 'DESC' : 'ASC';
 
-        $subQuery = DB::table('users')
-            ->selectRaw('CONCAT(`users`.`first_name`, " ", `users`.`last_name`)')
-            ->whereRaw('`audits`.`user_id` = `users`.`id`')
+        $subQuery = DB::table('services')
+            ->select('services.name')
+            ->whereRaw('`referrals`.`service_id` = `services`.`id`')
             ->take(1);
 
         return $query->orderByRaw("({$subQuery->toSql()}) $descending", $subQuery->getBindings());

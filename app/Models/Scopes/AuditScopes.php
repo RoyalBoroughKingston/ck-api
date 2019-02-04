@@ -4,7 +4,6 @@ namespace App\Models\Scopes;
 
 use App\Models\Audit;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 trait AuditScopes
 {
