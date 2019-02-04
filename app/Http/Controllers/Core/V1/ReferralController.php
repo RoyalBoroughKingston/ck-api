@@ -10,6 +10,8 @@ use App\Http\Requests\Referral\ShowRequest;
 use App\Http\Requests\Referral\StoreRequest;
 use App\Http\Requests\Referral\UpdateRequest;
 use App\Http\Resources\ReferralResource;
+use App\Http\Sorts\Referral\OrganisationNameSort;
+use App\Http\Sorts\Referral\ServiceNameSort;
 use App\Models\Referral;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Sort;
 
 class ReferralController extends Controller
 {
@@ -60,8 +63,6 @@ class ReferralController extends Controller
 
         // Filtering by the service ID here will only work for the IDs retrieved above. Others will be discarded.
         $referrals = QueryBuilder::for($baseQuery)
-            ->withServiceName() // This scope has to be chained on here, after the QueryBuilder.
-            ->withOrganisationName() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('service_id'),
@@ -73,8 +74,8 @@ class ReferralController extends Controller
             ->allowedIncludes(['service.organisation'])
             ->allowedSorts([
                 'reference',
-                'service_name',
-                'organisation_name',
+                Sort::custom('service_name', ServiceNameSort::class),
+                Sort::custom('organisation_name', OrganisationNameSort::class),
                 'status',
                 'created_at',
             ])
