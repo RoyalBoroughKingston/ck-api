@@ -70,7 +70,7 @@ trait UpdateRequestScopes
      */
     public function scopeWithEntry(Builder $query, string $alias = 'entry'): Builder
     {
-        return $query->addSelect(DB::raw("({$this->getEntrySql()}) AS {$alias}"));
+        return $query->addSelect(DB::raw("({$this->getEntrySql()}) AS `{$alias}`"));
     }
 
     /**
