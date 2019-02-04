@@ -6,7 +6,6 @@ use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 trait ServiceScopes
 {
@@ -38,20 +37,5 @@ trait ServiceScopes
             ->toArray();
 
         return Collection::query()->whereIn('id', $collectionIds);
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $alias
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeWithOrganisationName(Builder $query, string $alias = 'organisation_name'): Builder
-    {
-        $subQuery = DB::table('organisations')
-            ->select('organisations.name')
-            ->whereRaw('`services`.`organisation_id` = `organisations`.`id`')
-            ->take(1);
-
-        return $query->selectSub($subQuery, $alias);
     }
 }

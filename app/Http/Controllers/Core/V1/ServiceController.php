@@ -13,6 +13,7 @@ use App\Http\Requests\Service\UpdateRequest;
 use App\Http\Resources\ServiceResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
+use App\Http\Sorts\Service\OrganisationNameSort;
 use App\Models\File;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Sort;
 
 class ServiceController extends Controller
 {
@@ -50,7 +52,6 @@ class ServiceController extends Controller
             });
 
         $services = QueryBuilder::for($baseQuery)
-            ->withOrganisationName() // This scope has to be chained on here, after the QueryBuilder.
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('organisation_id'),
@@ -63,7 +64,7 @@ class ServiceController extends Controller
             ->allowedIncludes(['organisation'])
             ->allowedSorts([
                 'name',
-                'organisation_name',
+                Sort::custom('organisation_name', OrganisationNameSort::class),
                 'status',
                 'referral_method',
             ])
