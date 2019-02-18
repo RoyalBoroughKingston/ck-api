@@ -6,6 +6,8 @@ services:
     build:
       context: ./docker/api
       dockerfile: Dockerfile
+    environment:
+      - APP_ENV=local
     volumes:
       - .:/var/www/html
     networks:
@@ -17,7 +19,6 @@ services:
       - .:/var/www/html
     networks:
       - app-net
-    working_dir: /var/www/html
     command: php artisan queue:work --tries=1
 
   scheduler:
@@ -26,7 +27,6 @@ services:
       - .:/var/www/html
     networks:
       - app-net
-    working_dir: /var/www/html
     command: php artisan schedule:loop
 
   node:

@@ -4,8 +4,10 @@
 php /var/www/html/artisan migrate --force
 
 # Cache config and routes.
-php /var/www/html/artisan config:cache
-php /var/www/html/artisan route:cache
+if [[ "${APP_ENV}" != "local" ]]; then
+    php /var/www/html/artisan config:cache
+    php /var/www/html/artisan route:cache
+fi
 
 # Start supervisor.
 /usr/bin/supervisord
