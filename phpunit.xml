@@ -28,7 +28,6 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="CACHE_PREFIX" value="testing"/>
         <env name="DB_HOST" value="mysql-testing"/>
-        <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="SCOUT_PREFIX" value="testing_"/>
         <env name="GEOCODE_DRIVER" value="stub"/>
