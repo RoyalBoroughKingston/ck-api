@@ -150,6 +150,11 @@ return [
                 'email' => 'e659e10a-f7b3-4f86-a5fa-289cfef1cf3f',
             ],
         ],
+        'scheduled_report_generated' => [
+            'notify_global_admin' => [
+                'email' => 'fa6f064a-6b63-4dc0-a83d-602e9cbb5bfe',
+            ],
+        ],
     ],
 
 ];
