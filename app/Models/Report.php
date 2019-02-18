@@ -47,6 +47,8 @@ class Report extends Model
         $report = static::create([
             'report_type_id' => $type->id,
             'file_id' => $file->id,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
         ]);
 
         // Get the name for the report generation method.
