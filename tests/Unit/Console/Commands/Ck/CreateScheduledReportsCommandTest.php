@@ -29,8 +29,8 @@ class CreateScheduledReportsCommandTest extends TestCase
 
         $this->assertDatabaseHas(table(Report::class), [
             'report_type_id' => $reportSchedule->reportType->id,
-            'starts_at' => now()->startOfWeek()->toDateString(),
-            'ends_at' => now()->endOfWeek()->toDateString(),
+            'starts_at' => now()->subWeek()->startOfWeek()->toDateString(),
+            'ends_at' => now()->subWeek()->endOfWeek()->toDateString(),
         ]);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
@@ -56,8 +56,8 @@ class CreateScheduledReportsCommandTest extends TestCase
 
         $this->assertDatabaseHas(table(Report::class), [
             'report_type_id' => $reportSchedule->reportType->id,
-            'starts_at' => now()->startOfMonth()->toDateString(),
-            'ends_at' => now()->endOfMonth()->toDateString(),
+            'starts_at' => now()->subMonth()->startOfMonth()->toDateString(),
+            'ends_at' => now()->subMonth()->endOfMonth()->toDateString(),
         ]);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);

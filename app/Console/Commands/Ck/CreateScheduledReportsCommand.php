@@ -109,8 +109,8 @@ class CreateScheduledReportsCommand extends Command
             // Attempt to create.
             $report = Report::generate(
                 $reportSchedule->reportType,
-                now()->startOfWeek(),
-                now()->endOfWeek()
+                now()->subWeek()->startOfWeek(),
+                now()->subWeek()->endOfWeek()
             );
 
             // Send a notification.
@@ -150,8 +150,8 @@ class CreateScheduledReportsCommand extends Command
             // Attempt to create.
             $report = Report::generate(
                 $reportSchedule->reportType,
-                now()->startOfMonth(),
-                now()->endOfMonth()
+                now()->subMonth()->startOfMonth(),
+                now()->subMonth()->endOfMonth()
             );
 
             // Send a notification.
