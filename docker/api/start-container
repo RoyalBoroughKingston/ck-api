@@ -4,7 +4,7 @@
 php /var/www/html/artisan migrate --force
 
 # Cache config and routes.
-if [[ "${APP_ENV}" != "local" ]]; then
+if [[ "${IS_LOCAL}" != "true" ]]; then
     php /var/www/html/artisan config:cache
     php /var/www/html/artisan route:cache
 fi

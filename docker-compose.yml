@@ -7,7 +7,7 @@ services:
       context: ./docker/api
       dockerfile: Dockerfile
     environment:
-      - APP_ENV=local
+      - IS_LOCAL=true
     volumes:
       - .:/var/www/html
     networks:
