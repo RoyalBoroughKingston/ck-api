@@ -17,6 +17,18 @@ class Report extends Model
     use ReportScopes;
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'starts_at' => 'date',
+        'ends_at' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
      * Created a report record and a file record.
      * Then delegates the physical file creation to a `generateReportName` method.
      *
@@ -47,6 +59,8 @@ class Report extends Model
         $report = static::create([
             'report_type_id' => $type->id,
             'file_id' => $file->id,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
         ]);
 
         // Get the name for the report generation method.
