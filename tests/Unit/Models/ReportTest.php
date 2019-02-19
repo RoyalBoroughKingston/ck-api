@@ -430,6 +430,53 @@ class ReportTest extends TestCase
         ], $csv[1]);
     }
 
+    public function test_referrals_export_works_with_organistion_name()
+    {
+        // Create a single referral.
+        $referral = factory(Referral::class)->create([
+            'referral_consented_at' => now(),
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->email,
+            'referee_phone' => '07700000000',
+            'organisation' => $this->faker->company,
+        ]);
+
+        // Generate the report.
+        $report = Report::generate(ReportType::referralsExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'Referred to Organisation ID',
+            'Referred to Organisation',
+            'Referred to Service ID',
+            'Referred to Service Name',
+            'Date Made',
+            'Date Complete',
+            'Self/Champion',
+            'Refer from organisation',
+            'Date Consent Provided',
+        ], $csv[0]);
+
+        // Assert created referral exported.
+        $this->assertEquals([
+            $referral->service->organisation->id,
+            $referral->service->organisation->name,
+            $referral->service->id,
+            $referral->service->name,
+            $referral->created_at->format(Carbon::ISO8601),
+            '',
+            'Champion',
+            $referral->organisation,
+            $referral->referral_consented_at->format(Carbon::ISO8601),
+        ], $csv[1]);
+    }
+
     /*
      * Feedback export.
      */
