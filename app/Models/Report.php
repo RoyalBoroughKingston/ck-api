@@ -335,7 +335,7 @@ class Report extends Model
                             ? $referral->latestCompletedStatusUpdate->created_at->format(Carbon::ISO8601)
                             : '',
                         $referral->isSelfReferral() ? 'Self' : 'Champion',
-                        $referral->isSelfReferral() ? null : $referral->organisationTaxonomy->name,
+                        $referral->isSelfReferral() ? null : $referral->organisationName(),
                         optional($referral->referral_consented_at)->format(Carbon::ISO8601),
                     ];
                 });

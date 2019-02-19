@@ -152,4 +152,12 @@ class Referral extends Model implements Notifiable
 
         return $statusUpdate;
     }
+
+    /**
+     * @return string
+     */
+    public function organisationName(): string
+    {
+        return $this->organisation ?? $this->organisationTaxonomy->name;
+    }
 }
