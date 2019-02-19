@@ -15,9 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(function () {
     // Audits.
+    Route::match(['GET', 'POST'], '/audits/index', 'AuditController@index');
     Route::apiResource('/audits', 'AuditController')->only('index', 'show');
 
     // Collection Categories.
+    Route::match(['GET', 'POST'], '/collections/categories/index', 'CollectionCategoryController@index');
     Route::apiResource('/collections/categories', 'CollectionCategoryController')
         ->parameter('categories', 'collection')
         ->names([
@@ -29,6 +31,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         ]);
 
     // Collection Personas.
+    Route::match(['GET', 'POST'], '/collections/personas/index', 'CollectionPersonaController@index');
     Route::apiResource('/collections/personas', 'CollectionPersonaController')
         ->parameter('personas', 'collection')
         ->names([
@@ -41,25 +44,32 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::get('/collections/personas/{collection}/image.png', 'CollectionPersona\\ImageController')->name('collection-personas.image.show');
 
     // Locations.
+    Route::match(['GET', 'POST'], '/locations/index', 'LocationController@index');
     Route::apiResource('/locations', 'LocationController');
 
     // Notifications.
+    Route::match(['GET', 'POST'], '/notifications/index', 'NotificationController@index');
     Route::apiResource('/notifications', 'NotificationController')->only('index', 'show');
 
     // Organisations.
+    Route::match(['GET', 'POST'], '/organisations/index', 'OrganisationController@index');
     Route::apiResource('/organisations', 'OrganisationController');
     Route::get('/organisations/{organisation}/logo.png', 'Organisation\\LogoController')->name('organisations.logo');
 
     // Page Feedbacks.
+    Route::match(['GET', 'POST'], '/page-feedbacks/index', 'PageFeedbackController@index');
     Route::apiResource('/page-feedbacks', 'PageFeedbackController')->only('index', 'store', 'show');
 
     // Referrals.
+    Route::match(['GET', 'POST'], '/referrals/index', 'ReferralController@index');
     Route::apiResource('/referrals', 'ReferralController')->only('index', 'store', 'show', 'update');
 
     // Report Schedules.
+    Route::match(['GET', 'POST'], '/report-schedules/index', 'ReportScheduleController@index');
     Route::apiResource('/report-schedules', 'ReportScheduleController');
 
     // Reports.
+    Route::match(['GET', 'POST'], '/reports/index', 'ReportController@index');
     Route::apiResource('/reports', 'ReportController')->only('index', 'store', 'show', 'destroy');
     Route::get('/reports/{report}/download', 'Report\\DownloadController@show')->name('reports.download');
 
@@ -67,13 +77,16 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::post('/search', 'SearchController')->name('search');
 
     // Service Locations.
+    Route::match(['GET', 'POST'], '/service-locations/index', 'ServiceLocationController@index');
     Route::apiResource('/service-locations', 'ServiceLocationController');
 
     // Services.
+    Route::match(['GET', 'POST'], '/services/index', 'ServiceController@index');
     Route::apiResource('/services', 'ServiceController');
     Route::get('/services/{service}/logo.png', 'Service\\LogoController')->name('services.logo.show');
 
     // Status Updates.
+    Route::match(['GET', 'POST'], '/status-updates/index', 'StatusUpdateController@index');
     Route::apiResource('/status-updates', 'StatusUpdateController');
 
     // Stop words.
@@ -81,6 +94,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::put('/stop-words', 'StopWordsController@update')->name('stop-words.update');
 
     // Taxonomy Categories.
+    Route::match(['GET', 'POST'], '/taxonomies/categories/index', 'TaxonomyCategoryController@index');
     Route::apiResource('/taxonomies/categories', 'TaxonomyCategoryController')
         ->parameter('categories', 'taxonomy')
         ->names([
@@ -92,6 +106,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         ]);
 
     // Taxonomy Organisations.
+    Route::match(['GET', 'POST'], '/taxonomies/organisations/index', 'TaxonomyOrganisationController@index');
     Route::apiResource('/taxonomies/organisations', 'TaxonomyOrganisationController')
         ->parameter('organisations', 'taxonomy')
         ->names([
@@ -107,10 +122,12 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::put('/thesaurus', 'ThesaurusController@update')->name('thesaurus.update');
 
     // Update Requests.
+    Route::match(['GET', 'POST'], '/update-requests/index', 'UpdateRequestController@index');
     Route::apiResource('/update-requests', 'UpdateRequestController')->only('index', 'show', 'destroy');
     Route::put('/update-requests/{update_request}/approve', 'UpdateRequest\\ApproveController@update')->name('update-requests.approve');
 
     // Users.
+    Route::match(['GET', 'POST'], '/users/index', 'UserController@index');
     Route::get('/users/user', 'UserController@user')->name('users.user');
     Route::delete('/users/user/sessions', 'User\\SessionController@destroy')->name('users.user.sessions.destroy');
     Route::apiResource('/users', 'UserController');

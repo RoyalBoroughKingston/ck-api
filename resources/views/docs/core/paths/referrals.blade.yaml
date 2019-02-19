@@ -82,6 +82,15 @@ root:
                 data:
                   $ref: /docs/core/resources/referral.yaml
 
+# /referrals/index
+index:
+  post:
+    tags: [Referrals]
+    summary: List all the referrals
+    description: |
+      This is an alias of `GET /referrals` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /referrals/{referral}
 nested:
   get:

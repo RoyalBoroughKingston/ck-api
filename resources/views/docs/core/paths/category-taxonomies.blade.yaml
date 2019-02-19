@@ -52,6 +52,15 @@ root:
                 data:
                   $ref: /docs/core/resources/category-taxonomy.yaml
 
+# /collections/categories/index
+index:
+  post:
+    tags: ["Taxonomy: Categories"]
+    summary: List all the category taxonomies
+    description: |
+      This is an alias of `GET /taxonomies/categories` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /taxonomies/categories/{category}
 nested:
   get:

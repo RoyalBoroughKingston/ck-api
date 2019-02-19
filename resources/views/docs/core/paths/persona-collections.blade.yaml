@@ -49,6 +49,15 @@ root:
                 data:
                   $ref: /docs/core/resources/persona-collection.yaml
 
+# /collections/personas/index
+index:
+  post:
+    tags: ["Collection: Personas"]
+    summary: List all the persona collections
+    description: |
+      This is an alias of `GET /collections/personas` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /collections/personas/{persona}
 nested:
   get:

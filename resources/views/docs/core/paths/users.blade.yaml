@@ -94,6 +94,15 @@ root:
                 data:
                   $ref: /docs/core/resources/user.yaml
 
+# /users/index
+index:
+  post:
+    tags: [Users]
+    summary: List all the users
+    description: |
+      This is an alias of `GET /users` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /users/{user}
 nested:
   get:
