@@ -40,7 +40,7 @@ class UpdateRequest extends FormRequest
             'sidebox_content' => ['present', 'required_with:sidebox_title', 'nullable', 'string'],
             'category_taxonomies' => ['present', 'array'],
             'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
-            'image' => ['nullable', 'string', new Base64EncodedPng()],
+            'image' => [new Base64EncodedPng(true)],
         ];
     }
 }
