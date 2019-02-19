@@ -38,3 +38,12 @@ root:
                     type: array
                     items:
                       $ref: /docs/core/resources/status-update.yaml
+
+# /status-updates/index
+index:
+  post:
+    tags: [Status Updates]
+    summary: List all the status updates
+    description: |
+      This is an alias of `GET /status-updates` which allows all the query string parameters
+      to be passed as part of the request body.

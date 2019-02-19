@@ -46,6 +46,15 @@ root:
                 data:
                   $ref: /docs/core/resources/organisation-taxonomy.yaml
 
+# /taxonomies/organisations/index
+index:
+  post:
+    tags: ["Taxonomy: Organisations"]
+    summary: List all the organisation taxonomies
+    description: |
+      This is an alias of `GET /taxonomies/organisations` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /taxonomies/organisations/{organisation}
 nested:
   get:

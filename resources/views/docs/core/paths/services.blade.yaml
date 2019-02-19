@@ -100,6 +100,15 @@ root:
                 data:
                   $ref: /docs/core/resources/service.yaml
 
+# /services/index
+index:
+  post:
+    tags: [Services]
+    summary: List all the services
+    description: |
+      This is an alias of `GET /services` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /services/{service}
 nested:
   get:

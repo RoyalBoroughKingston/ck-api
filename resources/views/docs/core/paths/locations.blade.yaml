@@ -85,6 +85,15 @@ root:
                 data:
                   $ref: /docs/core/resources/location.yaml
 
+# /locations/index
+index:
+  post:
+    tags: [Locations]
+    summary: List all the locations
+    description: |
+      This is an alias of `GET /locations` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /locations/{location}
 nested:
   get:

@@ -72,6 +72,15 @@ root:
                     items:
                       $ref: /docs/core/resources/update-request.yaml
 
+# /update-requests/index
+index:
+  post:
+    tags: [Update Requests]
+    summary: List all the update requests
+    description: |
+      This is an alias of `GET /update-requests` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /update-requests/{update_request}
 nested:
   get:

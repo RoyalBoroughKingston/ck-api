@@ -48,6 +48,15 @@ root:
                 data:
                   $ref: /docs/core/resources/report.yaml
 
+# /reports/index
+index:
+  post:
+    tags: [Reports]
+    summary: List all the reports
+    description: |
+      This is an alias of `GET /reports` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /reports/{report}
 nested:
   get:

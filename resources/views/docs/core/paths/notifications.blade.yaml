@@ -42,6 +42,15 @@ root:
                     items:
                       $ref: /docs/core/resources/notification.yaml
 
+# /notifications/index
+index:
+  post:
+    tags: [Notifications]
+    summary: List all the notifications
+    description: |
+      This is an alias of `GET /notifications` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /notifications/{notification}
 nested:
   get:

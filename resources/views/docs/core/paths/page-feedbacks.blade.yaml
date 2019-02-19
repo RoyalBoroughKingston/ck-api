@@ -56,6 +56,15 @@ root:
                 data:
                   $ref: /docs/core/resources/page-feedback.yaml
 
+# /page-feedbacks/index
+index:
+  post:
+    tags: [Page Feedbacks]
+    summary: List all the page feedbacks
+    description: |
+      This is an alias of `GET /page-feedbacks` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /page-feedbacks/{page_feedback}
 nested:
   get:
