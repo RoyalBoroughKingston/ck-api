@@ -15,6 +15,8 @@ class File extends Model implements Responsable
     use FileRelationships;
     use FileScopes;
 
+    const META_TYPE_RESIZED_IMAGE = 'resized_image';
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -104,5 +106,18 @@ class File extends Model implements Responsable
         $data = base64_decode($data);
 
         return $this->upload($data);
+    }
+
+    /**
+     * @param int $maxDimension
+     * @return \App\Models\File|null
+     */
+    public function resizedVersion(int $maxDimension): ?self
+    {
+        return static::query()
+            ->whereRaw('`meta`->>"$.type" = ?', [static::META_TYPE_RESIZED_IMAGE])
+            ->whereRaw('`meta`->>"$.data.file_id" = ?', [$this->id])
+            ->whereRaw('`meta`->>"$.data.max_dimension" = ?', [$maxDimension])
+            ->first();
     }
 }
