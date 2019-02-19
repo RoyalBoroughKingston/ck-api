@@ -140,15 +140,17 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
+        $data = $updateRequest->data;
+
         // Update the service location.
         $this->update([
-            'name' => $updateRequest->data['name'] ?? $this->name,
+            'name' => $data['name'] ?? $this->name,
         ]);
 
         // Attach the regular opening hours.
-        if (array_key_exists('regular_opening_hours', $updateRequest->data)) {
+        if (array_key_exists('regular_opening_hours', $data)) {
             $this->regularOpeningHours()->delete();
-            foreach ($updateRequest->data['regular_opening_hours'] as $regularOpeningHour) {
+            foreach ($data['regular_opening_hours'] as $regularOpeningHour) {
                 $this->regularOpeningHours()->create([
                     'frequency' => $regularOpeningHour['frequency'],
                     'weekday' => in_array(
@@ -173,9 +175,9 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
         }
 
         // Attach the holiday opening hours.
-        if (array_key_exists('holiday_opening_hours', $updateRequest->data)) {
+        if (array_key_exists('holiday_opening_hours', $data)) {
             $this->holidayOpeningHours()->delete();
-            foreach ($updateRequest->data['holiday_opening_hours'] as $holidayOpeningHour) {
+            foreach ($data['holiday_opening_hours'] as $holidayOpeningHour) {
                 $this->holidayOpeningHours()->create([
                     'is_closed' => $holidayOpeningHour['is_closed'],
                     'starts_at' => $holidayOpeningHour['starts_at'],
