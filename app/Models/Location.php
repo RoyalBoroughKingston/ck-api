@@ -73,17 +73,19 @@ class Location extends Model implements AppliesUpdateRequests
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
+        $data = $updateRequest->data;
+
         $this->update([
-            'address_line_1' => $updateRequest->data['address_line_1'] ?? $this->address_line_1,
-            'address_line_2' => $updateRequest->data['address_line_2'] ?? $this->address_line_2,
-            'address_line_3' => $updateRequest->data['address_line_3'] ?? $this->address_line_3,
-            'city' => $updateRequest->data['city'] ?? $this->city,
-            'county' => $updateRequest->data['county'] ?? $this->county,
-            'postcode' => $updateRequest->data['postcode'] ?? $this->postcode,
-            'country' => $updateRequest->data['country'] ?? $this->country,
-            'accessibility_info' => $updateRequest->data['accessibility_info'] ?? $this->accessibility_info,
-            'has_wheelchair_access' => $updateRequest->data['has_wheelchair_access'] ?? $this->has_wheelchair_access,
-            'has_induction_loop' => $updateRequest->data['has_induction_loop'] ?? $this->has_induction_loop,
+            'address_line_1' => $data['address_line_1'] ?? $this->address_line_1,
+            'address_line_2' => $data['address_line_2'] ?? $this->address_line_2,
+            'address_line_3' => $data['address_line_3'] ?? $this->address_line_3,
+            'city' => $data['city'] ?? $this->city,
+            'county' => $data['county'] ?? $this->county,
+            'postcode' => $data['postcode'] ?? $this->postcode,
+            'country' => $data['country'] ?? $this->country,
+            'accessibility_info' => $data['accessibility_info'] ?? $this->accessibility_info,
+            'has_wheelchair_access' => $data['has_wheelchair_access'] ?? $this->has_wheelchair_access,
+            'has_induction_loop' => $data['has_induction_loop'] ?? $this->has_induction_loop,
         ]);
 
         $this->updateCoordinate()->save();

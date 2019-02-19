@@ -26,7 +26,16 @@ class ImageController extends Controller
 
         $image = File::find($collection->meta['image_file_id']);
 
-        return $image ?? response()->make(
+        return $image ?? $this->placeholder();
+    }
+
+    /**
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    protected function placeholder(): Response
+    {
+        return response()->make(
             Storage::disk('local')->get('/placeholders/persona.png'),
             Response::HTTP_OK,
             ['Content-Type' => 'image/png']

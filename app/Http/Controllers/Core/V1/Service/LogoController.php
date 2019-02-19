@@ -27,15 +27,26 @@ class LogoController extends Controller
 
         // Use the file from an update request if specified.
         if ($request->has('update_request_id')) {
-            $updateRequest = UpdateRequest::query()
+            $logoFileId = UpdateRequest::query()
                 ->serviceId($service->id)
                 ->where('id', '=', $request->update_request_id)
-                ->firstOrFail();
+                ->firstOrFail()
+                ->data['logo_file_id'];
+            $file = File::find($logoFileId);
 
-            return File::findOrFail($updateRequest->data['logo_file_id']);
+            return $file ?? $this->placeholder();
         }
 
-        return $service->logoFile ?? response()->make(
+        return $service->logoFile ?? $this->placeholder();
+    }
+
+    /**
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    protected function placeholder(): Response
+    {
+        return response()->make(
             Storage::disk('local')->get('/placeholders/service.png'),
             Response::HTTP_OK,
             ['Content-Type' => 'image/png']
