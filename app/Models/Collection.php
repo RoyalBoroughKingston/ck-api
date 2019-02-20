@@ -6,6 +6,8 @@ use App\Models\Mutators\CollectionMutators;
 use App\Models\Relationships\CollectionRelationships;
 use App\Models\Scopes\CollectionScopes;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class Collection extends Model
 {
@@ -41,5 +43,23 @@ class Collection extends Model
         }
 
         return $this;
+    }
+
+    /**
+     * @param int|null $maxDimension
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     */
+    public static function personaPlaceholderLogo(int $maxDimension = null)
+    {
+        if ($maxDimension !== null) {
+            return File::resizedPlaceholder($maxDimension, File::META_PLACEHOLDER_FOR_COLLECTION_PERSONA);
+        }
+
+        return response()->make(
+            Storage::disk('local')->get('/placeholders/collection_persona.png'),
+            Response::HTTP_OK,
+            ['Content-Type' => File::MIME_TYPE_PNG]
+        );
     }
 }

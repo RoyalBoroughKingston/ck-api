@@ -8,8 +8,6 @@ use App\Models\File;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\UpdateRequest;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 
 class LogoController extends Controller
 {
@@ -25,31 +23,23 @@ class LogoController extends Controller
     {
         event(EndpointHit::onRead($request, "Viewed logo for service [{$service->id}]", $service));
 
-        // Use the file from an update request if specified.
+        // Get the logo file associated.
+        $file = $service->logoFile;
+
+        // Use the file from an update request instead, if specified.
         if ($request->has('update_request_id')) {
             $logoFileId = UpdateRequest::query()
                 ->serviceId($service->id)
                 ->where('id', '=', $request->update_request_id)
                 ->firstOrFail()
                 ->data['logo_file_id'];
-            $file = File::find($logoFileId);
 
-            return $file ?? $this->placeholder();
+            /** @var \App\Models\File $file */
+            $file = File::findOrFail($logoFileId);
         }
 
-        return $service->logoFile ?? $this->placeholder();
-    }
-
-    /**
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    protected function placeholder(): Response
-    {
-        return response()->make(
-            Storage::disk('local')->get('/placeholders/service.png'),
-            Response::HTTP_OK,
-            ['Content-Type' => 'image/png']
-        );
+        // Return the file, or placeholder if the file is null.
+        return optional($file)->resizedVersion($request->max_dimension)
+            ?? Service::placeholderLogo($request->max_dimension);
     }
 }

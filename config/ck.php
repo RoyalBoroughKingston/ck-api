@@ -65,6 +65,14 @@ return [
     'search_distance' => 15,
 
     /*
+     * The dimensions to automatically generate resized images at.
+     */
+    'cached_image_dimensions' => [
+        150,
+        350,
+    ],
+
+    /*
      * Used for GOV.UK Notify.
      */
     'notifications_template_ids' => [

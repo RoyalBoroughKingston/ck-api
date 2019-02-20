@@ -212,6 +212,7 @@ logo:
       required: true
       schema:
         type: string
+    - $ref: /docs/core/parameters/max-dimension.yaml
     - name: update_request_id
       in: query
       description: File to use from update request

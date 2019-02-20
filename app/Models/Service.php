@@ -16,6 +16,8 @@ use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
 
@@ -362,5 +364,23 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     public function hasLogo(): bool
     {
         return $this->logo_file_id !== null;
+    }
+
+    /**
+     * @param int|null $maxDimension
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     */
+    public static function placeholderLogo(int $maxDimension = null)
+    {
+        if ($maxDimension !== null) {
+            return File::resizedPlaceholder($maxDimension, File::META_PLACEHOLDER_FOR_SERVICE);
+        }
+
+        return response()->make(
+            Storage::disk('local')->get('/placeholders/service.png'),
+            Response::HTTP_OK,
+            ['Content-Type' => File::MIME_TYPE_PNG]
+        );
     }
 }
