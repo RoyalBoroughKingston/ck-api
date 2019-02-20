@@ -35,7 +35,13 @@ class Resizer
         }
 
         // Create an image resource for the destination image.
-        $dstImageResource = ImageCreateTrueColor($newWidth, $newHeight);
+        $dstImageResource = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Preserve the alpha.
+        imagealphablending($dstImageResource, false);
+        imagesavealpha($dstImageResource,true);
+        $transparent = imagecolorallocatealpha($dstImageResource, 255, 255, 255, 127);
+        imagefilledrectangle($dstImageResource, 0, 0, $newWidth, $newHeight, $transparent);
 
         // Perform the image resizing on the destination image.
         imagecopyresampled(
