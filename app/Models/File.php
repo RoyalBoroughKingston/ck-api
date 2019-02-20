@@ -17,6 +17,10 @@ class File extends Model implements Responsable
 
     const META_TYPE_RESIZED_IMAGE = 'resized_image';
 
+    const META_PLACEHOLDER_FOR_ORGANISATION = 'organisation';
+    const META_PLACEHOLDER_FOR_SERVICE = 'service';
+    const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -109,15 +113,69 @@ class File extends Model implements Responsable
     }
 
     /**
-     * @param int $maxDimension
-     * @return \App\Models\File|null
+     * Get a file record which is a resized version of the current instance.
+     *
+     * @param int|null $maxDimension
+     * @return \App\Models\File
      */
-    public function resizedVersion(int $maxDimension): ?self
+    public function resizedVersion(int $maxDimension = null): self
     {
-        return static::query()
+        // If no resize then return current instance.
+        if ($maxDimension === null) {
+            return $this;
+        }
+
+        // Parameter validation.
+        if ($maxDimension < 1 || $maxDimension > 1000) {
+            throw new \InvalidArgumentException("Max dimension in not withing range [$maxDimension]");
+        }
+
+        $file = static::query()
             ->whereRaw('`meta`->>"$.type" = ?', [static::META_TYPE_RESIZED_IMAGE])
             ->whereRaw('`meta`->>"$.data.file_id" = ?', [$this->id])
             ->whereRaw('`meta`->>"$.data.max_dimension" = ?', [$maxDimension])
             ->first();
+
+        // Create the resized version if it doesn't exist.
+        if ($file === null) {
+            // TODO
+        }
+
+        return $file;
+    }
+
+    /**
+     * Get a file record which is a resized version of the specified placeholder.
+     *
+     * @param int $maxDimension
+     * @param string $placeholderFor
+     * @return \App\Models\File
+     * @throws \InvalidArgumentException
+     */
+    public static function resizedPlaceholder(int $maxDimension, string $placeholderFor): self
+    {
+        // Parameter validation.
+        if (
+            !in_array($placeholderFor, [
+                static::META_PLACEHOLDER_FOR_ORGANISATION,
+                static::META_PLACEHOLDER_FOR_SERVICE,
+                static::META_PLACEHOLDER_FOR_COLLECTION_PERSONA,
+            ])
+        ) {
+            throw new \InvalidArgumentException("Invalid placeholder name [$placeholderFor]");
+        }
+
+        $file = static::query()
+            ->whereRaw('`meta`->>"$.type" = ?', [static::META_TYPE_RESIZED_IMAGE])
+            ->whereRaw('`meta`->>"$.data.placeholder_for" = ?', [$placeholderFor])
+            ->whereRaw('`meta`->>"$.data.max_dimension" = ?', [$maxDimension])
+            ->first();
+
+        // Create the resized version if it doesn't exist.
+        if ($file === null) {
+            // TODO
+        }
+
+        return $file;
     }
 }
