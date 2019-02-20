@@ -27,55 +27,51 @@ COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.$COMPOSE_FILE.ym
 
 # Pass arguments to docker-compose, or default to docker-compose ps.
 if [ $# -gt 0  ]; then
-    # If the first argument is "art" or "artisan".
-    if [ "$1" == "art" ] || [ "$1" == "artisan"  ]; then
-        # Shift the parameters past the first one.
-        shift 1
-        ${COMPOSE} run --rm ${TTY} \
-            -w /var/www/html \
-            api \
-            php artisan "$@"
-    # If "composer" is used, pass-through to "composer" inside a new container.
-    elif [ "$1" == "composer"  ]; then
-        shift 1
-        ${COMPOSE} run --rm ${TTY} \
-            -w /var/www/html \
-            api \
-            composer "$@"
-    # If "phpunit" is used, run unit tests.
-    # Pass-through any arguments to PHPUnit.
-    elif [ "$1" == "phpunit" ]; then
-        shift 1
-        ${COMPOSE} run --rm ${TTY} \
-            -w /var/www/html \
-            api \
-            php vendor/bin/phpunit "$@"
-    # If "phpcs" is used, run the linter.
-    # Pass-through any arguments to code sniffer.
-    elif [ "$1" == "phpcs" ]; then
-        shift 1
-        ${COMPOSE} run --rm ${TTY} \
-            -w /var/www/html \
-            api \
-            php vendor/bin/phpcs "$@"
-    # If "phpcbf" is used, run the code fixer.
-    # Pass-through any arguments to code fixer.
-    elif [ "$1" == "phpcbf" ]; then
-        shift 1
-        ${COMPOSE} run --rm ${TTY} \
-            -w /var/www/html \
-            api \
-            php vendor/bin/phpcbf "$@"
-    # If "npm" is used, run NPM from the node container.
-    elif [ "$1" == "npm"  ]; then
-        shift 1
-        ${COMPOSE} run --rm ${TTY} \
-            -w /var/www/html \
-            node \
-            npm "$@"
-    else
-        ${COMPOSE} "$@"
-    fi
+    case "$1" in
+        art|artisan )
+            shift 1
+            ${COMPOSE} run --rm ${TTY} \
+                api \
+                php artisan "$@"
+            ;;
+        dump-server|dumpserver )
+            shift 1
+            ${COMPOSE} exec \
+                api \
+                php artisan dump-server "$@"
+            ;;
+        composer )
+            shift 1
+            ${COMPOSE} run --rm ${TTY} \
+                api \
+                composer "$@"
+            ;;
+        phpunit )
+            shift 1
+            ${COMPOSE} run --rm ${TTY} \
+                api \
+                php vendor/bin/phpunit "$@"
+            ;;
+        phpcs )
+            shift 1
+            ${COMPOSE} run --rm ${TTY} \
+                api \
+                php vendor/bin/phpcs "$@"
+            ;;
+        phpcbf )
+            shift 1
+            ${COMPOSE} run --rm ${TTY} \
+                api \
+                php vendor/bin/phpcbf "$@"
+            ;;
+        npm )
+            shift 1
+            ${COMPOSE} run --rm ${TTY} \
+                node \
+                npm "$@"
+            ;;
+        * ) ${COMPOSE} "$@"; ;;
+    esac
 else
     ${COMPOSE} ps
 fi
