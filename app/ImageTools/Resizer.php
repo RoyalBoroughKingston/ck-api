@@ -17,11 +17,33 @@ class Resizer
         // Create an image resource from the contents string.
         $srcImageResource = imagecreatefromstring($srcImageContent);
 
-        // Get the original width and height of the source image.
-        $oldWidth = imageSX($srcImageResource);
-        $oldHeight = imageSY($srcImageResource);
+        // Calculate the new width and
+        $dimensions = $this->getDimensions($srcImageResource, $maxDimension);
 
-        // Determine the new width and height.
+        // Create an image resource for the destination image.
+        $dstImageResource = $this->createDestinationImageResource($srcImageResource, $dimensions);
+
+        // Get the string contents of the destination image.
+        $result = $this->imageResourceToString($dstImageResource);
+
+        // Destroy the source and destination image resources.
+        imagedestroy($srcImageResource);
+        imagedestroy($dstImageResource);
+
+        return $result;
+    }
+
+    /**
+     * @param $imageResource
+     * @param int $maxDimension
+     * @return array
+     */
+    protected function getDimensions($imageResource, int $maxDimension): array
+    {
+        // Get the original width and height of the source image.
+        $oldWidth = imageSX($imageResource);
+        $oldHeight = imageSY($imageResource);
+
         if ($oldWidth > $oldHeight) {
             $newWidth = $maxDimension;
             $newHeight = $oldHeight * ($maxDimension / $oldWidth);
@@ -29,19 +51,34 @@ class Resizer
             $newWidth = $oldWidth * ($maxDimension / $oldHeight);
             $newHeight = $maxDimension;
         } else {
-            // Both are equal.
+            // Else, both width and height must be equal.
             $newWidth = $maxDimension;
             $newHeight = $maxDimension;
         }
 
+        return [
+            'oldWidth' => $oldWidth,
+            'oldHeight' => $oldHeight,
+            'newWidth' => $newWidth,
+            'newHeight' => $newHeight,
+        ];
+    }
+
+    /**
+     * @param $srcImageResource
+     * @param array $dimensions
+     * @return resource
+     */
+    protected function createDestinationImageResource($srcImageResource, array $dimensions)
+    {
         // Create an image resource for the destination image.
-        $dstImageResource = imagecreatetruecolor($newWidth, $newHeight);
+        $dstImageResource = imagecreatetruecolor($dimensions['newWidth'], $dimensions['newHeight']);
 
         // Preserve the alpha.
         imagealphablending($dstImageResource, false);
         imagesavealpha($dstImageResource,true);
         $transparent = imagecolorallocatealpha($dstImageResource, 255, 255, 255, 127);
-        imagefilledrectangle($dstImageResource, 0, 0, $newWidth, $newHeight, $transparent);
+        imagefilledrectangle($dstImageResource, 0, 0, $dimensions['newWidth'], $dimensions['newHeight'], $transparent);
 
         // Perform the image resizing on the destination image.
         imagecopyresampled(
@@ -51,23 +88,29 @@ class Resizer
             0,
             0,
             0,
-            $newWidth,
-            $newHeight,
-            $oldWidth,
-            $oldHeight
+            $dimensions['newWidth'],
+            $dimensions['newHeight'],
+            $dimensions['oldWidth'],
+            $dimensions['oldHeight']
         );
 
-        // Get the string contents of the destination image.
+        return $dstImageResource;
+    }
+
+    /**
+     * Convert an image resource to a string.
+     *
+     * @param $imageResource
+     * @return string
+     */
+    protected function imageResourceToString($imageResource): string
+    {
         $tempStream = fopen('php://temp', 'r+');
-        imagepng($dstImageResource, $tempStream, 8);
+        imagepng($imageResource, $tempStream, 8);
         rewind($tempStream);
-        $result = stream_get_contents($tempStream);
+        $contents = stream_get_contents($tempStream);
         fclose($tempStream);
 
-        // Destroy the source and destination image resources.
-        imagedestroy($srcImageResource);
-        imagedestroy($dstImageResource);
-
-        return $result;
+        return $contents;
     }
 }
