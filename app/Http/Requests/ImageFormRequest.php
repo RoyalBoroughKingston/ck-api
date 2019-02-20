@@ -4,6 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property int|null $max_dimension
+ */
 abstract class ImageFormRequest extends FormRequest
 {
     /**
