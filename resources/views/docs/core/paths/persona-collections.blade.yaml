@@ -149,6 +149,7 @@ image:
       schema:
         type: string
         format: uuid
+    - $ref: /docs/core/parameters/max-dimension.yaml
     responses:
       200:
         content:
