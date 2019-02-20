@@ -92,7 +92,7 @@ class Organisation extends Model implements AppliesUpdateRequests
         return response()->make(
             Storage::disk('local')->get('/placeholders/organisation.png'),
             Response::HTTP_OK,
-            ['Content-Type' => 'image/png']
+            ['Content-Type' => File::MIME_TYPE_PNG]
         );
     }
 }

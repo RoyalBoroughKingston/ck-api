@@ -79,7 +79,7 @@ class OrganisationController extends Controller
                 // Create the file record.
                 $file = File::create([
                     'filename' => $organisation->id . '.png',
-                    'mime_type' => 'image/png',
+                    'mime_type' => File::MIME_TYPE_PNG,
                     'is_private' => false,
                 ]);
 
@@ -141,7 +141,7 @@ class OrganisationController extends Controller
                 // If a new logo was uploaded.
                 $file = File::create([
                     'filename' => $organisation->id.'.png',
-                    'mime_type' => 'image/png',
+                    'mime_type' => File::MIME_TYPE_PNG,
                     'is_private' => false,
                 ]);
 

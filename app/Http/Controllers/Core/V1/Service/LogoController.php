@@ -49,7 +49,7 @@ class LogoController extends Controller
         return response()->make(
             Storage::disk('local')->get('/placeholders/service.png'),
             Response::HTTP_OK,
-            ['Content-Type' => 'image/png']
+            ['Content-Type' => File::MIME_TYPE_PNG]
         );
     }
 }

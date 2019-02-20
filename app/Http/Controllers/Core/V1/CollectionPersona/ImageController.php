@@ -38,7 +38,7 @@ class ImageController extends Controller
         return response()->make(
             Storage::disk('local')->get('/placeholders/persona.png'),
             Response::HTTP_OK,
-            ['Content-Type' => 'image/png']
+            ['Content-Type' => File::MIME_TYPE_PNG]
         );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\ImageTools\Resizer;
 use App\Models\Mutators\FileMutators;
 use App\Models\Relationships\FileRelationships;
 use App\Models\Scopes\FileScopes;
@@ -14,6 +15,8 @@ class File extends Model implements Responsable
     use FileMutators;
     use FileRelationships;
     use FileScopes;
+
+    const MIME_TYPE_PNG = 'image/png';
 
     const META_TYPE_RESIZED_IMAGE = 'resized_image';
 
@@ -138,7 +141,26 @@ class File extends Model implements Responsable
 
         // Create the resized version if it doesn't exist.
         if ($file === null) {
-            // TODO
+            /** @var \App\ImageTools\Resizer $resizer */
+            $resizer = resolve(Resizer::class);
+
+            /** @var \App\Models\File $file */
+            $file = static::create([
+                'filename' => $this->filename,
+                'mime_type' => $this->mime_type,
+                'meta' => [
+                    'type' => static::META_TYPE_RESIZED_IMAGE,
+                    'data' => [
+                        'file_id' => $this->id,
+                        'max_dimension' => $maxDimension,
+                    ],
+                ],
+                'is_private' => $this->is_private,
+            ]);
+
+            $file->upload(
+                $resizer->resize($this->getContent(), $maxDimension)
+            );
         }
 
         return $file;
@@ -151,6 +173,7 @@ class File extends Model implements Responsable
      * @param string $placeholderFor
      * @return \App\Models\File
      * @throws \InvalidArgumentException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public static function resizedPlaceholder(int $maxDimension, string $placeholderFor): self
     {
@@ -173,7 +196,27 @@ class File extends Model implements Responsable
 
         // Create the resized version if it doesn't exist.
         if ($file === null) {
-            // TODO
+            /** @var \App\ImageTools\Resizer $resizer */
+            $resizer = resolve(Resizer::class);
+
+            /** @var \App\Models\File $file */
+            $file = static::create([
+                'filename' => "$placeholderFor.png",
+                'mime_type' => static::MIME_TYPE_PNG,
+                'meta' => [
+                    'type' => static::META_TYPE_RESIZED_IMAGE,
+                    'data' => [
+                        'placeholder_for' => $placeholderFor,
+                        'max_dimension' => $maxDimension,
+                    ],
+                ],
+                'is_private' => false,
+            ]);
+
+            $srcImageContent = Storage::disk('local')->get("/placeholders/$placeholderFor.png");
+            $file->upload(
+                $resizer->resize($srcImageContent, $maxDimension)
+            );
         }
 
         return $file;
