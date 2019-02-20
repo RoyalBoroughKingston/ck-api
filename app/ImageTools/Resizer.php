@@ -41,8 +41,8 @@ class Resizer
     protected function getDimensions($imageResource, int $maxDimension): array
     {
         // Get the original width and height of the source image.
-        $oldWidth = imageSX($imageResource);
-        $oldHeight = imageSY($imageResource);
+        $oldWidth = imagesx($imageResource);
+        $oldHeight = imagesy($imageResource);
 
         if ($oldWidth > $oldHeight) {
             $newWidth = $maxDimension;
@@ -76,7 +76,7 @@ class Resizer
 
         // Preserve the alpha.
         imagealphablending($dstImageResource, false);
-        imagesavealpha($dstImageResource,true);
+        imagesavealpha($dstImageResource, true);
         $transparent = imagecolorallocatealpha($dstImageResource, 255, 255, 255, 127);
         imagefilledrectangle($dstImageResource, 0, 0, $dimensions['newWidth'], $dimensions['newHeight'], $transparent);
 

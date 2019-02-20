@@ -178,13 +178,13 @@ class File extends Model implements Responsable
     public static function resizedPlaceholder(int $maxDimension, string $placeholderFor): self
     {
         // Parameter validation.
-        if (
-            !in_array($placeholderFor, [
-                static::META_PLACEHOLDER_FOR_ORGANISATION,
-                static::META_PLACEHOLDER_FOR_SERVICE,
-                static::META_PLACEHOLDER_FOR_COLLECTION_PERSONA,
-            ])
-        ) {
+        $validPlaceholdersFor = [
+            static::META_PLACEHOLDER_FOR_ORGANISATION,
+            static::META_PLACEHOLDER_FOR_SERVICE,
+            static::META_PLACEHOLDER_FOR_COLLECTION_PERSONA,
+        ];
+
+        if (!in_array($placeholderFor, $validPlaceholdersFor)) {
             throw new \InvalidArgumentException("Invalid placeholder name [$placeholderFor]");
         }
 
