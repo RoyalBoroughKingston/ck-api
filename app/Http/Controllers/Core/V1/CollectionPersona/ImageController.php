@@ -7,8 +7,6 @@ use App\Http\Requests\CollectionPersona\Image\ShowRequest;
 use App\Models\Collection;
 use App\Models\File;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -24,21 +22,11 @@ class ImageController extends Controller
     {
         event(EndpointHit::onRead($request, "Viewed image for collection persona [{$collection->id}]", $collection));
 
-        $image = File::find($collection->meta['image_file_id']);
+        // Get the logo file associated.
+        $file = File::find($collection->meta['image_file_id']);
 
-        return $image ?? $this->placeholder();
-    }
-
-    /**
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    protected function placeholder(): Response
-    {
-        return response()->make(
-            Storage::disk('local')->get('/placeholders/persona.png'),
-            Response::HTTP_OK,
-            ['Content-Type' => File::MIME_TYPE_PNG]
-        );
+        // Return the file, or placeholder if the file is null.
+        return optional($file)->resizedVersion($request->max_dimension)
+            ?? Collection::personaPlaceholderLogo($request->max_dimension);
     }
 }
