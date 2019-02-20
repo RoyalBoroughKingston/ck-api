@@ -114,6 +114,7 @@ class ServiceController extends Controller
             // Upload the logo if provided.
             if ($request->filled('logo')) {
                 // Create the file record.
+                /** @var \App\Models\File $file */
                 $file = File::create([
                     'filename' => $service->id . '.png',
                     'mime_type' => File::MIME_TYPE_PNG,
@@ -122,6 +123,11 @@ class ServiceController extends Controller
 
                 // Upload the file.
                 $file->uploadBase64EncodedPng($request->logo);
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
 
                 // Link the file to the organisation.
                 $service->logo_file_id = $file->id;
@@ -246,6 +252,7 @@ class ServiceController extends Controller
             // Update the logo if the logo field was provided.
             if ($request->filled('logo')) {
                 // If a new logo was uploaded.
+                /** @var \App\Models\File $file */
                 $file = File::create([
                     'filename' => $service->id.'.png',
                     'mime_type' => File::MIME_TYPE_PNG,
@@ -254,6 +261,11 @@ class ServiceController extends Controller
 
                 // Upload the file.
                 $file->uploadBase64EncodedPng($request->logo);
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
 
                 $data['logo_file_id'] = $file->id;
             } else if ($request->has('logo')) {

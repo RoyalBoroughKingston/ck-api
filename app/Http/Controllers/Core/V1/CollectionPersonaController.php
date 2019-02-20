@@ -78,6 +78,7 @@ class CollectionPersonaController extends Controller
 
             // Create the file record.
             if ($request->filled('image')) {
+                /** @var \App\Models\File $file */
                 $file = File::create([
                     'filename' => $persona->id . '.png',
                     'mime_type' => File::MIME_TYPE_PNG,
@@ -153,6 +154,7 @@ class CollectionPersonaController extends Controller
             // Update the image if the image field was provided.
             if ($request->filled('image')) {
                 // If a new image was uploaded.
+                /** @var \App\Models\File $file */
                 $file = File::create([
                     'filename' => $collection->id.'.png',
                     'mime_type' => File::MIME_TYPE_PNG,
