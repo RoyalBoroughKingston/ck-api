@@ -4,6 +4,7 @@ namespace App\Console\Commands\Ck;
 
 use Illuminate\Console\Command;
 use Laravel\Passport\ClientRepository;
+use Laravel\Passport\Passport;
 
 class CreateOauthClientCommand extends Command
 {
@@ -14,7 +15,8 @@ class CreateOauthClientCommand extends Command
      */
     protected $signature = 'ck:create-oauth-client
                             {name : The name of the client}
-                            {redirect-uri : The URI to redirect to}';
+                            {redirect-uri : The URI to redirect to}
+                            {--first-party : Flag that indicates this is a first party client}';
 
     /**
      * The console command description.
@@ -47,11 +49,18 @@ class CreateOauthClientCommand extends Command
      */
     public function handle()
     {
-        $client = $this->clients->create(
-            null,
-            $this->argument('name'),
-            $this->argument('redirect-uri')
-        );
+        $client = Passport::client()->forceFill([
+            'user_id' => null,
+            'name' => $this->argument('name'),
+            'secret' => str_random(40),
+            'redirect' => $this->argument('redirect-uri'),
+            'personal_access_client' => false,
+            'password_client' => false,
+            'revoked' => false,
+            'first_party' => $this->option('first-party'),
+        ]);
+
+        $client->save();
 
         $this->info('New client created successfully.');
         $this->line('<comment>Client ID:</comment> ' . $client->id);
