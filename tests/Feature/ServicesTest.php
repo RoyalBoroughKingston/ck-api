@@ -1991,6 +1991,110 @@ class ServicesTest extends TestCase
     }
 
     /*
+     * List all the related services.
+     */
+
+    public function test_guest_can_list_related()
+    {
+        $service = factory(Service::class)->create();
+        $service->usefulInfos()->create([
+            'title' => 'Did You Know?',
+            'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital/'
+        ]);
+        $service->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->first()->id,
+        ]);
+
+        $response = $this->json('GET', "/core/v1/services/{$service->id}/related");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'organisation_id',
+                'has_logo',
+                'name',
+                'slug',
+                'status',
+                'intro',
+                'description',
+                'wait_time',
+                'is_free',
+                'fees_text',
+                'fees_url',
+                'testimonial',
+                'video_embed',
+                'url',
+                'contact_name',
+                'contact_phone',
+                'contact_email',
+                'show_referral_disclaimer',
+                'referral_method',
+                'referral_button_text',
+                'referral_email',
+                'referral_url',
+                'criteria' => [
+                    'age_group',
+                    'disability',
+                    'employment',
+                    'gender',
+                    'housing',
+                    'income',
+                    'language',
+                    'other',
+                ],
+                'useful_infos' => [
+                    [
+                        'title',
+                        'description',
+                        'order',
+                    ],
+                ],
+                'social_medias' => [
+                    [
+                        'type',
+                        'url',
+                    ],
+                ],
+                'category_taxonomies' => [
+                    [
+                        'id',
+                        'parent_id',
+                        'name',
+                        'order',
+                        'created_at',
+                        'updated_at',
+                    ],
+                ],
+                'created_at',
+                'updated_at',
+            ],
+            'meta' => [
+                'current_page',
+                'from',
+                'last_page',
+                'path',
+                'per_page',
+                'to',
+                'total',
+            ],
+            'links' => [
+                'first',
+                'last',
+                'prev',
+                'next',
+            ],
+        ]);
+
+        // TODO: Test related
+    }
+
+    /*
      * Get a specific service's logo.
      */
 
