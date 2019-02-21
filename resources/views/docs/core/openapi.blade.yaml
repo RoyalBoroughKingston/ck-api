@@ -104,6 +104,8 @@ paths:
     $ref: /docs/core/paths/services.yaml#/index
   /services/{service}:
     $ref: /docs/core/paths/services.yaml#/nested
+  /services/{service}/related:
+    $ref: /docs/core/paths/services.yaml#/related
   /services/{service}/logo.png:
     $ref: /docs/core/paths/services.yaml#/logo
 
