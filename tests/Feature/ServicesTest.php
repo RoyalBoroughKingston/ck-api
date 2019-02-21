@@ -1996,83 +1996,97 @@ class ServicesTest extends TestCase
 
     public function test_guest_can_list_related()
     {
+        $taxonomyOne = Taxonomy::category()->children()->first()->children()->skip(0)->take(1)->first();
+        $taxonomyTwo = Taxonomy::category()->children()->first()->children()->skip(1)->take(1)->first();
+        $taxonomyThree = Taxonomy::category()->children()->first()->children()->skip(2)->take(1)->first();
+
         $service = factory(Service::class)->create();
-        $service->usefulInfos()->create([
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThree->id]);
+
+        $relatedService = factory(Service::class)->create();
+        $relatedService->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
             'order' => 1,
         ]);
-        $service->socialMedias()->create([
+        $relatedService->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
             'url' => 'https://www.instagram.com/ayupdigital/'
         ]);
-        $service->serviceTaxonomies()->create([
-            'taxonomy_id' => Taxonomy::category()->children()->first()->id,
-        ]);
+        $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
+        $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThree->id]);
+
+        $unrelatedService = factory(Service::class)->create();
+        $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
 
         $response = $this->json('GET', "/core/v1/services/{$service->id}/related");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
-                'id',
-                'organisation_id',
-                'has_logo',
-                'name',
-                'slug',
-                'status',
-                'intro',
-                'description',
-                'wait_time',
-                'is_free',
-                'fees_text',
-                'fees_url',
-                'testimonial',
-                'video_embed',
-                'url',
-                'contact_name',
-                'contact_phone',
-                'contact_email',
-                'show_referral_disclaimer',
-                'referral_method',
-                'referral_button_text',
-                'referral_email',
-                'referral_url',
-                'criteria' => [
-                    'age_group',
-                    'disability',
-                    'employment',
-                    'gender',
-                    'housing',
-                    'income',
-                    'language',
-                    'other',
-                ],
-                'useful_infos' => [
-                    [
-                        'title',
-                        'description',
-                        'order',
+                [
+                    'id',
+                    'organisation_id',
+                    'has_logo',
+                    'name',
+                    'slug',
+                    'status',
+                    'intro',
+                    'description',
+                    'wait_time',
+                    'is_free',
+                    'fees_text',
+                    'fees_url',
+                    'testimonial',
+                    'video_embed',
+                    'url',
+                    'contact_name',
+                    'contact_phone',
+                    'contact_email',
+                    'show_referral_disclaimer',
+                    'referral_method',
+                    'referral_button_text',
+                    'referral_email',
+                    'referral_url',
+                    'criteria' => [
+                        'age_group',
+                        'disability',
+                        'employment',
+                        'gender',
+                        'housing',
+                        'income',
+                        'language',
+                        'other',
                     ],
-                ],
-                'social_medias' => [
-                    [
-                        'type',
-                        'url',
+                    'useful_infos' => [
+                        [
+                            'title',
+                            'description',
+                            'order',
+                        ],
                     ],
-                ],
-                'category_taxonomies' => [
-                    [
-                        'id',
-                        'parent_id',
-                        'name',
-                        'order',
-                        'created_at',
-                        'updated_at',
+                    'social_medias' => [
+                        [
+                            'type',
+                            'url',
+                        ],
                     ],
+                    'category_taxonomies' => [
+                        [
+                            'id',
+                            'parent_id',
+                            'name',
+                            'created_at',
+                            'updated_at',
+                        ],
+                    ],
+                    'created_at',
+                    'updated_at',
                 ],
-                'created_at',
-                'updated_at',
             ],
             'meta' => [
                 'current_page',
@@ -2091,7 +2105,8 @@ class ServicesTest extends TestCase
             ],
         ]);
 
-        // TODO: Test related
+        $response->assertJsonFragment(['id' => $relatedService->id]);
+        $response->assertJsonMissing(['id' => $unrelatedService->id]);
     }
 
     /*
