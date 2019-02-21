@@ -100,7 +100,7 @@ class UpdateRequest extends FormRequest
                         'user_id' => $this->user('api')->id,
                         'role_id' => Role::superAdmin()->id,
                     ]),
-                    ($this->referral_method === Service::REFERRAL_METHOD_NONE) ? false : true
+                    $this->showReferralDisclaimerOriginalValue()
                 ),
             ],
             'referral_method' => [
@@ -230,5 +230,29 @@ class UpdateRequest extends FormRequest
             'array',
             new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    protected function showReferralDisclaimerOriginalValue(): bool
+    {
+        // If the new referral method is none, then always require false.
+        if ($this->referral_method === Service::REFERRAL_METHOD_NONE) {
+            return false;
+        }
+
+        /*
+         * If the original referral method was not none, and the referral disclaimer was hidden,
+         * then continue hiding the disclaimer.
+         */
+        if (
+            $this->service->referral_method !== Service::REFERRAL_METHOD_NONE &&
+            $this->service->show_referral_disclaimer === false
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }
