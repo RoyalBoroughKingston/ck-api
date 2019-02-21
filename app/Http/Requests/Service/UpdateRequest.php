@@ -98,7 +98,7 @@ class UpdateRequest extends FormRequest
                     $this->user('api'),
                     new UserRole([
                         'user_id' => $this->user('api')->id,
-                        'role_id' => Role::globalAdmin()->id,
+                        'role_id' => Role::superAdmin()->id,
                     ]),
                     $this->service->show_referral_disclaimer
                 ),
