@@ -100,7 +100,7 @@ class UpdateRequest extends FormRequest
                         'user_id' => $this->user('api')->id,
                         'role_id' => Role::superAdmin()->id,
                     ]),
-                    $this->service->show_referral_disclaimer
+                    ($this->referral_method === Service::REFERRAL_METHOD_NONE) ? false : true
                 ),
             ],
             'referral_method' => [

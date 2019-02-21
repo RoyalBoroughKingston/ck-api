@@ -86,7 +86,7 @@ class StoreRequest extends FormRequest
                         'user_id' => $this->user('api')->id,
                         'role_id' => Role::superAdmin()->id,
                     ]),
-                    false
+                    ($this->referral_method === Service::REFERRAL_METHOD_NONE) ? false : true
                 ),
             ],
             'referral_method' => [
