@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
+use App\Models\Client;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 use Laravel\Passport\RouteRegistrar;
@@ -27,11 +27,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Passport::routes(function (RouteRegistrar $router) {
-            $router->forAuthorization();
-        });
         Passport::enableImplicitGrant();
         Passport::tokensExpireIn(now()->addMonths(18));
+        Passport::useClientModel(Client::class);
     }
 
     /**

@@ -52,7 +52,7 @@ You should then be able to run the setup commands using the convenience script:
 ./develop artisan ck:create-user <first-name> <last-name> <email> <phone-number>
 
 # Create the OAuth client for the admin app (and any other clients).
-./develop artisan ck:create-oauth-client <name> <redirect-uri>
+./develop artisan ck:create-oauth-client <name> <redirect-uri> [--first-party]
 
 # Create/update the Elasticsearch index.
 ./develop artisan ck:reindex-elasticsearch
