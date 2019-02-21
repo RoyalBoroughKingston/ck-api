@@ -247,8 +247,8 @@ class UpdateRequest extends FormRequest
          * then continue hiding the disclaimer.
          */
         if (
-            $this->service->referral_method !== Service::REFERRAL_METHOD_NONE &&
-            $this->service->show_referral_disclaimer === false
+            $this->service->referral_method !== Service::REFERRAL_METHOD_NONE
+            && $this->service->show_referral_disclaimer === false
         ) {
             return false;
         }
