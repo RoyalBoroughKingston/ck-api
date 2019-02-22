@@ -13,27 +13,42 @@ class UserRole extends Model
     use UserRoleScopes;
 
     /**
+     * @param \App\Models\Service|null $service
      * @return bool
      */
-    public function isServiceWorker(): bool
+    public function isServiceWorker(Service $service = null): bool
     {
-        return $this->role->name === Role::NAME_SERVICE_WORKER;
+        $isServiceAdmin = $this->role->name === Role::NAME_SERVICE_WORKER;
+
+        return $service
+            ? ($isServiceAdmin && $this->service_id === $service->id)
+            : $isServiceAdmin;
     }
 
     /**
+     * @param \App\Models\Service|null $service
      * @return bool
      */
-    public function isServiceAdmin(): bool
+    public function isServiceAdmin(Service $service = null): bool
     {
-        return $this->role->name === Role::NAME_SERVICE_ADMIN;
+        $isServiceAdmin = $this->role->name === Role::NAME_SERVICE_ADMIN;
+
+        return $service
+            ? ($isServiceAdmin && $this->service_id === $service->id)
+            : $isServiceAdmin;
     }
 
     /**
+     * @param \App\Models\Organisation|null $organisation
      * @return bool
      */
-    public function isOrganisationAdmin(): bool
+    public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
-        return $this->role->name === Role::NAME_ORGANISATION_ADMIN;
+        $isOrganisationAdmin = $this->role->name === Role::NAME_ORGANISATION_ADMIN;
+
+        return $organisation
+            ? ($isOrganisationAdmin && $this->organisation_id === $organisation->id)
+            : $isOrganisationAdmin;
     }
 
     /**
