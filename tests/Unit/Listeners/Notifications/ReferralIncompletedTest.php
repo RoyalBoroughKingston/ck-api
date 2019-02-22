@@ -92,4 +92,9 @@ class ReferralIncompletedTest extends TestCase
             return true;
         });
     }
+
+    public function test_both_email_and_sms_sent_out_to_client()
+    {
+        $this->markTestIncomplete();
+    }
 }
