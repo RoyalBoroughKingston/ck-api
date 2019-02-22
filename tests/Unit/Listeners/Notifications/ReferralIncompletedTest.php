@@ -92,4 +92,43 @@ class ReferralIncompletedTest extends TestCase
             return true;
         });
     }
+
+    public function test_both_email_and_sms_sent_out_to_client()
+    {
+        Queue::fake();
+
+        $referral = factory(Referral::class)->create([
+            'email' => 'test@example.com',
+            'phone' => '07700000000',
+            'referee_email' => 'test@example.com',
+            'status' => Referral::STATUS_INCOMPLETED,
+        ]);
+        $referral->statusUpdates()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'from' => Referral::STATUS_NEW,
+            'to' => Referral::STATUS_INCOMPLETED,
+        ]);
+
+        $request = Request::create('')->setUserResolver(function () {
+            return factory(User::class)->create();
+        });
+        $event = EndpointHit::onUpdate($request, '', $referral);
+        $listener = new ReferralIncompleted();
+        $listener->handle($event);
+
+        Queue::assertPushedOn('notifications', NotifyClientEmail::class);
+        Queue::assertPushed(NotifyClientEmail::class, function (NotifyClientEmail $email) {
+            $this->assertArrayHasKey('REFERRAL_ID', $email->values);
+            $this->assertArrayHasKey('SERVICE_NAME', $email->values);
+            $this->assertArrayHasKey('REFERRAL_STATUS', $email->values);
+            return true;
+        });
+
+        Queue::assertPushedOn('notifications', NotifyClientSms::class);
+        Queue::assertPushed(NotifyClientSms::class, function (NotifyClientSms $sms) {
+            $this->assertArrayHasKey('CLIENT_INITIALS', $sms->values);
+            $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+            return true;
+        });
+    }
 }

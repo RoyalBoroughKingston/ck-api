@@ -43,15 +43,17 @@ class ReferralIncompleted
      */
     protected function notifyClient(Referral $referral)
     {
+        // Only send an email if email address was provided.
         if ($referral->email) {
-            // Only send an email if email address was provided.
             $referral->sendEmailToClient(new NotifyClientEmail($referral->email, [
                 'REFERRAL_ID' => $referral->reference,
                 'SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_STATUS' => $referral->statusUpdates()->latest()->firstOrFail()->comments ?? 'No comments left by user',
             ]));
-        } elseif ($referral->phone) {
-            // Resort to SMS, but only if phone number address was provided.
+        }
+
+        // Only send an SMS if phone number was provided.
+        if ($referral->phone) {
             $referral->sendSmsToClient(new NotifyClientSms($referral->phone, [
                 'CLIENT_INITIALS' => $referral->initials(),
                 'REFERRAL_ID' => $referral->reference,
