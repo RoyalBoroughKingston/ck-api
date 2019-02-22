@@ -79,7 +79,7 @@ class ReferralCreatedTest extends TestCase
         ]);
         $referral = factory(Referral::class)->create([
             'service_id' => $service->id,
-            'phone' => 'test@example.com',
+            'phone' => '07700000000',
             'referee_phone' => '07700000000',
             'status' => Referral::STATUS_NEW,
         ]);
@@ -94,6 +94,44 @@ class ReferralCreatedTest extends TestCase
         Queue::assertPushedOn('notifications', NotifyRefereeSms::class);
         Queue::assertPushed(NotifyRefereeSms::class, function (NotifyRefereeSms $sms) {
             $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+            return true;
+        });
+
+        Queue::assertPushedOn('notifications', NotifyClientSms::class);
+        Queue::assertPushed(NotifyClientSms::class, function (NotifyClientSms $sms) {
+            $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+            return true;
+        });
+    }
+
+    public function test_both_email_and_sms_sent_out_to_client()
+    {
+        Queue::fake();
+
+        $service = factory(Service::class)->create([
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'email' => 'test@example.com',
+            'phone' => '07700000000',
+            'referee_email' => 'test@example.com',
+            'status' => Referral::STATUS_NEW,
+        ]);
+
+        $request = Request::create('')->setUserResolver(function () {
+            return factory(User::class)->create();
+        });
+        $event = EndpointHit::onCreate($request, '', $referral);
+        $listener = new ReferralCreated();
+        $listener->handle($event);
+
+        Queue::assertPushedOn('notifications', NotifyClientEmail::class);
+        Queue::assertPushed(NotifyClientEmail::class, function (NotifyClientEmail $email) {
+            $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
+            $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
+            $this->assertArrayHasKey('REFERRAL_ID', $email->values);
             return true;
         });
 
