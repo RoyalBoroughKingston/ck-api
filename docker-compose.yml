@@ -7,7 +7,7 @@ services:
       context: ./docker/api
       dockerfile: Dockerfile
     environment:
-      - IS_LOCAL=true
+      IS_LOCAL: "true"
     volumes:
       - .:/var/www/html
     networks:
@@ -47,10 +47,10 @@ services:
     networks:
       - app-net
 
-  redis:
-    image: redis:5.0-alpine
-    volumes:
-      - redis-data:/data
+  redis-testing:
+    image: grokzen/redis-cluster:5.0.2
+    environment:
+      REDIS_CLUSTER_IP: 0.0.0.0
     networks:
       - app-net
 

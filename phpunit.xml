@@ -25,8 +25,9 @@
     <php>
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
-        <server name="CACHE_DRIVER" value="array"/>
-        <server name="CACHE_PREFIX" value="testing"/>
+        <server name="REDIS_CLUSTER" value="redis"/>
+        <server name="REDIS_HOST" value="redis-testing"/>
+        <server name="REDIS_PORT" value="7000"/>
         <server name="DB_HOST" value="mysql-testing"/>
         <server name="QUEUE_DRIVER" value="sync"/>
         <server name="SCOUT_PREFIX" value="testing_"/>

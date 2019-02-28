@@ -43,7 +43,10 @@ abstract class TestCase extends BaseTestCase
         Config::set('logging.channels.single.path', storage_path('logs/testing.log'));
 
         // Clear the cache.
-        $this->artisan('cache:clear');
+        $this->artisan('ck:redis:clear', [
+            '--host' => env('REDIS_HOST'),
+            '--port' => env('REDIS_PORT'),
+        ]);
 
         // Disable the API throttle middleware.
         $this->withoutMiddleware('throttle');
