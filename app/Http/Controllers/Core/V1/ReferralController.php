@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sort;
@@ -41,7 +42,7 @@ class ReferralController extends Controller
     public function index(IndexRequest $request)
     {
         // Check if the request has asked for the service to be included.
-        $serviceIncluded = str_contains($request->include, 'service');
+        $serviceIncluded = Str::contains($request->include, 'service');
 
         // Constrain the user to only show services that they are a service worker for.
         $userServiceIds = $request
@@ -138,7 +139,7 @@ class ReferralController extends Controller
     public function show(ShowRequest $request, Referral $referral)
     {
         // Check if the request has asked for user roles to be included.
-        $serviceIncluded = str_contains($request->include, 'service');
+        $serviceIncluded = Str::contains($request->include, 'service');
 
         $baseQuery = Referral::query()
             ->when($serviceIncluded, function (Builder $query): Builder {

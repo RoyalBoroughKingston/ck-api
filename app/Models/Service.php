@@ -16,6 +16,9 @@ use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
 
@@ -182,47 +185,51 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
+        $data = $updateRequest->data;
+
         // Update the service record.
         $this->update([
-            'slug' => $updateRequest->data['slug'] ?? $this->slug,
-            'name' => $updateRequest->data['name'] ?? $this->name,
-            'status' => $updateRequest->data['status'] ?? $this->status,
-            'intro' => $updateRequest->data['intro'] ?? $this->intro,
-            'description' => $updateRequest->data['description'] ?? $this->description,
-            'wait_time' => $updateRequest->data['wait_time'] ?? $this->wait_time,
-            'is_free' => $updateRequest->data['is_free'] ?? $this->is_free,
-            'fees_text' => $updateRequest->data['fees_text'] ?? $this->fees_text,
-            'fees_url' => $updateRequest->data['fees_url'] ?? $this->fees_url,
-            'testimonial' => $updateRequest->data['testimonial'] ?? $this->testimonial,
-            'video_embed' => $updateRequest->data['video_embed'] ?? $this->video_embed,
-            'url' => $updateRequest->data['url'] ?? $this->url,
-            'contact_name' => $updateRequest->data['contact_name'] ?? $this->contact_name,
-            'contact_phone' => $updateRequest->data['contact_phone'] ?? $this->contact_phone,
-            'contact_email' => $updateRequest->data['contact_email'] ?? $this->contact_email,
-            'show_referral_disclaimer' => $updateRequest->data['show_referral_disclaimer'] ?? $this->show_referral_disclaimer,
-            'referral_method' => $updateRequest->data['referral_method'] ?? $this->referral_method,
-            'referral_button_text' => $updateRequest->data['referral_button_text'] ?? $this->referral_button_text,
-            'referral_email' => $updateRequest->data['referral_email'] ?? $this->referral_email,
-            'referral_url' => $updateRequest->data['referral_url'] ?? $this->referral_url,
-            'logo_file_id' => $updateRequest->data['logo_file_id'] ?? $this->logo_file_id,
+            'slug' => $data['slug'] ?? $this->slug,
+            'name' => $data['name'] ?? $this->name,
+            'status' => $data['status'] ?? $this->status,
+            'intro' => $data['intro'] ?? $this->intro,
+            'description' => $data['description'] ?? $this->description,
+            'wait_time' => $data['wait_time'] ?? $this->wait_time,
+            'is_free' => $data['is_free'] ?? $this->is_free,
+            'fees_text' => $data['fees_text'] ?? $this->fees_text,
+            'fees_url' => $data['fees_url'] ?? $this->fees_url,
+            'testimonial' => $data['testimonial'] ?? $this->testimonial,
+            'video_embed' => $data['video_embed'] ?? $this->video_embed,
+            'url' => $data['url'] ?? $this->url,
+            'contact_name' => $data['contact_name'] ?? $this->contact_name,
+            'contact_phone' => $data['contact_phone'] ?? $this->contact_phone,
+            'contact_email' => $data['contact_email'] ?? $this->contact_email,
+            'show_referral_disclaimer' => $data['show_referral_disclaimer'] ?? $this->show_referral_disclaimer,
+            'referral_method' => $data['referral_method'] ?? $this->referral_method,
+            'referral_button_text' => $data['referral_button_text'] ?? $this->referral_button_text,
+            'referral_email' => $data['referral_email'] ?? $this->referral_email,
+            'referral_url' => $data['referral_url'] ?? $this->referral_url,
+            'logo_file_id' => array_key_exists('logo_file_id', $data)
+                ? $data['logo_file_id']
+                : $this->logo_file_id,
         ]);
 
         // Update the service criterion record.
         $this->serviceCriterion()->update([
-            'age_group' => array_get($updateRequest->data, 'criteria.age_group', $this->serviceCriterion->age_group),
-            'disability' => array_get($updateRequest->data, 'criteria.disability', $this->serviceCriterion->disability),
-            'employment' => array_get($updateRequest->data, 'criteria.employment', $this->serviceCriterion->employment),
-            'gender' => array_get($updateRequest->data, 'criteria.gender', $this->serviceCriterion->gender),
-            'housing' => array_get($updateRequest->data, 'criteria.housing', $this->serviceCriterion->housing),
-            'income' => array_get($updateRequest->data, 'criteria.income', $this->serviceCriterion->income),
-            'language' => array_get($updateRequest->data, 'criteria.language', $this->serviceCriterion->language),
-            'other' => array_get($updateRequest->data, 'criteria.other', $this->serviceCriterion->other),
+            'age_group' => Arr::get($data, 'criteria.age_group', $this->serviceCriterion->age_group),
+            'disability' => Arr::get($data, 'criteria.disability', $this->serviceCriterion->disability),
+            'employment' => Arr::get($data, 'criteria.employment', $this->serviceCriterion->employment),
+            'gender' => Arr::get($data, 'criteria.gender', $this->serviceCriterion->gender),
+            'housing' => Arr::get($data, 'criteria.housing', $this->serviceCriterion->housing),
+            'income' => Arr::get($data, 'criteria.income', $this->serviceCriterion->income),
+            'language' => Arr::get($data, 'criteria.language', $this->serviceCriterion->language),
+            'other' => Arr::get($data, 'criteria.other', $this->serviceCriterion->other),
         ]);
 
         // Update the useful info records.
-        if (array_key_exists('useful_infos', $updateRequest->data)) {
+        if (array_key_exists('useful_infos', $data)) {
             $this->usefulInfos()->delete();
-            foreach ($updateRequest->data['useful_infos'] as $usefulInfo) {
+            foreach ($data['useful_infos'] as $usefulInfo) {
                 $this->usefulInfos()->create([
                     'title' => $usefulInfo['title'],
                     'description' => $usefulInfo['description'],
@@ -234,7 +241,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
         // Update the social media records.
         if (array_key_exists('social_medias', $updateRequest->data)) {
             $this->socialMedias()->delete();
-            foreach ($updateRequest->data['social_medias'] as $socialMedia) {
+            foreach ($data['social_medias'] as $socialMedia) {
                 $this->socialMedias()->create([
                     'type' => $socialMedia['type'],
                     'url' => $socialMedia['url'],
@@ -243,8 +250,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
         }
 
         // Update the category taxonomy records.
-        if (array_key_exists('category_taxonomies', $updateRequest->data)) {
-            $taxonomies = Taxonomy::whereIn('id', $updateRequest->data['category_taxonomies'])->get();
+        if (array_key_exists('category_taxonomies', $data)) {
+            $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
             $this->syncServiceTaxonomies($taxonomies);
         }
 
@@ -358,5 +365,23 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     public function hasLogo(): bool
     {
         return $this->logo_file_id !== null;
+    }
+
+    /**
+     * @param int|null $maxDimension
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     */
+    public static function placeholderLogo(int $maxDimension = null)
+    {
+        if ($maxDimension !== null) {
+            return File::resizedPlaceholder($maxDimension, File::META_PLACEHOLDER_FOR_SERVICE);
+        }
+
+        return response()->make(
+            Storage::disk('local')->get('/placeholders/service.png'),
+            Response::HTTP_OK,
+            ['Content-Type' => File::MIME_TYPE_PNG]
+        );
     }
 }

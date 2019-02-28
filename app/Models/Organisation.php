@@ -9,6 +9,8 @@ use App\Models\Scopes\OrganisationScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class Organisation extends Model implements AppliesUpdateRequests
@@ -41,14 +43,18 @@ class Organisation extends Model implements AppliesUpdateRequests
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
+        $data = $updateRequest->data;
+
         $this->update([
-            'slug' => $updateRequest->data['slug'] ?? $this->slug,
-            'name' => $updateRequest->data['name'] ?? $this->name,
-            'description' => $updateRequest->data['description'] ?? $this->description,
-            'url' => $updateRequest->data['url'] ?? $this->url,
-            'email' => $updateRequest->data['email'] ?? $this->email,
-            'phone' => $updateRequest->data['phone'] ?? $this->phone,
-            'logo_file_id' => $updateRequest->data['logo_file_id'] ?? $this->logo_file_id,
+            'slug' => $data['slug'] ?? $this->slug,
+            'name' => $data['name'] ?? $this->name,
+            'description' => $data['description'] ?? $this->description,
+            'url' => $data['url'] ?? $this->url,
+            'email' => $data['email'] ?? $this->email,
+            'phone' => $data['phone'] ?? $this->phone,
+            'logo_file_id' => array_key_exists('logo_file_id', $data)
+                ? $data['logo_file_id']
+                : $this->logo_file_id,
         ]);
 
         return $updateRequest;
@@ -70,5 +76,23 @@ class Organisation extends Model implements AppliesUpdateRequests
     public function hasLogo(): bool
     {
         return $this->logo_file_id !== null;
+    }
+
+    /**
+     * @param int|null $maxDimension
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     */
+    public static function placeholderLogo(int $maxDimension = null)
+    {
+        if ($maxDimension !== null) {
+            return File::resizedPlaceholder($maxDimension, File::META_PLACEHOLDER_FOR_ORGANISATION);
+        }
+
+        return response()->make(
+            Storage::disk('local')->get('/placeholders/organisation.png'),
+            Response::HTTP_OK,
+            ['Content-Type' => File::MIME_TYPE_PNG]
+        );
     }
 }

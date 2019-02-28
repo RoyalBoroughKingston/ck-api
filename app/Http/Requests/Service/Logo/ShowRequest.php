@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Service\Logo;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ImageFormRequest;
 
-class ShowRequest extends FormRequest
+class ShowRequest extends ImageFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,7 +21,7 @@ class ShowRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function extraRules(): array
     {
         return [
             'update_request_id' => ['exists:update_requests,id'],

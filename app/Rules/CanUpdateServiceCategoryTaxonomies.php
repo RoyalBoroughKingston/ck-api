@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Arr;
 
 class CanUpdateServiceCategoryTaxonomies implements Rule
 {
@@ -61,8 +62,8 @@ class CanUpdateServiceCategoryTaxonomies implements Rule
             ->taxonomies()
             ->pluck(table(Taxonomy::class, 'id'))
             ->toArray();
-        $existingTaxonomies = array_sort($existingTaxonomyIds);
-        $newTaxonomies = array_sort($value);
+        $existingTaxonomies = Arr::sort($existingTaxonomyIds);
+        $newTaxonomies = Arr::sort($value);
         $taxonomiesUnchanged = $existingTaxonomies === $newTaxonomies;
 
         return $taxonomiesUnchanged;

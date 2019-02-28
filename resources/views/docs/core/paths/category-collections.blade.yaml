@@ -52,6 +52,15 @@ root:
                 data:
                   $ref: /docs/core/resources/category-collection.yaml
 
+# /collections/categories/index
+index:
+  post:
+    tags: ["Collection: Categories"]
+    summary: List all the category collections
+    description: |
+      This is an alias of `GET /collections/categories` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /collections/categories/{category}
 nested:
   get:

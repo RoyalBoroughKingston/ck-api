@@ -19,6 +19,15 @@ services:
     ports:
       - "${DB_PORT}:3306"
 
+  redis:
+    image: grokzen/redis-cluster:5.0.2
+    environment:
+      REDIS_CLUSTER_IP: 0.0.0.0
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-net
+
   elasticsearch:
     ports:
       - "${ELASTICSEARCH_PORT}:9200"

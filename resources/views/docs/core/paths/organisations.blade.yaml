@@ -61,6 +61,15 @@ root:
                 data:
                   $ref: /docs/core/resources/organisation.yaml
 
+# /organisations/index
+index:
+  post:
+    tags: [Organisations]
+    summary: List all the organisations
+    description: |
+      This is an alias of `GET /organisations` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /organisations/{organisation}
 nested:
   get:
@@ -155,6 +164,7 @@ logo:
       required: true
       schema:
         type: string
+    - $ref: /docs/core/parameters/max-dimension.yaml
     - name: update_request_id
       in: query
       description: File to use from update request

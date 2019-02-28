@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 
 class DocsController extends Controller
 {
@@ -28,7 +29,7 @@ class DocsController extends Controller
         $view = str_replace('/', '.', $path);
         $view = 'docs.' . $view;
         $pathParts = explode('/', $path);
-        $filename = array_last($pathParts);
+        $filename = Arr::last($pathParts);
 
         // 404 if the view does not exist.
         if (!view()->exists($view)) {

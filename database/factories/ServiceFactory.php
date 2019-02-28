@@ -2,6 +2,7 @@
 
 use App\Models\Service;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(Service::class, function (Faker $faker) {
     $name = $faker->unique()->company;
@@ -10,7 +11,7 @@ $factory->define(Service::class, function (Faker $faker) {
         'organisation_id' => function () {
             return factory(\App\Models\Organisation::class)->create()->id;
         },
-        'slug' => str_slug($name).'-'.rand(1, 1000),
+        'slug' => Str::slug($name).'-'.rand(1, 1000),
         'name' => $name,
         'status' => Service::STATUS_ACTIVE,
         'intro' => $faker->sentence,

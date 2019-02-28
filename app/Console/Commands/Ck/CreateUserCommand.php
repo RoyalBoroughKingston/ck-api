@@ -5,6 +5,7 @@ namespace App\Console\Commands\Ck;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Str;
 
 class CreateUserCommand extends Command
 {
@@ -53,7 +54,7 @@ class CreateUserCommand extends Command
     {
         return $this->db->transaction(function () {
             // Cache the password to display.
-            $password = str_random();
+            $password = Str::random();
 
             // Create the user record.
             $user = $this->createUser($password);

@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Str;
 
 class AddSlugColumnToOrganisationsTable extends Migration
 {
@@ -24,8 +25,8 @@ class AddSlugColumnToOrganisationsTable extends Migration
                 $iteration = 0;
                 do {
                     $slug = $iteration === 0
-                        ? str_slug($organisation->name)
-                        : str_slug($organisation->name).'-'.$iteration;
+                        ? Str::slug($organisation->name)
+                        : Str::slug($organisation->name).'-'.$iteration;
                     $iteration++;
                 } while (Organisation::query()->where('slug', $slug)->exists());
 

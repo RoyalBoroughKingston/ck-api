@@ -54,6 +54,15 @@ root:
                       items:
                         $ref: /docs/core/resources/audit.yaml
 
+# /audits/index
+index:
+  post:
+    tags: [Audits]
+    summary: List all the audits
+    description: |
+      This is an alias of `GET /audits` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /audits/{audit}
 nested:
   get:

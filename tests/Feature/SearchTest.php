@@ -18,7 +18,7 @@ class SearchTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -142,7 +142,7 @@ class SearchTest extends TestCase
         ]);
     }
 
-    public function test_query_does_not_matches_single_word_from_service_description()
+    public function test_query_matches_single_word_from_service_description()
     {
         $service = factory(Service::class)->create([
             'description' => 'This is a service that helps to homeless find temporary housing.',
@@ -153,7 +153,7 @@ class SearchTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonMissing(['id' => $service->id]);
+        $response->assertJsonFragment(['id' => $service->id]);
     }
 
     public function test_query_matches_multiple_words_from_service_description()

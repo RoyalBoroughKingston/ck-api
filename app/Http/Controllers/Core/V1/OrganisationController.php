@@ -77,14 +77,20 @@ class OrganisationController extends Controller
             // Upload the logo if provided.
             if ($request->filled('logo')) {
                 // Create the file record.
+                /** @var \App\Models\File $file */
                 $file = File::create([
                     'filename' => $organisation->id . '.png',
-                    'mime_type' => 'image/png',
+                    'mime_type' => File::MIME_TYPE_PNG,
                     'is_private' => false,
                 ]);
 
                 // Upload the file.
                 $file->uploadBase64EncodedPng($request->logo);
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
 
                 // Link the file to the organisation.
                 $organisation->logo_file_id = $file->id;
@@ -139,14 +145,20 @@ class OrganisationController extends Controller
             // Update the logo if the logo field was provided.
             if ($request->filled('logo')) {
                 // If a new logo was uploaded.
+                /** @var \App\Models\File $file */
                 $file = File::create([
                     'filename' => $organisation->id.'.png',
-                    'mime_type' => 'image/png',
+                    'mime_type' => File::MIME_TYPE_PNG,
                     'is_private' => false,
                 ]);
 
                 // Upload the file.
                 $file->uploadBase64EncodedPng($request->logo);
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
 
                 $data['logo_file_id'] = $file->id;
             } else if ($request->has('logo')) {

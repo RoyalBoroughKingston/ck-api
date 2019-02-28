@@ -13,71 +13,71 @@ root:
       Guests are limited to only view active services.
     security: []
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
-    - name: filter[organisation_id]
-      in: query
-      description: Comma seperated list of organisation IDs to filter by
-      schema:
-        type: string
-        format: uuid
-    - name: filter[name]
-      in: query
-      description: Name to filter by
-      schema:
-        type: string
-    - name: filter[organisation_name]
-      in: query
-      description: Organisation name to filter by
-      schema:
-        type: string
-    - name: filter[status]
-      in: query
-      description: Status to filter by
-      schema:
-        type: string
-        enum:
-        - active
-        - inactive
-    - name: filter[referral_method]
-      in: query
-      description: Referral method to filter by
-      schema:
-        type: string
-        enum:
-          - internal
-          - external
-          - none
-    - name: filter[has_permission]
-      in: query
-      description: Filter services to only ones they have permissions for
-      schema:
-        type: boolean
-    - name: include
-      in: query
-      description: The relationships to include with the response [`organisation`]
-      schema:
-        type: string
-    - name: sort
-      in: query
-      description: The fields to sort by [`name`, `organisation_name`, `status`, `referral_method`]
-      schema:
-        type: string
-        default: name
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
+      - name: filter[organisation_id]
+        in: query
+        description: Comma seperated list of organisation IDs to filter by
+        schema:
+          type: string
+          format: uuid
+      - name: filter[name]
+        in: query
+        description: Name to filter by
+        schema:
+          type: string
+      - name: filter[organisation_name]
+        in: query
+        description: Organisation name to filter by
+        schema:
+          type: string
+      - name: filter[status]
+        in: query
+        description: Status to filter by
+        schema:
+          type: string
+          enum:
+            - active
+            - inactive
+      - name: filter[referral_method]
+        in: query
+        description: Referral method to filter by
+        schema:
+          type: string
+          enum:
+            - internal
+            - external
+            - none
+      - name: filter[has_permission]
+        in: query
+        description: Filter services to only ones they have permissions for
+        schema:
+          type: boolean
+      - name: include
+        in: query
+        description: The relationships to include with the response [`organisation`]
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: The fields to sort by [`name`, `organisation_name`, `status`, `referral_method`]
+        schema:
+          type: string
+          default: name
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/service.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/service.yaml
 
   post:
     tags: [Services]
@@ -100,6 +100,15 @@ root:
                 data:
                   $ref: /docs/core/resources/service.yaml
 
+# /services/index
+index:
+  post:
+    tags: [Services]
+    summary: List all the services
+    description: |
+      This is an alias of `GET /services` which allows all the query string parameters
+      to be passed as part of the request body.
+
 # /services/{service}
 nested:
   get:
@@ -109,17 +118,17 @@ nested:
       **Permission:** `Open`
     security: []
     parameters:
-    - name: service
-      in: path
-      description: The ID or slug of the service
-      required: true
-      schema:
-        type: string
-    - name: include
-      in: query
-      description: The relationships to include with the response [`organisation`]
-      schema:
-        type: string
+      - name: service
+        in: path
+        description: The ID or slug of the service
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: The relationships to include with the response [`organisation`]
+        schema:
+          type: string
     responses:
       200:
         content:
@@ -140,12 +149,12 @@ nested:
       **Permission:** `Global Admin`
       - Can update a service location
     parameters:
-    - name: service
-      in: path
-      description: The ID or slug of the service
-      required: true
-      schema:
-        type: string
+      - name: service
+        in: path
+        description: The ID or slug of the service
+        required: true
+        schema:
+          type: string
     requestBody:
       required: true
       content:
@@ -175,18 +184,64 @@ nested:
     description: |
       **Permission:** `Super Admin`
     parameters:
-    - name: service
-      in: path
-      description: The ID or slug of the service
-      required: true
-      schema:
-        type: string
+      - name: service
+        in: path
+        description: The ID or slug of the service
+        required: true
+        schema:
+          type: string
     responses:
       200:
         content:
           application/json:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
+
+# /services/{service}/related
+related:
+  get:
+    tags: [Services]
+    summary: Get related services to the one specified
+    description: |
+      **Permission:** `Open`
+    security: []
+    parameters:
+      - name: service
+        in: path
+        description: The ID or slug of the service
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: The relationships to include with the response [`organisation`]
+        schema:
+          type: string
+      - name: location[lat]
+        in: query
+        description: The latitude to sort by
+        schema:
+          type: float
+          example: 5.78263
+      - name: location[lon]
+        in: query
+        description: The longitude to sort by
+        schema:
+          type: float
+          example: -52.12710
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/service.yaml
 
 # /services/{service}/logo
 logo:
@@ -197,18 +252,19 @@ logo:
       **Permission:** `Open`
     security: []
     parameters:
-    - name: service
-      in: path
-      description: The ID or slug of the service
-      required: true
-      schema:
-        type: string
-    - name: update_request_id
-      in: query
-      description: File to use from update request
-      schema:
-        type: string
-        format: uuid
+      - name: service
+        in: path
+        description: The ID or slug of the service
+        required: true
+        schema:
+          type: string
+      - $ref: /docs/core/parameters/max-dimension.yaml
+      - name: update_request_id
+        in: query
+        description: File to use from update request
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

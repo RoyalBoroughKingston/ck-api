@@ -23,17 +23,13 @@
         </whitelist>
     </filter>
     <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="CACHE_PREFIX" value="testing"/>
-        <env name="DB_HOST" value="mysql-testing"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
-        <env name="SCOUT_PREFIX" value="testing_"/>
-        <env name="GEOCODE_DRIVER" value="stub"/>
-        <env name="EMAIL_DRIVER" value='"null"'/>
-        <env name="SMS_DRIVER" value='"null"'/>
-        <env name="FILESYSTEM_CLOUD" value="testing_cloud"/>
+        <server name="APP_ENV" value="testing"/>
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="QUEUE_DRIVER" value="sync"/>
+        <server name="SCOUT_PREFIX" value="testing_"/>
+        <server name="GEOCODE_DRIVER" value="stub"/>
+        <server name="EMAIL_DRIVER" value='"null"'/>
+        <server name="SMS_DRIVER" value='"null"'/>
+        <server name="FILESYSTEM_CLOUD" value="testing_cloud"/>
     </php>
 </phpunit>

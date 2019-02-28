@@ -17,6 +17,7 @@ use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -680,6 +681,130 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($responsePayload);
     }
 
+    public function test_global_admin_cannot_create_one_with_referral_disclaimer_showing()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_super_admin_can_create_one_with_referral_disclaimer_showing()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $taxonomy = Taxonomy::category()
+            ->children()
+            ->firstOrFail();
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
     /*
      * Get a specific service.
      */
@@ -959,7 +1084,73 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
-    public function test_global_admin_can_update_all_fields_for_one()
+    public function test_global_admin_can_update_most_fields_for_one()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => $service->referral_method,
+            'referral_button_text' => $service->referral_button_text,
+            'referral_email' => $service->referral_email,
+            'referral_url' => $service->referral_url,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ]
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ]
+            ],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+    }
+
+    public function test_global_admin_cannot_update_show_referral_disclaimer_for_one()
     {
         $service = factory(Service::class)->create([
             'slug' => 'test-service',
@@ -1021,8 +1212,7 @@ class ServicesTest extends TestCase
         ];
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['data' => $payload]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_audit_created_when_updated()
@@ -1678,12 +1868,12 @@ class ServicesTest extends TestCase
 
         $this->assertArrayNotHasKey('useful_infos', $updateRequestOne->data);
         $this->assertArrayHasKey('useful_infos', $updateRequestTwo->data);
-        $this->assertArrayHasKey('useful_infos.0.title', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.0.description', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.0.order', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.1.title', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.1.description', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.1.order', array_dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.title', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.description', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.order', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.title', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.description', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.order', Arr::dot($updateRequestTwo->data));
         $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
     }
 
@@ -1799,6 +1989,125 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
+    }
+
+    /*
+     * List all the related services.
+     */
+
+    public function test_guest_can_list_related()
+    {
+        $taxonomyOne = Taxonomy::category()->children()->first()->children()->skip(0)->take(1)->first();
+        $taxonomyTwo = Taxonomy::category()->children()->first()->children()->skip(1)->take(1)->first();
+        $taxonomyThree = Taxonomy::category()->children()->first()->children()->skip(2)->take(1)->first();
+
+        $service = factory(Service::class)->create();
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThree->id]);
+
+        $relatedService = factory(Service::class)->create();
+        $relatedService->usefulInfos()->create([
+            'title' => 'Did You Know?',
+            'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $relatedService->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital/'
+        ]);
+        $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
+        $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThree->id]);
+
+        $unrelatedService = factory(Service::class)->create();
+        $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
+
+        $response = $this->json('GET', "/core/v1/services/{$service->id}/related");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'organisation_id',
+                    'has_logo',
+                    'name',
+                    'slug',
+                    'status',
+                    'intro',
+                    'description',
+                    'wait_time',
+                    'is_free',
+                    'fees_text',
+                    'fees_url',
+                    'testimonial',
+                    'video_embed',
+                    'url',
+                    'contact_name',
+                    'contact_phone',
+                    'contact_email',
+                    'show_referral_disclaimer',
+                    'referral_method',
+                    'referral_button_text',
+                    'referral_email',
+                    'referral_url',
+                    'criteria' => [
+                        'age_group',
+                        'disability',
+                        'employment',
+                        'gender',
+                        'housing',
+                        'income',
+                        'language',
+                        'other',
+                    ],
+                    'useful_infos' => [
+                        [
+                            'title',
+                            'description',
+                            'order',
+                        ],
+                    ],
+                    'social_medias' => [
+                        [
+                            'type',
+                            'url',
+                        ],
+                    ],
+                    'category_taxonomies' => [
+                        [
+                            'id',
+                            'parent_id',
+                            'name',
+                            'created_at',
+                            'updated_at',
+                        ],
+                    ],
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'meta' => [
+                'current_page',
+                'from',
+                'last_page',
+                'path',
+                'per_page',
+                'to',
+                'total',
+            ],
+            'links' => [
+                'first',
+                'last',
+                'prev',
+                'next',
+            ],
+        ]);
+
+        $response->assertJsonFragment(['id' => $relatedService->id]);
+        $response->assertJsonMissing(['id' => $unrelatedService->id]);
     }
 
     /*

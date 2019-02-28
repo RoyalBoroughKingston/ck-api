@@ -7,7 +7,9 @@
     <file>routes</file>
 
     <rule ref="PSR1"/>
-    <rule ref="PSR2"/>
+    <rule ref="PSR2">
+        <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
+    </rule>
 
     <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
     <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
@@ -25,7 +27,9 @@
     <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
     <rule ref="Generic.WhiteSpace.ScopeIndent"/>
     <rule ref="PEAR.Commenting.InlineComment"/>
-    <rule ref="PEAR.ControlStructures.MultiLineCondition"/>
+    <rule ref="PEAR.ControlStructures.MultiLineCondition.SpacingAfterOpenBrace">
+        <severity>0</severity>
+    </rule>
     <rule ref="PEAR.Functions.ValidDefaultValue"/>
     <rule ref="Squiz.PHP.LowercasePHPFunctions"/>
     <rule ref="Squiz.Scope.MemberVarScope"/>

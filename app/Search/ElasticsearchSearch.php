@@ -78,9 +78,7 @@ class ElasticsearchSearch implements Search
 
         $should[] = $this->match('name', $term, 4);
         $should[] = $this->match('intro', $term, 3);
-        if (str_word_count($term) > 1) {
-            $should[] = $this->matchPhrase('description', $term, 3);
-        }
+        $should[] = $this->matchPhrase('description', $term, 3);
         $should[] = $this->match('taxonomy_categories', $term, 2);
         $should[] = $this->match('organisation_name', $term);
 

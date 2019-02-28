@@ -10,6 +10,7 @@ use App\Rules\Password;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserEmailNotTaken;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 
 class UpdateRequest extends FormRequest
 {
@@ -111,7 +112,7 @@ class UpdateRequest extends FormRequest
      */
     public function orderRoles(array $roles): array
     {
-        return array_sort($roles, function (array $role) {
+        return Arr::sort($roles, function (array $role) {
             switch ($role['role']) {
                 case Role::NAME_SUPER_ADMIN:
                     return 1;
