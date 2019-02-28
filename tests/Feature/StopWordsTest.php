@@ -18,7 +18,7 @@ class StopWordsTest extends TestCase
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         // Reindex to prevent stop words persisting.
         $stopWords = Storage::disk('local')->get('elasticsearch/stop-words.csv');

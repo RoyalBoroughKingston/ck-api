@@ -2,8 +2,7 @@
 
 $redis = [
 
-    'client' => 'predis',
-    'cluster' => env('REDIS_CLUSTER', false),
+    'client' => env('REDIS_CLIENT', 'predis'),
 
     // For single node setup.
     'default' => [
@@ -23,15 +22,13 @@ $redis = [
                 'password' => env('REDIS_PASSWORD', null),
                 'port' => env('REDIS_PORT', 6379),
                 'database' => 0,
-            ]
-        ],
-
-        'options' => [
-            'cluster' => 'redis',
+            ],
         ],
     ],
 
     'options' => [
+        'cluster' => env('REDIS_CLUSTER', false),
+
         'parameters' => [
             'scheme' => env('REDIS_SCHEME', 'tcp'),
             'password' => env('REDIS_PASSWORD', null),
@@ -45,8 +42,10 @@ $redis = [
 ];
 
 if (env('REDIS_CLUSTER', false)) {
+    // If in cluster mode.
     unset($redis['default']);
 } else {
+    // If in single node mode.
     unset($redis['clusters']);
 }
 

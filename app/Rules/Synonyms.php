@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Arr;
 
 class Synonyms implements Rule
 {
@@ -21,7 +22,7 @@ class Synonyms implements Rule
             }
         }
 
-        if (preg_match('/\s/', array_last($value))) {
+        if (preg_match('/\s/', Arr::last($value))) {
             return false;
         }
 

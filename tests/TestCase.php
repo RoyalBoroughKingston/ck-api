@@ -35,7 +35,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -43,7 +43,10 @@ abstract class TestCase extends BaseTestCase
         Config::set('logging.channels.single.path', storage_path('logs/testing.log'));
 
         // Clear the cache.
-        $this->artisan('cache:clear');
+        $this->artisan('ck:redis:clear', [
+            '--host' => env('REDIS_HOST'),
+            '--port' => env('REDIS_PORT'),
+        ]);
 
         // Disable the API throttle middleware.
         $this->withoutMiddleware('throttle');
@@ -58,7 +61,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @return void
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         Storage::cloud()->deleteDirectory('files');
 

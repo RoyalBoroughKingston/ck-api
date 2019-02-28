@@ -13,6 +13,7 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -206,7 +207,7 @@ class BatchUploader
     {
         $organisations = new EloquentCollection($organisations);
         $organisations = $organisations->map(function (array $organisationArray): Organisation {
-            $slug = str_slug($organisationArray['Name*']);
+            $slug = Str::slug($organisationArray['Name*']);
             $iteration = 0;
             do {
                 $slug = $iteration > 0 ? $slug . '-' . $iteration : $slug;
@@ -244,7 +245,7 @@ class BatchUploader
                 return $organisation->_id == $serviceArray['Organisation ID*'];
             })->id;
 
-            $slug = str_slug($serviceArray['Name*']);
+            $slug = Str::slug($serviceArray['Name*']);
             $iteration = 0;
             do {
                 $slug = $iteration > 0 ? $slug . '-' . $iteration : $slug;
@@ -263,7 +264,7 @@ class BatchUploader
                 'slug' => $slug,
                 'name' => $serviceArray['Name*'],
                 'status' => $serviceArray['Status*'],
-                'intro' => str_limit($serviceArray['Intro*'], 250),
+                'intro' => Str::limit($serviceArray['Intro*'], 250),
                 'description' => $serviceArray['Description*'],
                 'wait_time' => $this->parseWaitTime($serviceArray['Wait Time']),
                 'is_free' => $isFree,

@@ -49,6 +49,10 @@ if [ $# -gt 0  ]; then
         phpunit )
             shift 1
             ${COMPOSE} run --rm ${TTY} \
+                -e DB_HOST=mysql-testing \
+                -e REDIS_CLUSTER=redis \
+                -e REDIS_HOST=redis-testing \
+                -e REDIS_PORT=7000 \
                 api \
                 php vendor/bin/phpunit "$@"
             ;;

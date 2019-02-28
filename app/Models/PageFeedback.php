@@ -15,6 +15,13 @@ class PageFeedback extends Model
     const AUTO_DELETE_MONTHS = 6;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'page_feedbacks';
+
+    /**
      * The attributes that should be cast to native types.
      *
      * @var array

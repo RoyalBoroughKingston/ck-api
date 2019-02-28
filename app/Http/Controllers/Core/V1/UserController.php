@@ -21,6 +21,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -44,7 +45,7 @@ class UserController extends Controller
     public function index(IndexRequest $request)
     {
         // Check if the request has asked for user roles to be included.
-        $userRolesIncluded = str_contains($request->include, 'user-roles');
+        $userRolesIncluded = Str::contains($request->include, 'user-roles');
 
         $baseQuery = User::query()
             ->select('*')
@@ -145,7 +146,7 @@ class UserController extends Controller
     public function show(ShowRequest $request, User $user)
     {
         // Check if the request has asked for user roles to be included.
-        $userRolesIncluded = str_contains($request->include, 'user-roles');
+        $userRolesIncluded = Str::contains($request->include, 'user-roles');
 
         $baseQuery = User::query()
             ->where('id', $user->id)

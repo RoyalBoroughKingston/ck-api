@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StopWords\IndexRequest;
 use App\Http\Requests\StopWords\UpdateRequest;
 use App\Http\Responses\StopWords;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
@@ -65,7 +66,7 @@ class StopWordsController extends Controller
         // Convert the array to a string.
         $stopWordsCsv = array_to_csv(
             array_map(function (string $stopWord) {
-                return array_wrap($stopWord);
+                return Arr::wrap($stopWord);
             }, $stopWords)
         );
 

@@ -17,6 +17,7 @@ use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -1867,12 +1868,12 @@ class ServicesTest extends TestCase
 
         $this->assertArrayNotHasKey('useful_infos', $updateRequestOne->data);
         $this->assertArrayHasKey('useful_infos', $updateRequestTwo->data);
-        $this->assertArrayHasKey('useful_infos.0.title', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.0.description', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.0.order', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.1.title', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.1.description', array_dot($updateRequestTwo->data));
-        $this->assertArrayHasKey('useful_infos.1.order', array_dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.title', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.description', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.0.order', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.title', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.description', Arr::dot($updateRequestTwo->data));
+        $this->assertArrayHasKey('useful_infos.1.order', Arr::dot($updateRequestTwo->data));
         $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
     }
 

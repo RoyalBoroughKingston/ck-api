@@ -17,6 +17,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
@@ -215,14 +216,14 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
 
         // Update the service criterion record.
         $this->serviceCriterion()->update([
-            'age_group' => array_get($data, 'criteria.age_group', $this->serviceCriterion->age_group),
-            'disability' => array_get($data, 'criteria.disability', $this->serviceCriterion->disability),
-            'employment' => array_get($data, 'criteria.employment', $this->serviceCriterion->employment),
-            'gender' => array_get($data, 'criteria.gender', $this->serviceCriterion->gender),
-            'housing' => array_get($data, 'criteria.housing', $this->serviceCriterion->housing),
-            'income' => array_get($data, 'criteria.income', $this->serviceCriterion->income),
-            'language' => array_get($data, 'criteria.language', $this->serviceCriterion->language),
-            'other' => array_get($data, 'criteria.other', $this->serviceCriterion->other),
+            'age_group' => Arr::get($data, 'criteria.age_group', $this->serviceCriterion->age_group),
+            'disability' => Arr::get($data, 'criteria.disability', $this->serviceCriterion->disability),
+            'employment' => Arr::get($data, 'criteria.employment', $this->serviceCriterion->employment),
+            'gender' => Arr::get($data, 'criteria.gender', $this->serviceCriterion->gender),
+            'housing' => Arr::get($data, 'criteria.housing', $this->serviceCriterion->housing),
+            'income' => Arr::get($data, 'criteria.income', $this->serviceCriterion->income),
+            'language' => Arr::get($data, 'criteria.language', $this->serviceCriterion->language),
+            'other' => Arr::get($data, 'criteria.other', $this->serviceCriterion->other),
         ]);
 
         // Update the useful info records.
