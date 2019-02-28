@@ -8,7 +8,9 @@ use App\Models\Scopes\ReportScopes;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class Report extends Model
 {
@@ -44,8 +46,8 @@ class Report extends Model
         $filename = sprintf(
             '%s_%s_%s.csv',
             now()->format('Y-m-d_H-i'),
-            str_slug(config('app.name')),
-            str_slug($type->name)
+            Str::slug(config('app.name')),
+            Str::slug($type->name)
         );
 
         // Create the file record.
@@ -64,7 +66,7 @@ class Report extends Model
         ]);
 
         // Get the name for the report generation method.
-        $methodName = 'generate' . ucfirst(camel_case($type->name));
+        $methodName = 'generate' . ucfirst(Str::camel($type->name));
 
         // Throw exception if the report type does not have a generate method.
         if (!method_exists($report, $methodName)) {
@@ -478,7 +480,7 @@ class Report extends Model
             ->chunk(200, function (Collection $searchHistories) use (&$data) {
                 // Loop through each search history in the chunk.
                 $searchHistories->each(function (SearchHistory $searchHistory) use (&$data) {
-                    $query = array_dot($searchHistory->query);
+                    $query = Arr::dot($searchHistory->query);
 
                     $searchQuery = $query['query.bool.must.bool.should.0.match.name.query'] ?? null;
                     $lat = $query['sort.0._geo_distance.service_locations.location.lat'] ?? null;

@@ -20,7 +20,7 @@ if (!function_exists('random_uk_phone')) {
      */
     function random_uk_phone(): string
     {
-        return array_random([
+        return \Illuminate\Support\Arr::random([
             '0' . rand(1000000000, 1999999999),
             '0' . rand(7000000000, 7999999999),
         ]);
@@ -329,7 +329,7 @@ if (!function_exists('array_to_csv')) {
         foreach ($data as $row) {
             // Wrap cells with coma's in double quotes.
             foreach ($row as &$cell) {
-                $cell = str_contains($cell, ',') ? '"' . $cell . '"' : $cell;
+                $cell = \Illuminate\Support\Str::contains($cell, ',') ? '"' . $cell . '"' : $cell;
             }
 
             fputcsv($fh, $row);

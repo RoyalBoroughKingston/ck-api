@@ -11,6 +11,7 @@ use App\Notifications\Notifications;
 use App\Sms\Sms;
 use Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Str;
 
 class Referral extends Model implements Notifiable
 {
@@ -54,7 +55,7 @@ class Referral extends Model implements Notifiable
         }
 
         // Generate a random reference.
-        $reference = strtoupper(str_random(10));
+        $reference = strtoupper(Str::random(10));
 
         // Check if the reference already exists.
         if (static::where('reference', $reference)->exists()) {

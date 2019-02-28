@@ -10,6 +10,7 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class UpdateRequestObserver
@@ -40,7 +41,7 @@ class UpdateRequestObserver
             return;
         }
 
-        $data = array_dot($updateRequest->data);
+        $data = Arr::dot($updateRequest->data);
         $dataKeys = array_keys($data);
         foreach ($dataKeys as &$dataKey) {
             // Delete entire arrays if provided.

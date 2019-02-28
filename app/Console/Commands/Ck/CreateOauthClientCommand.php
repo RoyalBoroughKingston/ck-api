@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Ck;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
 
@@ -52,7 +53,7 @@ class CreateOauthClientCommand extends Command
         $client = Passport::client()->forceFill([
             'user_id' => null,
             'name' => $this->argument('name'),
-            'secret' => str_random(40),
+            'secret' => Str::random(40),
             'redirect' => $this->argument('redirect-uri'),
             'personal_access_client' => false,
             'password_client' => false,
