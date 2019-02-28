@@ -22,7 +22,7 @@ class CloudFoundryServiceProvider extends ServiceProvider
         // If the app is running in a PaaS environment.
         if (getenv('VCAP_SERVICES') !== false) {
             // Decode the JSON provided by Cloud Foundry.
-            $config = json_decode(env('VCAP_SERVICES'), true);
+            $config = json_decode(getenv('VCAP_SERVICES'), true);
             $mysqlConfig = $config['mysql'][0]['credentials'];
             $redisConfig = $config['redis'][0]['credentials'];
             $elasticsearchConfig = $config['elasticsearch'][0]['credentials'];
