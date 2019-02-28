@@ -8,6 +8,7 @@
         "php": "^7.2.0",
         "ext-gd": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
         "alphagov/notifications-php-client": "^1.6",
         "babenkoivan/scout-elasticsearch-driver": "^3.8",
         "barryvdh/laravel-cors": "^0.11.0",
@@ -32,7 +33,7 @@
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
         "pda/pheanstalk": "~3.0",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^8.0",
         "squizlabs/php_codesniffer": "^3.3"
     },
     "autoload": {

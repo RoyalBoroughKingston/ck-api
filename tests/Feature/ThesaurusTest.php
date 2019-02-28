@@ -18,7 +18,7 @@ class ThesaurusTest extends TestCase
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         // Reindex to prevent synonyms persisting.
         $synonyms = Storage::disk('local')->get('elasticsearch/thesaurus.csv');

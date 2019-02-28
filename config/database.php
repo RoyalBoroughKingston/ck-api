@@ -52,9 +52,10 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
-            'options' => [
+            'options' => array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
                 PDO::MYSQL_ATTR_SSL_CAPATH => env('DB_CERT_PATH'),
-            ],
+            ]),
         ],
 
         'pgsql' => [

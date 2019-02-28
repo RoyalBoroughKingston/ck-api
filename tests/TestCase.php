@@ -35,7 +35,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -58,7 +58,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @return void
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         Storage::cloud()->deleteDirectory('files');
 
