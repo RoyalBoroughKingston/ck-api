@@ -133,7 +133,11 @@ class UpdateRequest extends FormRequest
                 ),
             ],
             'referral_email' => [
-                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
+                Rule::requiredIf(function () {
+                    return $this->has('referral_method')
+                        ? $this->referral_method === Service::REFERRAL_METHOD_INTERNAL
+                        : $this->service->referral_method === Service::REFERRAL_METHOD_INTERNAL;
+                }),
                 'nullable',
                 'email',
                 'max:255',
@@ -147,7 +151,11 @@ class UpdateRequest extends FormRequest
                 ),
             ],
             'referral_url' => [
-                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
+                Rule::requiredIf(function () {
+                    return $this->has('referral_method')
+                        ? $this->referral_method === Service::REFERRAL_METHOD_EXTERNAL
+                        : $this->service->referral_method === Service::REFERRAL_METHOD_EXTERNAL;
+                }),
                 'nullable',
                 'url',
                 'max:255',
