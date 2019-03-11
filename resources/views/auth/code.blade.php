@@ -18,7 +18,7 @@
                     {{ $errors->first('token') }}
                 </span>
                 @endif
-                <input class="govuk-input govuk-input--width-4" id="token" name="token" type="password" aria-describedby="token-hint">
+                <input class="govuk-input govuk-input--width-4" id="token" name="token" type="number" aria-describedby="token-hint">
                 <p class="govuk-body"><a href="{{ $newNumberLink }}" class="govuk-link">New phone number?</a></p>
             </div>
 
