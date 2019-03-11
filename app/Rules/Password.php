@@ -22,8 +22,7 @@ class Password implements Rule
             return false;
         }
 
-        $matches = preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[' . $this->escapedSpecialCharacters() . '])[A-Za-z\d' . $this->escapedSpecialCharacters() . ']{8,}/',
-            $value);
+        $matches = preg_match($this->regex(), $value);
 
         return $matches > 0;
     }
@@ -41,8 +40,20 @@ class Password implements Rule
             one number and one special character (' . static::ALLOWED_SPECIAL_CHARACTERS . ').';
     }
 
-    /*
+    /**
+     * Returns the regex for the password.
+     *
+     * @return string
+     */
+    protected function regex(): string
+    {
+        return "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[{$this->escapedSpecialCharacters()}])[A-Za-z\d{$this->escapedSpecialCharacters()}]{8,}/";
+    }
+
+    /**
      * Returns the special characters escaped for the regex.
+     *
+     * @return string
      */
     protected function escapedSpecialCharacters(): string
     {
