@@ -6,11 +6,13 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Password implements Rule
 {
+    const ALLOWED_SPECIAL_CHARACTERS = '!"#$%&\'()*+,-./:;<=>?@[]^_`{|}~';
+
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param  string $attribute
+     * @param  mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
@@ -20,7 +22,7 @@ class Password implements Rule
             return false;
         }
 
-        $matches = preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&.])[A-Za-z\d$@$!%*?&.]{8,}/', $value);
+        $matches = preg_match($this->regex(), $value);
 
         return $matches > 0;
     }
@@ -35,6 +37,32 @@ class Password implements Rule
         return 'The :attribute must be at least eight characters long, 
             contain one uppercase letter, 
             one lowercase letter, 
-            one number and one special character ($@$!%*?&.).';
+            one number and one special character (' . static::ALLOWED_SPECIAL_CHARACTERS . ').';
+    }
+
+    /**
+     * Returns the regex for the password.
+     *
+     * @return string
+     */
+    protected function regex(): string
+    {
+        return "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[{$this->escapedSpecialCharacters()}])[A-Za-z\d{$this->escapedSpecialCharacters()}]{8,}/";
+    }
+
+    /**
+     * Returns the special characters escaped for the regex.
+     *
+     * @return string
+     */
+    protected function escapedSpecialCharacters(): string
+    {
+        $characters = str_split(static::ALLOWED_SPECIAL_CHARACTERS);
+
+        return collect($characters)
+            ->map(function (string $character) {
+                return '\\' . $character;
+            })
+            ->implode('');
     }
 }
