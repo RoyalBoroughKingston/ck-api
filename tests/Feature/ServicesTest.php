@@ -1877,6 +1877,28 @@ class ServicesTest extends TestCase
         $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
     }
 
+    public function test_referral_url_required_when_referral_method_not_updated_with_it()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
+            'referral_url' => $this->faker->url,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'referral_url' => null,
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /*
      * Delete a specific service.
      */
