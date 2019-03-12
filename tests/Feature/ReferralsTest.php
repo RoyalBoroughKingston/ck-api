@@ -350,6 +350,56 @@ class ReferralsTest extends TestCase
         $this->assertEquals($referralTwo->id, $data['data'][0]['id']);
     }
 
+    public function test_can_append_status_last_updated_at_when_listed()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'email' => $this->faker->safeEmail,
+            'comments' => $this->faker->paragraph,
+            'referral_consented_at' => $this->now,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals?filter[service_id]={$service->id}&append=status_last_updated_at");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $referral->id,
+                'service_id' => $referral->service_id,
+                'reference' => $referral->reference,
+                'status' => $referral->status,
+                'name' => $referral->name,
+                'email' => $referral->email,
+                'phone' => $referral->phone,
+                'other_contact' => $referral->other_contact,
+                'postcode_outward_code' => $referral->postcode_outward_code,
+                'comments' => $referral->comments,
+                'referral_consented_at' => $referral->referral_consented_at->format(Carbon::ISO8601),
+                'feedback_consented_at' => null,
+                'referee_name' => $referral->referee_name,
+                'referee_email' => $referral->referee_email,
+                'referee_phone' => $referral->referee_phone,
+                'referee_organisation' => $referral->organisation,
+                'created_at' => $referral->created_at->format(Carbon::ISO8601),
+                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
+                'status_last_updated_at' => $referral->created_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     /*
      * Create a referral.
      */
@@ -550,6 +600,46 @@ class ReferralsTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $referral->id);
         });
+    }
+
+    public function test_can_append_status_last_updated_at_when_viewed()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'referral_consented_at' => $this->now,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals/{$referral->id}?append=status_last_updated_at");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                'id' => $referral->id,
+                'service_id' => $referral->service_id,
+                'reference' => $referral->reference,
+                'status' => Referral::STATUS_NEW,
+                'name' => $referral->name,
+                'email' => null,
+                'phone' => null,
+                'other_contact' => null,
+                'postcode_outward_code' => null,
+                'comments' => null,
+                'referral_consented_at' => $this->now->format(Carbon::ISO8601),
+                'feedback_consented_at' => null,
+                'referee_name' => null,
+                'referee_email' => null,
+                'referee_phone' => null,
+                'referee_organisation' => null,
+                'created_at' => $referral->created_at->format(Carbon::ISO8601),
+                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
+                'status_last_updated_at' => $referral->created_at->format(Carbon::ISO8601),
+            ]
+        ]);
     }
 
     /*
