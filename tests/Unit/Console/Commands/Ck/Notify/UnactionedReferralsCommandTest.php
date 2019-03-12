@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Unit\Console\Commands\Ck;
+namespace Tests\Unit\Console\Commands\Ck\Notify;
 
-use App\Console\Commands\Ck\SendNotificationsForUnactionedReferralsCommand;
+use App\Console\Commands\Ck\Notify\UnactionedReferralsCommand;
 use App\Emails\ReferralUnactioned\NotifyServiceEmail;
 use App\Models\Referral;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
-class SendNotificationsForUnactionedReferralsTest extends TestCase
+class UnactionedReferralsCommandTest extends TestCase
 {
     public function test_emails_sent()
     {
@@ -22,7 +22,7 @@ class SendNotificationsForUnactionedReferralsTest extends TestCase
             'created_at' => now()->subWeekdays(6),
         ]);
 
-        Artisan::call(SendNotificationsForUnactionedReferralsCommand::class);
+        Artisan::call(UnactionedReferralsCommand::class);
 
         Queue::assertPushedOn('notifications', NotifyServiceEmail::class);
         Queue::assertPushed(NotifyServiceEmail::class, function (NotifyServiceEmail $email) {

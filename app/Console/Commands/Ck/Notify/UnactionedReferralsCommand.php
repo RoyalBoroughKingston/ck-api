@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Ck;
+namespace App\Console\Commands\Ck\Notify;
 
 use App\Emails\ReferralUnactioned\NotifyServiceEmail;
 use App\Models\Referral;
@@ -9,14 +9,14 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
-class SendNotificationsForUnactionedReferralsCommand extends Command
+class UnactionedReferralsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ck:send-notifications-for-unactioned-referrals
+    protected $signature = 'ck:notify:unactioned-referrals
                             {--working-days=6 : The number of working days to wait for}';
 
     /**
