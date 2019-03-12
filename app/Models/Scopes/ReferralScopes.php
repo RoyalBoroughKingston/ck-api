@@ -41,36 +41,20 @@ trait ReferralScopes
     public function scopeWithStatusLastUpdatedAt(Builder $query, string $alias = 'status_last_updated_at'): Builder
     {
         /*
-         * 1. If no status updates, then use the referral created_at
-         * 2. Or, get created_at for the latest status update with a changed status
-         * 3. Or, get created_at for the first status update
+         * This query will select the latest status update, which has
+         * a changed status, or fall back to the referral creation date.
          */
-
         $sql = <<< EOT
-IF(
+IFNULL(
     (
-        SELECT COUNT(*) 
+        SELECT `status_updates`.`created_at` 
         FROM `status_updates` 
         WHERE `status_updates`.`referral_id` = `referrals`.`id`
-    ) = 0, 
-    `referrals`.`created_at`,
-    IFNULL(
-        (
-            SELECT `status_updates`.`created_at` 
-            FROM `status_updates` 
-            WHERE `status_updates`.`referral_id` = `referrals`.`id`
-            AND `status_updates`.`from` != `status_updates`.`to`
-            ORDER BY `status_updates`.`created_at` DESC 
-            LIMIT 1
-        ),
-        (
-            SELECT `status_updates`.`created_at` 
-            FROM `status_updates` 
-            WHERE `status_updates`.`referral_id` = `referrals`.`id`
-            ORDER BY `status_updates`.`created_at` ASC 
-            LIMIT 1
-        )
-    )
+        AND `status_updates`.`from` != `status_updates`.`to`
+        ORDER BY `status_updates`.`created_at` DESC 
+        LIMIT 1
+    ),
+    `referrals`.`created_at`
 )
 EOT;
 

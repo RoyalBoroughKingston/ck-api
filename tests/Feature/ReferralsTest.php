@@ -642,6 +642,100 @@ class ReferralsTest extends TestCase
         ]);
     }
 
+    public function test_status_last_updated_at_uses_last_status_update_with_changed_status_when_viewed()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'referral_consented_at' => $this->now,
+            'status' => Referral::STATUS_NEW,
+        ]);
+        $statusUpdate = $referral->statusUpdates()->create([
+            'user_id' => $user->id,
+            'from' => StatusUpdate::FROM_NEW,
+            'to' => StatusUpdate::TO_IN_PROGRESS,
+            'created_at' => now()->addDay(),
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals/{$referral->id}?append=status_last_updated_at");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                'id' => $referral->id,
+                'service_id' => $referral->service_id,
+                'reference' => $referral->reference,
+                'status' => Referral::STATUS_NEW,
+                'name' => $referral->name,
+                'email' => null,
+                'phone' => null,
+                'other_contact' => null,
+                'postcode_outward_code' => null,
+                'comments' => null,
+                'referral_consented_at' => $this->now->format(Carbon::ISO8601),
+                'feedback_consented_at' => null,
+                'referee_name' => null,
+                'referee_email' => null,
+                'referee_phone' => null,
+                'referee_organisation' => null,
+                'created_at' => $referral->created_at->format(Carbon::ISO8601),
+                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
+                'status_last_updated_at' => $statusUpdate->created_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
+    public function test_status_last_updated_at_uses_referral_created_at_with_unchanged_status_when_viewed()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create([
+            'service_id' => $service->id,
+            'referral_consented_at' => $this->now,
+            'status' => Referral::STATUS_NEW,
+        ]);
+        $statusUpdate = $referral->statusUpdates()->create([
+            'user_id' => $user->id,
+            'from' => StatusUpdate::FROM_NEW,
+            'to' => StatusUpdate::TO_NEW,
+            'created_at' => now()->addDay(),
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/referrals/{$referral->id}?append=status_last_updated_at");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            'data' => [
+                'id' => $referral->id,
+                'service_id' => $referral->service_id,
+                'reference' => $referral->reference,
+                'status' => Referral::STATUS_NEW,
+                'name' => $referral->name,
+                'email' => null,
+                'phone' => null,
+                'other_contact' => null,
+                'postcode_outward_code' => null,
+                'comments' => null,
+                'referral_consented_at' => $this->now->format(Carbon::ISO8601),
+                'feedback_consented_at' => null,
+                'referee_name' => null,
+                'referee_email' => null,
+                'referee_phone' => null,
+                'referee_organisation' => null,
+                'created_at' => $referral->created_at->format(Carbon::ISO8601),
+                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
+                'status_last_updated_at' => $referral->created_at->format(Carbon::ISO8601),
+            ]
+        ]);
+    }
+
     /*
      * Update a specific referral.
      */
