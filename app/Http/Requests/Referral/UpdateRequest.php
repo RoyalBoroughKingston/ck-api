@@ -39,7 +39,16 @@ class UpdateRequest extends FormRequest
                     Referral::STATUS_INCOMPLETED,
                 ]),
             ],
-            'comments' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+            'comments' => [
+                Rule::requiredIf(function () {
+                    return $this->status === $this->referral->status;
+                }),
+                'present',
+                'nullable',
+                'string',
+                'min:1',
+                'max:255',
+            ],
         ];
     }
 }
