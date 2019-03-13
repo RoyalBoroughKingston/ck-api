@@ -5,6 +5,7 @@ namespace Tests\Unit\Console\Commands\Ck\Notify;
 use App\Console\Commands\Ck\Notify\UnactionedReferralsCommand;
 use App\Emails\ReferralUnactioned\NotifyServiceEmail;
 use App\Models\Referral;
+use App\Models\Service;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -15,7 +16,13 @@ class UnactionedReferralsCommandTest extends TestCase
     {
         Queue::fake();
 
+        $service = factory(Service::class)->create([
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
+
         factory(Referral::class)->create([
+            'service_id' => $service->id,
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_NEW,
