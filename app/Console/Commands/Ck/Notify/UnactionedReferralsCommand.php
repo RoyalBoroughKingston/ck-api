@@ -35,7 +35,7 @@ class UnactionedReferralsCommand extends Command
     {
         $this->getReferralQuery()->chunk(200, function (Collection $referrals) {
             $referrals->each(function (Referral $referral) {
-                $this->sendEmail($referral);
+                $this->sendEmails($referral);
             });
         });
     }
@@ -53,7 +53,7 @@ class UnactionedReferralsCommand extends Command
     /**
      * @param \App\Models\Referral $referral
      */
-    protected function sendEmail(Referral $referral)
+    protected function sendEmails(Referral $referral)
     {
         try {
             $contactMethod = null;
@@ -67,8 +67,19 @@ class UnactionedReferralsCommand extends Command
                 $contactMethod = 'N/A';
             }
 
-            // Send the email.
-            $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->contact_email, [
+            // Send the email to the service.
+            $referral->service->sendEmailToContact(new NotifyServiceEmail($referral->service->referral_email, [
+                'REFERRAL_SERVICE_NAME' => $referral->service->name,
+                'REFERRAL_INITIALS' => $referral->initials(),
+                'REFERRAL_ID' => $referral->reference,
+                'REFERRAL_DAYS_AGO' => $referral->created_at->diffInWeekdays(now()),
+                'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
+                'REFERRAL_CONTACT_METHOD' => $contactMethod,
+                'REFERRAL_DAYS_LEFT' => now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('ck.working_days_for_service_to_respond'))),
+            ]));
+
+            // Send a copy of the email to the global admin team.
+            $referral->service->sendEmailToContact(new NotifyServiceEmail(config('ck.global_admin.email'), [
                 'REFERRAL_SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_INITIALS' => $referral->initials(),
                 'REFERRAL_ID' => $referral->reference,
@@ -79,7 +90,7 @@ class UnactionedReferralsCommand extends Command
             ]));
 
             // Output a success message.
-            $this->info("Email successfully sent for referral [{$referral->id}]");
+            $this->info("Emails successfully sent for referral [{$referral->id}]");
         } catch (Exception $exception) {
             // Log the exception.
             logger()->error($exception);
