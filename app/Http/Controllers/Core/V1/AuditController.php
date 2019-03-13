@@ -32,7 +32,8 @@ class AuditController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Audit::query();
+        $baseQuery = Audit::query()
+            ->with('oauthClient');
 
         $audits = QueryBuilder::for($baseQuery)
             ->allowedFilters([
@@ -66,6 +67,7 @@ class AuditController extends Controller
     public function show(ShowRequest $request, Audit $audit)
     {
         $baseQuery = Audit::query()
+            ->with('oauthClient')
             ->where('id', $audit->id);
 
         $audit = QueryBuilder::for($baseQuery)
