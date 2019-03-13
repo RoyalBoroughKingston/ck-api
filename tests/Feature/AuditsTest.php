@@ -101,6 +101,7 @@ class AuditsTest extends TestCase
             [
                 'id' => $audit->id,
                 'user_id' => null,
+                'oauth_client' => null,
                 'action' => Audit::ACTION_READ,
                 'description' => 'Someone viewed a resource',
                 'ip_address' => '127.0.0.1',
@@ -137,6 +138,7 @@ class AuditsTest extends TestCase
             [
                 'id' => $audit->id,
                 'user_id' => $user->id,
+                'oauth_client' => null,
                 'action' => Audit::ACTION_READ,
                 'description' => 'Someone viewed a resource',
                 'ip_address' => '127.0.0.1',
@@ -149,6 +151,7 @@ class AuditsTest extends TestCase
             [
                 'id' => $anotherAudit->id,
                 'user_id' => $anotherAudit->user_id,
+                'oauth_client' => null,
                 'action' => $anotherAudit->action,
                 'description' => $anotherAudit->description,
                 'ip_address' => $anotherAudit->ip_address,
@@ -265,6 +268,7 @@ class AuditsTest extends TestCase
             [
                 'id' => $audit->id,
                 'user_id' => null,
+                'oauth_client' => null,
                 'action' => Audit::ACTION_READ,
                 'description' => 'Someone viewed a resource',
                 'ip_address' => '127.0.0.1',

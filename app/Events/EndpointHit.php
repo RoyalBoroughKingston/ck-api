@@ -5,10 +5,11 @@ namespace App\Events;
 use App\Models\Audit;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Support\Carbon;
+use Laravel\Passport\Client;
 
 class EndpointHit
 {
@@ -19,6 +20,11 @@ class EndpointHit
      * @var null|\App\Models\User
      */
     protected $user;
+
+    /**
+     * @var null|\Laravel\Passport\Client
+     */
+    protected $oauthClient;
 
     /**
      * @var string
@@ -60,8 +66,10 @@ class EndpointHit
      */
     protected function __construct(Request $request, string $action, string $description, Model $model = null)
     {
-        $user = $request->user();
+        $user = $request->user('api');
+
         $this->user = $user;
+        $this->oauthClient = optional($user->token())->client;
         $this->action = $action;
         $this->description = $description;
         $this->ipAddress = $request->ip();
@@ -120,6 +128,14 @@ class EndpointHit
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    /**
+     * @return \Laravel\Passport\Client|null
+     */
+    public function getOauthClient(): ?Client
+    {
+        return $this->oauthClient;
     }
 
     /**
