@@ -42,7 +42,7 @@ class ReferralController extends Controller
     public function index(IndexRequest $request)
     {
         // Check if the request has asked for the service to be included.
-        $serviceIncluded = Str::contains($request->include, 'service');
+        $serviceIncluded = $request->contains('include', 'service');
 
         // Constrain the user to only show services that they are a service worker for.
         $userServiceIds = $request
@@ -50,7 +50,15 @@ class ReferralController extends Controller
             ->services()
             ->pluck(table(Service::class, 'id'));
 
+        // Check if the status last updated timestamp is to be appended.
+        $statusLastUpdatedAtAppended = $request->contains('append', 'status_last_updated_at');
+
+        // Remove the status last updated timestamp from the request.
+        $request->strip('append', 'status_last_updated_at');
+
+
         $baseQuery = Referral::query()
+            ->select('*')
             ->whereIn('service_id', $userServiceIds)
             ->when($serviceIncluded, function (Builder $query): Builder {
                 // If service included, then make sure the service relationships are also eager loaded.
@@ -60,6 +68,9 @@ class ReferralController extends Controller
                     'service.socialMedias',
                     'service.taxonomies',
                 ]);
+            })
+            ->when($statusLastUpdatedAtAppended, function (Builder $query) {
+                return $query->withStatusLastUpdatedAt();
             });
 
         // Filtering by the service ID here will only work for the IDs retrieved above. Others will be discarded.
@@ -139,9 +150,16 @@ class ReferralController extends Controller
     public function show(ShowRequest $request, Referral $referral)
     {
         // Check if the request has asked for user roles to be included.
-        $serviceIncluded = Str::contains($request->include, 'service');
+        $serviceIncluded = $request->contains('include', 'service');
+
+        // Check if the status last updated timestamp is to be appended.
+        $statusLastUpdatedAtAppended = $request->contains('append', 'status_last_updated_at');
+
+        // Remove the status last updated timestamp from the request.
+        $request->strip('append', 'status_last_updated_at');
 
         $baseQuery = Referral::query()
+            ->select('*')
             ->when($serviceIncluded, function (Builder $query): Builder {
                 // If service included, then make sure the service relationships are also eager loaded.
                 return $query->with([
@@ -150,6 +168,9 @@ class ReferralController extends Controller
                     'service.socialMedias',
                     'service.taxonomies',
                 ]);
+            })
+            ->when($statusLastUpdatedAtAppended, function (Builder $query) {
+                return $query->withStatusLastUpdatedAt();
             })
             ->where('id', $referral->id);
 
