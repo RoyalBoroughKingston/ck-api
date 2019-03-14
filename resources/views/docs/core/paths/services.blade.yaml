@@ -182,7 +182,7 @@ nested:
     tags: [Services]
     summary: Delete a specific service
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Global Admin`
     parameters:
       - name: service
         in: path
