@@ -69,7 +69,7 @@ class EndpointHit
         $user = $request->user('api');
 
         $this->user = $user;
-        $this->oauthClient = optional($user->token())->client;
+        $this->oauthClient = optional($user)->token()->client ?? null;
         $this->action = $action;
         $this->description = $description;
         $this->ipAddress = $request->ip();
