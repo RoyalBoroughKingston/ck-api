@@ -1948,22 +1948,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_delete_one()
+    public function test_global_admin_can_delete_one()
     {
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create()->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/services/{$service->id}");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_delete_one()
-    {
-        $service = factory(Service::class)->create();
-        $user = factory(User::class)->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 
