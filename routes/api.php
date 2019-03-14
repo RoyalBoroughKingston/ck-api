@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('oauth/clients', 'Passport\\ClientController@index');
+
 Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(function () {
     // Audits.
     Route::match(['GET', 'POST'], '/audits/index', 'AuditController@index');
