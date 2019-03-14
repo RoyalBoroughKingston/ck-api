@@ -64,7 +64,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
 
     // Referrals.
     Route::match(['GET', 'POST'], '/referrals/index', 'ReferralController@index');
-    Route::apiResource('/referrals', 'ReferralController')->only('index', 'store', 'show', 'update');
+    Route::apiResource('/referrals', 'ReferralController');
 
     // Report Schedules.
     Route::match(['GET', 'POST'], '/report-schedules/index', 'ReportScheduleController@index');
