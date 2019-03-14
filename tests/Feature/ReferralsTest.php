@@ -839,4 +839,86 @@ class ReferralsTest extends TestCase
                 ($event->getModel()->id === $referral->id);
         });
     }
+
+    /*
+     * Delete a specific referral.
+     */
+
+    public function test_guest_cannot_delete_one()
+    {
+        $referral = factory(Referral::class)->create();
+
+        $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceWorker($service);
+        $referral = factory(Referral::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_admin_cannot_delete_one()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+        $referral = factory(Referral::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_organisation_admin_cannot_delete_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeOrganisationAdmin($organisation);
+        $referral = factory(Referral::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_global_admin_cannot_delete_one()
+    {
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $referral = factory(Referral::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_super_admin_cannot_delete_one()
+    {
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $referral = factory(Referral::class)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing(table(Referral::class), ['id' => $referral->id]);
+    }
 }
