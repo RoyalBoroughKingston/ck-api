@@ -72,6 +72,7 @@ class AuditController extends Controller
             ->where('id', $audit->id);
 
         $audit = QueryBuilder::for($baseQuery)
+            ->allowedIncludes(['user'])
             ->firstOrFail();
 
         event(EndpointHit::onRead($request, "Viewed audit [{$audit->id}]", $audit));

@@ -83,6 +83,11 @@ nested:
         schema:
           type: string
           format: uuid
+      - name: include
+        in: query
+        description: The relationships to include with the response [`user`]
+        schema:
+          type: string
     responses:
       200:
         content:
