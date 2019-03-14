@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\EndpointHit;
 use App\Http\Filters\Referral\OrganisationNameFilter;
 use App\Http\Filters\Referral\ServiceNameFilter;
+use App\Http\Requests\Referral\DestroyRequest;
 use App\Http\Requests\Referral\IndexRequest;
 use App\Http\Requests\Referral\ShowRequest;
 use App\Http\Requests\Referral\StoreRequest;
 use App\Http\Requests\Referral\UpdateRequest;
 use App\Http\Resources\ReferralResource;
+use App\Http\Responses\ResourceDeleted;
 use App\Http\Sorts\Referral\OrganisationNameSort;
 use App\Http\Sorts\Referral\ServiceNameSort;
 use App\Models\Referral;
@@ -17,7 +19,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sort;
@@ -202,6 +203,22 @@ class ReferralController extends Controller
             event(EndpointHit::onUpdate($request, "Updated referral [{$referral->id}]", $referral));
 
             return new ReferralResource($referral);
+        });
+    }
+
+    /**
+     * @param \App\Http\Requests\Referral\DestroyRequest $request
+     * @param \App\Models\Referral $referral
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(DestroyRequest $request, Referral $referral)
+    {
+        return DB::transaction(function () use ($request, $referral) {
+            event(EndpointHit::onDelete($request, "Deleted referral [{$referral->id}]", $referral));
+
+            $referral->delete();
+
+            return new ResourceDeleted('referral');
         });
     }
 }

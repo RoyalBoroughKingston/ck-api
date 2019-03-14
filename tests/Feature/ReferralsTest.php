@@ -864,7 +864,7 @@ class ReferralsTest extends TestCase
 
         $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_service_admin_cannot_delete_one()
@@ -878,7 +878,7 @@ class ReferralsTest extends TestCase
 
         $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_organisation_admin_cannot_delete_one()
@@ -892,7 +892,7 @@ class ReferralsTest extends TestCase
 
         $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_global_admin_cannot_delete_one()
@@ -905,7 +905,7 @@ class ReferralsTest extends TestCase
 
         $response = $this->json('DELETE', "/core/v1/referrals/{$referral->id}");
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function test_super_admin_cannot_delete_one()
