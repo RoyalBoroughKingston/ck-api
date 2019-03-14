@@ -29,7 +29,7 @@ root:
     tags: ["Taxonomy: Organisations"]
     summary: Create an organisation taxonomy
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Global Admin`
     requestBody:
       required: true
       content:
@@ -85,7 +85,7 @@ nested:
     tags: ["Taxonomy: Organisations"]
     summary: Update a specific organisation taxonomy
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Global Admin`
     parameters:
     - name: organisation
       in: path
@@ -114,7 +114,7 @@ nested:
     tags: ["Taxonomy: Organisations"]
     summary: Delete a specific organisation taxonomy
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Global Admin`
     parameters:
     - name: organisation
       in: path
