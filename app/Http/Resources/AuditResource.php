@@ -18,6 +18,7 @@ class AuditResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'oauth_client' => $this->oauthClient->name ?? null,
             'action' => $this->action,
             'description' => $this->description,
             'ip_address' => $this->ip_address,

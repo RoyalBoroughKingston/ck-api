@@ -14,6 +14,11 @@ root:
         description: Comma seperated list of user IDs to filter by
         schema:
           type: string
+      - name: filter[oauth_client_id]
+        in: query
+        description: Comma seperated list of OAuth client IDs to filter by
+        schema:
+          type: string
       - name: filter[action]
         in: query
         description: Action to filter by
@@ -78,6 +83,11 @@ nested:
         schema:
           type: string
           format: uuid
+      - name: include
+        in: query
+        description: The relationships to include with the response [`user`]
+        schema:
+          type: string
     responses:
       200:
         content:
