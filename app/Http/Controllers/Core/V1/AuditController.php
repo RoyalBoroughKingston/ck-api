@@ -39,6 +39,7 @@ class AuditController extends Controller
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('user_id'),
+                Filter::exact('oauth_client_id'),
                 Filter::exact('action'),
                 'description',
             ])
