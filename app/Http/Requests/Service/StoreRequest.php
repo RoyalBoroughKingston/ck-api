@@ -59,7 +59,7 @@ class StoreRequest extends FormRequest
                     Service::STATUS_INACTIVE
                 ),
             ],
-            'intro' => ['required', 'string', 'min:1', 'max:255'],
+            'intro' => ['required', 'string', 'min:1', 'max:300'],
             'description' => ['required', 'string', 'min:1', 'max:10000'],
             'wait_time' => ['present', 'nullable', Rule::in([
                 Service::WAIT_TIME_ONE_WEEK,

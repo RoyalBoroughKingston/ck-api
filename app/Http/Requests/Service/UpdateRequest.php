@@ -74,7 +74,7 @@ class UpdateRequest extends FormRequest
                     $this->service->status
                 )
             ],
-            'intro' => ['string', 'min:1', 'max:255'],
+            'intro' => ['string', 'min:1', 'max:300'],
             'description' => ['string', 'min:1', 'max:10000'],
             'wait_time' => ['nullable', Rule::in([
                 Service::WAIT_TIME_ONE_WEEK,
