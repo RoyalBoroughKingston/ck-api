@@ -11,6 +11,8 @@ use App\Models\UserRole;
 use App\Rules\Base64EncodedPng;
 use App\Rules\CanUpdateServiceCategoryTaxonomies;
 use App\Rules\InOrder;
+use App\Rules\MarkdownMaxLength;
+use App\Rules\MarkdownMinLength;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use App\Rules\UserHasRole;
@@ -75,7 +77,7 @@ class UpdateRequest extends FormRequest
                 )
             ],
             'intro' => ['string', 'min:1', 'max:300'],
-            'description' => ['string', 'min:1', 'max:10000'],
+            'description' => ['string', new MarkdownMinLength(1), new MarkdownMaxLength(1600)],
             'wait_time' => ['nullable', Rule::in([
                 Service::WAIT_TIME_ONE_WEEK,
                 Service::WAIT_TIME_TWO_WEEKS,
