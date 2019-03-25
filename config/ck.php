@@ -100,6 +100,11 @@ return [
                 'email' => '30a5e55f-0e56-4387-9cf3-3eb4ed83b115',
             ],
         ],
+        'referral_still_unactioned' => [
+            'notify_global_admin' => [
+                'email' => 'd13651c2-93fd-4ace-8a19-2e83f7e30ca1',
+            ],
+        ],
         'referral_completed' => [
             'notify_client' => [
                 'email' => '6cde8dcc-3458-4190-a42a-a2a62fcbb37e',

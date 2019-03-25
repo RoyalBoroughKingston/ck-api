@@ -16,22 +16,14 @@ class AuditLogger implements ShouldQueue
      */
     public function handle(EndpointHit $event)
     {
-        // Filter out any null values.
-        $attributes = array_filter([
+        Audit::create([
+            'user_id' => $event->getUser()->id ?? null,
+            'oauth_client_id' => $event->getOauthClient()->id ?? null,
             'action' => $event->getAction(),
             'description' => $event->getDescription(),
             'ip_address' => $event->getIpAddress(),
             'user_agent' => $event->getUserAgent(),
             'created_at' => $event->getCreatedAt(),
         ]);
-
-        // When an authenticated user makes the request.
-        if ($event->getUser()) {
-            $event->getUser()->audits()->create($attributes);
-            return;
-        }
-
-        // When a guest makes the request.
-        Audit::create($attributes);
     }
 }

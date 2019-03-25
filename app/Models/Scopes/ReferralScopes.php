@@ -32,4 +32,32 @@ trait ReferralScopes
             ->where('updated_at', '<=', $date)
             ->where('status', '=', Referral::STATUS_COMPLETED);
     }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $alias
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithStatusLastUpdatedAt(Builder $query, string $alias = 'status_last_updated_at'): Builder
+    {
+        /*
+         * This query will select the latest status update, which has
+         * a changed status, or fall back to the referral creation date.
+         */
+        $sql = <<< EOT
+IFNULL(
+    (
+        SELECT `status_updates`.`created_at` 
+        FROM `status_updates` 
+        WHERE `status_updates`.`referral_id` = `referrals`.`id`
+        AND `status_updates`.`from` != `status_updates`.`to`
+        ORDER BY `status_updates`.`created_at` DESC 
+        LIMIT 1
+    ),
+    `referrals`.`created_at`
+)
+EOT;
+
+        return $query->selectSub($sql, $alias);
+    }
 }

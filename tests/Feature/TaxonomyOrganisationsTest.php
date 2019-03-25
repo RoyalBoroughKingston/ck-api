@@ -96,20 +96,9 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_create_one()
+    public function test_global_admin_can_create_one()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', '/core/v1/taxonomies/organisations');
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_create_one()
-    {
-        $user = factory(User::class)->create()->makeSuperAdmin();
         $siblingCount = Taxonomy::organisation()->children()->count();
         $payload = [
             'name' => 'PHPUnit Taxonomy Organisation Test',
@@ -330,20 +319,9 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_update_one()
+    public function test_global_admin_can_update_one()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $organisation = $this->createTaxonomyOrganisation();
-
-        Passport::actingAs($user);
-        $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_update_one()
-    {
-        $user = factory(User::class)->create()->makeSuperAdmin();
         $organisation = $this->createTaxonomyOrganisation();
         $payload = [
             'name' => 'PHPUnit Test Organisation',
@@ -518,20 +496,9 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_delete_one()
+    public function test_global_admin_can_delete_one()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $organisation = $this->createTaxonomyOrganisation();
-
-        Passport::actingAs($user);
-        $response = $this->json('DELETE', "/core/v1/taxonomies/organisations/{$organisation->id}");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_delete_one()
-    {
-        $user = factory(User::class)->create()->makeSuperAdmin();
         $organisation = $this->createTaxonomyOrganisation();
 
         Passport::actingAs($user);

@@ -35,6 +35,11 @@ root:
       description: The status for the referral to filter by
       schema:
         type: string
+    - name: append
+      in: query
+      schema:
+        type: string
+      description: The fields to append to the response [`status_last_updated_at`]
     - name: include
       in: query
       description: The relationships to include with the response [`service.organisation`]
@@ -106,6 +111,11 @@ nested:
       schema:
         type: string
         format: uuid
+    - name: append
+      in: query
+      schema:
+        type: string
+      description: The fields to append to the response [`status_last_updated_at`]
     - name: include
       in: query
       description: The relationships to include with the response [`service`]
@@ -149,3 +159,23 @@ nested:
               properties:
                 data:
                   $ref: /docs/core/resources/referral.yaml
+
+  delete:
+    tags: [Referrals]
+    summary: Delete a specific referral
+    description: |
+      **Permission:** `Super Admin`
+    parameters:
+      - name: referral
+        in: path
+        description: The ID of the referral
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: /docs/core/responses/resource-deleted.yaml

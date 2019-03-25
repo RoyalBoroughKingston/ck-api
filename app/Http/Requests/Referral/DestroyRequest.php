@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Service;
+namespace App\Http\Requests\Referral;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,7 @@ class DestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->user()->isGlobalAdmin()) {
+        if ($this->user()->isSuperAdmin()) {
             return true;
         }
 

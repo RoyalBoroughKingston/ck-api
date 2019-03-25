@@ -1877,6 +1877,28 @@ class ServicesTest extends TestCase
         $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
     }
 
+    public function test_referral_url_required_when_referral_method_not_updated_with_it()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
+            'referral_url' => $this->faker->url,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'referral_url' => null,
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /*
      * Delete a specific service.
      */
@@ -1926,22 +1948,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_delete_one()
+    public function test_global_admin_can_delete_one()
     {
         $service = factory(Service::class)->create();
         $user = factory(User::class)->create()->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('DELETE', "/core/v1/services/{$service->id}");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_delete_one()
-    {
-        $service = factory(Service::class)->create();
-        $user = factory(User::class)->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 

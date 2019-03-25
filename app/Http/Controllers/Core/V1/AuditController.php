@@ -32,12 +32,14 @@ class AuditController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $baseQuery = Audit::query();
+        $baseQuery = Audit::query()
+            ->with('oauthClient');
 
         $audits = QueryBuilder::for($baseQuery)
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('user_id'),
+                Filter::exact('oauth_client_id'),
                 Filter::exact('action'),
                 'description',
             ])
@@ -66,9 +68,11 @@ class AuditController extends Controller
     public function show(ShowRequest $request, Audit $audit)
     {
         $baseQuery = Audit::query()
+            ->with('oauthClient')
             ->where('id', $audit->id);
 
         $audit = QueryBuilder::for($baseQuery)
+            ->allowedIncludes(['user'])
             ->firstOrFail();
 
         event(EndpointHit::onRead($request, "Viewed audit [{$audit->id}]", $audit));
