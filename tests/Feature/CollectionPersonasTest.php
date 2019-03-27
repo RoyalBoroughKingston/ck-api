@@ -1298,7 +1298,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $imageResponse = $this->json('POST', '/core/v1/files', [
-            'is_public' => true,
+            'is_private' => false,
             'mime_type' => 'image/png',
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);

@@ -22,7 +22,6 @@ root:
                 type: string
                 enum:
                   - image/png
-                  - image/jpeg
               file:
                 type: string
                 format: binary

@@ -145,9 +145,9 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param \Illuminate\Foundation\Testing\TestResponse $response
      * @param string|null $key
-     * @return array
+     * @return array|string
      */
-    protected function getResponseContent(TestResponse $response, string $key = null): array
+    protected function getResponseContent(TestResponse $response, string $key = null)
     {
         $content = json_decode($response->getContent(), true);
 

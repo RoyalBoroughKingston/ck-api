@@ -45,6 +45,9 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         ]);
     Route::get('/collections/personas/{collection}/image.png', 'CollectionPersona\\ImageController')->name('collection-personas.image');
 
+    // Files.
+    Route::apiResource('/files', 'FileController')->only('store');
+
     // Locations.
     Route::match(['GET', 'POST'], '/locations/index', 'LocationController@index');
     Route::apiResource('/locations', 'LocationController');
