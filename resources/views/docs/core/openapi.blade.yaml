@@ -35,6 +35,11 @@ paths:
   /collections/personas/{persona}/image.png:
     $ref: /docs/core/paths/persona-collections.yaml#/image
 
+  /files/public:
+    $ref: /docs/core/paths/files.yaml#/public
+  /files/private:
+    $ref: /docs/core/paths/files.yaml#/private
+
   /locations:
     $ref: /docs/core/paths/locations.yaml#/root
   /locations/index:
@@ -169,6 +174,7 @@ tags:
 - name: Audits
 - name: "Collection: Categories"
 - name: "Collection: Personas"
+- name: Files
 - name: Locations
 - name: Notifications
 - name: Organisations

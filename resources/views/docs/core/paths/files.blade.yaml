@@ -1,0 +1,51 @@
+# /files/public
+public:
+  post:
+    tags: [Files]
+    summary: Create a public file
+    description: |
+      **Permission:** `Service Admin`
+    requestBody:
+      required: true
+      content:
+        image/png:
+          schema:
+            type: string
+        image/jpeg:
+          schema:
+            type: string
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/file.yaml
+
+# /files/private
+private:
+  post:
+    tags: [Files]
+    summary: Create a private file
+    description: |
+      **Permission:** `Service Admin`
+    requestBody:
+      required: true
+      content:
+        image/png:
+          schema:
+            type: string
+        image/jpeg:
+          schema:
+            type: string
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/file.yaml
