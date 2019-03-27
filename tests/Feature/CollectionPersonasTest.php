@@ -1347,7 +1347,7 @@ class CollectionPersonasTest extends TestCase
             'sidebox_title' => null,
             'sidebox_content' => null,
             'category_taxonomies' => $persona->taxonomies()->pluck(table(Taxonomy::class, 'id')),
-            'image' => null,
+            'image_file_id' => null,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
