@@ -2158,7 +2158,16 @@ class ServicesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
         $image = Storage::disk('local')->get('/test-data/image.png');
-        $payload = [
+
+        Passport::actingAs($user);
+        
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response = $this->json('POST', '/core/v1/services', [
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
@@ -2204,20 +2213,16 @@ class ServicesTest extends TestCase
                 ]
             ],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-            'logo' => 'data:image/png;base64,' . base64_encode($image),
-        ];
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', '/core/v1/services/', $payload);
-        $serviceArray = $this->getResponseContent($response)['data'];
+            'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+        ]);
+        $serviceId = $this->getResponseContent($response, 'data.id');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas(table(Service::class), [
-            'id' => $serviceArray['id'],
+            'id' => $serviceId,
         ]);
         $this->assertDatabaseMissing(table(Service::class), [
-            'id' => $serviceArray['id'],
+            'id' => $serviceId,
             'logo_file_id' => null,
         ]);
     }
@@ -2270,7 +2275,7 @@ class ServicesTest extends TestCase
             'useful_infos' => [],
             'social_medias' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-            'logo' => null,
+            'logo_file_id' => null,
         ];
 
         Passport::actingAs($user);

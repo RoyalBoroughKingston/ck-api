@@ -76,7 +76,13 @@ class OrganisationController extends Controller
             ]);
 
             if ($request->filled('logo_file_id')) {
-                File::findOrFail($request->logo_file_id)->assigned();
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->logo_file_id)->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
             }
 
             event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));
@@ -130,7 +136,13 @@ class OrganisationController extends Controller
             ]);
 
             if ($request->filled('logo_file_id')) {
-                File::findOrFail($request->logo_file_id)->assigned();
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->logo_file_id)->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
             }
 
             event(EndpointHit::onUpdate($request, "Updated organisation [{$organisation->id}]", $organisation));
