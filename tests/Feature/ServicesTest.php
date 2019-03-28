@@ -2160,7 +2160,7 @@ class ServicesTest extends TestCase
         $image = Storage::disk('local')->get('/test-data/image.png');
 
         Passport::actingAs($user);
-        
+
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
