@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Console\Commands\Ck;
+namespace App\Console\Commands\Ck\AutoDelete;
 
 use App\Models\Audit;
 use Illuminate\Console\Command;
 
-class AutoDeleteAuditsCommand extends Command
+class AuditsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ck:auto-delete-audits';
+    protected $signature = 'ck:auto-delete:audits';
 
     /**
      * The console command description.

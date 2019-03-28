@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Console\Commands\Ck;
 
-use App\Console\Commands\Ck\AutoDeleteAuditsCommand;
+use App\Console\Commands\Ck\AutoDelete\AuditsCommand;
 use App\Models\Audit;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
-class AutoDeleteAuditsTest extends TestCase
+class AuditsTest extends TestCase
 {
     public function test_auto_delete_works()
     {
@@ -21,7 +21,7 @@ class AutoDeleteAuditsTest extends TestCase
             'updated_at' => today()->subMonths(Audit::AUTO_DELETE_MONTHS),
         ]);
 
-        Artisan::call(AutoDeleteAuditsCommand::class);
+        Artisan::call(AuditsCommand::class);
 
         $this->assertDatabaseHas($newAudit->getTable(), ['id' => $newAudit->id]);
         $this->assertDatabaseMissing($dueForDeletionAudit->getTable(), ['id' => $dueForDeletionAudit->id]);

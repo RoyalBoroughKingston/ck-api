@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Console\Commands\Ck;
+namespace App\Console\Commands\Ck\AutoDelete;
 
 use App\Models\PageFeedback;
 use Illuminate\Console\Command;
 
-class AutoDeletePageFeedbacksCommand extends Command
+class PageFeedbacksCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ck:auto-delete-page-feedbacks';
+    protected $signature = 'ck:auto-delete:page-feedbacks';
 
     /**
      * The console command description.

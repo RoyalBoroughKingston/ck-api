@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Console\Commands\Ck;
+namespace App\Console\Commands\Ck\AutoDelete;
 
 use App\Models\Referral;
 use Illuminate\Console\Command;
 
-class AutoDeleteReferralsCommand extends Command
+class ReferralsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ck:auto-delete-referrals';
+    protected $signature = 'ck:auto-delete:referrals';
 
     /**
      * The console command description.
