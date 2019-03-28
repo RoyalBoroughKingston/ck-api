@@ -25,6 +25,8 @@ class File extends Model implements Responsable
     const META_PLACEHOLDER_FOR_SERVICE = 'service';
     const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
 
+    const PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS = 1;
+
     /**
      * The attributes that should be cast to native types.
      *

@@ -22,16 +22,6 @@ class AuditsCommand extends Command
     protected $description = 'Deletes any audits that are due for deletion';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -40,8 +30,8 @@ class AuditsCommand extends Command
     {
         $months = Audit::AUTO_DELETE_MONTHS;
 
-        $this->line("Deleting audits created {$months} months ago...");
+        $this->line("Deleting audits created {$months} month(s) ago...");
         $count = Audit::dueForDeletion()->delete();
-        $this->info("Deleted {$count} audits.");
+        $this->info("Deleted {$count} audit(s).");
     }
 }

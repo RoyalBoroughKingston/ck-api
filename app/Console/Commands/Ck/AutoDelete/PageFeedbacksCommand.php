@@ -22,16 +22,6 @@ class PageFeedbacksCommand extends Command
     protected $description = 'Deletes all page feedback that are due for deletion';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -40,8 +30,8 @@ class PageFeedbacksCommand extends Command
     {
         $months = PageFeedback::AUTO_DELETE_MONTHS;
 
-        $this->line("Deleting page feedback created {$months} months ago...");
+        $this->line("Deleting page feedback created {$months} month(s) ago...");
         $count = PageFeedback::dueForDeletion()->delete();
-        $this->info("Deleted {$count} page feedbacks.");
+        $this->info("Deleted {$count} page feedback(s).");
     }
 }

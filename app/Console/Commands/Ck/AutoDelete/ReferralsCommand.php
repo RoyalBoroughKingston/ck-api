@@ -22,16 +22,6 @@ class ReferralsCommand extends Command
     protected $description = 'Deletes any referrals that are due for deletion';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -40,8 +30,8 @@ class ReferralsCommand extends Command
     {
         $months = Referral::AUTO_DELETE_MONTHS;
 
-        $this->line("Deleting referrals completed {$months} months ago...");
+        $this->line("Deleting referrals completed {$months} month(s) ago...");
         $count = Referral::dueForDeletion()->delete();
-        $this->info("Deleted {$count} referrals.");
+        $this->info("Deleted {$count} referral(s).");
     }
 }

@@ -30,13 +30,16 @@ class Kernel extends ConsoleKernel
         $schedule->command(Commands\Ck\Notify\StillUnactionedReferralsCommand::class)
             ->dailyAt('09:00');
 
-        $schedule->command(Commands\Ck\AutoDelete\ReferralsCommand::class)
-            ->daily();
-
         $schedule->command(Commands\Ck\AutoDelete\AuditsCommand::class)
             ->daily();
 
         $schedule->command(Commands\Ck\AutoDelete\PageFeedbacksCommand::class)
+            ->daily();
+
+        $schedule->command(Commands\Ck\AutoDelete\PendingAssignmentFilesCommand::class)
+            ->daily();
+
+        $schedule->command(Commands\Ck\AutoDelete\ReferralsCommand::class)
             ->daily();
     }
 
