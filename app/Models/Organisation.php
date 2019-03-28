@@ -6,6 +6,7 @@ use App\Http\Requests\Organisation\UpdateRequest as UpdateOrganisationRequest;
 use App\Models\Mutators\OrganisationMutators;
 use App\Models\Relationships\OrganisationRelationships;
 use App\Models\Scopes\OrganisationScopes;
+use App\Rules\FileIsMimeType;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
@@ -31,6 +32,13 @@ class Organisation extends Model implements AppliesUpdateRequests
         $rules = (new UpdateOrganisationRequest())
             ->merge(['organisation' => $this])
             ->rules();
+
+        // Remove the pending assignment rule since the file is now uploaded.
+        $rules['logo_file_id'] = [
+            'nullable',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
