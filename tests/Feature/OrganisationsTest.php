@@ -534,27 +534,32 @@ class OrganisationsTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
         $image = Storage::disk('local')->get('/test-data/image.png');
-        $payload = [
+
+        Passport::actingAs($user);
+
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response = $this->json('POST', '/core/v1/organisations', [
             'slug' => 'test-org',
             'name' => 'Test Org',
             'description' => 'Test description',
             'url' => 'http://test-org.example.com',
             'email' => 'info@test-org.example.com',
             'phone' => '07700000000',
-            'logo' => 'data:image/png;base64,' . base64_encode($image),
-        ];
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', '/core/v1/organisations', $payload);
-        $organisationArray = $this->getResponseContent($response)['data'];
+            'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+        ]);
+        $organisationId = $this->getResponseContent($response, 'data.id');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas(table(Organisation::class), [
-            'id' => $organisationArray['id'],
+            'id' => $organisationId,
         ]);
         $this->assertDatabaseMissing(table(Organisation::class), [
-            'id' => $organisationArray['id'],
+            'id' => $organisationId,
             'logo_file_id' => null,
         ]);
     }
@@ -580,7 +585,7 @@ class OrganisationsTest extends TestCase
             'url' => $organisation->url,
             'email' => $organisation->email,
             'phone' => $organisation->phone,
-            'logo' => null,
+            'logo_file_id' => null,
         ];
 
         Passport::actingAs($user);

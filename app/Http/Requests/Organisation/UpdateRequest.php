@@ -3,8 +3,10 @@
 namespace App\Http\Requests\Organisation;
 
 use App\Http\Requests\HasMissingValues;
+use App\Models\File;
 use App\Models\Organisation;
-use App\Rules\Base64EncodedPng;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -48,7 +50,12 @@ class UpdateRequest extends FormRequest
             'url' => ['url', 'max:255'],
             'email' => ['email', 'max:255'],
             'phone' => ['string', 'min:1', 'max:255'],
-            'logo' => [new Base64EncodedPng(true)],
+            'logo_file_id' => [
+                'nullable',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 }
