@@ -230,7 +230,12 @@ class UpdateRequest extends FormRequest
                 'required_with:gallery_items.*',
                 'exists:files,id',
                 new FileIsMimeType(File::MIME_TYPE_PNG),
-                new FileIsPendingAssignment(),
+                new FileIsPendingAssignment(function (File $file) {
+                    return $this->service
+                        ->serviceGalleryItems()
+                        ->where('file_id', '=', $file->id)
+                        ->exists();
+                }),
             ],
 
             'category_taxonomies' => $this->categoryTaxonomiesRules(),

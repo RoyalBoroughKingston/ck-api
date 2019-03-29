@@ -9,6 +9,21 @@ use Illuminate\Support\Arr;
 class FileIsPendingAssignment implements Rule
 {
     /**
+     * @var callable
+     */
+    protected $callback;
+
+    /**
+     * FileIsPendingAssignment constructor.
+     *
+     * @param callable|null $callback Called if the file is not pending assignment
+     */
+    public function __construct(callable $callback = null)
+    {
+        $this->callback = $callback;
+    }
+
+    /**
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
@@ -19,7 +34,17 @@ class FileIsPendingAssignment implements Rule
     {
         $file = File::findOrFail($fileId);
 
-        return Arr::get($file->meta, 'type') === File::META_TYPE_PENDING_ASSIGNMENT;
+        $passed = Arr::get($file->meta, 'type') === File::META_TYPE_PENDING_ASSIGNMENT;
+
+        if ($passed) {
+            return true;
+        }
+
+        if ($this->callback !== null) {
+            return call_user_func($this->callback, $file);
+        }
+
+        return false;
     }
 
     /**
