@@ -111,6 +111,8 @@ paths:
     $ref: /docs/core/paths/services.yaml#/related
   /services/{service}/logo.png:
     $ref: /docs/core/paths/services.yaml#/logo
+  /services/{service}/gallery-items/{file}:
+    $ref: /docs/core/paths/services.yaml#/gallery-items
 
   /status-updates:
     $ref: /docs/core/paths/status-updates.yaml#/root

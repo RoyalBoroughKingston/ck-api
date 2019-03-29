@@ -17,6 +17,7 @@ class File extends Model implements Responsable
     use FileScopes;
 
     const MIME_TYPE_PNG = 'image/png';
+    const MIME_TYPE_TXT = 'text/plain';
 
     const META_TYPE_RESIZED_IMAGE = 'resized_image';
     const META_TYPE_PENDING_ASSIGNMENT = 'pending_assignment';
@@ -26,6 +27,9 @@ class File extends Model implements Responsable
     const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
 
     const PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS = 1;
+
+    const WITH_PERIOD = true;
+    const WITHOUT_PERIOD = false;
 
     /**
      * The attributes that should be cast to native types.
@@ -236,19 +240,21 @@ class File extends Model implements Responsable
 
     /**
      * @param string $mimeType
+     * @param bool $withPeriod
      * @return string
      */
-    public static function extensionFromMime(string $mimeType): string
+    public static function extensionFromMime(string $mimeType, bool $withPeriod = true): string
     {
         $map = [
             static::MIME_TYPE_PNG => '.png',
+            static::MIME_TYPE_TXT => '.txt',
         ];
 
         if (!array_key_exists($mimeType, $map)) {
             throw new \InvalidArgumentException("The mime type [$mimeType] is not supported.");
         }
 
-        return $map[$mimeType];
+        return $withPeriod ? $map[$mimeType] : trim($map[$mimeType], '.');
     }
 
     /**
