@@ -1837,14 +1837,13 @@ class ServicesTest extends TestCase
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
-        $payload = [
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
             'gallery_items' => [
                 [
                     'file_id' => $this->getResponseContent($imageResponse, 'data.id'),
                 ]
             ],
-        ];
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        ]);
 
         $response->assertStatus(Response::HTTP_OK);
     }
@@ -1937,10 +1936,9 @@ class ServicesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $payload = [
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
             'referral_url' => null,
-        ];
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -2072,6 +2070,9 @@ class ServicesTest extends TestCase
             'type' => SocialMedia::TYPE_INSTAGRAM,
             'url' => 'https://www.instagram.com/ayupdigital/'
         ]);
+        $relatedService->serviceGalleryItems()->create([
+            'file_id' => factory(File::class)->create()->id,
+        ]);
         $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
         $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
         $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThree->id]);
@@ -2133,10 +2134,12 @@ class ServicesTest extends TestCase
                         ],
                     ],
                     'gallery_items' => [
-                        'id',
-                        'url',
-                        'created_at',
-                        'updated_at',
+                        [
+                            'file_id',
+                            'url',
+                            'created_at',
+                            'updated_at',
+                        ],
                     ],
                     'category_taxonomies' => [
                         [
@@ -2264,6 +2267,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
             'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
         ]);

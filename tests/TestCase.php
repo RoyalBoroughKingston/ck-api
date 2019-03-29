@@ -116,7 +116,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUpElasticsearch()
     {
-        if (!defined('static::USE_ELASTICSEARCH')) {
+        if (! $this instanceof UsesElasticsearch) {
             Service::disableSearchSyncing();
             return;
         } else {
@@ -134,7 +134,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function tearDownElasticsearch()
     {
-        if (!defined('static::USE_ELASTICSEARCH')) {
+        if (! $this instanceof UsesElasticsearch) {
             Service::disableSearchSyncing();
             return;
         } else {

@@ -181,6 +181,15 @@ class StoreRequest extends FormRequest
             ])],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
+            'gallery_items' => ['present', 'array'],
+            'gallery_items.*' => ['array'],
+            'gallery_items.*.file_id' => [
+                'required_with:gallery_items.*',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
+
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'logo_file_id' => [

@@ -176,6 +176,11 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             ->rules();
 
         // Remove the pending assignment rule since the file is now uploaded.
+        $rules['gallery_items.*.file_id'] = [
+            'required_with:gallery_items.*',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
         $rules['logo_file_id'] = [
             'nullable',
             'exists:files,id',
@@ -249,10 +254,20 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
         // Update the social media records.
         if (array_key_exists('social_medias', $updateRequest->data)) {
             $this->socialMedias()->delete();
-            foreach ($data['social_medias'] as $socialMedia) {
+            foreach ($data['social_medias'] as $galleryItem) {
                 $this->socialMedias()->create([
-                    'type' => $socialMedia['type'],
-                    'url' => $socialMedia['url'],
+                    'type' => $galleryItem['type'],
+                    'url' => $galleryItem['url'],
+                ]);
+            }
+        }
+
+        // Update the gallery item records.
+        if (array_key_exists('gallery_items', $updateRequest->data)) {
+            $this->serviceGalleryItems()->delete();
+            foreach ($data['gallery_items'] as $galleryItem) {
+                $this->serviceGalleryItems()->create([
+                    'file_id' => $galleryItem['file_id'],
                 ]);
             }
         }
