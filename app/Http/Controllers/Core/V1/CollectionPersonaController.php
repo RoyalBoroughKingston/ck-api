@@ -69,30 +69,15 @@ class CollectionPersonaController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
-                    'image_file_id' => null,
+                    'image_file_id' => $request->image_file_id,
                     'sidebox_title' => $request->sidebox_title,
                     'sidebox_content' => $request->sidebox_content,
                 ],
                 'order' => $request->order,
             ]);
 
-            // Create the file record.
-            if ($request->filled('image')) {
-                /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $persona->id . '.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
-
-                // Update the persona record to point to the file.
-                $meta = $persona->meta;
-                $meta['image_file_id'] = $file->id;
-                $persona->meta = $meta;
-                $persona->save();
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->image);
+            if ($request->filled('image_file_id')) {
+                File::findOrFail($request->image_file_id)->assigned();
             }
 
             // Create all of the pivot records.
@@ -144,36 +129,17 @@ class CollectionPersonaController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
-                    'image_file_id' => $collection->meta['image_file_id'],
+                    'image_file_id' => $request->has('image_file_id')
+                        ? $request->image_file_id
+                        : $collection->meta['image_file_id'],
                     'sidebox_title' => $request->sidebox_title,
                     'sidebox_content' => $request->sidebox_content,
                 ],
                 'order' => $request->order,
             ]);
 
-            // Update the image if the image field was provided.
-            if ($request->filled('image')) {
-                // If a new image was uploaded.
-                /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $collection->id.'.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->image);
-
-                $meta = $collection->meta;
-                $meta['image_file_id'] = $file->id;
-                $collection->meta = $meta;
-                $collection->save();
-            } else if ($request->has('image')) {
-                // If the image was removed.
-                $meta = $collection->meta;
-                $meta['image_file_id'] = null;
-                $collection->meta = $meta;
-                $collection->save();
+            if ($request->filled('image_file_id')) {
+                File::findOrFail($request->image_file_id)->assigned();
             }
 
             // Update or create all of the pivot records.

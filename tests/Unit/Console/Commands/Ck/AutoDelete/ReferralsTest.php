@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Console\Commands\Ck;
 
-use App\Console\Commands\Ck\AutoDeleteReferralsCommand;
+use App\Console\Commands\Ck\AutoDelete\ReferralsCommand;
 use App\Models\Referral;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
-class AutoDeleteReferralsTest extends TestCase
+class ReferralsTest extends TestCase
 {
     public function test_auto_delete_works()
     {
@@ -27,7 +27,7 @@ class AutoDeleteReferralsTest extends TestCase
             'updated_at' => today()->subMonths(Referral::AUTO_DELETE_MONTHS),
         ]);
 
-        Artisan::call(AutoDeleteReferralsCommand::class);
+        Artisan::call(ReferralsCommand::class);
 
         $this->assertDatabaseHas($newReferral->getTable(), ['id' => $newReferral->id]);
         $this->assertDatabaseMissing($dueForDeletionReferral->getTable(), ['id' => $dueForDeletionReferral->id]);
@@ -43,7 +43,7 @@ class AutoDeleteReferralsTest extends TestCase
             'updated_at' => today()->subMonths(Referral::AUTO_DELETE_MONTHS),
         ]);
 
-        Artisan::call(AutoDeleteReferralsCommand::class);
+        Artisan::call(ReferralsCommand::class);
 
         $this->assertDatabaseHas($dueForDeletionReferral->getTable(), ['id' => $dueForDeletionReferral->id]);
     }

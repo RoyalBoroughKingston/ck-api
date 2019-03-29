@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Console\Commands\Ck;
 
-use App\Console\Commands\Ck\AutoDeletePageFeedbacksCommand;
+use App\Console\Commands\Ck\AutoDelete\PageFeedbacksCommand;
 use App\Models\PageFeedback;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
-class AutoDeletePageFeedbacksTest extends TestCase
+class PageFeedbacksTest extends TestCase
 {
     public function test_auto_delete_works()
     {
@@ -21,7 +21,7 @@ class AutoDeletePageFeedbacksTest extends TestCase
             'updated_at' => today()->subMonths(PageFeedback::AUTO_DELETE_MONTHS),
         ]);
 
-        Artisan::call(AutoDeletePageFeedbacksCommand::class);
+        Artisan::call(PageFeedbacksCommand::class);
 
         $this->assertDatabaseHas($newPageFeedback->getTable(), ['id' => $newPageFeedback->id]);
         $this->assertDatabaseMissing($dueForDeletionPageFeedback->getTable(), ['id' => $dueForDeletionPageFeedback->id]);

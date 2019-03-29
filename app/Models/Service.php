@@ -10,6 +10,7 @@ use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
 use App\Notifications\Notifiable;
 use App\Notifications\Notifications;
+use App\Rules\FileIsMimeType;
 use App\Sms\Sms;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
@@ -173,6 +174,13 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             ->merge(['service' => $this])
             ->merge($updateRequest->data)
             ->rules();
+
+        // Remove the pending assignment rule since the file is now uploaded.
+        $rules['logo_file_id'] = [
+            'nullable',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }

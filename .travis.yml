@@ -1,7 +1,10 @@
 language: php
 
 php:
-  - 7.2
+  - "7.2"
+
+env:
+  - ES_VERSION=6.3.0 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
 
 services:
   - redis-server
@@ -32,10 +35,11 @@ cache:
 before_install:
   - wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
   - echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-  - wget -q -O - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-  - echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elasticsearch.list
   - sudo apt-get update
-  - sudo apt-get install -y --allow-unauthenticated cf-cli elasticsearch
+  - sudo apt-get install -y --allow-unauthenticated cf-cli
+  - wget ${ES_DOWNLOAD_URL}
+  - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
+  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch &
 
 install:
   - composer self-update

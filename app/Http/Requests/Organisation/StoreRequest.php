@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Organisation;
 
+use App\Models\File;
 use App\Models\Organisation;
-use App\Rules\Base64EncodedPng;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -37,7 +39,11 @@ class StoreRequest extends FormRequest
             'url' => ['required', 'url', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'min:1', 'max:255'],
-            'logo' => ['nullable', 'string', new Base64EncodedPng()],
+            'logo_file_id' => [
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 }

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Console\Commands\Ck;
+namespace App\Console\Commands\Ck\AutoDelete;
 
 use App\Models\Referral;
 use Illuminate\Console\Command;
 
-class AutoDeleteReferralsCommand extends Command
+class ReferralsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ck:auto-delete-referrals';
+    protected $signature = 'ck:auto-delete:referrals';
 
     /**
      * The console command description.
@@ -20,16 +20,6 @@ class AutoDeleteReferralsCommand extends Command
      * @var string
      */
     protected $description = 'Deletes any referrals that are due for deletion';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -40,8 +30,8 @@ class AutoDeleteReferralsCommand extends Command
     {
         $months = Referral::AUTO_DELETE_MONTHS;
 
-        $this->line("Deleting referrals completed {$months} months ago...");
+        $this->line("Deleting referrals completed {$months} month(s) ago...");
         $count = Referral::dueForDeletion()->delete();
-        $this->info("Deleted {$count} referrals.");
+        $this->info("Deleted {$count} referral(s).");
     }
 }

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Console\Commands\Ck;
+namespace App\Console\Commands\Ck\AutoDelete;
 
 use App\Models\PageFeedback;
 use Illuminate\Console\Command;
 
-class AutoDeletePageFeedbacksCommand extends Command
+class PageFeedbacksCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ck:auto-delete-page-feedbacks';
+    protected $signature = 'ck:auto-delete:page-feedbacks';
 
     /**
      * The console command description.
@@ -20,16 +20,6 @@ class AutoDeletePageFeedbacksCommand extends Command
      * @var string
      */
     protected $description = 'Deletes all page feedback that are due for deletion';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -40,8 +30,8 @@ class AutoDeletePageFeedbacksCommand extends Command
     {
         $months = PageFeedback::AUTO_DELETE_MONTHS;
 
-        $this->line("Deleting page feedback created {$months} months ago...");
+        $this->line("Deleting page feedback created {$months} month(s) ago...");
         $count = PageFeedback::dueForDeletion()->delete();
-        $this->info("Deleted {$count} page feedbacks.");
+        $this->info("Deleted {$count} page feedback(s).");
     }
 }

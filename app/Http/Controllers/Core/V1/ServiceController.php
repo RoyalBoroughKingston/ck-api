@@ -109,29 +109,17 @@ class ServiceController extends Controller
                 'referral_button_text' => $request->referral_button_text,
                 'referral_email' => $request->referral_email,
                 'referral_url' => $request->referral_url,
+                'logo_file_id' => $request->logo_file_id,
             ]);
 
-            // Upload the logo if provided.
-            if ($request->filled('logo')) {
-                // Create the file record.
+            if ($request->filled('logo_file_id')) {
                 /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $service->id . '.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->logo);
+                $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
                 foreach (config('ck.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
-
-                // Link the file to the organisation.
-                $service->logo_file_id = $file->id;
-                $service->save();
             }
 
             // Create the service criterion record.
@@ -247,30 +235,17 @@ class ServiceController extends Controller
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missing('category_taxonomies'),
+                'logo_file_id' => $request->missing('logo_file_id'),
             ]);
 
-            // Update the logo if the logo field was provided.
-            if ($request->filled('logo')) {
-                // If a new logo was uploaded.
+            if ($request->filled('logo_file_id')) {
                 /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $service->id.'.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->logo);
+                $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
                 foreach (config('ck.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
-
-                $data['logo_file_id'] = $file->id;
-            } else if ($request->has('logo')) {
-                // If the logo was removed.
-                $data['logo_file_id'] = null;
             }
 
             // Loop through each useful info.
