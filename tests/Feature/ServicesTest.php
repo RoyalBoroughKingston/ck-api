@@ -96,6 +96,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital/'
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [
                 [
                     'id' => Taxonomy::category()->children()->first()->id,
@@ -291,6 +292,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -351,6 +353,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -412,6 +415,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [$taxonomy->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -470,6 +474,7 @@ class ServicesTest extends TestCase
             ],
             'useful_infos' => [],
             'social_medias' => [],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -531,6 +536,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ]);
 
@@ -593,6 +599,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -663,6 +670,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -733,6 +741,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -796,6 +805,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
             ],
@@ -884,6 +894,7 @@ class ServicesTest extends TestCase
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
                 ]
             ],
+            'gallery_items' => [],
             'created_at' => $service->created_at->format(Carbon::ISO8601)
         ]);
     }
@@ -963,6 +974,7 @@ class ServicesTest extends TestCase
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
                 ]
             ],
+            'gallery_items' => [],
             'created_at' => $service->created_at->format(Carbon::ISO8601)
         ]);
     }
@@ -1140,6 +1152,7 @@ class ServicesTest extends TestCase
                     'url' => 'https://www.instagram.com/ayupdigital',
                 ]
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
             ],
@@ -1803,6 +1816,39 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
+    public function test_service_admin_can_update_gallery_items()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $payload = [
+            'gallery_items' => [
+                [
+                    'file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+                ]
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
     public function test_only_partial_fields_can_be_updated()
     {
         $service = factory(Service::class)->create([
@@ -2085,6 +2131,12 @@ class ServicesTest extends TestCase
                             'type',
                             'url',
                         ],
+                    ],
+                    'gallery_items' => [
+                        'id',
+                        'url',
+                        'created_at',
+                        'updated_at',
                     ],
                     'category_taxonomies' => [
                         [
