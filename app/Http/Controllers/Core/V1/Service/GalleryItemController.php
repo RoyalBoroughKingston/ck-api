@@ -35,7 +35,7 @@ class GalleryItemController extends Controller
             abort_if(
                 !in_array(
                     $file->id,
-                    Arr::only($updateRequest->data, 'gallery_items.*.file_id')
+                    Arr::pluck($updateRequest->data['gallery_items'] ?? [], 'file_id')
                 ),
                 Response::HTTP_NOT_FOUND
             );
