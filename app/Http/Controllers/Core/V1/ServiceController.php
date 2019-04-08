@@ -290,10 +290,10 @@ class ServiceController extends Controller
             }
 
             // Loop through each social media.
-            foreach ($request->input('social_medias', []) as $galleryItem) {
+            foreach ($request->input('social_medias', []) as $socialMedia) {
                 $data['social_medias'][] = [
-                    'type' => $galleryItem['type'],
-                    'url' => $galleryItem['url'],
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
                 ];
             }
 
