@@ -17,7 +17,7 @@ class ServiceGalleryItem extends Model
      */
     public function url(): string
     {
-        return route('core.v1.services.gallery-item', [
+        return route('core.v1.services.gallery-items', [
             'service' => $this->service_id,
             'file' => $this->file_id,
         ]);

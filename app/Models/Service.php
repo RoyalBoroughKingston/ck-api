@@ -254,10 +254,10 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
         // Update the social media records.
         if (array_key_exists('social_medias', $updateRequest->data)) {
             $this->socialMedias()->delete();
-            foreach ($data['social_medias'] as $galleryItem) {
+            foreach ($data['social_medias'] as $socialMedia) {
                 $this->socialMedias()->create([
-                    'type' => $galleryItem['type'],
-                    'url' => $galleryItem['url'],
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
                 ]);
             }
         }
