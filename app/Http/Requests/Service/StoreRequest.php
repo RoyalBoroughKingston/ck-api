@@ -193,6 +193,7 @@ class StoreRequest extends FormRequest
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'logo_file_id' => [
+                'nullable',
                 'exists:files,id',
                 new FileIsMimeType(File::MIME_TYPE_PNG),
                 new FileIsPendingAssignment(),
