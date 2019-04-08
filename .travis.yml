@@ -37,9 +37,10 @@ before_install:
   - echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
   - sudo apt-get update
   - sudo apt-get install -y --allow-unauthenticated cf-cli
+  - cd /tmp
   - wget ${ES_DOWNLOAD_URL}
-  - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
-  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch &
+  - tar -xzf elasticsearch-${ES_VERSION}.tar.gz -C /opt/elasticsearch-${ES_VERSION}
+  - /opt/elasticsearch-${ES_VERSION}/bin/elasticsearch &
 
 install:
   - composer self-update
