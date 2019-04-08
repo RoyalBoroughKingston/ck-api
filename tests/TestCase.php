@@ -116,6 +116,13 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUpElasticsearch()
     {
+        if (! $this instanceof UsesElasticsearch) {
+            Service::disableSearchSyncing();
+            return;
+        } else {
+            Service::enableSearchSyncing();
+        }
+
         if (!static::$elasticsearchInitialised) {
             $this->artisan('ck:reindex-elasticsearch');
             static::$elasticsearchInitialised = true;
@@ -127,6 +134,13 @@ abstract class TestCase extends BaseTestCase
      */
     protected function tearDownElasticsearch()
     {
+        if (! $this instanceof UsesElasticsearch) {
+            Service::disableSearchSyncing();
+            return;
+        } else {
+            Service::enableSearchSyncing();
+        }
+
         try {
             $this->artisan('scout:flush', ['model' => Service::class]);
         } catch (\Exception $exception) {

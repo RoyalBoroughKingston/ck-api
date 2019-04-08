@@ -45,7 +45,7 @@ class ServiceController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
+            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
             ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
                 $query->where('status', '=', Service::STATUS_ACTIVE);
@@ -112,6 +112,18 @@ class ServiceController extends Controller
                 'logo_file_id' => $request->logo_file_id,
             ]);
 
+            if ($request->filled('gallery_items')) {
+                foreach ($request->gallery_items as $galleryItem) {
+                    /** @var \App\Models\File $file */
+                    $file = File::findOrFail($galleryItem['file_id'])->assigned();
+
+                    // Create resized version for common dimensions.
+                    foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                        $file->resizedVersion($maxDimension);
+                    }
+                }
+            }
+
             if ($request->filled('logo_file_id')) {
                 /** @var \App\Models\File $file */
                 $file = File::findOrFail($request->logo_file_id)->assigned();
@@ -151,6 +163,13 @@ class ServiceController extends Controller
                 ]);
             }
 
+            // Create the gallery item records.
+            foreach ($request->gallery_items as $galleryItem) {
+                $service->serviceGalleryItems()->create([
+                    'file_id' => $galleryItem['file_id'],
+                ]);
+            }
+
             // Create the category taxonomy records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
             $service->syncServiceTaxonomies($taxonomies);
@@ -176,7 +195,7 @@ class ServiceController extends Controller
     public function show(ShowRequest $request, Service $service)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
+            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
             ->where('id', $service->id);
 
         $service = QueryBuilder::for($baseQuery)
@@ -234,9 +253,22 @@ class ServiceController extends Controller
                     : new MissingValue(),
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
+                'gallery_items' => $request->has('gallery_items') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missing('category_taxonomies'),
                 'logo_file_id' => $request->missing('logo_file_id'),
             ]);
+
+            if ($request->filled('gallery_items')) {
+                foreach ($request->gallery_items as $galleryItem) {
+                    /** @var \App\Models\File $file */
+                    $file = File::findOrFail($galleryItem['file_id'])->assigned();
+
+                    // Create resized version for common dimensions.
+                    foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                        $file->resizedVersion($maxDimension);
+                    }
+                }
+            }
 
             if ($request->filled('logo_file_id')) {
                 /** @var \App\Models\File $file */
@@ -265,6 +297,14 @@ class ServiceController extends Controller
                 ];
             }
 
+            // Loop through each gallery item.
+            foreach ($request->input('gallery_items', []) as $galleryItem) {
+                $data['gallery_items'][] = [
+                    'file_id' => $galleryItem['file_id'],
+                ];
+            }
+
+            /** @var \App\Models\UpdateRequest $updateRequest */
             $updateRequest = $service->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => $data,

@@ -7,6 +7,7 @@ use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\ServiceCriterion;
+use App\Models\ServiceGalleryItem;
 use App\Models\ServiceLocation;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
@@ -111,5 +112,13 @@ trait ServiceRelationships
     public function users()
     {
         return $this->belongsToMany(User::class, table(UserRole::class));
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function serviceGalleryItems()
+    {
+        return $this->hasMany(ServiceGalleryItem::class);
     }
 }

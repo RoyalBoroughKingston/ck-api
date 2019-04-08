@@ -42,6 +42,7 @@ class ServiceResource extends JsonResource
             'criteria' => new ServiceCriterionResource($this->serviceCriterion),
             'useful_infos' => UsefulInfoResource::collection($this->usefulInfos),
             'social_medias' => SocialMediaResource::collection($this->socialMedias),
+            'gallery_items' => ServiceGalleryItemResource::collection($this->serviceGalleryItems),
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),

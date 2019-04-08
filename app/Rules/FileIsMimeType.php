@@ -10,16 +10,16 @@ class FileIsMimeType implements Rule
     /**
      * @var string
      */
-    protected $mimeType;
+    protected $mimeTypes;
 
     /**
      * FileIsMimeType constructor.
      *
-     * @param string $mimeType
+     * @param string ...$mimeTypes
      */
-    public function __construct(string $mimeType)
+    public function __construct(string ...$mimeTypes)
     {
-        $this->mimeType = $mimeType;
+        $this->mimeTypes = $mimeTypes;
     }
 
     /**
@@ -31,7 +31,10 @@ class FileIsMimeType implements Rule
      */
     public function passes($attribute, $fileId)
     {
-        return File::findOrFail($fileId)->mime_type === $this->mimeType;
+        return in_array(
+            File::findOrFail($fileId)->mime_type,
+            $this->mimeTypes
+        );
     }
 
     /**
@@ -41,6 +44,6 @@ class FileIsMimeType implements Rule
      */
     public function message()
     {
-        return "The :attribute must be of type $this->mimeType.";
+        return "The :attribute must be of type $this->mimeTypes.";
     }
 }

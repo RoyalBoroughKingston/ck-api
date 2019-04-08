@@ -40,6 +40,7 @@ class ServiceObserver
         $service->serviceCriterion->delete();
         $service->socialMedias->each->delete();
         $service->usefulInfos->each->delete();
+        $service->serviceGalleryItems->each->delete();
         $service->serviceTaxonomies->each->delete();
     }
 }

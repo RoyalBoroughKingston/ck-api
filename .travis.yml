@@ -48,8 +48,7 @@ install:
   - npm run dev
 
 before_script:
-  - sudo -i service elasticsearch start
-  - sleep 10 # Needed to give Elasticsearch time to setup.
+  - sudo -i service elasticsearch start && sleep 10
   - mysql -e 'create database ck_testing;'
   - php artisan migrate --force
   - php artisan passport:keys
