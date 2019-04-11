@@ -93,7 +93,7 @@ class ServiceController extends Controller
                 'name' => $request->name,
                 'status' => $request->status,
                 'intro' => $request->intro,
-                'description' => $request->description,
+                'description' => sanitize_markdown($request->description),
                 'wait_time' => $request->wait_time,
                 'is_free' => $request->is_free,
                 'fees_text' => $request->fees_text,
@@ -150,7 +150,7 @@ class ServiceController extends Controller
             foreach ($request->useful_infos as $usefulInfo) {
                 $service->usefulInfos()->create([
                     'title' => $usefulInfo['title'],
-                    'description' => $usefulInfo['description'],
+                    'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
                 ]);
             }
@@ -223,7 +223,9 @@ class ServiceController extends Controller
                 'name' => $request->missing('name'),
                 'status' => $request->missing('status'),
                 'intro' => $request->missing('intro'),
-                'description' => $request->missing('description'),
+                'description' => $request->missing('description', function ($description) {
+                    return sanitize_markdown($description);
+                }),
                 'wait_time' => $request->missing('wait_time'),
                 'is_free' => $request->missing('is_free'),
                 'fees_text' => $request->missing('fees_text'),
@@ -284,7 +286,7 @@ class ServiceController extends Controller
             foreach ($request->input('useful_infos', []) as $usefulInfo) {
                 $data['useful_infos'][] = [
                     'title' => $usefulInfo['title'],
-                    'description' => $usefulInfo['description'],
+                    'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
                 ];
             }

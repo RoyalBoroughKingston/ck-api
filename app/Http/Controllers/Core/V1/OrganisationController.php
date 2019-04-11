@@ -68,7 +68,7 @@ class OrganisationController extends Controller
             $organisation = Organisation::create([
                 'slug' => $request->slug,
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => sanitize_markdown($request->description),
                 'url' => $request->url,
                 'email' => $request->email,
                 'phone' => $request->phone,
@@ -127,7 +127,9 @@ class OrganisationController extends Controller
                 'data' => array_filter_missing([
                     'slug' => $request->missing('slug'),
                     'name' => $request->missing('name'),
-                    'description' => $request->missing('description'),
+                    'description' => $request->missing('description', function ($description) {
+                        return sanitize_markdown($description);
+                    }),
                     'url' => $request->missing('url'),
                     'email' => $request->missing('email'),
                     'phone' => $request->missing('phone'),

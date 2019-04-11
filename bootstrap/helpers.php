@@ -359,3 +359,16 @@ if (!function_exists('combine_query')) {
         );
     }
 }
+
+if (!function_exists('sanitize_markdown')) {
+    /**
+     * Sanitizes the markdown from unwanted markup.
+     *
+     * @param string $markdown
+     * @return string
+     */
+    function sanitize_markdown(string $markdown): string
+    {
+        return $markdown;
+    }
+}

@@ -71,7 +71,7 @@ class CollectionPersonaController extends Controller
                     'subtitle' => $request->subtitle,
                     'image_file_id' => $request->image_file_id,
                     'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->sidebox_content,
+                    'sidebox_content' => sanitize_markdown($request->sidebox_content),
                 ],
                 'order' => $request->order,
             ]);
@@ -133,7 +133,7 @@ class CollectionPersonaController extends Controller
                         ? $request->image_file_id
                         : $collection->meta['image_file_id'],
                     'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->sidebox_content,
+                    'sidebox_content' => sanitize_markdown($request->sidebox_content),
                 ],
                 'order' => $request->order,
             ]);

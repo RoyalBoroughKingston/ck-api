@@ -206,7 +206,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'name' => $data['name'] ?? $this->name,
             'status' => $data['status'] ?? $this->status,
             'intro' => $data['intro'] ?? $this->intro,
-            'description' => $data['description'] ?? $this->description,
+            'description' => sanitize_markdown($data['description'] ?? $this->description),
             'wait_time' => $data['wait_time'] ?? $this->wait_time,
             'is_free' => $data['is_free'] ?? $this->is_free,
             'fees_text' => $data['fees_text'] ?? $this->fees_text,
@@ -260,7 +260,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             foreach ($data['useful_infos'] as $usefulInfo) {
                 $this->usefulInfos()->create([
                     'title' => $usefulInfo['title'],
-                    'description' => $usefulInfo['description'],
+                    'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
                 ]);
             }
