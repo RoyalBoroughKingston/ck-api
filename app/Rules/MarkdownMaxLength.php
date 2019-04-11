@@ -31,7 +31,7 @@ class MarkdownMaxLength implements Rule
      */
     public function passes($attribute, $value)
     {
-        $html = (new Parsedown())->text($value);
+        $html = (new Parsedown())->text(sanitize_markdown($value));
         $text = strip_tags($html);
 
         return mb_strlen($text) <= $this->maxLength;
