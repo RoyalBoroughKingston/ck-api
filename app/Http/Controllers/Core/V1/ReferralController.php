@@ -51,13 +51,6 @@ class ReferralController extends Controller
             ->services()
             ->pluck(table(Service::class, 'id'));
 
-        // Check if the status last updated timestamp is to be appended.
-        $statusLastUpdatedAtAppended = $request->contains('append', 'status_last_updated_at');
-
-        // Remove the status last updated timestamp from the request.
-        $request->strip('append', 'status_last_updated_at');
-
-
         $baseQuery = Referral::query()
             ->select('*')
             ->whereIn('service_id', $userServiceIds)
@@ -69,9 +62,6 @@ class ReferralController extends Controller
                     'service.socialMedias',
                     'service.taxonomies',
                 ]);
-            })
-            ->when($statusLastUpdatedAtAppended, function (Builder $query) {
-                return $query->withStatusLastUpdatedAt();
             });
 
         // Filtering by the service ID here will only work for the IDs retrieved above. Others will be discarded.
@@ -153,12 +143,6 @@ class ReferralController extends Controller
         // Check if the request has asked for user roles to be included.
         $serviceIncluded = $request->contains('include', 'service');
 
-        // Check if the status last updated timestamp is to be appended.
-        $statusLastUpdatedAtAppended = $request->contains('append', 'status_last_updated_at');
-
-        // Remove the status last updated timestamp from the request.
-        $request->strip('append', 'status_last_updated_at');
-
         $baseQuery = Referral::query()
             ->select('*')
             ->when($serviceIncluded, function (Builder $query): Builder {
@@ -169,9 +153,6 @@ class ReferralController extends Controller
                     'service.socialMedias',
                     'service.taxonomies',
                 ]);
-            })
-            ->when($statusLastUpdatedAtAppended, function (Builder $query) {
-                return $query->withStatusLastUpdatedAt();
             })
             ->where('id', $referral->id);
 
