@@ -8,10 +8,15 @@ trait HasMissingValues
 {
     /**
      * @param string $key
+     * @param callable|null $pipe If the value exists then pass through this function.
      * @return mixed|\App\Support\MissingValue
      */
-    public function missing(string $key)
+    public function missing(string $key, callable $pipe = null)
     {
-        return $this->input($key, new MissingValue());
+        if ($this->has($key)) {
+            return $pipe ? $pipe($this->input($key)) : $this->input($key);
+        }
+
+        return new MissingValue();
     }
 }

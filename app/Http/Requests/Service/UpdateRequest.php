@@ -199,7 +199,7 @@ class UpdateRequest extends FormRequest
             'useful_infos' => ['array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
-            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:10000'],
+            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(10000)],
             'useful_infos.*.order' => [
                 'required_with:useful_infos.*',
                 'integer',

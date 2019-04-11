@@ -56,7 +56,7 @@ class Organisation extends Model implements AppliesUpdateRequests
         $this->update([
             'slug' => $data['slug'] ?? $this->slug,
             'name' => $data['name'] ?? $this->name,
-            'description' => $data['description'] ?? $this->description,
+            'description' => sanitize_markdown($data['description'] ?? $this->description),
             'url' => $data['url'] ?? $this->url,
             'email' => $data['email'] ?? $this->email,
             'phone' => $data['phone'] ?? $this->phone,
