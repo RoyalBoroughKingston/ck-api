@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Exceptions\CannotRevokeRoleException;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\UserRole;
@@ -17,12 +18,54 @@ class ServiceObserver
     public function created(Service $service)
     {
         UserRole::query()
+            ->with('user')
             ->where('role_id', Role::organisationAdmin()->id)
             ->where('organisation_id', $service->organisation_id)
             ->get()
             ->each(function (UserRole $userRole) use ($service) {
                 $userRole->user->makeServiceAdmin($service);
             });
+    }
+
+    /**
+     * Handle the organisation "updated" event.
+     *
+     * @param  \App\Models\Service $service
+     * @return void
+     */
+    public function updated(Service $service)
+    {
+        // Check if the organisation_id was updated.
+        if ($service->isDirty('organisation_id')) {
+            // Remove old service workers and service admins.
+            UserRole::query()
+                ->with('user')
+                ->where('service_id', $service->id)
+                ->get()
+                ->each(function (UserRole $userRole) use ($service) {
+                    try {
+                        $userRole->user->revokeServiceAdmin($service);
+                    } catch (CannotRevokeRoleException $exception) {
+                        // Do nothing.
+                    }
+
+                    try {
+                        $userRole->user->revokeServiceWorker($service);
+                    } catch (CannotRevokeRoleException $exception) {
+                        // Do nothing.
+                    }
+                });
+
+            // Add new service admins.
+            UserRole::query()
+                ->with('user')
+                ->where('role_id', Role::organisationAdmin()->id)
+                ->where('organisation_id', $service->organisation_id)
+                ->get()
+                ->each(function (UserRole $userRole) use ($service) {
+                    $userRole->user->makeServiceAdmin($service);
+                });
+        }
     }
 
     /**

@@ -49,6 +49,17 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
+            'organisation_id' => [
+                'exists:organisations,id',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->service->organisation_id
+                ),
+            ],
             'slug' => [
                 'string',
                 'min:1',

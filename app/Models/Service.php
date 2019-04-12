@@ -202,6 +202,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
 
         // Update the service record.
         $this->update([
+            'organisation_id' => $data['organisation_id'] ?? $this->organisation_id,
             'slug' => $data['slug'] ?? $this->slug,
             'name' => $data['name'] ?? $this->name,
             'status' => $data['status'] ?? $this->status,
