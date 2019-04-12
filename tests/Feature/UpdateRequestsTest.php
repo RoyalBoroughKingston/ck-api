@@ -723,7 +723,7 @@ class UpdateRequestsTest extends TestCase
         $newOrganisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($newOrganisation);
 
         $updateRequest = $service->updateRequests()->create([
-            'user_id' => factory(User::class)->create()->id,
+            'user_id' => $user->id,
             'data' => [
                 'organisation_id' => $newOrganisation->id,
             ],

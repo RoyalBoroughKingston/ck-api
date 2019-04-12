@@ -1959,7 +1959,7 @@ class ServicesTest extends TestCase
             'organisation_id' => factory(Organisation::class)->create()->id,
         ]);
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_global_admin_can_update_organisation_id()

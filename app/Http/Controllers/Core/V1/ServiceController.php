@@ -219,6 +219,7 @@ class ServiceController extends Controller
         return DB::transaction(function () use ($request, $service) {
             // Initialise the data array.
             $data = array_filter_missing([
+                'organisation_id' => $request->missing('organisation_id'),
                 'slug' => $request->missing('slug'),
                 'name' => $request->missing('name'),
                 'status' => $request->missing('status'),
