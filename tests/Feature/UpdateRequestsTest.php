@@ -6,11 +6,13 @@ use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Location;
 use App\Models\Organisation;
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
@@ -702,5 +704,48 @@ class UpdateRequestsTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $updateRequest->id);
         });
+    }
+
+    public function test_user_roles_correctly_updated_when_service_assigned_to_different_organisation()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->create();
+        $service->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->firstOrFail()->id,
+        ]);
+
+        $serviceAdmin = factory(User::class)->create()->makeServiceAdmin($service);
+        $organisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        $newOrganisation = factory(Organisation::class)->create();
+        $newOrganisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($newOrganisation);
+
+        $updateRequest = $service->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => [
+                'organisation_id' => $newOrganisation->id,
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing(table(UserRole::class), [
+            'user_id' => $serviceAdmin->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service->id,
+        ]);
+        $this->assertDatabaseMissing(table(UserRole::class), [
+            'user_id' => $organisationAdmin->id,
+            'role_id' => Role::organisationAdmin()->id,
+            'service_id' => $service->id,
+        ]);
+        $this->assertDatabaseHas(table(UserRole::class), [
+            'user_id' => $newOrganisationAdmin->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service->id,
+        ]);
     }
 }

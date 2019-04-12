@@ -1943,6 +1943,46 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_organisation_admin_cannot_update_organisation_id()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
+            'organisation_id' => factory(Organisation::class)->create()->id,
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_global_admin_can_update_organisation_id()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => factory(Organisation::class)->create()->id,
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+    }
+
     /*
      * Delete a specific service.
      */
