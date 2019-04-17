@@ -19,7 +19,7 @@ services:
       - .:/var/www/html
     networks:
       - app-net
-    command: php artisan queue:work --tries=1
+    command: php artisan queue:work --queue=default,notifications --tries=1
 
   scheduler:
     image: connected-kingston/api
