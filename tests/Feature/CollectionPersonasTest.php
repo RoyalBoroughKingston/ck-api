@@ -1297,6 +1297,12 @@ class CollectionPersonasTest extends TestCase
 
         Passport::actingAs($user);
 
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
         $response = $this->json('POST', '/core/v1/collections/personas', [
             'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
@@ -1305,7 +1311,7 @@ class CollectionPersonasTest extends TestCase
             'sidebox_title' => null,
             'sidebox_content' => null,
             'category_taxonomies' => [$randomCategory->id],
-            'image' => 'data:image/png;base64,' . base64_encode($image),
+            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -1341,7 +1347,7 @@ class CollectionPersonasTest extends TestCase
             'sidebox_title' => null,
             'sidebox_content' => null,
             'category_taxonomies' => $persona->taxonomies()->pluck(table(Taxonomy::class, 'id')),
-            'image' => null,
+            'image_file_id' => null,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);

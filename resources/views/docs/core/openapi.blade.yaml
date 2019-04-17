@@ -35,6 +35,9 @@ paths:
   /collections/personas/{persona}/image.png:
     $ref: /docs/core/paths/persona-collections.yaml#/image
 
+  /files:
+    $ref: /docs/core/paths/files.yaml#/root
+
   /locations:
     $ref: /docs/core/paths/locations.yaml#/root
   /locations/index:
@@ -108,6 +111,8 @@ paths:
     $ref: /docs/core/paths/services.yaml#/related
   /services/{service}/logo.png:
     $ref: /docs/core/paths/services.yaml#/logo
+  /services/{service}/gallery-items/{file}:
+    $ref: /docs/core/paths/services.yaml#/gallery-items
 
   /status-updates:
     $ref: /docs/core/paths/status-updates.yaml#/root
@@ -169,6 +174,7 @@ tags:
 - name: Audits
 - name: "Collection: Categories"
 - name: "Collection: Personas"
+- name: Files
 - name: Locations
 - name: Notifications
 - name: Organisations

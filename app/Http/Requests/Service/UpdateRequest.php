@@ -3,16 +3,19 @@
 namespace App\Http\Requests\Service;
 
 use App\Http\Requests\HasMissingValues;
+use App\Models\File;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
-use App\Rules\Base64EncodedPng;
 use App\Rules\CanUpdateServiceCategoryTaxonomies;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\InOrder;
 use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
+use App\Rules\NullableIf;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use App\Rules\UserHasRole;
@@ -46,6 +49,17 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
+            'organisation_id' => [
+                'exists:organisations,id',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->service->organisation_id
+                ),
+            ],
             'slug' => [
                 'string',
                 'min:1',
@@ -59,7 +73,7 @@ class UpdateRequest extends FormRequest
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->slug
-                )
+                ),
             ],
             'name' => ['string', 'min:1', 'max:255'],
             'status' => [
@@ -74,17 +88,20 @@ class UpdateRequest extends FormRequest
                         'role_id' => Role::globalAdmin()->id,
                     ]),
                     $this->service->status
-                )
+                ),
             ],
             'intro' => ['string', 'min:1', 'max:300'],
             'description' => ['string', new MarkdownMinLength(1), new MarkdownMaxLength(1600)],
-            'wait_time' => ['nullable', Rule::in([
-                Service::WAIT_TIME_ONE_WEEK,
-                Service::WAIT_TIME_TWO_WEEKS,
-                Service::WAIT_TIME_THREE_WEEKS,
-                Service::WAIT_TIME_MONTH,
-                Service::WAIT_TIME_LONGER,
-            ])],
+            'wait_time' => [
+                'nullable',
+                Rule::in([
+                    Service::WAIT_TIME_ONE_WEEK,
+                    Service::WAIT_TIME_TWO_WEEKS,
+                    Service::WAIT_TIME_THREE_WEEKS,
+                    Service::WAIT_TIME_MONTH,
+                    Service::WAIT_TIME_LONGER,
+                ]),
+            ],
             'is_free' => ['boolean'],
             'fees_text' => ['nullable', 'string', 'min:1', 'max:255'],
             'fees_url' => ['nullable', 'url', 'max:255'],
@@ -136,11 +153,16 @@ class UpdateRequest extends FormRequest
             ],
             'referral_email' => [
                 Rule::requiredIf(function () {
-                    return $this->has('referral_method')
-                        ? $this->referral_method === Service::REFERRAL_METHOD_INTERNAL
-                        : $this->service->referral_method === Service::REFERRAL_METHOD_INTERNAL;
+                    $referralMethod = $this->input('referral_method', $this->service->referral_method);
+
+                    return $referralMethod === Service::REFERRAL_METHOD_INTERNAL
+                        && $this->service->referral_email === null;
                 }),
-                'nullable',
+                new NullableIf(function () {
+                    $referralMethod = $this->input('referral_method', $this->service->referral_method);
+
+                    return $referralMethod !== Service::REFERRAL_METHOD_INTERNAL;
+                }),
                 'email',
                 'max:255',
                 new UserHasRole(
@@ -154,11 +176,16 @@ class UpdateRequest extends FormRequest
             ],
             'referral_url' => [
                 Rule::requiredIf(function () {
-                    return $this->has('referral_method')
-                        ? $this->referral_method === Service::REFERRAL_METHOD_EXTERNAL
-                        : $this->service->referral_method === Service::REFERRAL_METHOD_EXTERNAL;
+                    $referralMethod = $this->input('referral_method', $this->service->referral_method);
+
+                    return $referralMethod === Service::REFERRAL_METHOD_EXTERNAL
+                        && $this->service->referral_url === null;
                 }),
-                'nullable',
+                new NullableIf(function () {
+                    $referralMethod = $this->input('referral_method', $this->service->referral_method);
+
+                    return $referralMethod !== Service::REFERRAL_METHOD_EXTERNAL;
+                }),
                 'url',
                 'max:255',
                 new UserHasRole(
@@ -183,7 +210,7 @@ class UpdateRequest extends FormRequest
             'useful_infos' => ['array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
-            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:10000'],
+            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(10000)],
             'useful_infos.*.order' => [
                 'required_with:useful_infos.*',
                 'integer',
@@ -208,13 +235,32 @@ class UpdateRequest extends FormRequest
             ],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
+            'gallery_items' => ['array'],
+            'gallery_items.*' => ['array'],
+            'gallery_items.*.file_id' => [
+                'required_with:gallery_items.*',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(function (File $file) {
+                    return $this->service
+                        ->serviceGalleryItems()
+                        ->where('file_id', '=', $file->id)
+                        ->exists();
+                }),
+            ],
+
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => [
                 'exists:taxonomies,id',
                 new RootTaxonomyIs(Taxonomy::NAME_CATEGORY),
             ],
 
-            'logo' => ['nullable', 'string', new Base64EncodedPng()],
+            'logo_file_id' => [
+                'nullable',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 

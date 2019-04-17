@@ -10,8 +10,9 @@ use App\Models\Taxonomy;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
+use Tests\UsesElasticsearch;
 
-class SearchTest extends TestCase
+class SearchTest extends TestCase implements UsesElasticsearch
 {
     /**
      * Setup the test environment.

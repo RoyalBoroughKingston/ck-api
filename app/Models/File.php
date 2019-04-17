@@ -17,12 +17,19 @@ class File extends Model implements Responsable
     use FileScopes;
 
     const MIME_TYPE_PNG = 'image/png';
+    const MIME_TYPE_TXT = 'text/plain';
 
     const META_TYPE_RESIZED_IMAGE = 'resized_image';
+    const META_TYPE_PENDING_ASSIGNMENT = 'pending_assignment';
 
     const META_PLACEHOLDER_FOR_ORGANISATION = 'organisation';
     const META_PLACEHOLDER_FOR_SERVICE = 'service';
     const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
+
+    const PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS = 1;
+
+    const WITH_PERIOD = true;
+    const WITHOUT_PERIOD = false;
 
     /**
      * The attributes that should be cast to native types.
@@ -106,13 +113,22 @@ class File extends Model implements Responsable
      * @param string $content
      * @return \App\Models\File
      */
-    public function uploadBase64EncodedPng(string $content): File
+    public function uploadBase64EncodedFile(string $content): File
     {
-        list(, $data) = explode(';', $content);
-        list(, $data) = explode(',', $data);
-        $data = base64_decode($data);
+        $data = explode(',', $content);
+        $data = base64_decode(end($data));
 
         return $this->upload($data);
+    }
+
+    /**
+     * @deprecated You should now use the uploadBase64EncodedFile() method instead.
+     * @param string $content
+     * @return \App\Models\File
+     */
+    public function uploadBase64EncodedPng(string $content): File
+    {
+        return $this->uploadBase64EncodedFile($content);
     }
 
     /**
@@ -220,5 +236,34 @@ class File extends Model implements Responsable
         }
 
         return $file;
+    }
+
+    /**
+     * @param string $mimeType
+     * @param bool $withPeriod
+     * @return string
+     */
+    public static function extensionFromMime(string $mimeType, bool $withPeriod = true): string
+    {
+        $map = [
+            static::MIME_TYPE_PNG => '.png',
+            static::MIME_TYPE_TXT => '.txt',
+        ];
+
+        if (!array_key_exists($mimeType, $map)) {
+            throw new \InvalidArgumentException("The mime type [$mimeType] is not supported.");
+        }
+
+        return $withPeriod ? $map[$mimeType] : trim($map[$mimeType], '.');
+    }
+
+    /**
+     * @return \App\Models\File
+     */
+    public function assigned(): self
+    {
+        $this->update(['meta' => null]);
+
+        return $this;
     }
 }

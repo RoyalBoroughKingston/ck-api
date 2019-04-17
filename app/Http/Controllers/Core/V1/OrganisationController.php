@@ -68,33 +68,21 @@ class OrganisationController extends Controller
             $organisation = Organisation::create([
                 'slug' => $request->slug,
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => sanitize_markdown($request->description),
                 'url' => $request->url,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'logo_file_id' => $request->logo_file_id,
             ]);
 
-            // Upload the logo if provided.
-            if ($request->filled('logo')) {
-                // Create the file record.
+            if ($request->filled('logo_file_id')) {
                 /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $organisation->id . '.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->logo);
+                $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
                 foreach (config('ck.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
-
-                // Link the file to the organisation.
-                $organisation->logo_file_id = $file->id;
-                $organisation->save();
             }
 
             event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));
@@ -133,43 +121,31 @@ class OrganisationController extends Controller
     public function update(UpdateRequest $request, Organisation $organisation)
     {
         return DB::transaction(function () use ($request, $organisation) {
-            $data = array_filter_missing([
-                'slug' => $request->missing('slug'),
-                'name' => $request->missing('name'),
-                'description' => $request->missing('description'),
-                'url' => $request->missing('url'),
-                'email' => $request->missing('email'),
-                'phone' => $request->missing('phone'),
+            /** @var \App\Models\UpdateRequest $updateRequest */
+            $updateRequest = $organisation->updateRequests()->create([
+                'user_id' => $request->user()->id,
+                'data' => array_filter_missing([
+                    'slug' => $request->missing('slug'),
+                    'name' => $request->missing('name'),
+                    'description' => $request->missing('description', function ($description) {
+                        return sanitize_markdown($description);
+                    }),
+                    'url' => $request->missing('url'),
+                    'email' => $request->missing('email'),
+                    'phone' => $request->missing('phone'),
+                    'logo_file_id' => $request->missing('logo_file_id'),
+                ]),
             ]);
 
-            // Update the logo if the logo field was provided.
-            if ($request->filled('logo')) {
-                // If a new logo was uploaded.
+            if ($request->filled('logo_file_id')) {
                 /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $organisation->id.'.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
-
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->logo);
+                $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
                 foreach (config('ck.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
-
-                $data['logo_file_id'] = $file->id;
-            } else if ($request->has('logo')) {
-                // If the logo was removed.
-                $data['logo_file_id'] = null;
             }
-
-            $updateRequest = $organisation->updateRequests()->create([
-                'user_id' => $request->user()->id,
-                'data' => $data,
-            ]);
 
             event(EndpointHit::onUpdate($request, "Updated organisation [{$organisation->id}]", $organisation));
 

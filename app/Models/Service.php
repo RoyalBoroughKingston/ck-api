@@ -10,6 +10,7 @@ use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
 use App\Notifications\Notifiable;
 use App\Notifications\Notifications;
+use App\Rules\FileIsMimeType;
 use App\Sms\Sms;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
@@ -174,6 +175,18 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             ->merge($updateRequest->data)
             ->rules();
 
+        // Remove the pending assignment rule since the file is now uploaded.
+        $rules['gallery_items.*.file_id'] = [
+            'required_with:gallery_items.*',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
+        $rules['logo_file_id'] = [
+            'nullable',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
+
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
 
@@ -189,11 +202,12 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
 
         // Update the service record.
         $this->update([
+            'organisation_id' => $data['organisation_id'] ?? $this->organisation_id,
             'slug' => $data['slug'] ?? $this->slug,
             'name' => $data['name'] ?? $this->name,
             'status' => $data['status'] ?? $this->status,
             'intro' => $data['intro'] ?? $this->intro,
-            'description' => $data['description'] ?? $this->description,
+            'description' => sanitize_markdown($data['description'] ?? $this->description),
             'wait_time' => $data['wait_time'] ?? $this->wait_time,
             'is_free' => $data['is_free'] ?? $this->is_free,
             'fees_text' => $data['fees_text'] ?? $this->fees_text,
@@ -215,16 +229,31 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
         ]);
 
         // Update the service criterion record.
-        $this->serviceCriterion()->update([
-            'age_group' => Arr::get($data, 'criteria.age_group', $this->serviceCriterion->age_group),
-            'disability' => Arr::get($data, 'criteria.disability', $this->serviceCriterion->disability),
-            'employment' => Arr::get($data, 'criteria.employment', $this->serviceCriterion->employment),
-            'gender' => Arr::get($data, 'criteria.gender', $this->serviceCriterion->gender),
-            'housing' => Arr::get($data, 'criteria.housing', $this->serviceCriterion->housing),
-            'income' => Arr::get($data, 'criteria.income', $this->serviceCriterion->income),
-            'language' => Arr::get($data, 'criteria.language', $this->serviceCriterion->language),
-            'other' => Arr::get($data, 'criteria.other', $this->serviceCriterion->other),
-        ]);
+        if (array_key_exists('criteria.age_group', Arr::dot($data))) {
+            $this->serviceCriterion->age_group = Arr::get($data, 'criteria.age_group');
+        }
+        if (array_key_exists('criteria.disability', Arr::dot($data))) {
+            $this->serviceCriterion->disability = Arr::get($data, 'criteria.disability');
+        }
+        if (array_key_exists('criteria.employment', Arr::dot($data))) {
+            $this->serviceCriterion->employment = Arr::get($data, 'criteria.employment');
+        }
+        if (array_key_exists('criteria.gender', Arr::dot($data))) {
+            $this->serviceCriterion->gender = Arr::get($data, 'criteria.gender');
+        }
+        if (array_key_exists('criteria.housing', Arr::dot($data))) {
+            $this->serviceCriterion->housing = Arr::get($data, 'criteria.housing');
+        }
+        if (array_key_exists('criteria.income', Arr::dot($data))) {
+            $this->serviceCriterion->income = Arr::get($data, 'criteria.income');
+        }
+        if (array_key_exists('criteria.language', Arr::dot($data))) {
+            $this->serviceCriterion->language = Arr::get($data, 'criteria.language');
+        }
+        if (array_key_exists('criteria.other', Arr::dot($data))) {
+            $this->serviceCriterion->other = Arr::get($data, 'criteria.other');
+        }
+        $this->serviceCriterion->save();
 
         // Update the useful info records.
         if (array_key_exists('useful_infos', $data)) {
@@ -232,7 +261,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             foreach ($data['useful_infos'] as $usefulInfo) {
                 $this->usefulInfos()->create([
                     'title' => $usefulInfo['title'],
-                    'description' => $usefulInfo['description'],
+                    'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
                 ]);
             }
@@ -245,6 +274,16 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                 $this->socialMedias()->create([
                     'type' => $socialMedia['type'],
                     'url' => $socialMedia['url'],
+                ]);
+            }
+        }
+
+        // Update the gallery item records.
+        if (array_key_exists('gallery_items', $updateRequest->data)) {
+            $this->serviceGalleryItems()->delete();
+            foreach ($data['gallery_items'] as $galleryItem) {
+                $this->serviceGalleryItems()->create([
+                    'file_id' => $galleryItem['file_id'],
                 ]);
             }
         }

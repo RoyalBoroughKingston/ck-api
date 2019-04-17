@@ -2,11 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\Ck\AutoDeleteAuditsCommand;
-use App\Console\Commands\Ck\AutoDeletePageFeedbacksCommand;
-use App\Console\Commands\Ck\AutoDeleteReferralsCommand;
-use App\Console\Commands\Ck\Notify\StillUnactionedReferralsCommand;
-use App\Console\Commands\Ck\Notify\UnactionedReferralsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -29,19 +24,22 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(UnactionedReferralsCommand::class)
+        $schedule->command(Commands\Ck\Notify\UnactionedReferralsCommand::class)
             ->dailyAt('09:00');
 
-        $schedule->command(StillUnactionedReferralsCommand::class)
+        $schedule->command(Commands\Ck\Notify\StillUnactionedReferralsCommand::class)
             ->dailyAt('09:00');
 
-        $schedule->command(AutoDeleteReferralsCommand::class)
+        $schedule->command(Commands\Ck\AutoDelete\AuditsCommand::class)
             ->daily();
 
-        $schedule->command(AutoDeleteAuditsCommand::class)
+        $schedule->command(Commands\Ck\AutoDelete\PageFeedbacksCommand::class)
             ->daily();
 
-        $schedule->command(AutoDeletePageFeedbacksCommand::class)
+        $schedule->command(Commands\Ck\AutoDelete\PendingAssignmentFilesCommand::class)
+            ->daily();
+
+        $schedule->command(Commands\Ck\AutoDelete\ReferralsCommand::class)
             ->daily();
     }
 

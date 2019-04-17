@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Service;
 
+use App\Models\File;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
-use App\Rules\Base64EncodedPng;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\InOrder;
 use App\Rules\IsOrganisationAdmin;
 use App\Rules\MarkdownMaxLength;
@@ -165,7 +167,7 @@ class StoreRequest extends FormRequest
             'useful_infos' => ['present', 'array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
-            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:10000'],
+            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(10000)],
             'useful_infos.*.order' => ['required_with:useful_infos.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->useful_infos, 'order'))],
 
             'social_medias' => ['present', 'array'],
@@ -179,9 +181,23 @@ class StoreRequest extends FormRequest
             ])],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
+            'gallery_items' => ['present', 'array'],
+            'gallery_items.*' => ['array'],
+            'gallery_items.*.file_id' => [
+                'required_with:gallery_items.*',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
+
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
-            'logo' => ['nullable', 'string', new Base64EncodedPng()],
+            'logo_file_id' => [
+                'nullable',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 

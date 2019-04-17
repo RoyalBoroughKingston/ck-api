@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -115,6 +116,13 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUpElasticsearch()
     {
+        if (! $this instanceof UsesElasticsearch) {
+            Service::disableSearchSyncing();
+            return;
+        } else {
+            Service::enableSearchSyncing();
+        }
+
         if (!static::$elasticsearchInitialised) {
             $this->artisan('ck:reindex-elasticsearch');
             static::$elasticsearchInitialised = true;
@@ -126,6 +134,13 @@ abstract class TestCase extends BaseTestCase
      */
     protected function tearDownElasticsearch()
     {
+        if (! $this instanceof UsesElasticsearch) {
+            Service::disableSearchSyncing();
+            return;
+        } else {
+            Service::enableSearchSyncing();
+        }
+
         try {
             $this->artisan('scout:flush', ['model' => Service::class]);
         } catch (\Exception $exception) {
@@ -143,11 +158,18 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * @param \Illuminate\Foundation\Testing\TestResponse $response
-     * @return array
+     * @param string|null $key
+     * @return array|string
      */
-    protected function getResponseContent(TestResponse $response): array
+    protected function getResponseContent(TestResponse $response, string $key = null)
     {
-        return json_decode($response->getContent(), true);
+        $content = json_decode($response->getContent(), true);
+
+        if ($key !== null) {
+            return Arr::get($content, $key);
+        }
+
+        return $content;
     }
 
     /**

@@ -40,7 +40,7 @@ class ServicesTest extends TestCase
         ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
-            'url' => 'https://www.instagram.com/ayupdigital/'
+            'url' => 'https://www.instagram.com/ayupdigital/',
         ]);
         $service->serviceTaxonomies()->create([
             'taxonomy_id' => Taxonomy::category()->children()->first()->id,
@@ -88,14 +88,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did You Know?',
                     'description' => 'This is a test description',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
-                    'url' => 'https://www.instagram.com/ayupdigital/'
-                ]
+                    'url' => 'https://www.instagram.com/ayupdigital/',
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [
                 [
                     'id' => Taxonomy::category()->children()->first()->id,
@@ -103,9 +104,9 @@ class ServicesTest extends TestCase
                     'name' => Taxonomy::category()->children()->first()->name,
                     'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
-                ]
+                ],
             ],
-            'created_at' => $service->created_at->format(Carbon::ISO8601)
+            'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
 
@@ -120,7 +121,7 @@ class ServicesTest extends TestCase
         ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
-            'url' => 'https://www.instagram.com/ayupdigital/'
+            'url' => 'https://www.instagram.com/ayupdigital/',
         ]);
         $service->serviceTaxonomies()->create([
             'taxonomy_id' => Taxonomy::category()->children()->first()->id,
@@ -148,7 +149,7 @@ class ServicesTest extends TestCase
         ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
-            'url' => 'https://www.instagram.com/ayupdigital/'
+            'url' => 'https://www.instagram.com/ayupdigital/',
         ]);
         $service->serviceTaxonomies()->create([
             'taxonomy_id' => Taxonomy::category()->children()->first()->id,
@@ -283,14 +284,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -343,14 +345,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -404,14 +407,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [$taxonomy->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -470,6 +474,7 @@ class ServicesTest extends TestCase
             ],
             'useful_infos' => [],
             'social_medias' => [],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -523,14 +528,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ]);
 
@@ -585,14 +591,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -606,7 +613,7 @@ class ServicesTest extends TestCase
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
                 'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
                 'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
-            ]
+            ],
         ];
         $response->assertJsonFragment($responsePayload);
     }
@@ -655,14 +662,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -676,7 +684,7 @@ class ServicesTest extends TestCase
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
                 'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
                 'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
-            ]
+            ],
         ];
         $response->assertJsonFragment($responsePayload);
     }
@@ -725,14 +733,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -788,14 +797,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
             ],
@@ -819,7 +829,7 @@ class ServicesTest extends TestCase
         ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
-            'url' => 'https://www.instagram.com/ayupdigital/'
+            'url' => 'https://www.instagram.com/ayupdigital/',
         ]);
         $service->serviceTaxonomies()->create([
             'taxonomy_id' => Taxonomy::category()->children()->first()->id,
@@ -867,13 +877,13 @@ class ServicesTest extends TestCase
                     'title' => 'Did You Know?',
                     'description' => 'This is a test description',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
-                    'url' => 'https://www.instagram.com/ayupdigital/'
-                ]
+                    'url' => 'https://www.instagram.com/ayupdigital/',
+                ],
             ],
             'category_taxonomies' => [
                 [
@@ -882,9 +892,10 @@ class ServicesTest extends TestCase
                     'name' => Taxonomy::category()->children()->first()->name,
                     'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
-                ]
+                ],
             ],
-            'created_at' => $service->created_at->format(Carbon::ISO8601)
+            'gallery_items' => [],
+            'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
 
@@ -898,7 +909,7 @@ class ServicesTest extends TestCase
         ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
-            'url' => 'https://www.instagram.com/ayupdigital/'
+            'url' => 'https://www.instagram.com/ayupdigital/',
         ]);
         $service->serviceTaxonomies()->create([
             'taxonomy_id' => Taxonomy::category()->children()->first()->id,
@@ -946,13 +957,13 @@ class ServicesTest extends TestCase
                     'title' => 'Did You Know?',
                     'description' => 'This is a test description',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
-                    'url' => 'https://www.instagram.com/ayupdigital/'
-                ]
+                    'url' => 'https://www.instagram.com/ayupdigital/',
+                ],
             ],
             'category_taxonomies' => [
                 [
@@ -961,9 +972,10 @@ class ServicesTest extends TestCase
                     'name' => Taxonomy::category()->children()->first()->name,
                     'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
-                ]
+                ],
             ],
-            'created_at' => $service->created_at->format(Carbon::ISO8601)
+            'gallery_items' => [],
+            'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
 
@@ -979,7 +991,7 @@ class ServicesTest extends TestCase
         ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
-            'url' => 'https://www.instagram.com/ayupdigital/'
+            'url' => 'https://www.instagram.com/ayupdigital/',
         ]);
         $service->serviceTaxonomies()->create([
             'taxonomy_id' => Taxonomy::category()->children()->first()->id,
@@ -1066,13 +1078,13 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1132,14 +1144,15 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
             ],
@@ -1198,13 +1211,13 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1265,13 +1278,13 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1334,13 +1347,13 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1401,13 +1414,13 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1803,6 +1816,38 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
+    public function test_service_admin_can_update_gallery_items()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
+            'gallery_items' => [
+                [
+                    'file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
     public function test_only_partial_fields_can_be_updated()
     {
         $service = factory(Service::class)->create([
@@ -1891,12 +1936,51 @@ class ServicesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $payload = [
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
             'referral_url' => null,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_organisation_admin_cannot_update_organisation_id()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
+            'organisation_id' => factory(Organisation::class)->create()->id,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_global_admin_can_update_organisation_id()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => factory(Organisation::class)->create()->id,
         ];
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
     }
 
     /*
@@ -2024,7 +2108,10 @@ class ServicesTest extends TestCase
         ]);
         $relatedService->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
-            'url' => 'https://www.instagram.com/ayupdigital/'
+            'url' => 'https://www.instagram.com/ayupdigital/',
+        ]);
+        $relatedService->serviceGalleryItems()->create([
+            'file_id' => factory(File::class)->create()->id,
         ]);
         $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
         $relatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
@@ -2084,6 +2171,14 @@ class ServicesTest extends TestCase
                         [
                             'type',
                             'url',
+                        ],
+                    ],
+                    'gallery_items' => [
+                        [
+                            'file_id',
+                            'url',
+                            'created_at',
+                            'updated_at',
                         ],
                     ],
                     'category_taxonomies' => [
@@ -2158,7 +2253,16 @@ class ServicesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
         $image = Storage::disk('local')->get('/test-data/image.png');
-        $payload = [
+
+        Passport::actingAs($user);
+
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response = $this->json('POST', '/core/v1/services', [
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
@@ -2195,29 +2299,26 @@ class ServicesTest extends TestCase
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
                     'order' => 1,
-                ]
+                ],
             ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
                     'url' => 'https://www.instagram.com/ayupdigital',
-                ]
+                ],
             ],
+            'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-            'logo' => 'data:image/png;base64,' . base64_encode($image),
-        ];
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', '/core/v1/services/', $payload);
-        $serviceArray = $this->getResponseContent($response)['data'];
+            'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+        ]);
+        $serviceId = $this->getResponseContent($response, 'data.id');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas(table(Service::class), [
-            'id' => $serviceArray['id'],
+            'id' => $serviceId,
         ]);
         $this->assertDatabaseMissing(table(Service::class), [
-            'id' => $serviceArray['id'],
+            'id' => $serviceId,
             'logo_file_id' => null,
         ]);
     }
@@ -2270,7 +2371,7 @@ class ServicesTest extends TestCase
             'useful_infos' => [],
             'social_medias' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-            'logo' => null,
+            'logo_file_id' => null,
         ];
 
         Passport::actingAs($user);
@@ -2281,5 +2382,33 @@ class ServicesTest extends TestCase
         $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $service->id]);
         $updateRequest = UpdateRequest::where('updateable_id', $service->id)->firstOrFail();
         $this->assertEquals(null, $updateRequest->data['logo_file_id']);
+    }
+
+    /*
+     * Get a specific service's gallery item.
+     */
+
+    public function test_guest_can_view_gallery_item()
+    {
+        /** @var \App\Models\File $file */
+        $file = factory(File::class)->create([
+            'filename' => 'random-name.png',
+            'mime_type' => 'image/png',
+        ])->upload(
+            Storage::disk('local')->get('/test-data/image.png')
+        );
+
+        /** @var \App\Models\Service $service */
+        $service = factory(Service::class)->create();
+
+        /** @var \App\Models\ServiceGalleryItem $serviceGalleryItem */
+        $serviceGalleryItem = $service->serviceGalleryItems()->create([
+            'file_id' => $file->id,
+        ]);
+
+        $response = $this->get($serviceGalleryItem->url());
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
     }
 }

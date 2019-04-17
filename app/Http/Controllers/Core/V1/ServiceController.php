@@ -45,7 +45,7 @@ class ServiceController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
+            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
             ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
                 $query->where('status', '=', Service::STATUS_ACTIVE);
@@ -93,7 +93,7 @@ class ServiceController extends Controller
                 'name' => $request->name,
                 'status' => $request->status,
                 'intro' => $request->intro,
-                'description' => $request->description,
+                'description' => sanitize_markdown($request->description),
                 'wait_time' => $request->wait_time,
                 'is_free' => $request->is_free,
                 'fees_text' => $request->fees_text,
@@ -109,29 +109,29 @@ class ServiceController extends Controller
                 'referral_button_text' => $request->referral_button_text,
                 'referral_email' => $request->referral_email,
                 'referral_url' => $request->referral_url,
+                'logo_file_id' => $request->logo_file_id,
             ]);
 
-            // Upload the logo if provided.
-            if ($request->filled('logo')) {
-                // Create the file record.
-                /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $service->id . '.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
+            if ($request->filled('gallery_items')) {
+                foreach ($request->gallery_items as $galleryItem) {
+                    /** @var \App\Models\File $file */
+                    $file = File::findOrFail($galleryItem['file_id'])->assigned();
 
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->logo);
+                    // Create resized version for common dimensions.
+                    foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                        $file->resizedVersion($maxDimension);
+                    }
+                }
+            }
+
+            if ($request->filled('logo_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
                 foreach (config('ck.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
-
-                // Link the file to the organisation.
-                $service->logo_file_id = $file->id;
-                $service->save();
             }
 
             // Create the service criterion record.
@@ -150,7 +150,7 @@ class ServiceController extends Controller
             foreach ($request->useful_infos as $usefulInfo) {
                 $service->usefulInfos()->create([
                     'title' => $usefulInfo['title'],
-                    'description' => $usefulInfo['description'],
+                    'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
                 ]);
             }
@@ -160,6 +160,13 @@ class ServiceController extends Controller
                 $service->socialMedias()->create([
                     'type' => $socialMedia['type'],
                     'url' => $socialMedia['url'],
+                ]);
+            }
+
+            // Create the gallery item records.
+            foreach ($request->gallery_items as $galleryItem) {
+                $service->serviceGalleryItems()->create([
+                    'file_id' => $galleryItem['file_id'],
                 ]);
             }
 
@@ -188,7 +195,7 @@ class ServiceController extends Controller
     public function show(ShowRequest $request, Service $service)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'taxonomies')
+            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
             ->where('id', $service->id);
 
         $service = QueryBuilder::for($baseQuery)
@@ -212,11 +219,14 @@ class ServiceController extends Controller
         return DB::transaction(function () use ($request, $service) {
             // Initialise the data array.
             $data = array_filter_missing([
+                'organisation_id' => $request->missing('organisation_id'),
                 'slug' => $request->missing('slug'),
                 'name' => $request->missing('name'),
                 'status' => $request->missing('status'),
                 'intro' => $request->missing('intro'),
-                'description' => $request->missing('description'),
+                'description' => $request->missing('description', function ($description) {
+                    return sanitize_markdown($description);
+                }),
                 'wait_time' => $request->missing('wait_time'),
                 'is_free' => $request->missing('is_free'),
                 'fees_text' => $request->missing('fees_text'),
@@ -246,38 +256,38 @@ class ServiceController extends Controller
                     : new MissingValue(),
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
+                'gallery_items' => $request->has('gallery_items') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missing('category_taxonomies'),
+                'logo_file_id' => $request->missing('logo_file_id'),
             ]);
 
-            // Update the logo if the logo field was provided.
-            if ($request->filled('logo')) {
-                // If a new logo was uploaded.
-                /** @var \App\Models\File $file */
-                $file = File::create([
-                    'filename' => $service->id.'.png',
-                    'mime_type' => File::MIME_TYPE_PNG,
-                    'is_private' => false,
-                ]);
+            if ($request->filled('gallery_items')) {
+                foreach ($request->gallery_items as $galleryItem) {
+                    /** @var \App\Models\File $file */
+                    $file = File::findOrFail($galleryItem['file_id'])->assigned();
 
-                // Upload the file.
-                $file->uploadBase64EncodedPng($request->logo);
+                    // Create resized version for common dimensions.
+                    foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                        $file->resizedVersion($maxDimension);
+                    }
+                }
+            }
+
+            if ($request->filled('logo_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
                 foreach (config('ck.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
-
-                $data['logo_file_id'] = $file->id;
-            } else if ($request->has('logo')) {
-                // If the logo was removed.
-                $data['logo_file_id'] = null;
             }
 
             // Loop through each useful info.
             foreach ($request->input('useful_infos', []) as $usefulInfo) {
                 $data['useful_infos'][] = [
                     'title' => $usefulInfo['title'],
-                    'description' => $usefulInfo['description'],
+                    'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
                 ];
             }
@@ -290,6 +300,14 @@ class ServiceController extends Controller
                 ];
             }
 
+            // Loop through each gallery item.
+            foreach ($request->input('gallery_items', []) as $galleryItem) {
+                $data['gallery_items'][] = [
+                    'file_id' => $galleryItem['file_id'],
+                ];
+            }
+
+            /** @var \App\Models\UpdateRequest $updateRequest */
             $updateRequest = $service->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => $data,

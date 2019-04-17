@@ -359,3 +359,22 @@ if (!function_exists('combine_query')) {
         );
     }
 }
+
+if (!function_exists('sanitize_markdown')) {
+    /**
+     * Sanitizes the markdown from unwanted markup.
+     *
+     * @param string $markdown
+     * @return string
+     */
+    function sanitize_markdown(string $markdown): string
+    {
+        // Strip all HTML tags.
+        $markdown = strip_tags($markdown);
+
+        // Hard removal of XSS.
+        $markdown = str_replace('javascript:', '', $markdown);
+
+        return $markdown;
+    }
+}

@@ -3,8 +3,10 @@
 namespace App\Http\Requests\CollectionPersona;
 
 use App\Models\Collection;
+use App\Models\File;
 use App\Models\Taxonomy;
-use App\Rules\Base64EncodedPng;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\RootTaxonomyIs;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -40,7 +42,11 @@ class StoreRequest extends FormRequest
             'sidebox_content' => ['present', 'required_with:sidebox_title', 'nullable', 'string'],
             'category_taxonomies' => ['present', 'array'],
             'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
-            'image' => [new Base64EncodedPng(true)],
+            'image_file_id' => [
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 }

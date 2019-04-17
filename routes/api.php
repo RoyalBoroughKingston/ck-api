@@ -45,6 +45,9 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
         ]);
     Route::get('/collections/personas/{collection}/image.png', 'CollectionPersona\\ImageController')->name('collection-personas.image');
 
+    // Files.
+    Route::apiResource('/files', 'FileController')->only('store');
+
     // Locations.
     Route::match(['GET', 'POST'], '/locations/index', 'LocationController@index');
     Route::apiResource('/locations', 'LocationController');
@@ -87,6 +90,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::apiResource('/services', 'ServiceController');
     Route::get('/services/{service}/related', 'Service\\RelatedController')->name('services.related');
     Route::get('/services/{service}/logo.png', 'Service\\LogoController')->name('services.logo');
+    Route::get('/services/{service}/gallery-items/{file}', 'Service\\GalleryItemController')->name('services.gallery-items');
 
     // Status Updates.
     Route::match(['GET', 'POST'], '/status-updates/index', 'StatusUpdateController@index');
