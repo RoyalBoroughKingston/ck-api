@@ -102,6 +102,42 @@ class UsersTest extends TestCase
         $this->assertEquals($serviceWorker->id, $data['data'][0]['id']);
     }
 
+    public function test_service_worker_can_sort_by_at_organisation()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $organisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $user = factory(User::class)->create()->makeServiceWorker(
+            factory(Service::class)->create()
+        );
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/users?filter[at_organisation]={$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals(1, count($data['data']));
+        $this->assertEquals($organisationAdmin->id, $data['data'][0]['id']);
+    }
+
+    public function test_service_worker_can_sort_by_at_service()
+    {
+        $service = factory(Service::class)->create();
+        $serviceAdmin = factory(User::class)->create()->makeServiceAdmin($service);
+        $user = factory(User::class)->create()->makeServiceWorker(
+            factory(Service::class)->create()
+        );
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/users?filter[at_service]={$service->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals(1, count($data['data']));
+        $this->assertEquals($serviceAdmin->id, $data['data'][0]['id']);
+    }
+
     /*
      * ==================================================
      * Create a user.
