@@ -91,6 +91,7 @@ class ServiceController extends Controller
                 'organisation_id' => $request->organisation_id,
                 'slug' => $request->slug,
                 'name' => $request->name,
+                'type' => $request->type,
                 'status' => $request->status,
                 'intro' => $request->intro,
                 'description' => sanitize_markdown($request->description),
@@ -222,6 +223,7 @@ class ServiceController extends Controller
                 'organisation_id' => $request->missing('organisation_id'),
                 'slug' => $request->missing('slug'),
                 'name' => $request->missing('name'),
+                'type' => $request->missing('type'),
                 'status' => $request->missing('status'),
                 'intro' => $request->missing('intro'),
                 'description' => $request->missing('description', function ($description) {

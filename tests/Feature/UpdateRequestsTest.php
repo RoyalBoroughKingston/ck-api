@@ -636,6 +636,7 @@ class UpdateRequestsTest extends TestCase
             'data' => [
                 'slug' => $service->slug,
                 'name' => 'Test Name',
+                'type' => $service->type,
                 'status' => $service->status,
                 'intro' => $service->intro,
                 'description' => $service->description,
