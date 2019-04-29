@@ -138,6 +138,44 @@ class UsersTest extends TestCase
         $this->assertEquals($serviceAdmin->id, $data['data'][0]['id']);
     }
 
+    public function test_service_worker_can_sort_by_at_organisation_and_includes_service_workers()
+    {
+        $service = factory(Service::class)->create();
+        $serviceWorker = factory(User::class)->create()->makeServiceWorker($service);
+        $user = factory(User::class)->create()->makeServiceWorker(
+            factory(Service::class)->create()
+        );
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/users?filter[at_organisation]={$service->organisation_id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals(1, count($data['data']));
+        $this->assertEquals($serviceWorker->id, $data['data'][0]['id']);
+    }
+
+    public function test_service_worker_can_sort_by_at_organisation_and_excludes_global_admins()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $organisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        // This user shouldn't show up in the results.
+        factory(User::class)->create()->makeGlobalAdmin();
+        $user = factory(User::class)->create()->makeServiceWorker(
+            factory(Service::class)->create()
+        );
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', "/core/v1/users?filter[at_organisation]={$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals(1, count($data['data']));
+        $this->assertEquals($organisationAdmin->id, $data['data'][0]['id']);
+    }
+
     /*
      * ==================================================
      * Create a user.
