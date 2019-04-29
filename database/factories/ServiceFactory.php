@@ -13,6 +13,7 @@ $factory->define(Service::class, function (Faker $faker) {
         },
         'slug' => Str::slug($name).'-'.rand(1, 1000),
         'name' => $name,
+        'type' => Service::TYPE_SERVICE,
         'status' => Service::STATUS_ACTIVE,
         'intro' => $faker->sentence,
         'description' => $faker->sentence,
