@@ -2292,6 +2292,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
