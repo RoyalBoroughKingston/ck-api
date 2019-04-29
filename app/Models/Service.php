@@ -210,6 +210,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'organisation_id' => $data['organisation_id'] ?? $this->organisation_id,
             'slug' => $data['slug'] ?? $this->slug,
             'name' => $data['name'] ?? $this->name,
+            'type' => $data['type'] ?? $this->type,
             'status' => $data['status'] ?? $this->status,
             'intro' => $data['intro'] ?? $this->intro,
             'description' => sanitize_markdown($data['description'] ?? $this->description),
