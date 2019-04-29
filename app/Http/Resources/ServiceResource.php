@@ -21,6 +21,7 @@ class ServiceResource extends JsonResource
             'has_logo' => $this->hasLogo(),
             'slug' => $this->slug,
             'name' => $this->name,
+            'type' => $this->type,
             'status' => $this->status,
             'intro' => $this->intro,
             'description' => $this->description,
