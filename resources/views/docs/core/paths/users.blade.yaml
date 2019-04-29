@@ -40,6 +40,20 @@ root:
       description: Filter users to only ones they have permissions for
       schema:
         type: boolean
+    - name: filter[at_organisation]
+      in: query
+      description: |
+        Comma separated list of organisation IDs which filters users to those who have a role at the specified
+        organisations (global admins and higher are excluded)
+      schema:
+        type: string
+    - name: filter[at_service]
+      in: query
+      description: |
+        Comma separated list of service IDs which filters users to those who have a role at the specified
+        services (global admins and higher are excluded)
+      schema:
+        type: string
     - name: include
       in: query
       description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
