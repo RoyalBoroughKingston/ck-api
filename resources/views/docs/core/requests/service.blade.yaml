@@ -15,6 +15,7 @@ update:
   required:
   - name
   - slug
+  - type
   - status
   - intro
   - description
@@ -45,6 +46,13 @@ update:
     slug:
       type: string
       example: helping-the-homeless
+    type:
+      type: string
+      enum:
+        - service
+        - activity
+        - club
+        - group
     status:
       type: string
       enum:

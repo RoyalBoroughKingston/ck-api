@@ -16,6 +16,14 @@ properties:
   slug:
     type: string
     example: helping-the-homeless
+  type:
+    type: string
+    enum:
+      - service
+      - activity
+      - club
+      - group
+    example: service
   status:
     type: string
     enum:
