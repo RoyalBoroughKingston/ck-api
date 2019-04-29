@@ -76,6 +76,14 @@ class UpdateRequest extends FormRequest
                 ),
             ],
             'name' => ['string', 'min:1', 'max:255'],
+            'type' => [
+                Rule::in([
+                    Service::TYPE_SERVICE,
+                    Service::TYPE_ACTIVITY,
+                    Service::TYPE_CLUB,
+                    Service::TYPE_GROUP,
+                ]),
+            ],
             'status' => [
                 Rule::in([
                     Service::STATUS_ACTIVE,

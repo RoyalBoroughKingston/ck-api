@@ -48,6 +48,15 @@ class StoreRequest extends FormRequest
             'organisation_id' => ['required', 'exists:organisations,id', new IsOrganisationAdmin($this->user())],
             'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:'.table(Service::class).',slug', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
+            'type' => [
+                'required',
+                Rule::in([
+                    Service::TYPE_SERVICE,
+                    Service::TYPE_ACTIVITY,
+                    Service::TYPE_CLUB,
+                    Service::TYPE_GROUP,
+                ]),
+            ],
             'status' => [
                 'required',
                 Rule::in([
