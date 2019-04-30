@@ -40,6 +40,7 @@ class StoreRequest extends FormRequest
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'min:1', 'max:255'],
             'logo_file_id' => [
+                'nullable',
                 'exists:files,id',
                 new FileIsMimeType(File::MIME_TYPE_PNG),
                 new FileIsPendingAssignment(),
