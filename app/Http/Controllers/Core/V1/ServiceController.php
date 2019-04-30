@@ -310,9 +310,8 @@ class ServiceController extends Controller
                 ];
             }
 
-            // Create the update request.
-            $updateRequest = new UpdateRequestModel([
-                'service_id' => $service->id,
+            /** @var \App\Models\UpdateRequest $updateRequest */
+            $updateRequest = $service->updateRequests()->newModelInstance([
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
