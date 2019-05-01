@@ -18,6 +18,7 @@ use App\Models\File;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
+use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Support\MissingValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -263,7 +264,7 @@ class ServiceController extends Controller
                 'logo_file_id' => $request->missing('logo_file_id'),
             ]);
 
-            if ($request->filled('gallery_items')) {
+            if ($request->filled('gallery_items') && !$request->isPreview()) {
                 foreach ($request->gallery_items as $galleryItem) {
                     /** @var \App\Models\File $file */
                     $file = File::findOrFail($galleryItem['file_id'])->assigned();
@@ -275,7 +276,7 @@ class ServiceController extends Controller
                 }
             }
 
-            if ($request->filled('logo_file_id')) {
+            if ($request->filled('logo_file_id') && !$request->isPreview()) {
                 /** @var \App\Models\File $file */
                 $file = File::findOrFail($request->logo_file_id)->assigned();
 
@@ -309,13 +310,19 @@ class ServiceController extends Controller
                 ];
             }
 
-            /** @var \App\Models\UpdateRequest $updateRequest */
-            $updateRequest = $service->updateRequests()->create([
+            $updateRequest = new UpdateRequestModel([
+                'updateable_type' => 'services',
+                'updateable_id' => $service->id,
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
 
-            event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
+            // Only persist to the database if the user did not request a preview.
+            if (!$request->isPreview()) {
+                $updateRequest->save();
+
+                event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
+            }
 
             return new UpdateRequestReceived($updateRequest);
         });

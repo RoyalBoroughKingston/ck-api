@@ -2008,6 +2008,31 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
+    public function test_global_admin_can_update_organisation_id_with_preview_only()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => factory(Organisation::class)->create()->id,
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", array_merge(
+            $payload,
+            ['preview' => true]
+        ));
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => null, 'data' => $payload]);
+    }
+
     /*
      * Delete a specific service.
      */
