@@ -32,10 +32,15 @@ class ServicesTest extends TestCase
 
     public function test_guest_can_list_them()
     {
+        /** @var \App\Models\Service $service */
         $service = factory(Service::class)->create();
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -91,6 +96,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -120,6 +131,10 @@ class ServicesTest extends TestCase
             'description' => 'This is a test description',
             'order' => 1,
         ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
+            'order' => 1,
+        ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
             'url' => 'https://www.instagram.com/ayupdigital/',
@@ -146,6 +161,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -288,6 +307,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -347,6 +372,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -410,6 +441,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -478,6 +515,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
@@ -533,6 +571,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -597,6 +641,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -672,6 +722,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -744,6 +800,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -809,6 +871,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -835,6 +903,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -890,6 +962,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -916,6 +994,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -971,6 +1053,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -999,6 +1087,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -1093,6 +1185,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1157,6 +1255,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -1228,6 +1332,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1293,6 +1403,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -1366,6 +1482,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1434,6 +1556,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1495,6 +1623,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1550,6 +1679,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1605,6 +1735,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1660,6 +1791,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1715,6 +1847,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1772,6 +1905,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1831,6 +1965,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
