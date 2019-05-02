@@ -44,6 +44,8 @@ paths:
     $ref: /docs/core/paths/locations.yaml#/index
   /locations/{location}:
     $ref: /docs/core/paths/locations.yaml#/nested
+  /locations/{location}/image.png:
+    $ref: /docs/core/paths/locations.yaml#/image
 
   /notifications:
     $ref: /docs/core/paths/notifications.yaml#/root
