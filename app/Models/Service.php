@@ -273,6 +273,17 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             }
         }
 
+        // Update the offering records.
+        if (array_key_exists('offerings', $data)) {
+            $this->offerings()->delete();
+            foreach ($data['offerings'] as $offering) {
+                $this->offerings()->create([
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
+                ]);
+            }
+        }
+
         // Update the social media records.
         if (array_key_exists('social_medias', $updateRequest->data)) {
             $this->socialMedias()->delete();
