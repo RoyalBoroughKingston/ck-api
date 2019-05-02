@@ -378,3 +378,16 @@ if (!function_exists('sanitize_markdown')) {
         return $markdown;
     }
 }
+
+if (!function_exists('trim_quotes')) {
+    /**
+     * Trim a string from all types of quotes.
+     *
+     * @param string $string
+     * @return string
+     */
+    function trim_quotes(string $string): string
+    {
+        return trim($string, '‘’“”\'\'""');
+    }
+}
