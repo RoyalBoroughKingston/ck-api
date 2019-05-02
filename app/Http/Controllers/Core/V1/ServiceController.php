@@ -46,7 +46,14 @@ class ServiceController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
+            ->with(
+                'serviceCriterion',
+                'usefulInfos',
+                'offerings',
+                'socialMedias',
+                'serviceGalleryItems.file',
+                'taxonomies'
+            )
             ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
                 $query->where('status', '=', Service::STATUS_ACTIVE);
@@ -157,6 +164,14 @@ class ServiceController extends Controller
                 ]);
             }
 
+            // Create the offering records.
+            foreach ($request->offerings as $offering) {
+                $service->offerings()->create([
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
+                ]);
+            }
+
             // Create the social media records.
             foreach ($request->social_medias as $socialMedia) {
                 $service->socialMedias()->create([
@@ -181,7 +196,7 @@ class ServiceController extends Controller
 
             event(EndpointHit::onCreate($request, "Created service [{$service->id}]", $service));
 
-            $service->load('usefulInfos', 'socialMedias', 'taxonomies');
+            $service->load('usefulInfos', 'offerings', 'socialMedias', 'taxonomies');
 
             return new ServiceResource($service);
         });
@@ -197,7 +212,14 @@ class ServiceController extends Controller
     public function show(ShowRequest $request, Service $service)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
+            ->with(
+                'serviceCriterion',
+                'usefulInfos',
+                'offerings',
+                'socialMedias',
+                'serviceGalleryItems.file',
+                'taxonomies'
+            )
             ->where('id', $service->id);
 
         $service = QueryBuilder::for($baseQuery)
@@ -292,6 +314,14 @@ class ServiceController extends Controller
                     'title' => $usefulInfo['title'],
                     'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
+                ];
+            }
+
+            // Loop through each offering.
+            foreach ($request->input('offerings', []) as $offering) {
+                $data['offerings'][] = [
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
                 ];
             }
 

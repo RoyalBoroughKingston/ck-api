@@ -2488,6 +2488,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,

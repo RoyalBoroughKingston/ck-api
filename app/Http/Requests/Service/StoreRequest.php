@@ -179,6 +179,11 @@ class StoreRequest extends FormRequest
             'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(10000)],
             'useful_infos.*.order' => ['required_with:useful_infos.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->useful_infos, 'order'))],
 
+            'offerings' => ['present', 'array'],
+            'offerings.*' => ['array'],
+            'offerings.*.offering' => ['required_with:offerings.*', 'string', 'min:1', 'max:255'],
+            'offerings.*.order' => ['required_with:offerings.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->offerings, 'order'))],
+
             'social_medias' => ['present', 'array'],
             'social_medias.*' => ['array'],
             'social_medias.*.type' => ['required_with:social_medias.*', Rule::in([

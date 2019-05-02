@@ -229,6 +229,19 @@ class UpdateRequest extends FormRequest
                 )),
             ],
 
+            'offerings' => ['array'],
+            'offerings.*' => ['array'],
+            'offerings.*.offering' => ['required_with:offerings.*', 'string', 'min:1', 'max:255'],
+            'offerings.*.order' => [
+                'required_with:offerings.*',
+                'integer',
+                'min:1',
+                new InOrder(array_pluck_multi(
+                    $this->input('offerings', []),
+                    'order'
+                )),
+            ],
+
             'social_medias' => ['array'],
             'social_medias.*' => ['array'],
             'social_medias.*.type' => [
