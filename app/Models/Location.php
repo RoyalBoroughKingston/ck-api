@@ -7,6 +7,7 @@ use App\Http\Requests\Location\UpdateRequest as Request;
 use App\Models\Mutators\LocationMutators;
 use App\Models\Relationships\LocationRelationships;
 use App\Models\Scopes\LocationScopes;
+use App\Rules\FileIsMimeType;
 use App\Support\Address;
 use App\Support\Coordinate;
 use App\UpdateRequest\AppliesUpdateRequests;
@@ -63,6 +64,13 @@ class Location extends Model implements AppliesUpdateRequests
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = (new Request())->rules();
+
+        // Remove the pending assignment rule since the file is now uploaded.
+        $rules['image_file_id'] = [
+            'nullable',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
