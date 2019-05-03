@@ -19,6 +19,7 @@ class ServiceLocationResource extends JsonResource
             'id' => $this->id,
             'service_id' => $this->service_id,
             'location_id' => $this->location_id,
+            'has_image' => $this->hasImage(),
             'name' => $this->name,
             'is_open_now' => $this->isOpenNow(),
             'regular_opening_hours' => RegularOpeningHourResource::collection($this->regularOpeningHours),

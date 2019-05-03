@@ -2,6 +2,7 @@
 
 namespace App\Models\Relationships;
 
+use App\Models\File;
 use App\Models\HolidayOpeningHour;
 use App\Models\Location;
 use App\Models\RegularOpeningHour;
@@ -39,5 +40,13 @@ trait ServiceLocationRelationships
     public function holidayOpeningHours()
     {
         return $this->hasMany(HolidayOpeningHour::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function imageFile()
+    {
+        return $this->belongsTo(File::class, 'image_file_id');
     }
 }

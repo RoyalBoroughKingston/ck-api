@@ -632,10 +632,10 @@ class ServiceLocationsTest extends TestCase
         $locationId = $this->getResponseContent($response, 'data.id');
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas(table(Location::class), [
+        $this->assertDatabaseHas(table(ServiceLocation::class), [
             'id' => $locationId,
         ]);
-        $this->assertDatabaseMissing(table(Location::class), [
+        $this->assertDatabaseMissing(table(ServiceLocation::class), [
             'id' => $locationId,
             'image_file_id' => null,
         ]);
