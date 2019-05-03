@@ -102,6 +102,8 @@ paths:
     $ref: /docs/core/paths/service-locations.yaml#/index
   /service-locations/{service_location}:
     $ref: /docs/core/paths/service-locations.yaml#/nested
+  /service-locations/{service_location}/image.png:
+    $ref: /docs/core/paths/service-locations.yaml#/image
 
   /services:
     $ref: /docs/core/paths/services.yaml#/root
