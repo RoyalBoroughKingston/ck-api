@@ -155,4 +155,12 @@ class Location extends Model implements AppliesUpdateRequests
             ['Content-Type' => File::MIME_TYPE_PNG]
         );
     }
+
+    /**
+     * @return bool
+     */
+    public function hasImage(): bool
+    {
+        return $this->image_file_id !== null;
+    }
 }

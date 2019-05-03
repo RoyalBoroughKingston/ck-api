@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\ServiceLocation;
 
+use App\Models\File;
 use App\Models\RegularOpeningHour;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\IsServiceAdmin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -57,6 +60,13 @@ class StoreRequest extends FormRequest
             'holiday_opening_hours.*.ends_at' => ['required_with:holiday_opening_hours.*', 'date_format:Y-m-d'],
             'holiday_opening_hours.*.opens_at' => ['required_with:holiday_opening_hours.*', 'date_format:H:i:s'],
             'holiday_opening_hours.*.closes_at' => ['required_with:holiday_opening_hours.*', 'date_format:H:i:s'],
+
+            'image_file_id' => [
+                'nullable',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 }

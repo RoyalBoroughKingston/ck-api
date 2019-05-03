@@ -11,6 +11,7 @@ use App\Http\Requests\ServiceLocation\UpdateRequest;
 use App\Http\Resources\ServiceLocationResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
+use App\Models\File;
 use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
 use App\Http\Controllers\Controller;
@@ -69,6 +70,7 @@ class ServiceLocationController extends Controller
                 'service_id' => $request->service_id,
                 'location_id' => $request->location_id,
                 'name' => $request->name,
+                'image_file_id' => $request->image_file_id,
             ]);
 
             // Attach the regular opening hours.
@@ -101,6 +103,16 @@ class ServiceLocationController extends Controller
                     'opens_at' => $holidayOpeningHour['opens_at'],
                     'closes_at' => $holidayOpeningHour['closes_at'],
                 ]);
+            }
+
+            if ($request->filled('image_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->image_file_id)->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
             }
 
             event(EndpointHit::onCreate($request, "Created service location [{$serviceLocation->id}]", $serviceLocation));
@@ -145,6 +157,7 @@ class ServiceLocationController extends Controller
                 'name' => $request->missing('name'),
                 'regular_opening_hours' => $request->has('regular_opening_hours') ? [] : new MissingValue(),
                 'holiday_opening_hours' => $request->has('holiday_opening_hours') ? [] : new MissingValue(),
+                'image_file_id' => $request->missing('image_file_id'),
             ]);
 
             // Loop through each regular opening hour to normalise and then append to the array.
@@ -183,6 +196,16 @@ class ServiceLocationController extends Controller
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
+
+            if ($request->filled('image_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->image_file_id)->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
+            }
 
             event(EndpointHit::onUpdate($request, "Updated service location [{$serviceLocation->id}]", $serviceLocation));
 

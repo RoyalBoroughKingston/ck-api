@@ -32,6 +32,7 @@ class LocationsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCollection([
             'id',
+            'has_image',
             'address_line_1',
             'address_line_2',
             'address_line_3',
@@ -49,6 +50,7 @@ class LocationsTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $location->id,
+            'has_image' => $location->hasImage(),
             'address_line_1' => $location->address_line_1,
             'address_line_2' => $location->address_line_2,
             'address_line_3' => $location->address_line_3,
@@ -132,6 +134,7 @@ class LocationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
+            'has_image' => false,
             'address_line_1' => '30-34 Aire St',
             'address_line_2' => null,
             'address_line_3' => null,
@@ -192,6 +195,7 @@ class LocationsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $location->id,
+            'has_image' => $location->hasImage(),
             'address_line_1' => $location->address_line_1,
             'address_line_2' => $location->address_line_2,
             'address_line_3' => $location->address_line_3,

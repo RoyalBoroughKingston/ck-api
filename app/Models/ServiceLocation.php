@@ -6,11 +6,14 @@ use App\Http\Requests\ServiceLocation\UpdateRequest as Request;
 use App\Models\Mutators\ServiceLocationMutators;
 use App\Models\Relationships\ServiceLocationRelationships;
 use App\Models\Scopes\ServiceLocationScopes;
+use App\Rules\FileIsMimeType;
 use App\Support\Time;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class ServiceLocation extends Model implements AppliesUpdateRequests
@@ -129,6 +132,13 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
     {
         $rules = (new Request())->rules();
 
+        // Remove the pending assignment rule since the file is now uploaded.
+        $rules['image_file_id'] = [
+            'nullable',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
+
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
 
@@ -145,6 +155,9 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
         // Update the service location.
         $this->update([
             'name' => $data['name'] ?? $this->name,
+            'image_file_id' => array_key_exists('image_file_id', $data)
+                ? $data['image_file_id']
+                : $this->image_file_id,
         ]);
 
         // Attach the regular opening hours.
@@ -199,5 +212,31 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
         $this->service->save();
 
         return $this;
+    }
+
+    /**
+     * @param int|null $maxDimension
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     */
+    public static function placeholderImage(int $maxDimension = null)
+    {
+        if ($maxDimension !== null) {
+            return File::resizedPlaceholder($maxDimension, File::META_PLACEHOLDER_FOR_SERVICE_LOCATION);
+        }
+
+        return response()->make(
+            Storage::disk('local')->get('/placeholders/service_location.png'),
+            Response::HTTP_OK,
+            ['Content-Type' => File::MIME_TYPE_PNG]
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasImage(): bool
+    {
+        return $this->image_file_id !== null;
     }
 }

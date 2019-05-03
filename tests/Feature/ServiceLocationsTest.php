@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
+use App\Models\File;
 use App\Models\HolidayOpeningHour;
 use App\Models\Location;
 use App\Models\RegularOpeningHour;
@@ -14,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -36,6 +38,7 @@ class ServiceLocationsTest extends TestCase
             'id' => $serviceLocation->id,
             'service_id' => $serviceLocation->service_id,
             'location_id' => $serviceLocation->location_id,
+            'has_image' => $serviceLocation->hasImage(),
             'name' => null,
             'is_open_now' => false,
             'regular_opening_hours' => [],
@@ -53,32 +56,8 @@ class ServiceLocationsTest extends TestCase
         $serviceLocation = $serviceLocation->fresh();
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            [
-                'id' => $serviceLocation->id,
-                'service_id' => $serviceLocation->service_id,
-                'location_id' => $serviceLocation->location_id,
-                'name' => null,
-                'is_open_now' => false,
-                'regular_opening_hours' => [],
-                'holiday_opening_hours' => [],
-                'created_at' => $serviceLocation->created_at->format(Carbon::ISO8601),
-                'updated_at' => $serviceLocation->updated_at->format(Carbon::ISO8601),
-            ]
-        ]);
-        $response->assertJsonMissing([
-            [
-                'id' => $anotherServiceLocation->id,
-                'service_id' => $anotherServiceLocation->service_id,
-                'location_id' => $anotherServiceLocation->location_id,
-                'name' => null,
-                'is_open_now' => false,
-                'regular_opening_hours' => [],
-                'holiday_opening_hours' => [],
-                'created_at' => $anotherServiceLocation->created_at->format(Carbon::ISO8601),
-                'updated_at' => $anotherServiceLocation->updated_at->format(Carbon::ISO8601),
-            ]
-        ]);
+        $response->assertJsonFragment(['id' => $serviceLocation->id]);
+        $response->assertJsonMissing(['id' => $anotherServiceLocation->id]);
     }
 
     public function test_guest_can_list_them_with_opening_hours()
@@ -103,6 +82,7 @@ class ServiceLocationsTest extends TestCase
             'id' => $serviceLocation->id,
             'service_id' => $serviceLocation->service_id,
             'location_id' => $serviceLocation->location_id,
+            'has_image' => false,
             'name' => null,
             'is_open_now' => false,
             'regular_opening_hours' => [
@@ -200,6 +180,7 @@ class ServiceLocationsTest extends TestCase
         $response->assertJsonFragment([
             'service_id' => $service->id,
             'location_id' => $location->id,
+            'has_image' => false,
             'name' => null,
             'regular_opening_hours' => [],
             'holiday_opening_hours' => [],
@@ -241,6 +222,7 @@ class ServiceLocationsTest extends TestCase
         $response->assertJsonFragment([
             'service_id' => $service->id,
             'location_id' => $location->id,
+            'has_image' => false,
             'name' => null,
             'regular_opening_hours' => [
                 [
@@ -304,6 +286,7 @@ class ServiceLocationsTest extends TestCase
             'id' => $serviceLocation->id,
             'service_id' => $serviceLocation->service_id,
             'location_id' => $serviceLocation->location_id,
+            'has_image' => false,
             'name' => null,
             'is_open_now' => false,
             'regular_opening_hours' => [],
@@ -334,6 +317,7 @@ class ServiceLocationsTest extends TestCase
             'id' => $serviceLocation->id,
             'service_id' => $serviceLocation->service_id,
             'location_id' => $serviceLocation->location_id,
+            'has_image' => false,
             'name' => null,
             'is_open_now' => false,
             'regular_opening_hours' => [
@@ -588,5 +572,103 @@ class ServiceLocationsTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $serviceLocation->id);
         });
+    }
+
+    /*
+     * Get a specific service location's image.
+     */
+
+    public function test_guest_can_view_image()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+
+        $response = $this->get("/core/v1/service-locations/{$serviceLocation->id}/image.png");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    public function test_audit_created_when_image_viewed()
+    {
+        $this->fakeEvents();
+
+        $serviceLocation = factory(ServiceLocation::class)->create();
+
+        $this->get("/core/v1/service-locations/{$serviceLocation->id}/image.png");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($serviceLocation) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $serviceLocation->id);
+        });
+    }
+
+    /*
+     * Upload a specific service location's image.
+     */
+
+
+    public function test_organisation_admin_can_upload_image()
+    {
+        /** @var \App\Models\User $user */
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response = $this->json('POST', '/core/v1/service-locations', [
+            'service_id' => factory(Service::class)->create()->id,
+            'location_id' => factory(Location::class)->create()->id,
+            'name' => null,
+            'regular_opening_hours' => [],
+            'holiday_opening_hours' => [],
+            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+        ]);
+        $locationId = $this->getResponseContent($response, 'data.id');
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseHas(table(ServiceLocation::class), [
+            'id' => $locationId,
+        ]);
+        $this->assertDatabaseMissing(table(ServiceLocation::class), [
+            'id' => $locationId,
+            'image_file_id' => null,
+        ]);
+    }
+
+    /*
+     * Delete a specific service location's image.
+     */
+
+    public function test_organisation_admin_can_delete_image()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $serviceLocation = factory(ServiceLocation::class)->create([
+            'image_file_id' => factory(File::class)->create()->id,
+        ]);
+        $payload = [
+            'name' => null,
+            'regular_opening_hours' => [],
+            'holiday_opening_hours' => [],
+            'image_file_id' => null,
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $serviceLocation->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $serviceLocation->id)->firstOrFail();
+        $this->assertEquals(null, $updateRequest->data['image_file_id']);
     }
 }
