@@ -16,6 +16,14 @@ properties:
   slug:
     type: string
     example: helping-the-homeless
+  type:
+    type: string
+    enum:
+      - service
+      - activity
+      - club
+      - group
+    example: service
   status:
     type: string
     enum:
@@ -130,6 +138,10 @@ properties:
     type: array
     items:
       $ref: /docs/core/resources/useful-info.yaml
+  offerings:
+    tyoe: array
+    items:
+      $ref: /docs/core/resources/offering.yaml
   social_medias:
     type: array
     items:

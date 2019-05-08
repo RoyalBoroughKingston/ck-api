@@ -17,6 +17,7 @@ class LocationResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'has_image' => $this->hasImage(),
             'address_line_1' => $this->address_line_1,
             'address_line_2' => $this->address_line_2,
             'address_line_3' => $this->address_line_3,

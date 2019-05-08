@@ -175,3 +175,32 @@ nested:
           application/json:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
+
+# /locations/{location}/image
+image:
+  get:
+    tags: [Locations]
+    summary: Get a specific location's image
+    description: |
+      **Permission:** `Open`
+    security: []
+    parameters:
+      - name: location
+        in: path
+        description: The ID of the location
+        required: true
+        schema:
+          type: string
+      - $ref: /docs/core/parameters/max-dimension.yaml
+      - name: update_request_id
+        in: query
+        description: File to use from update request
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        content:
+          image/png:
+            schema:
+              type: string

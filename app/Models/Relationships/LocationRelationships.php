@@ -2,6 +2,7 @@
 
 namespace App\Models\Relationships;
 
+use App\Models\File;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 
@@ -21,5 +22,13 @@ trait LocationRelationships
     public function services()
     {
         return $this->belongsToMany(Service::class, (new ServiceLocation())->getTable());
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function imageFile()
+    {
+        return $this->belongsTo(File::class, 'image_file_id');
     }
 }

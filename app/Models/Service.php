@@ -33,6 +33,11 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     use ServiceScopes;
     use UpdateRequests;
 
+    const TYPE_SERVICE = 'service';
+    const TYPE_ACTIVITY = 'activity';
+    const TYPE_CLUB = 'club';
+    const TYPE_GROUP = 'group';
+
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
@@ -205,6 +210,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'organisation_id' => $data['organisation_id'] ?? $this->organisation_id,
             'slug' => $data['slug'] ?? $this->slug,
             'name' => $data['name'] ?? $this->name,
+            'type' => $data['type'] ?? $this->type,
             'status' => $data['status'] ?? $this->status,
             'intro' => $data['intro'] ?? $this->intro,
             'description' => sanitize_markdown($data['description'] ?? $this->description),
@@ -263,6 +269,17 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                     'title' => $usefulInfo['title'],
                     'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
+                ]);
+            }
+        }
+
+        // Update the offering records.
+        if (array_key_exists('offerings', $data)) {
+            $this->offerings()->delete();
+            foreach ($data['offerings'] as $offering) {
+                $this->offerings()->create([
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
                 ]);
             }
         }

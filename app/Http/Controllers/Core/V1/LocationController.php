@@ -11,6 +11,7 @@ use App\Http\Requests\Location\UpdateRequest;
 use App\Http\Resources\LocationResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
+use App\Models\File;
 use App\Models\Location;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -95,7 +96,18 @@ class LocationController extends Controller
                 'accessibility_info' => $request->accessibility_info,
                 'has_wheelchair_access' => $request->has_wheelchair_access,
                 'has_induction_loop' => $request->has_induction_loop,
+                'image_file_id' => $request->image_file_id,
             ]);
+
+            if ($request->filled('image_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->image_file_id)->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
+            }
 
             // Persist the record to the database.
             $location->updateCoordinate()->save();
@@ -149,8 +161,19 @@ class LocationController extends Controller
                     'accessibility_info' => $request->missing('accessibility_info'),
                     'has_wheelchair_access' => $request->missing('has_wheelchair_access'),
                     'has_induction_loop' => $request->missing('has_induction_loop'),
+                    'image_file_id' => $request->missing('image_file_id'),
                 ]),
             ]);
+
+            if ($request->filled('image_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->image_file_id)->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
+            }
 
             event(EndpointHit::onUpdate($request, "Updated location [{$location->id}]", $location));
 

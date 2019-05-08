@@ -25,6 +25,8 @@ class File extends Model implements Responsable
     const META_PLACEHOLDER_FOR_ORGANISATION = 'organisation';
     const META_PLACEHOLDER_FOR_SERVICE = 'service';
     const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
+    const META_PLACEHOLDER_FOR_LOCATION= 'location';
+    const META_PLACEHOLDER_FOR_SERVICE_LOCATION= 'service_location';
 
     const PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS = 1;
 
@@ -198,6 +200,8 @@ class File extends Model implements Responsable
             static::META_PLACEHOLDER_FOR_ORGANISATION,
             static::META_PLACEHOLDER_FOR_SERVICE,
             static::META_PLACEHOLDER_FOR_COLLECTION_PERSONA,
+            static::META_PLACEHOLDER_FOR_LOCATION,
+            static::META_PLACEHOLDER_FOR_SERVICE_LOCATION,
         ];
 
         if (!in_array($placeholderFor, $validPlaceholdersFor)) {

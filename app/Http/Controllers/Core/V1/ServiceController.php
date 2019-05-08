@@ -18,6 +18,7 @@ use App\Models\File;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
+use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Support\MissingValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +46,14 @@ class ServiceController extends Controller
     public function index(IndexRequest $request)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
+            ->with(
+                'serviceCriterion',
+                'usefulInfos',
+                'offerings',
+                'socialMedias',
+                'serviceGalleryItems.file',
+                'taxonomies'
+            )
             ->when(auth('api')->guest(), function (Builder $query) use ($request) {
                 // Limit to active services if requesting user is not authenticated.
                 $query->where('status', '=', Service::STATUS_ACTIVE);
@@ -91,6 +99,7 @@ class ServiceController extends Controller
                 'organisation_id' => $request->organisation_id,
                 'slug' => $request->slug,
                 'name' => $request->name,
+                'type' => $request->type,
                 'status' => $request->status,
                 'intro' => $request->intro,
                 'description' => sanitize_markdown($request->description),
@@ -155,6 +164,14 @@ class ServiceController extends Controller
                 ]);
             }
 
+            // Create the offering records.
+            foreach ($request->offerings as $offering) {
+                $service->offerings()->create([
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
+                ]);
+            }
+
             // Create the social media records.
             foreach ($request->social_medias as $socialMedia) {
                 $service->socialMedias()->create([
@@ -179,7 +196,7 @@ class ServiceController extends Controller
 
             event(EndpointHit::onCreate($request, "Created service [{$service->id}]", $service));
 
-            $service->load('usefulInfos', 'socialMedias', 'taxonomies');
+            $service->load('usefulInfos', 'offerings', 'socialMedias', 'taxonomies');
 
             return new ServiceResource($service);
         });
@@ -195,7 +212,14 @@ class ServiceController extends Controller
     public function show(ShowRequest $request, Service $service)
     {
         $baseQuery = Service::query()
-            ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
+            ->with(
+                'serviceCriterion',
+                'usefulInfos',
+                'offerings',
+                'socialMedias',
+                'serviceGalleryItems.file',
+                'taxonomies'
+            )
             ->where('id', $service->id);
 
         $service = QueryBuilder::for($baseQuery)
@@ -222,6 +246,7 @@ class ServiceController extends Controller
                 'organisation_id' => $request->missing('organisation_id'),
                 'slug' => $request->missing('slug'),
                 'name' => $request->missing('name'),
+                'type' => $request->missing('type'),
                 'status' => $request->missing('status'),
                 'intro' => $request->missing('intro'),
                 'description' => $request->missing('description', function ($description) {
@@ -255,13 +280,14 @@ class ServiceController extends Controller
                     ])
                     : new MissingValue(),
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
+                'offerings' => $request->has('offerings') ? [] : new MissingValue(),
                 'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
                 'gallery_items' => $request->has('gallery_items') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missing('category_taxonomies'),
                 'logo_file_id' => $request->missing('logo_file_id'),
             ]);
 
-            if ($request->filled('gallery_items')) {
+            if ($request->filled('gallery_items') && !$request->isPreview()) {
                 foreach ($request->gallery_items as $galleryItem) {
                     /** @var \App\Models\File $file */
                     $file = File::findOrFail($galleryItem['file_id'])->assigned();
@@ -273,7 +299,7 @@ class ServiceController extends Controller
                 }
             }
 
-            if ($request->filled('logo_file_id')) {
+            if ($request->filled('logo_file_id') && !$request->isPreview()) {
                 /** @var \App\Models\File $file */
                 $file = File::findOrFail($request->logo_file_id)->assigned();
 
@@ -292,6 +318,14 @@ class ServiceController extends Controller
                 ];
             }
 
+            // Loop through each offering.
+            foreach ($request->input('offerings', []) as $offering) {
+                $data['offerings'][] = [
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
+                ];
+            }
+
             // Loop through each social media.
             foreach ($request->input('social_medias', []) as $socialMedia) {
                 $data['social_medias'][] = [
@@ -307,13 +341,19 @@ class ServiceController extends Controller
                 ];
             }
 
-            /** @var \App\Models\UpdateRequest $updateRequest */
-            $updateRequest = $service->updateRequests()->create([
+            $updateRequest = new UpdateRequestModel([
+                'updateable_type' => 'services',
+                'updateable_id' => $service->id,
                 'user_id' => $request->user()->id,
                 'data' => $data,
             ]);
 
-            event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
+            // Only persist to the database if the user did not request a preview.
+            if (!$request->isPreview()) {
+                $updateRequest->save();
+
+                event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
+            }
 
             return new UpdateRequestReceived($updateRequest);
         });

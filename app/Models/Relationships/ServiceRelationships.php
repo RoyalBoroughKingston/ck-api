@@ -4,6 +4,7 @@ namespace App\Models\Relationships;
 
 use App\Models\File;
 use App\Models\Location;
+use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\ServiceCriterion;
@@ -80,6 +81,14 @@ trait ServiceRelationships
     public function usefulInfos()
     {
         return $this->hasMany(UsefulInfo::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function offerings()
+    {
+        return $this->hasMany(Offering::class);
     }
 
     /**

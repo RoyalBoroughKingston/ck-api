@@ -160,7 +160,14 @@ nested:
       content:
         application/json:
           schema:
-            $ref: /docs/core/requests/service.yaml#/update
+            allOf:
+              - $ref: /docs/core/requests/service.yaml#/update
+              - type: object
+                properties:
+                  preview:
+                    type: boolean
+                    default: false
+                    description: When enabled, only a preview of the update request will be generated
     responses:
       200:
         content:

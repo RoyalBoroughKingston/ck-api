@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\EndpointHit;
 use App\Events\UserRolesUpdated;
 use App\Exceptions\CannotRevokeRoleException;
+use App\Http\Filters\User\AtOrganisationFilter;
+use App\Http\Filters\User\AtServiceFilter;
 use App\Http\Filters\User\HasPermissionFilter;
 use App\Http\Filters\User\HighestRoleFilter;
 use App\Http\Requests\User\DestroyRequest;
@@ -64,6 +66,8 @@ class UserController extends Controller
                 'phone',
                 Filter::custom('highest_role', HighestRoleFilter::class),
                 Filter::custom('has_permission', HasPermissionFilter::class),
+                Filter::custom('at_organisation', AtOrganisationFilter::class),
+                Filter::custom('at_service', AtServiceFilter::class),
             ])
             ->allowedIncludes([
                 'user-roles.organisation',

@@ -15,6 +15,7 @@ update:
   required:
   - name
   - slug
+  - type
   - status
   - intro
   - description
@@ -35,6 +36,7 @@ update:
   - referral_url
   - criteria
   - useful_infos
+  - offerings
   - social_medias
   - gallery_items
   - category_taxonomies
@@ -45,6 +47,13 @@ update:
     slug:
       type: string
       example: helping-the-homeless
+    type:
+      type: string
+      enum:
+        - service
+        - activity
+        - club
+        - group
     status:
       type: string
       enum:
@@ -181,6 +190,20 @@ update:
             type: string
             example: How to apply
           description:
+            type: string
+            example: Lorem ipsum
+          order:
+            type: integer
+            example: 1
+    offerings:
+      type: array
+      items:
+        type: object
+        required:
+          - offering
+          - order
+        properties:
+          offering:
             type: string
             example: Lorem ipsum
           order:
