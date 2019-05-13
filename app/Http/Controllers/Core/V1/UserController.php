@@ -78,7 +78,7 @@ class UserController extends Controller
                 'last_name',
                 'highest_role',
             ])
-            ->defaultSort([
+            ->defaultSorts([
                 'first_name',
                 'last_name',
             ])
