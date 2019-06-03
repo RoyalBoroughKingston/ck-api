@@ -7,63 +7,63 @@ root:
       **Permission:** `Open`
     security: []
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
-    - name: filter[address_line_1]
-      in: query
-      description: Filter by address line 1
-      schema:
-        type: string
-    - name: filter[address_line_2]
-      in: query
-      description: Filter by address line 2
-      schema:
-        type: string
-    - name: filter[address_line_3]
-      in: query
-      description: Filter by address line 3
-      schema:
-        type: string
-    - name: filter[city]
-      in: query
-      description: Filter by city
-      schema:
-        type: string
-    - name: filter[county]
-      in: query
-      description: Filter by county
-      schema:
-        type: string
-    - name: filter[postcode]
-      in: query
-      description: Filter by postcode
-      schema:
-        type: string
-    - name: filter[country]
-      in: query
-      description: Filter by country
-      schema:
-        type: string
-    - name: sort
-      in: query
-      description: The fields to sort by [`address_line_1`, `address_line_2`, `address_line_3`, `city`, `county`, `postcode`, `country`]
-      schema:
-        type: string
-        default: address_line_1,address_line_2,address_line_3,city,county,postcode,country
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
+      - name: filter[address_line_1]
+        in: query
+        description: Filter by address line 1
+        schema:
+          type: string
+      - name: filter[address_line_2]
+        in: query
+        description: Filter by address line 2
+        schema:
+          type: string
+      - name: filter[address_line_3]
+        in: query
+        description: Filter by address line 3
+        schema:
+          type: string
+      - name: filter[city]
+        in: query
+        description: Filter by city
+        schema:
+          type: string
+      - name: filter[county]
+        in: query
+        description: Filter by county
+        schema:
+          type: string
+      - name: filter[postcode]
+        in: query
+        description: Filter by postcode
+        schema:
+          type: string
+      - name: filter[country]
+        in: query
+        description: Filter by country
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: The fields to sort by [`address_line_1`, `address_line_2`, `address_line_3`, `city`, `county`, `postcode`, `country`]
+        schema:
+          type: string
+          default: address_line_1,address_line_2,address_line_3,city,county,postcode,country
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/location.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/location.yaml
   post:
     tags: [Locations]
     summary: Create a location
@@ -103,13 +103,13 @@ nested:
       **Permission:** `Open`
     security: []
     parameters:
-    - name: location
-      in: path
-      description: The ID of the location
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: location
+        in: path
+        description: The ID of the location
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
@@ -126,13 +126,13 @@ nested:
     description: |
       **Permission:** `Service Admin`
     parameters:
-    - name: location
-      in: path
-      description: The ID of the location
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: location
+        in: path
+        description: The ID of the location
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:
@@ -162,13 +162,13 @@ nested:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: location
-      in: path
-      description: The ID of the location
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: location
+        in: path
+        description: The ID of the location
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

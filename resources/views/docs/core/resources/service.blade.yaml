@@ -27,8 +27,8 @@ properties:
   status:
     type: string
     enum:
-    - active
-    - inactive
+      - active
+      - inactive
     example: active
   intro:
     type: string
@@ -39,11 +39,11 @@ properties:
   wait_time:
     type: string
     enum:
-    - one_week
-    - two_weeks
-    - three_weeks
-    - month
-    - longer
+      - one_week
+      - two_weeks
+      - three_weeks
+      - month
+      - longer
     nullable: true
     example: null
   is_free:
@@ -84,9 +84,9 @@ properties:
   referral_method:
     type: string
     enum:
-    - internal
-    - external
-    - none
+      - internal
+      - external
+      - none
   referral_button_text:
     type: string
     nullable: true

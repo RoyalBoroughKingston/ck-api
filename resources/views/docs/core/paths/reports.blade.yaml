@@ -10,22 +10,22 @@ root:
 
       Reports are returned in descending order of the date they were created.
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/report.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/report.yaml
 
   post:
     tags: [Reports]
@@ -65,13 +65,13 @@ nested:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: report
-      in: path
-      description: The ID of the report
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: report
+        in: path
+        description: The ID of the report
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
@@ -88,13 +88,13 @@ nested:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: report
-      in: path
-      description: The ID of the report
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: report
+        in: path
+        description: The ID of the report
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
@@ -110,13 +110,13 @@ download:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: report
-      in: path
-      description: The ID of the report
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: report
+        in: path
+        description: The ID of the report
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

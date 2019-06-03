@@ -6,78 +6,78 @@ root:
     description: |
       **Permission:** `Service Worker`
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
-    - name: filter[first_name]
-      in: query
-      description: First name to filter by
-      schema:
-        type: string
-    - name: filter[last_name]
-      in: query
-      description: Last name to filter by
-      schema:
-        type: string
-    - name: filter[email]
-      in: query
-      description: Email to filter by
-      schema:
-        type: string
-    - name: filter[phone]
-      in: query
-      description: Phone to filter by
-      schema:
-        type: string
-    - name: filter[highest_role]
-      in: query
-      description: Comma seperated list of highest role to filter by
-      schema:
-        type: string
-        example: Super Admin
-    - name: filter[has_permission]
-      in: query
-      description: Filter users to only ones they have permissions for
-      schema:
-        type: boolean
-    - name: filter[at_organisation]
-      in: query
-      description: |
-        Comma separated list of organisation IDs which filters users to those who have a role at the specified
-        organisations (global admins and higher are excluded)
-      schema:
-        type: string
-    - name: filter[at_service]
-      in: query
-      description: |
-        Comma separated list of service IDs which filters users to those who have a role at the specified
-        services (global admins and higher are excluded)
-      schema:
-        type: string
-    - name: include
-      in: query
-      description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
-      schema:
-        type: string
-    - name: sort
-      in: query
-      description: The fields to sort by [`first_name`, `last_name`, `highest_role`]
-      schema:
-        type: string
-        default: first_name,last_name
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
+      - name: filter[first_name]
+        in: query
+        description: First name to filter by
+        schema:
+          type: string
+      - name: filter[last_name]
+        in: query
+        description: Last name to filter by
+        schema:
+          type: string
+      - name: filter[email]
+        in: query
+        description: Email to filter by
+        schema:
+          type: string
+      - name: filter[phone]
+        in: query
+        description: Phone to filter by
+        schema:
+          type: string
+      - name: filter[highest_role]
+        in: query
+        description: Comma seperated list of highest role to filter by
+        schema:
+          type: string
+          example: Super Admin
+      - name: filter[has_permission]
+        in: query
+        description: Filter users to only ones they have permissions for
+        schema:
+          type: boolean
+      - name: filter[at_organisation]
+        in: query
+        description: |
+          Comma separated list of organisation IDs which filters users to those who have a role at the specified
+          organisations (global admins and higher are excluded)
+        schema:
+          type: string
+      - name: filter[at_service]
+        in: query
+        description: |
+          Comma separated list of service IDs which filters users to those who have a role at the specified
+          services (global admins and higher are excluded)
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: The fields to sort by [`first_name`, `last_name`, `highest_role`]
+        schema:
+          type: string
+          default: first_name,last_name
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/user.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/user.yaml
 
   post:
     tags: [Users]
@@ -125,18 +125,18 @@ nested:
     description: |
       **Permission:** `Service Worker`
     parameters:
-    - name: user
-      in: path
-      description: The ID of the user
-      required: true
-      schema:
-        type: string
-        format: uuid
-    - name: include
-      in: query
-      description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
-      schema:
-        type: string
+      - name: user
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        description: The relationships to include with the response [`user-roles`, `user-roles.organisation`, `user-roles.service`]
+        schema:
+          type: string
     responses:
       200:
         content:
@@ -161,13 +161,13 @@ nested:
       **Permission:** `Super Admin`
       - Can update other super admins
     parameters:
-    - name: user
-      in: path
-      description: The ID of the user
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: user
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:
@@ -198,13 +198,13 @@ nested:
       **Permission:** `Super Admin`
       - Can delete other super admins
     parameters:
-    - name: user
-      in: path
-      description: The ID of the user
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: user
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

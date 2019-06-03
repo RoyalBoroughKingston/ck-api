@@ -18,25 +18,25 @@ properties:
   wait_time:
     type: string
     enum:
-    - one_week
-    - two_weeks
-    - three_weeks
-    - month
-    - longer
+      - one_week
+      - two_weeks
+      - three_weeks
+      - month
+      - longer
   is_free:
     type: boolean
     example: true
   order:
     type: string
     enum:
-    - relevance
-    - distance
+      - relevance
+      - distance
     default: relevance
   location:
     type: object
     required:
-    - lat
-    - lon
+      - lat
+      - lon
     properties:
       lat:
         type: float
