@@ -525,7 +525,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => $collectionCategory->meta['intro'],
             'icon' => $collectionCategory->meta['icon'],
             'order' => $collectionCategory->order,
-            'sideboxes' => $collectionCategory->mata['sideboxes'],
+            'sideboxes' => $collectionCategory->meta['sideboxes'],
             'created_at' => $collectionCategory->created_at->format(Carbon::ISO8601),
             'updated_at' => $collectionCategory->updated_at->format(Carbon::ISO8601),
         ]);
@@ -735,6 +735,7 @@ class CollectionCategoriesTest extends TestCase
             'icon' => 'info',
             'order' => 1,
             'sideboxes' => [],
+            'category_taxonomies' => [],
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
