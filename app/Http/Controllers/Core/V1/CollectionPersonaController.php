@@ -62,6 +62,14 @@ class CollectionPersonaController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Create the collection record.
             $persona = Collection::create([
                 'type' => Collection::TYPE_PERSONA,
@@ -70,10 +78,7 @@ class CollectionPersonaController extends Controller
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
                     'image_file_id' => $request->image_file_id,
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
@@ -125,6 +130,14 @@ class CollectionPersonaController extends Controller
     public function update(UpdateRequest $request, Collection $collection)
     {
         return DB::transaction(function () use ($request, $collection) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Update the collection record.
             $collection->update([
                 'name' => $request->name,
@@ -134,10 +147,7 @@ class CollectionPersonaController extends Controller
                     'image_file_id' => $request->has('image_file_id')
                         ? $request->image_file_id
                         : $collection->meta['image_file_id'],
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
