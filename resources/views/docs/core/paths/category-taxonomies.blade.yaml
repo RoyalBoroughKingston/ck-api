@@ -11,8 +11,8 @@ root:
       Taxonomies are returned in ascending order of the order field.
     security: []
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
     responses:
       200:
         content:
@@ -25,11 +25,11 @@ root:
                   type: array
                   items:
                     allOf:
-                    - $ref: /docs/core/resources/category-taxonomy.yaml
-                    - type: object
-                      properties:
-                        children:
-                          $ref: /docs/core/resources/category-taxonomy.yaml
+                      - $ref: /docs/core/resources/category-taxonomy.yaml
+                      - type: object
+                        properties:
+                          children:
+                            $ref: /docs/core/resources/category-taxonomy.yaml
 
   post:
     tags: ["Taxonomy: Categories"]
@@ -70,13 +70,13 @@ nested:
       **Permission:** `Open`
     security: []
     parameters:
-    - name: category
-      in: path
-      description: The ID of the category taxonomy
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: category
+        in: path
+        description: The ID of the category taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
@@ -93,13 +93,13 @@ nested:
     description: |
       **Permission:** `Super Admin`
     parameters:
-    - name: category
-      in: path
-      description: The ID of the category taxonomy
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: category
+        in: path
+        description: The ID of the category taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:
@@ -122,13 +122,13 @@ nested:
     description: |
       **Permission:** `Super Admin`
     parameters:
-    - name: category
-      in: path
-      description: The ID of the category taxonomy
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: category
+        in: path
+        description: The ID of the category taxonomy
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

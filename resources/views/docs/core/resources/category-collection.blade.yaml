@@ -16,14 +16,18 @@ properties:
   order:
     type: integer
     example: 1
-  sidebox_title:
-    type: string
-    nullabe: true
-    example: Lorem ipsum
-  sidebox_content:
-    type: string
-    nullabe: true
-    example: Lorem ipsum dolar sit amet
+  sideboxes:
+    type: array
+    maxItems: 3
+    items:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Lorem ipsum
+        content:
+          type: string
+          example: Lorem ipsum dolar sit amet
   category_taxonomies:
     type: array
     items:

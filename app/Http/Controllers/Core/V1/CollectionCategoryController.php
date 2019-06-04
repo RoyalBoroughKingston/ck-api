@@ -61,6 +61,14 @@ class CollectionCategoryController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Create the collection record.
             $category = Collection::create([
                 'type' => Collection::TYPE_CATEGORY,
@@ -68,10 +76,7 @@ class CollectionCategoryController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'icon' => $request->icon,
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
@@ -119,16 +124,21 @@ class CollectionCategoryController extends Controller
     public function update(UpdateRequest $request, Collection $collection)
     {
         return DB::transaction(function () use ($request, $collection) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Update the collection record.
             $collection->update([
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
                     'icon' => $request->icon,
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
