@@ -1,0 +1,45 @@
+# /settings
+root:
+  get:
+    tags: [Settings]
+    summary: List all of the settings
+    description: |
+      **Permission:** `Open`
+
+      ---
+
+      Settings are all returned at once instead of being paginated.
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/settings.yaml
+
+  put:
+    tags: [Settings]
+    summary: Update the settings
+    description: |
+      **Permission:** `Global Admin`
+
+      ---
+
+      Settings are all returned at once instead of being paginated.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: /docs/core/requests/settings.yaml#/update
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/settings.yaml

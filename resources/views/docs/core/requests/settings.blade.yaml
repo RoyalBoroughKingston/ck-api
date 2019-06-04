@@ -1,0 +1,87 @@
+update:
+  type: object
+  properties:
+    cms:
+      type: object
+      properties:
+        frontend:
+          type: object
+          properties:
+            global:
+              type: object
+              properties:
+                footer_title:
+                  type: string
+                footer_content:
+                  type: string
+                  format: markdown
+                contact_phone:
+                  type: string
+                contact_email:
+                  type: string
+                facebook_handle:
+                  type: string
+                twitter_handle:
+                  type: string
+            home:
+              type: object
+              properties:
+                search_title:
+                  type: string
+                categories_title:
+                  type: string
+                personas_title:
+                  type: string
+                personas_content:
+                  type: string
+                  format: markdown
+            terms_and_conditions:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                  format: markdown
+            privacy_policy:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                  format: markdown
+            about:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                  format: markdown
+                video_url:
+                  type: string
+            contact:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                  format: markdown
+            get_involved:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                  format: markdown
+            favourites:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                  format: markdown

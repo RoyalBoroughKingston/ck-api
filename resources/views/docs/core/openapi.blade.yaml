@@ -118,6 +118,9 @@ paths:
   /services/{service}/gallery-items/{file}:
     $ref: /docs/core/paths/services.yaml#/gallery-items
 
+  /settings:
+    $ref: /docs/core/paths/settings.yaml#/root
+
   /status-updates:
     $ref: /docs/core/paths/status-updates.yaml#/root
   /status-updates/index:
@@ -190,6 +193,7 @@ tags:
   - name: Search Engine
   - name: Service Locations
   - name: Services
+  - name: Settings
   - name: Status Updates
   - name: "Taxonomy: Categories"
   - name: "Taxonomy: Organisations"
