@@ -1,14 +1,34 @@
 update:
   type: object
+  required:
+    - cms
   properties:
     cms:
       type: object
+      required:
+        - frontend
       properties:
         frontend:
           type: object
+          required:
+            - global
+            - home
+            - terms_and_conditions
+            - privacy_policy
+            - about
+            - contact
+            - get_involved
+            - favourites
           properties:
             global:
               type: object
+              required:
+                - footer_title
+                - footer_content
+                - contact_phone
+                - contact_email
+                - facebook_handle
+                - twitter_handle
               properties:
                 footer_title:
                   type: string
@@ -25,6 +45,11 @@ update:
                   type: string
             home:
               type: object
+              required:
+                - search_title
+                - categories_title
+                - personas_title
+                - personas_content
               properties:
                 search_title:
                   type: string
@@ -37,6 +62,9 @@ update:
                   format: markdown
             terms_and_conditions:
               type: object
+              required:
+                - title
+                - content
               properties:
                 title:
                   type: string
@@ -45,6 +73,9 @@ update:
                   format: markdown
             privacy_policy:
               type: object
+              required:
+                - title
+                - content
               properties:
                 title:
                   type: string
@@ -53,6 +84,10 @@ update:
                   format: markdown
             about:
               type: object
+              required:
+                - title
+                - content
+                - video_url
               properties:
                 title:
                   type: string
@@ -63,6 +98,9 @@ update:
                   type: string
             contact:
               type: object
+              required:
+                - title
+                - content
               properties:
                 title:
                   type: string
@@ -71,6 +109,9 @@ update:
                   format: markdown
             get_involved:
               type: object
+              required:
+                - title
+                - content
               properties:
                 title:
                   type: string
@@ -79,6 +120,9 @@ update:
                   format: markdown
             favourites:
               type: object
+              required:
+                - title
+                - content
               properties:
                 title:
                   type: string
