@@ -94,6 +94,10 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     Route::get('/services/{service}/logo.png', 'Service\\LogoController')->name('services.logo');
     Route::get('/services/{service}/gallery-items/{file}', 'Service\\GalleryItemController')->name('services.gallery-items');
 
+    // Settings.
+    Route::get('/settings', 'SettingController@index')->name('settings.index');
+    Route::put('/settings', 'SettingController@update')->name('settings.update');
+
     // Status Updates.
     Route::match(['GET', 'POST'], '/status-updates/index', 'StatusUpdateController@index');
     Route::apiResource('/status-updates', 'StatusUpdateController');
