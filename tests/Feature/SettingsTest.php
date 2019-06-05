@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -126,6 +129,17 @@ class SettingsTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->getJson('/core/v1/settings');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /*
@@ -433,5 +447,64 @@ class SettingsTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    public function test_audit_created_when_updated()
+    {
+        $this->fakeEvents();
+
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        $response = $this->putJson('/core/v1/settings', [
+            'cms' => [
+                'frontend' => [
+                    'global' => [
+                        'footer_title' => 'data/cms/frontend/global/footer_title',
+                        'footer_content' => 'data/cms/frontend/global/footer_content',
+                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
+                        'contact_email' => 'example@example.com',
+                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
+                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
+                    ],
+                    'home' => [
+                        'search_title' => 'data/cms/frontend/home/search_title',
+                        'categories_title' => 'data/cms/frontend/home/categories_title',
+                        'personas_title' => 'data/cms/frontend/home/personas_title',
+                        'personas_content' => 'data/cms/frontend/home/personas_content',
+                    ],
+                    'terms_and_conditions' => [
+                        'title' => 'data/cms/frontend/terms_and_conditions/title',
+                        'content' => 'data/cms/frontend/terms_and_conditions/content',
+                    ],
+                    'privacy_policy' => [
+                        'title' => 'data/cms/frontend/privacy_policy/title',
+                        'content' => 'data/cms/frontend/privacy_policy/content',
+                    ],
+                    'about' => [
+                        'title' => 'data/cms/frontend/about/title',
+                        'content' => 'data/cms/frontend/about/content',
+                        'video_url' => 'https://www.youtube.com/random-video-slug',
+                    ],
+                    'contact' => [
+                        'title' => 'data/cms/frontend/contact/title',
+                        'content' => 'data/cms/frontend/contact/content',
+                    ],
+                    'get_involved' => [
+                        'title' => 'data/cms/frontend/get_involved/title',
+                        'content' => 'data/cms/frontend/get_involved/content',
+                    ],
+                    'favourites' => [
+                        'title' => 'data/cms/frontend/favourites/title',
+                        'content' => 'data/cms/frontend/favourites/content',
+                    ],
+                ],
+            ],
+        ]);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_UPDATE);
+        });
     }
 }
