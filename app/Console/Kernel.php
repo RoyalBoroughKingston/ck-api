@@ -41,6 +41,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(Commands\Ck\AutoDelete\ReferralsCommand::class)
             ->daily();
+
+        $schedule->command(Commands\Ck\AutoDelete\ServiceRefreshTokensCommand::class)
+            ->daily();
     }
 
     /**
