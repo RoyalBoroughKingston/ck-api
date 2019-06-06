@@ -10,12 +10,14 @@ use App\Models\Referral;
 use App\Models\ServiceCriterion;
 use App\Models\ServiceGalleryItem;
 use App\Models\ServiceLocation;
+use App\Models\ServiceRefreshToken;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UsefulInfo;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait ServiceRelationships
 {
@@ -129,5 +131,13 @@ trait ServiceRelationships
     public function serviceGalleryItems()
     {
         return $this->hasMany(ServiceGalleryItem::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function serviceRefreshTokens(): HasMany
+    {
+        return $this->hasMany(ServiceRefreshToken::class);
     }
 }

@@ -10,6 +10,7 @@ use App\Models\Organisation;
 use App\Models\RegularOpeningHour;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\ServiceRefreshToken;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
@@ -2299,9 +2300,6 @@ class ServicesTest extends TestCase
 
     public function test_guest_with_valid_token_can_refresh()
     {
-        // TODO: Provide token
-        $this->markTestIncomplete();
-
         $now = now();
         Carbon::setTestNow($now);
 
@@ -2310,7 +2308,9 @@ class ServicesTest extends TestCase
         ]);
 
         $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [
-            'token' => null,
+            'token' => factory(ServiceRefreshToken::class)->create([
+                'service_id' => $service->id,
+            ])->id,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
