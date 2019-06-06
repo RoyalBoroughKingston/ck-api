@@ -14,6 +14,7 @@ use App\Models\UpdateRequest;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -747,6 +748,39 @@ class UpdateRequestsTest extends TestCase
             'user_id' => $newOrganisationAdmin->id,
             'role_id' => Role::serviceAdmin()->id,
             'service_id' => $service->id,
+        ]);
+    }
+    
+    /*
+     * Service specific.
+     */
+
+    public function test_last_modified_at_is_set_to_now_when_updated()
+    {
+        $oldNow = now()->subMonths(6);
+        $newNow = now();
+        Carbon::setTestNow($newNow);
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => $oldNow,
+            'created_at' => $oldNow,
+            'updated_at' => $oldNow,
+        ]);
+        $updateRequest = $service->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => [
+                'name' => 'Test Name',
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas($service->getTable(), [
+            'last_modified_at' => $newNow->toIso8601String(),
         ]);
     }
 }
