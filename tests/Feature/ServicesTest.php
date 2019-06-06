@@ -2274,6 +2274,52 @@ class ServicesTest extends TestCase
     }
 
     /*
+     * Refresh service.
+     */
+
+    public function test_guest_without_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_guest_with_invalid_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [
+            'token' => 'invalid-token',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_guest_with_valid_token_can_refresh()
+    {
+        // TODO: Provide token
+        $this->markTestIncomplete();
+
+        $now = now();
+        Carbon::setTestNow($now);
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => now()->subMonths(6),
+        ]);
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [
+            'token' => null,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'last_updated_at' => $now->toIso8601String(),
+        ]);
+    }
+
+    /*
      * List all the related services.
      */
 
