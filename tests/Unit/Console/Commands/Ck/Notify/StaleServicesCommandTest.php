@@ -106,6 +106,21 @@ class StaleServicesCommandTest extends TestCase
         });
     }
 
+    public function test_6_to_12_months_emails_not_sent_to_service_workers()
+    {
+        Queue::fake();
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => now()->subMonths(9),
+        ]);
+
+        factory(User::class)->create()->makeServiceWorker($service);
+
+        Artisan::call(StaleServicesCommand::class);
+
+        Queue::assertNotPushed(NotifyServiceAdminEmail::class);
+    }
+
     public function test_after_12_months_emails_not_sent_after_11_months()
     {
         Queue::fake();
