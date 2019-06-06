@@ -22,6 +22,7 @@ use Tests\TestCase;
 class UpdateRequestsTest extends TestCase
 {
     const BASE64_ENCODED_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+
     /*
      * List all the update requests.
      */
@@ -81,7 +82,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
 
         Passport::actingAs($user);
@@ -121,7 +122,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
         $organisation = factory(Organisation::class)->create();
         $organisationUpdateRequest = $organisation->updateRequests()->create([
@@ -173,7 +174,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
         $organisation = factory(Organisation::class)->create([
             'name' => 'Name with, comma',
@@ -214,7 +215,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
         $organisation = factory(Organisation::class)->create([
             'name' => 'Entry B',
@@ -545,8 +546,10 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
-        $this->assertDatabaseHas((new ServiceLocation())->getTable(), ['id' => $serviceLocation->id, 'name' => 'Test Name']);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new ServiceLocation())->getTable(),
+            ['id' => $serviceLocation->id, 'name' => 'Test Name']);
     }
 
     public function test_global_admin_can_approve_one_for_organisation()
@@ -570,7 +573,8 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new Organisation())->getTable(), [
             'id' => $organisation->id,
             'slug' => $updateRequest->data['slug'],
@@ -607,7 +611,8 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new Location())->getTable(), [
             'id' => $location->id,
             'address_line_1' => $updateRequest->data['address_line_1'],
@@ -675,7 +680,8 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new Service())->getTable(), [
             'id' => $service->id,
             'name' => 'Test Name',
@@ -750,12 +756,12 @@ class UpdateRequestsTest extends TestCase
             'service_id' => $service->id,
         ]);
     }
-    
+
     /*
      * Service specific.
      */
 
-    public function test_last_modified_at_is_set_to_now_when_updated()
+    public function test_last_modified_at_is_set_to_now_when_service_updated()
     {
         $oldNow = now()->subMonths(6);
         $newNow = now();
