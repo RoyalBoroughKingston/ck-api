@@ -2284,7 +2284,7 @@ class ServicesTest extends TestCase
 
         $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     public function test_guest_with_invalid_token_cannot_refresh()
@@ -2315,7 +2315,7 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            'last_updated_at' => $now->toIso8601String(),
+            'last_modified_at' => $now->format(Carbon::ISO8601),
         ]);
     }
 

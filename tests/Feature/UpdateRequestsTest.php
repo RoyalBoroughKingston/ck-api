@@ -780,7 +780,7 @@ class UpdateRequestsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas($service->getTable(), [
-            'last_modified_at' => $newNow->toIso8601String(),
+            'last_modified_at' => $newNow->format(Carbon::ISO8601),
         ]);
     }
 }

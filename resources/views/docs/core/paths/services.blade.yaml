@@ -208,7 +208,7 @@ nested:
 refresh:
   put:
     tags: [Services]
-    summary: Refresh a specific service's `last_modified_at` to now
+    summary: Refresh a specific service's last modified timestamp to now
     description: |
       **Permission:** `Public`
     security: []

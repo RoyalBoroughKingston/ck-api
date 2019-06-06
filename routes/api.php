@@ -90,6 +90,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     // Services.
     Route::match(['GET', 'POST'], '/services/index', 'ServiceController@index');
     Route::apiResource('/services', 'ServiceController');
+    Route::put('/services/{service}/refresh', 'Service\\RefreshController')->name('services.refresh');
     Route::get('/services/{service}/related', 'Service\\RelatedController')->name('services.related');
     Route::get('/services/{service}/logo.png', 'Service\\LogoController')->name('services.logo');
     Route::get('/services/{service}/gallery-items/{file}', 'Service\\GalleryItemController')->name('services.gallery-items');
