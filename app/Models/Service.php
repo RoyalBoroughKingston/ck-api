@@ -59,6 +59,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     protected $casts = [
         'is_free' => 'boolean',
         'show_referral_disclaimer' => 'boolean',
+        'last_modified_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
