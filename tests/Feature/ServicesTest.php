@@ -118,6 +118,7 @@ class ServicesTest extends TestCase
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
                 ],
             ],
+            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
             'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
@@ -984,6 +985,7 @@ class ServicesTest extends TestCase
                 ],
             ],
             'gallery_items' => [],
+            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
             'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
@@ -1075,6 +1077,7 @@ class ServicesTest extends TestCase
                 ],
             ],
             'gallery_items' => [],
+            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
             'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
@@ -2376,6 +2379,7 @@ class ServicesTest extends TestCase
                             'updated_at',
                         ],
                     ],
+                    'last_modified_at',
                     'created_at',
                     'updated_at',
                 ],
