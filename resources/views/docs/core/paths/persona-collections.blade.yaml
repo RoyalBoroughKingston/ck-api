@@ -88,7 +88,7 @@ nested:
     tags: ["Collection: Personas"]
     summary: Update a specific persona collection
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Global Admin`
     parameters:
       - name: persona
         in: path
