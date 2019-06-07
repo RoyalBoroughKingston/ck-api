@@ -103,5 +103,7 @@ class ServiceObserver
         $service->usefulInfos->each->delete();
         $service->serviceGalleryItems->each->delete();
         $service->serviceTaxonomies->each->delete();
+        $service->offerings->each->delete();
+        $service->serviceRefreshTokens->each->delete();
     }
 }
