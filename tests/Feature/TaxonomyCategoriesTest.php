@@ -354,20 +354,9 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_update_one()
+    public function test_global_admin_can_update_one()
     {
         $user = factory(User::class)->create()->makeGlobalAdmin();
-        $category = $this->getRandomCategoryWithoutChildren();
-
-        Passport::actingAs($user);
-        $response = $this->json('PUT', "/core/v1/taxonomies/categories/{$category->id}");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_update_one()
-    {
-        $user = factory(User::class)->create()->makeSuperAdmin();
         $category = $this->getRandomCategoryWithoutChildren();
         $payload = [
             'parent_id' => $category->parent_id,

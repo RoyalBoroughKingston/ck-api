@@ -612,29 +612,13 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_update_one()
+    public function test_global_admin_can_update_one()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $category = Collection::categories()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_update_one()
-    {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = factory(User::class)->create();
-        $user->makeSuperAdmin();
         $category = Collection::categories()->inRandomOrder()->firstOrFail();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
