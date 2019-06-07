@@ -91,7 +91,7 @@ nested:
     tags: ["Collection: Categories"]
     summary: Update a specific category collection
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Global Admin`
     parameters:
       - name: category
         in: path
