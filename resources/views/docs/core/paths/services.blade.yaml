@@ -204,6 +204,44 @@ nested:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
 
+# /services/{service}/refresh
+refresh:
+  put:
+    tags: [Services]
+    summary: Refresh a specific service's last modified timestamp to now
+    description: |
+      **Permission:** `Public`
+    security: []
+    parameters:
+      - name: service
+        in: path
+        description: The ID or slug of the service
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+                format: uuid
+                description: A unique one-time token needed to invoke the refresh
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: /docs/core/resources/service.yaml
+
 # /services/{service}/related
 related:
   get:

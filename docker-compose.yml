@@ -27,7 +27,7 @@ services:
       - .:/var/www/html
     networks:
       - app-net
-    command: php artisan schedule:loop
+    command: php artisan ck:run-scheduler
 
   node:
     image: connected-kingston/node

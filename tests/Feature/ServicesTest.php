@@ -10,6 +10,7 @@ use App\Models\Organisation;
 use App\Models\RegularOpeningHour;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\ServiceRefreshToken;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
@@ -118,6 +119,7 @@ class ServicesTest extends TestCase
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
                 ],
             ],
+            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
             'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
@@ -984,6 +986,7 @@ class ServicesTest extends TestCase
                 ],
             ],
             'gallery_items' => [],
+            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
             'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
@@ -1075,6 +1078,7 @@ class ServicesTest extends TestCase
                 ],
             ],
             'gallery_items' => [],
+            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
             'created_at' => $service->created_at->format(Carbon::ISO8601),
         ]);
     }
@@ -2271,6 +2275,51 @@ class ServicesTest extends TestCase
     }
 
     /*
+     * Refresh service.
+     */
+
+    public function test_guest_without_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_guest_with_invalid_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [
+            'token' => 'invalid-token',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_guest_with_valid_token_can_refresh()
+    {
+        $now = now();
+        Carbon::setTestNow($now);
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => now()->subMonths(6),
+        ]);
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [
+            'token' => factory(ServiceRefreshToken::class)->create([
+                'service_id' => $service->id,
+            ])->id,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'last_modified_at' => $now->format(Carbon::ISO8601),
+        ]);
+    }
+
+    /*
      * List all the related services.
      */
 
@@ -2376,6 +2425,7 @@ class ServicesTest extends TestCase
                             'updated_at',
                         ],
                     ],
+                    'last_modified_at',
                     'created_at',
                     'updated_at',
                 ],

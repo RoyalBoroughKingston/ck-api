@@ -163,6 +163,19 @@ return [
                 'email' => 'e659e10a-f7b3-4f86-a5fa-289cfef1cf3f',
             ],
         ],
+        'service_update_prompt' => [
+            'notify_service_admin' => [
+                'email' => '647ab603-26c9-4620-a1ad-ab91909bd605',
+            ],
+            'notify_global_admin' => [
+                'email' => 'd4a30c4f-e32b-4b69-ad19-ce7bd6c70e81',
+            ],
+        ],
+        'stale_service_disabled' => [
+            'notify_global_admin' => [
+                'email' => 'e1686c8c-926e-4ec3-bf1f-4ff906e93b76',
+            ],
+        ],
         'scheduled_report_generated' => [
             'notify_global_admin' => [
                 'email' => 'fa6f064a-6b63-4dc0-a83d-602e9cbb5bfe',

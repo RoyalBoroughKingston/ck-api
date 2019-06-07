@@ -281,6 +281,7 @@ class BatchUploader
                 'referral_button_text' => !$isNone ? 'Make referral' : null,
                 'referral_email' => $isInternal ? $serviceArray['Referral Email'] : null,
                 'referral_url' => $isExternal ? $serviceArray['Referral URL'] : null,
+                'last_modified_at' => now(),
             ]);
 
             $service->_id = $serviceArray['ID*'];

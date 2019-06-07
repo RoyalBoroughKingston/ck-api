@@ -24,6 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command(Commands\Ck\Notify\StaleServicesCommand::class)
+            ->dailyAt('09:00');
+
         $schedule->command(Commands\Ck\Notify\UnactionedReferralsCommand::class)
             ->dailyAt('09:00');
 
@@ -40,6 +43,9 @@ class Kernel extends ConsoleKernel
             ->daily();
 
         $schedule->command(Commands\Ck\AutoDelete\ReferralsCommand::class)
+            ->daily();
+
+        $schedule->command(Commands\Ck\AutoDelete\ServiceRefreshTokensCommand::class)
             ->daily();
     }
 
