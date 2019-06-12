@@ -6,20 +6,20 @@ $redis = [
 
     // For single node setup.
     'default' => [
+        'scheme' => env('REDIS_SCHEME', 'tcp'),
         'host' => env('REDIS_HOST', '127.0.0.1'),
         'password' => env('REDIS_PASSWORD', null),
         'port' => env('REDIS_PORT', 6379),
-        'read_write_timeout' => -1,
     ],
 
     // For clustered setup.
     'clusters' => [
         'default' => [
             'parameters' => [
+                'scheme' => env('REDIS_SCHEME', 'tcp'),
                 'host' => env('REDIS_HOST', '127.0.0.1'),
                 'password' => env('REDIS_PASSWORD', null),
                 'port' => env('REDIS_PORT', 6379),
-                'read_write_timeout' => -1,
             ],
         ],
     ],
