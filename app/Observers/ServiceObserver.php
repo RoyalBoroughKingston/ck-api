@@ -2,7 +2,9 @@
 
 namespace App\Observers;
 
+use App\Emails\StaleServiceDisabled\NotifyGlobalAdminEmail;
 use App\Exceptions\CannotRevokeRoleException;
+use App\Models\Notification;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\UserRole;
@@ -66,6 +68,22 @@ class ServiceObserver
                     $userRole->user->makeServiceAdmin($service);
                 });
         }
+
+        // Check if the status was updated.
+        if ($service->isDirty('status')) {
+            // Check if the service was disabled and last modified over a year ago.
+            if (
+                $service->status === Service::STATUS_INACTIVE
+                && $service->getOriginal('last_modified_at')
+            ) {
+                Notification::sendEmail(
+                    new NotifyGlobalAdminEmail(
+                        config('ck.global_admin.email'),
+                        ['SERVICE_NAME' => $service->name]
+                    )
+                );
+            }
+        }
     }
 
     /**
@@ -85,5 +103,7 @@ class ServiceObserver
         $service->usefulInfos->each->delete();
         $service->serviceGalleryItems->each->delete();
         $service->serviceTaxonomies->each->delete();
+        $service->offerings->each->delete();
+        $service->serviceRefreshTokens->each->delete();
     }
 }

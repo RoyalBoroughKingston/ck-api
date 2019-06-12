@@ -35,8 +35,12 @@ class CollectionPersonasTest extends TestCase
             'intro',
             'subtitle',
             'order',
-            'sidebox_title',
-            'sidebox_content',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
             'category_taxonomies' => [
                 '*' => [
                     'id',
@@ -155,8 +159,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
         ]);
 
@@ -167,8 +170,12 @@ class CollectionPersonasTest extends TestCase
             'intro',
             'subtitle',
             'order',
-            'sidebox_title',
-            'sidebox_content',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
             'category_taxonomies' => [
                 '*' => [
                     'id',
@@ -186,8 +193,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
             'id' => $randomCategory->id,
@@ -211,8 +217,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -222,8 +227,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -233,8 +237,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -245,8 +248,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -274,8 +276,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -285,8 +286,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -296,8 +296,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -308,8 +307,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 2,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -337,8 +335,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -348,8 +345,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -359,8 +355,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -371,8 +366,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 4,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -401,8 +395,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 0,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -426,8 +419,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         Collection::create([
@@ -437,8 +429,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -449,8 +440,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 4,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -475,8 +465,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
         ]);
 
@@ -504,8 +493,12 @@ class CollectionPersonasTest extends TestCase
             'intro',
             'subtitle',
             'order',
-            'sidebox_title',
-            'sidebox_content',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
             'category_taxonomies' => [
                 '*' => [
                     'id',
@@ -524,8 +517,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => $persona->meta['intro'],
             'subtitle' => $persona->meta['subtitle'],
             'order' => $persona->order,
-            'sidebox_title' => $persona->mata['sidebox_title'],
-            'sidebox_content' => $persona->meta['sidebox_content'],
+            'sideboxes' => $persona->meta['sideboxes'],
             'created_at' => $persona->created_at->format(Carbon::ISO8601),
             'updated_at' => $persona->updated_at->format(Carbon::ISO8601),
         ]);
@@ -612,29 +604,13 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_cannot_update_one()
+    public function test_global_admin_can_update_one()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
-        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}");
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function test_super_admin_can_update_one()
-    {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = factory(User::class)->create();
-        $user->makeSuperAdmin();
         $persona = Collection::personas()->inRandomOrder()->firstOrFail();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
@@ -645,8 +621,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
 
@@ -657,8 +632,12 @@ class CollectionPersonasTest extends TestCase
             'intro',
             'subtitle',
             'order',
-            'sidebox_title',
-            'sidebox_content',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
             'category_taxonomies' => [
                 '*' => [
                     'id',
@@ -676,8 +655,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
             'id' => $taxonomy->id,
@@ -702,8 +680,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -714,8 +691,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -726,8 +702,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -738,8 +713,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -767,8 +741,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -779,8 +752,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -791,8 +763,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -803,8 +774,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 2,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -832,8 +802,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -844,8 +813,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -856,8 +824,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -868,8 +835,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 3,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -897,8 +863,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -909,8 +874,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 0,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -935,8 +899,7 @@ class CollectionPersonasTest extends TestCase
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
                 'image_file_id' => null,
-                'sidebox_title' => null,
-                'sidebox_content' => null,
+                'sideboxes' => [],
             ],
         ]);
 
@@ -947,8 +910,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 2,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
 
@@ -974,8 +936,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
 
@@ -1104,6 +1065,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -1113,6 +1075,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -1122,6 +1085,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
 
@@ -1152,6 +1116,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -1161,6 +1126,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -1170,6 +1136,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
 
@@ -1200,6 +1167,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
         $second = Collection::create([
@@ -1209,6 +1177,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
         $third = Collection::create([
@@ -1218,6 +1187,7 @@ class CollectionPersonasTest extends TestCase
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
+                'sideboxes' => [],
             ],
         ]);
 
@@ -1308,8 +1278,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 1,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
             'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
         ]);
@@ -1344,8 +1313,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => $persona->meta['intro'],
             'subtitle' => $persona->meta['subtitle'],
             'order' => $persona->order,
-            'sidebox_title' => null,
-            'sidebox_content' => null,
+            'sideboxes' => [],
             'category_taxonomies' => $persona->taxonomies()->pluck(table(Taxonomy::class, 'id')),
             'image_file_id' => null,
         ]);

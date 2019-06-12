@@ -473,6 +473,7 @@ class Report extends Model
         $data = [$headings];
 
         SearchHistory::query()
+            ->withFilledQuery()
             ->when($startsAt && $endsAt, function (Builder $query) use ($startsAt, $endsAt) {
                 // When date range provided, filter search history which were created between the date range.
                 $query->whereBetween(table(SearchHistory::class, 'created_at'), [$startsAt, $endsAt]);

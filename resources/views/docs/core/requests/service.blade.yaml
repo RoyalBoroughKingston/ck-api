@@ -1,45 +1,45 @@
 store:
   allOf:
-  - type: object
-    required:
-    - organisation_id
-    properties:
-      organisation_id:
-        type: string
-        format: uuid
-        example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
-  - $ref: "#/update"
+    - type: object
+      required:
+        - organisation_id
+      properties:
+        organisation_id:
+          type: string
+          format: uuid
+          example: 38e06e93-79b2-4c38-85bf-7749ebc7044b
+    - $ref: "#/update"
 
 update:
   type: object
   required:
-  - name
-  - slug
-  - type
-  - status
-  - intro
-  - description
-  - wait_time
-  - is_free
-  - fees_text
-  - fees_url
-  - testimonial
-  - video_embed
-  - url
-  - contact_name
-  - contact_phone
-  - contact_email
-  - show_referral_disclaimer
-  - referral_method
-  - referral_button_text
-  - referral_email
-  - referral_url
-  - criteria
-  - useful_infos
-  - offerings
-  - social_medias
-  - gallery_items
-  - category_taxonomies
+    - name
+    - slug
+    - type
+    - status
+    - intro
+    - description
+    - wait_time
+    - is_free
+    - fees_text
+    - fees_url
+    - testimonial
+    - video_embed
+    - url
+    - contact_name
+    - contact_phone
+    - contact_email
+    - show_referral_disclaimer
+    - referral_method
+    - referral_button_text
+    - referral_email
+    - referral_url
+    - criteria
+    - useful_infos
+    - offerings
+    - social_medias
+    - gallery_items
+    - category_taxonomies
   properties:
     name:
       type: string
@@ -57,8 +57,8 @@ update:
     status:
       type: string
       enum:
-      - active
-      - inactive
+        - active
+        - inactive
     intro:
       type: string
       example: Lorem ipsum
@@ -68,11 +68,11 @@ update:
     wait_time:
       type: string
       enum:
-      - one_week
-      - two_weeks
-      - three_weeks
-      - month
-      - longer
+        - one_week
+        - two_weeks
+        - three_weeks
+        - month
+        - longer
       nullable: true
       example: null
     is_free:
@@ -113,9 +113,9 @@ update:
     referral_method:
       type: string
       enum:
-      - internal
-      - external
-      - none
+        - internal
+        - external
+        - none
     referral_button_text:
       type: string
       example: Make Referral
@@ -136,14 +136,14 @@ update:
     criteria:
       type: object
       required:
-      - age_group
-      - disability
-      - employment
-      - gender
-      - housing
-      - income
-      - language
-      - other
+        - age_group
+        - disability
+        - employment
+        - gender
+        - housing
+        - income
+        - language
+        - other
       properties:
         age_group:
           type: string
@@ -182,9 +182,9 @@ update:
       items:
         type: object
         required:
-        - title
-        - description
-        - order
+          - title
+          - description
+          - order
         properties:
           title:
             type: string
@@ -214,17 +214,17 @@ update:
       items:
         type: object
         required:
-        - type
-        - url
+          - type
+          - url
         properties:
           type:
             type: string
             enum:
-            - twitter
-            - facebook
-            - instagram
-            - youtube
-            - other
+              - twitter
+              - facebook
+              - instagram
+              - youtube
+              - other
             example: instagram
           url:
             type: string

@@ -1,16 +1,16 @@
 store:
   type: object
   required:
-  - address_line_1
-  - address_line_2
-  - address_line_3
-  - city
-  - county
-  - postcode
-  - country
-  - accessibility_info
-  - has_wheelchair_access
-  - has_induction_loop
+    - address_line_1
+    - address_line_2
+    - address_line_3
+    - city
+    - county
+    - postcode
+    - country
+    - accessibility_info
+    - has_wheelchair_access
+    - has_induction_loop
   properties:
     address_line_1:
       type: string
@@ -52,4 +52,4 @@ store:
 
 update:
   allOf:
-  - $ref: "#/store"
+    - $ref: "#/store"

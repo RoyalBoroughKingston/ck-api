@@ -14,10 +14,10 @@ properties:
   status:
     type: string
     enum:
-    - new
-    - in_progress
-    - completed
-    - incompleted
+      - new
+      - in_progress
+      - completed
+      - incompleted
     example: new
   name:
     type: string

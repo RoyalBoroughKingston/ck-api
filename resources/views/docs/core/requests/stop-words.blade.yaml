@@ -1,7 +1,7 @@
 update:
   type: object
   required:
-  - stop_words
+    - stop_words
   properties:
     stop_words:
       type: array

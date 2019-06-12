@@ -59,6 +59,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     protected $casts = [
         'is_free' => 'boolean',
         'show_referral_disclaimer' => 'boolean',
+        'last_modified_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -232,6 +233,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'logo_file_id' => array_key_exists('logo_file_id', $data)
                 ? $data['logo_file_id']
                 : $this->logo_file_id,
+            // This must always be updated regardless of the fields changed.
+            'last_modified_at' => now(),
         ]);
 
         // Update the service criterion record.

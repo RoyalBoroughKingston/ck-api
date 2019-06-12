@@ -6,59 +6,59 @@ root:
     description: |
       **Permission:** `Service Worker`
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
-    - name: filter[service_id]
-      in: query
-      description: Comma seperated list of service IDs to filter by
-      schema:
-        type: string
-        format: uuid
-    - name: filter[reference]
-      in: query
-      description: The reference for the referral to filter by
-      schema:
-        type: string
-    - name: filter[service_name]
-      in: query
-      description: The service name for the referral to filter by
-      schema:
-        type: string
-    - name: filter[organisation_name]
-      in: query
-      description: The organisation name for the referral to filter by
-      schema:
-        type: string
-    - name: filter[status]
-      in: query
-      description: The status for the referral to filter by
-      schema:
-        type: string
-    - name: include
-      in: query
-      description: The relationships to include with the response [`service.organisation`]
-      schema:
-        type: string
-    - name: sort
-      in: query
-      description: The fields to sort by [`reference`, `service_name`, `organisation_name`, `status`, `created_at`]
-      schema:
-        type: string
-        default: -created_at
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
+      - name: filter[service_id]
+        in: query
+        description: Comma seperated list of service IDs to filter by
+        schema:
+          type: string
+          format: uuid
+      - name: filter[reference]
+        in: query
+        description: The reference for the referral to filter by
+        schema:
+          type: string
+      - name: filter[service_name]
+        in: query
+        description: The service name for the referral to filter by
+        schema:
+          type: string
+      - name: filter[organisation_name]
+        in: query
+        description: The organisation name for the referral to filter by
+        schema:
+          type: string
+      - name: filter[status]
+        in: query
+        description: The status for the referral to filter by
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: The relationships to include with the response [`service.organisation`]
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: The fields to sort by [`reference`, `service_name`, `organisation_name`, `status`, `created_at`]
+        schema:
+          type: string
+          default: -created_at
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/referral.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/referral.yaml
 
   post:
     tags: [Referrals]
@@ -99,18 +99,18 @@ nested:
     description: |
       **Permission:** `Service Worker`
     parameters:
-    - name: referral
-      in: path
-      description: The ID of the referral
-      required: true
-      schema:
-        type: string
-        format: uuid
-    - name: include
-      in: query
-      description: The relationships to include with the response [`service`]
-      schema:
-        type: string
+      - name: referral
+        in: path
+        description: The ID of the referral
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        description: The relationships to include with the response [`service`]
+        schema:
+          type: string
     responses:
       200:
         content:
@@ -127,13 +127,13 @@ nested:
     description: |
       **Permission:** `Service Worker`
     parameters:
-    - name: referral
-      in: path
-      description: The ID of the referral
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: referral
+        in: path
+        description: The ID of the referral
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:

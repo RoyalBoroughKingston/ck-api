@@ -1,13 +1,12 @@
 store:
   type: object
   required:
-  - name
-  - intro
-  - icon
-  - order
-  - sidebox_title
-  - sidebox_content
-  - category_taxonomies
+    - name
+    - intro
+    - icon
+    - order
+    - sideboxes
+    - category_taxonomies
   properties:
     name:
       type: string
@@ -21,14 +20,21 @@ store:
     order:
       type: integer
       example: 1
-    sidebox_title:
-      type: string
-      nullabe: true
-      example: Lorem ipsum
-    sidebox_content:
-      type: string
-      nullabe: true
-      example: Lorem ipsum dolar sit amet
+    sideboxes:
+      type: array
+      maxItems: 3
+      items:
+        type: object
+        required:
+          - title
+          - content
+        properties:
+          title:
+            type: string
+            example: Lorem ipsum
+          content:
+            type: string
+            example: Lorem ipsum dolar sit amet
     category_taxonomies:
       type: array
       items:
@@ -38,4 +44,4 @@ store:
 
 update:
   allOf:
-  - $ref: "#/store"
+    - $ref: "#/store"

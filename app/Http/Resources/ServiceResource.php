@@ -46,6 +46,7 @@ class ServiceResource extends JsonResource
             'social_medias' => SocialMediaResource::collection($this->socialMedias),
             'gallery_items' => ServiceGalleryItemResource::collection($this->serviceGalleryItems),
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
+            'last_modified_at' => $this->last_modified_at->format(Carbon::ISO8601),
             'created_at' => $this->created_at->format(Carbon::ISO8601),
             'updated_at' => $this->updated_at->format(Carbon::ISO8601),
 

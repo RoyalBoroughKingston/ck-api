@@ -11,22 +11,22 @@ root:
       Collections are returned in ascending order of the order field.
     security: []
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/category-collection.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/category-collection.yaml
 
   post:
     tags: ["Collection: Categories"]
@@ -70,13 +70,13 @@ nested:
       **Permission:** `Open`
     security: []
     parameters:
-    - name: category
-      in: path
-      description: The ID of the category collection
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: category
+        in: path
+        description: The ID of the category collection
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
@@ -91,15 +91,15 @@ nested:
     tags: ["Collection: Categories"]
     summary: Update a specific category collection
     description: |
-      **Permission:** `Super Admin`
+      **Permission:** `Global Admin`
     parameters:
-    - name: category
-      in: path
-      description: The ID of the category collection
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: category
+        in: path
+        description: The ID of the category collection
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:
@@ -125,13 +125,13 @@ nested:
     description: |
       **Permission:** `Super Admin`
     parameters:
-    - name: category
-      in: path
-      description: The ID of the category collection
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: category
+        in: path
+        description: The ID of the category collection
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

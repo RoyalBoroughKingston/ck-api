@@ -10,22 +10,22 @@ root:
 
       Report schedules are returned in descending order of the date they were created.
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/report-schedule.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/report-schedule.yaml
 
   post:
     tags: [Report Schedules]
@@ -65,13 +65,13 @@ nested:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: report_schedule
-      in: path
-      description: The ID of the report schedule
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: report_schedule
+        in: path
+        description: The ID of the report schedule
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:
@@ -88,13 +88,13 @@ nested:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: report_schedule
-      in: path
-      description: The ID of the report schedule
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: report_schedule
+        in: path
+        description: The ID of the report schedule
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:
@@ -117,13 +117,13 @@ nested:
     description: |
       **Permission:** `Global Admin`
     parameters:
-    - name: report_schedule
-      in: path
-      description: The ID of the report schdule
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - name: report_schedule
+        in: path
+        description: The ID of the report schdule
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

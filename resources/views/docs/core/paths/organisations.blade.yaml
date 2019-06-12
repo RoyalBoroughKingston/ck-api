@@ -7,38 +7,38 @@ root:
       **Permission:** `Open`
     security: []
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
-    - $ref: /docs/core/parameters/filter-id.yaml
-    - name: filter[name]
-      in: query
-      description: Name to filter by
-      schema:
-        type: string
-    - name: filter[has_permission]
-      in: query
-      description: Filter organisations to only ones they have permissions for
-      schema:
-        type: boolean
-    - name: sort
-      in: query
-      description: The fields to sort by [`name`]
-      schema:
-        type: string
-        default: name
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/filter-id.yaml
+      - name: filter[name]
+        in: query
+        description: Name to filter by
+        schema:
+          type: string
+      - name: filter[has_permission]
+        in: query
+        description: Filter organisations to only ones they have permissions for
+        schema:
+          type: boolean
+      - name: sort
+        in: query
+        description: The fields to sort by [`name`]
+        schema:
+          type: string
+          default: name
     responses:
       200:
         content:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: /docs/core/resources/organisation.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: /docs/core/resources/organisation.yaml
 
   post:
     tags: [Organisations]
@@ -79,12 +79,12 @@ nested:
       **Permission:** `Open`
     security: []
     parameters:
-    - name: organisation
-      in: path
-      description: The ID or slug of the organisation
-      required: true
-      schema:
-        type: string
+      - name: organisation
+        in: path
+        description: The ID or slug of the organisation
+        required: true
+        schema:
+          type: string
     responses:
       200:
         content:
@@ -101,12 +101,12 @@ nested:
     description: |
       **Permission:** `Organisation Admin`
     parameters:
-    - name: organisation
-      in: path
-      description: The ID or slug of the organisation
-      required: true
-      schema:
-        type: string
+      - name: organisation
+        in: path
+        description: The ID or slug of the organisation
+        required: true
+        schema:
+          type: string
     requestBody:
       required: true
       content:
@@ -136,12 +136,12 @@ nested:
     description: |
       **Permission:** `Super Admin`
     parameters:
-    - name: organisation
-      in: path
-      description: The ID or slug of the organisation
-      required: true
-      schema:
-        type: string
+      - name: organisation
+        in: path
+        description: The ID or slug of the organisation
+        required: true
+        schema:
+          type: string
     responses:
       200:
         content:
@@ -158,19 +158,19 @@ logo:
       **Permission:** `Open`
     security: []
     parameters:
-    - name: organisation
-      in: path
-      description: The ID or slug of the organisation
-      required: true
-      schema:
-        type: string
-    - $ref: /docs/core/parameters/max-dimension.yaml
-    - name: update_request_id
-      in: query
-      description: File to use from update request
-      schema:
-        type: string
-        format: uuid
+      - name: organisation
+        in: path
+        description: The ID or slug of the organisation
+        required: true
+        schema:
+          type: string
+      - $ref: /docs/core/parameters/max-dimension.yaml
+      - name: update_request_id
+        in: query
+        description: File to use from update request
+        schema:
+          type: string
+          format: uuid
     responses:
       200:
         content:

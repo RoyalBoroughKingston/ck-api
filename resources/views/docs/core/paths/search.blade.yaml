@@ -7,8 +7,8 @@ root:
       **Permission:** `Open`
     security: []
     parameters:
-    - $ref: /docs/core/parameters/page.yaml
-    - $ref: /docs/core/parameters/per-page.yaml
+      - $ref: /docs/core/parameters/page.yaml
+      - $ref: /docs/core/parameters/per-page.yaml
     requestBody:
       required: true
       content:
@@ -21,22 +21,22 @@ root:
           application/json:
             schema:
               allOf:
-              - $ref: /docs/core/responses/resource-collection.yaml
-              - type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      allOf:
-                      - $ref: /docs/core/resources/service.yaml
-                      - type: object
-                        properties:
-                          service_locations:
-                            type: array
-                            items:
-                              allOf:
-                              - $ref: /docs/core/resources/service-location.yaml
-                              - type: object
-                                properties:
-                                  location:
-                                    $ref: /docs/core/resources/location.yaml
+                - $ref: /docs/core/responses/resource-collection.yaml
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        allOf:
+                          - $ref: /docs/core/resources/service.yaml
+                          - type: object
+                            properties:
+                              service_locations:
+                                type: array
+                                items:
+                                  allOf:
+                                    - $ref: /docs/core/resources/service-location.yaml
+                                    - type: object
+                                      properties:
+                                        location:
+                                          $ref: /docs/core/resources/location.yaml
