@@ -27,6 +27,11 @@ $redis = [
     'options' => [
         'cluster' => env('REDIS_CLUSTER', false),
 
+        'parameters' => [
+            'scheme' => env('REDIS_SCHEME', 'tcp'),
+            'password' => env('REDIS_PASSWORD', null),
+        ],
+
         'ssl' => [
             'verify_peer' => false,
         ],
