@@ -36,7 +36,6 @@ defaults: &defaults
     SQS_QUEUE: ((SQS_QUEUE))
     SQS_REGION: ((SQS_REGION))
     SQS_SECRET: ((SQS_SECRET))
-    REDIS_CLUSTER: redis
     REDIS_SCHEME: tls
     SCOUT_ELASTIC_DOCUMENT_REFRESH: "null"
 
