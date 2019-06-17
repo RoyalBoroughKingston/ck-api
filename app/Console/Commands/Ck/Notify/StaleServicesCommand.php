@@ -9,8 +9,10 @@ use App\Models\Role;
 use App\Models\Service;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\DB;
 
 class StaleServicesCommand extends Command
 {
@@ -42,7 +44,11 @@ class StaleServicesCommand extends Command
         Service::query()
             ->with([
                 'users' => function (BelongsToMany $query): void {
-                    $query->where('user_roles.role_id', '=', Role::serviceAdmin()->id);
+                    $query
+                        ->where('user_roles.role_id', '=', Role::serviceAdmin()->id)
+                        ->whereDoesntHave('userRoles', function (Builder $query): void {
+                            $query->where('user_roles.role_id', '=', Role::globalAdmin()->id);
+                        });
                 },
             ])
             ->where('status', '=', Service::STATUS_ACTIVE)
