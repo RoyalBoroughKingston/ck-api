@@ -128,7 +128,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
      */
     public static function bootSearchable()
     {
-        self::bootScoutSearchable();
+        self::sourceBootSearchable();
     }
 
     /**

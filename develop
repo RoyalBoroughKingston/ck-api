@@ -28,24 +28,28 @@ COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.$COMPOSE_FILE.ym
 # Pass arguments to docker-compose, or default to docker-compose ps.
 if [ $# -gt 0  ]; then
     case "$1" in
+
         art|artisan )
             shift 1
             ${COMPOSE} run --rm ${TTY} \
                 api \
                 php artisan "$@"
             ;;
+
         dump-server|dumpserver )
             shift 1
             ${COMPOSE} exec \
                 api \
                 php artisan dump-server "$@"
             ;;
+
         composer )
             shift 1
             ${COMPOSE} run --rm ${TTY} \
                 api \
                 composer "$@"
             ;;
+
         phpunit )
             shift 1
             ${COMPOSE} run --rm ${TTY} \
@@ -56,25 +60,16 @@ if [ $# -gt 0  ]; then
                 api \
                 php vendor/bin/phpunit "$@"
             ;;
-        phpcs )
-            shift 1
-            ${COMPOSE} run --rm ${TTY} \
-                api \
-                php vendor/bin/phpcs "$@"
-            ;;
-        phpcbf )
-            shift 1
-            ${COMPOSE} run --rm ${TTY} \
-                api \
-                php vendor/bin/phpcbf "$@"
-            ;;
+
         npm )
             shift 1
             ${COMPOSE} run --rm ${TTY} \
                 node \
                 npm "$@"
             ;;
+
         * ) ${COMPOSE} "$@"; ;;
+
     esac
 else
     ${COMPOSE} ps
