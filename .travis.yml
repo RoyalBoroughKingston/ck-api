@@ -4,7 +4,10 @@ php:
   - "7.2"
 
 env:
-  - COMPOSER_PROCESS_TIMEOUT=0 ES_VERSION=6.3.0 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
+  - >
+    COMPOSER_PROCESS_TIMEOUT=0
+    ES_VERSION=6.3.0
+    ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
 
 services:
   - redis-server
