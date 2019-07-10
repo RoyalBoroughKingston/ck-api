@@ -81,7 +81,7 @@ trait UpdateRequestScopes
      */
     public function getEntrySql(): string
     {
-        return <<< 'EOT'
+        return <<<'EOT'
 CASE `update_requests`.`updateable_type`
     WHEN "services" THEN (
         SELECT `services`.`name`

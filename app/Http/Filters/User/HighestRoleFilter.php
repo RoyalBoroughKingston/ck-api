@@ -19,7 +19,7 @@ class HighestRoleFilter implements Filter
     {
         $sql = (new User())->getHighestRoleOrderSql();
 
-        $subQuery = <<< EOT
+        $subQuery = <<<EOT
 SELECT `user_roles`.`role_id`
 FROM `user_roles`
 WHERE `user_roles`.`user_id` = `users`.`id`

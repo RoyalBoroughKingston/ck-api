@@ -86,7 +86,7 @@ class LoginController extends Controller
         $appName = config('app.name');
         $subject = "{$user->full_name} - New Phone Number";
         $subject = rawurlencode($subject);
-        $body = <<< EOT
+        $body = <<<EOT
 {$user->full_name}:
 
 Requires a new phone number for their account on $appName.
