@@ -54,8 +54,8 @@ before_script:
   - php artisan passport:keys
 
 script:
-  - vendor/bin/phpcs
-  - vendor/bin/phpunit
+  - composer test:style
+  - composer test:unit
 
 after_failure:
   - cat storage/logs/testing.log

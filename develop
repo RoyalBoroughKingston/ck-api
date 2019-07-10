@@ -36,13 +36,6 @@ if [ $# -gt 0  ]; then
                 php artisan "$@"
             ;;
 
-        dump-server|dumpserver )
-            shift 1
-            ${COMPOSE} exec \
-                api \
-                php artisan dump-server "$@"
-            ;;
-
         composer )
             shift 1
             ${COMPOSE} run --rm ${TTY} \
