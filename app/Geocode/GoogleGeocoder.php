@@ -47,7 +47,7 @@ class GoogleGeocoder extends Geocoder
             'query' => [
                 'address' => $this->normaliseAddress($address),
                 'key' => $this->apiKey,
-            ]
+            ],
         ]);
 
         // Parse the results.
@@ -56,6 +56,7 @@ class GoogleGeocoder extends Geocoder
         // Throw an exception if no address was found.
         if (count($results) === 0) {
             $this->saveToCache($address, null);
+
             throw new AddressNotFoundException();
         }
 

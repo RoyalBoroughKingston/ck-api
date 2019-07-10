@@ -7,8 +7,6 @@ class UpdateSideboxSchemaInMetaColumnOfCollectionsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -21,7 +19,7 @@ class UpdateSideboxSchemaInMetaColumnOfCollectionsTable extends Migration
             ->whereRaw('JSON_TYPE(`meta`->"$.sidebox_title") != "NULL"')
             ->update([
                 'meta' => DB::raw(
-<<<'EOT'
+                    <<<'EOT'
 JSON_ARRAY_APPEND(
     `meta`,
     "$.sideboxes",
@@ -42,8 +40,6 @@ EOT
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

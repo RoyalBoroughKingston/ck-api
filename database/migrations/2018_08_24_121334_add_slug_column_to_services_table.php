@@ -2,17 +2,15 @@
 
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class AddSlugColumnToServicesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -26,7 +24,7 @@ class AddSlugColumnToServicesTable extends Migration
                 do {
                     $slug = $iteration === 0
                         ? Str::slug($service->name)
-                        : Str::slug($service->name).'-'.$iteration;
+                        : Str::slug($service->name) . '-' . $iteration;
                     $iteration++;
                 } while (Service::query()->where('slug', $slug)->exists());
 
@@ -41,8 +39,6 @@ class AddSlugColumnToServicesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

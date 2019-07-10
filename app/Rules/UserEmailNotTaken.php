@@ -26,8 +26,8 @@ class UserEmailNotTaken implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string $attribute
-     * @param  mixed $email
+     * @param string $attribute
+     * @param mixed $email
      * @return bool
      */
     public function passes($attribute, $email)

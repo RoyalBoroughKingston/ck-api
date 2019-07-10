@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\EndpointHit;
 use App\Events\UserRolesUpdated;
 use App\Exceptions\CannotRevokeRoleException;
+use App\Http\Controllers\Controller;
 use App\Http\Filters\User\AtOrganisationFilter;
 use App\Http\Filters\User\AtServiceFilter;
 use App\Http\Filters\User\HasPermissionFilter;
@@ -20,7 +21,6 @@ use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
-use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -144,7 +144,7 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\User\ShowRequest $request
-     * @param  \App\Models\User $user
+     * @param \App\Models\User $user
      * @return \App\Http\Resources\UserResource
      */
     public function show(ShowRequest $request, User $user)
@@ -186,7 +186,7 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\User\UpdateRequest $request
-     * @param  \App\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, User $user)
@@ -280,7 +280,7 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\User\DestroyRequest $request
-     * @param  \App\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, User $user)

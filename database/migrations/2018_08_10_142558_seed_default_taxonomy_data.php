@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SeedDefaultTaxonomyData extends Migration
@@ -14,7 +14,6 @@ class SeedDefaultTaxonomyData extends Migration
     /**
      * Run the migrations.
      *
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function up()
@@ -28,8 +27,6 @@ class SeedDefaultTaxonomyData extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
@@ -39,8 +36,8 @@ class SeedDefaultTaxonomyData extends Migration
     /**
      * Load the Open Eligibility taxonomies into an array.
      *
-     * @return array
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return array
      */
     protected function loadOpenEligibilityTaxonomies(): array
     {

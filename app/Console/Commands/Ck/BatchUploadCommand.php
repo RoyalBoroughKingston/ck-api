@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Ck;
 
 use App\BatchUpload\BatchUploader;
-use App\BatchUpload\ValidationFailedException;
 use Illuminate\Console\Command;
 
 class BatchUploadCommand extends Command
@@ -29,8 +28,6 @@ class BatchUploadCommand extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -42,8 +39,8 @@ class BatchUploadCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
      * @throws \Exception
+     * @return mixed
      */
     public function handle()
     {

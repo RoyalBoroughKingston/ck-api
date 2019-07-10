@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Report\DestroyRequest;
 use App\Http\Requests\Report\IndexRequest;
 use App\Http\Requests\Report\ShowRequest;
@@ -10,7 +11,6 @@ use App\Http\Requests\Report\StoreRequest;
 use App\Http\Resources\ReportResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Report;
-use App\Http\Controllers\Controller;
 use App\Models\ReportType;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -78,7 +78,7 @@ class ReportController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\Report\ShowRequest $request
-     * @param  \App\Models\Report $report
+     * @param \App\Models\Report $report
      * @return \App\Http\Resources\ReportResource
      */
     public function show(ShowRequest $request, Report $report)
@@ -98,7 +98,7 @@ class ReportController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\Report\DestroyRequest $request
-     * @param  \App\Models\Report $report
+     * @param \App\Models\Report $report
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Report $report)

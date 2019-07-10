@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\v1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Filters\Service\HasPermissionFilter;
 use App\Http\Filters\Service\OrganisationNameFilter;
 use App\Http\Requests\Service\DestroyRequest;
@@ -16,7 +17,6 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Http\Sorts\Service\OrganisationNameSort;
 use App\Models\File;
 use App\Models\Service;
-use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Support\MissingValue;
@@ -207,7 +207,7 @@ class ServiceController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\Service\ShowRequest $request
-     * @param  \App\Models\Service $service
+     * @param \App\Models\Service $service
      * @return \App\Http\Resources\ServiceResource
      */
     public function show(ShowRequest $request, Service $service)
@@ -236,7 +236,7 @@ class ServiceController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\Service\UpdateRequest $request
-     * @param  \App\Models\Service $service
+     * @param \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Service $service)
@@ -364,7 +364,7 @@ class ServiceController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\Service\DestroyRequest $request
-     * @param  \App\Models\Service $service
+     * @param \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Service $service)

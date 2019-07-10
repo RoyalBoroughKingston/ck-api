@@ -12,7 +12,7 @@ $factory->define(Location::class, function (Faker $faker) {
         'country' => 'United Kingdom',
         'has_wheelchair_access' => false,
         'has_induction_loop' => false,
-        'lat' => rand(-90, 90),
-        'lon' => rand(-180, 180),
+        'lat' => mt_rand(-90, 90),
+        'lon' => mt_rand(-180, 180),
     ];
 });

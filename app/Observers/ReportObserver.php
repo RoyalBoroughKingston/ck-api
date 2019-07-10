@@ -9,8 +9,7 @@ class ReportObserver
     /**
      * Handle the organisation "deleted" event.
      *
-     * @param  \App\Models\Report $report
-     * @return void
+     * @param \App\Models\Report $report
      */
     public function deleted(Report $report)
     {

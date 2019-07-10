@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\TaxonomyOrganisation\DestroyRequest;
 use App\Http\Requests\TaxonomyOrganisation\IndexRequest;
 use App\Http\Requests\TaxonomyOrganisation\ShowRequest;
@@ -11,7 +12,6 @@ use App\Http\Requests\TaxonomyOrganisation\UpdateRequest;
 use App\Http\Resources\TaxonomyOrganisationResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Taxonomy;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -70,7 +70,7 @@ class TaxonomyOrganisationController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\TaxonomyOrganisation\ShowRequest $request
-     * @param  \App\Models\Taxonomy $taxonomy
+     * @param \App\Models\Taxonomy $taxonomy
      * @return \App\Http\Resources\TaxonomyOrganisationResource
      */
     public function show(ShowRequest $request, Taxonomy $taxonomy)
@@ -90,7 +90,7 @@ class TaxonomyOrganisationController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\TaxonomyOrganisation\UpdateRequest $request
-     * @param  \App\Models\Taxonomy $taxonomy
+     * @param \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Taxonomy $taxonomy)
@@ -111,7 +111,7 @@ class TaxonomyOrganisationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\TaxonomyOrganisation\DestroyRequest $request
-     * @param  \App\Models\Taxonomy $taxonomy
+     * @param \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Taxonomy $taxonomy)

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Core\V1\CollectionPersona;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionPersona\Image\ShowRequest;
 use App\Models\Collection;
 use App\Models\File;
-use App\Http\Controllers\Controller;
 
 class ImageController extends Controller
 {
@@ -14,9 +14,9 @@ class ImageController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionPersona\Image\ShowRequest $request
-     * @param  \App\Models\Collection $collection
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Collection $collection
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request, Collection $collection)
     {

@@ -4,7 +4,10 @@ php:
   - "7.2"
 
 env:
-  - ES_VERSION=6.3.0 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
+  - >
+    COMPOSER_PROCESS_TIMEOUT=0
+    ES_VERSION=6.3.0
+    ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
 
 services:
   - redis-server
@@ -54,8 +57,8 @@ before_script:
   - php artisan passport:keys
 
 script:
-  - vendor/bin/phpcs
-  - vendor/bin/phpunit
+  - composer test:style
+  - composer test:unit
 
 after_failure:
   - cat storage/logs/testing.log

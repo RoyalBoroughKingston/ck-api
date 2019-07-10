@@ -37,7 +37,7 @@ class StoreRequest extends FormRequest
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'intro' => ['required', 'string', 'min:1', 'max:500'],
             'subtitle' => ['required', 'string', 'min:1', 'max:255'],
-            'order' => ['required', 'integer', 'min:1', 'max:'.(Collection::personas()->count() + 1)],
+            'order' => ['required', 'integer', 'min:1', 'max:' . (Collection::personas()->count() + 1)],
             'sideboxes' => ['present', 'array', 'max:3'],
             'sideboxes.*' => ['array'],
             'sideboxes.*.title' => ['required_with:sideboxes.*', 'string'],

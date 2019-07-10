@@ -12,7 +12,7 @@
 /.idea
 /.vscode
 /.vagrant
-/.phpunit.result.cache
+/.*.cache
 Homestead.json
 Homestead.yaml
 npm-debug.log

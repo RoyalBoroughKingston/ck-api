@@ -37,8 +37,8 @@ class Report extends Model
      * @param \App\Models\ReportType $type
      * @param \Illuminate\Support\Carbon|null $startsAt
      * @param \Illuminate\Support\Carbon|null $endsAt
-     * @return \App\Models\Report
      * @throws \Exception
+     * @return \App\Models\Report
      */
     public static function generate(ReportType $type, Carbon $startsAt = null, Carbon $endsAt = null): self
     {

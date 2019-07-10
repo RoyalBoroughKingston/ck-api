@@ -79,8 +79,8 @@ class UpdateRequest extends FormRequest
                     break;
                 case Role::NAME_GLOBAL_ADMIN:
                 case Role::NAME_SUPER_ADMIN:
-                    unset($role['service_id']);
-                    unset($role['organisation_id']);
+                    unset($role['service_id'], $role['organisation_id']);
+
                     break;
             }
         }
@@ -164,12 +164,12 @@ class UpdateRequest extends FormRequest
             ],
             'roles.*.role' => ['required_with:roles.*', 'string', 'exists:roles,name'],
             'roles.*.organisation_id' => [
-                'required_if:roles.*.role,'.Role::NAME_ORGANISATION_ADMIN,
+                'required_if:roles.*.role,' . Role::NAME_ORGANISATION_ADMIN,
                 'exists:organisations,id',
             ],
             'roles.*.service_id' => [
-                'required_if:roles.*.role,'.Role::NAME_SERVICE_WORKER,
-                'required_if:roles.*.role,'.Role::NAME_SERVICE_ADMIN,
+                'required_if:roles.*.role,' . Role::NAME_SERVICE_WORKER,
+                'required_if:roles.*.role,' . Role::NAME_SERVICE_ADMIN,
                 'exists:services,id',
             ],
         ];

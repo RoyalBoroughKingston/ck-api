@@ -11,8 +11,7 @@ class OrganisationObserver
     /**
      * Handle the organisation "created" event.
      *
-     * @param  \App\Models\Organisation $organisation
-     * @return void
+     * @param \App\Models\Organisation $organisation
      */
     public function created(Organisation $organisation)
     {
@@ -24,8 +23,7 @@ class OrganisationObserver
     /**
      * Handle the organisation "updated" event.
      *
-     * @param  \App\Models\Organisation $organisation
-     * @return void
+     * @param \App\Models\Organisation $organisation
      */
     public function updated(Organisation $organisation)
     {
@@ -35,8 +33,7 @@ class OrganisationObserver
     /**
      * Handle the organisation "deleting" event.
      *
-     * @param  \App\Models\Organisation $organisation
-     * @return void
+     * @param \App\Models\Organisation $organisation
      */
     public function deleting(Organisation $organisation)
     {

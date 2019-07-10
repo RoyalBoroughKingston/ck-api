@@ -47,7 +47,7 @@ class File extends Model implements Responsable
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function toResponse($request)
@@ -124,7 +124,7 @@ class File extends Model implements Responsable
     }
 
     /**
-     * @deprecated You should now use the uploadBase64EncodedFile() method instead.
+     * @deprecated you should now use the uploadBase64EncodedFile() method instead
      * @param string $content
      * @return \App\Models\File
      */
@@ -189,9 +189,9 @@ class File extends Model implements Responsable
      *
      * @param int $maxDimension
      * @param string $placeholderFor
-     * @return \App\Models\File
      * @throws \InvalidArgumentException
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \App\Models\File
      */
     public static function resizedPlaceholder(int $maxDimension, string $placeholderFor): self
     {
