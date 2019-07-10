@@ -8,7 +8,7 @@ trait HasMissingValues
 {
     /**
      * @param string $key
-     * @param callable|null $pipe If the value exists then pass through this function.
+     * @param callable|null $pipe if the value exists then pass through this function
      * @return mixed|\App\Support\MissingValue
      */
     public function missing(string $key, callable $pipe = null)

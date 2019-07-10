@@ -59,7 +59,6 @@ class User extends Authenticatable implements Notifiable
      * Create a new Eloquent model instance.
      *
      * @param array $attributes
-     * @return void
      */
     public function __construct(array $attributes = [])
     {
@@ -70,8 +69,6 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * The "booting" method of the model.
-     *
-     * @return void
      */
     protected static function boot()
     {
@@ -97,7 +94,6 @@ class User extends Authenticatable implements Notifiable
      * Send the password reset notification.
      *
      * @param string $token
-     * @return void
      */
     public function sendPasswordResetNotification($token)
     {
@@ -321,7 +317,7 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @param null|\App\Models\Service $service
+     * @param \App\Models\Service|null $service
      * @return bool
      */
     public function isServiceWorker(Service $service = null): bool
@@ -330,7 +326,7 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @param null|\App\Models\Service $service
+     * @param \App\Models\Service|null $service
      * @return bool
      */
     public function isServiceAdmin(Service $service = null): bool
@@ -340,7 +336,7 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @param null|\App\Models\Organisation $organisation
+     * @param \App\Models\Organisation|null $organisation
      * @return bool
      */
     public function isOrganisationAdmin(Organisation $organisation = null): bool

@@ -85,7 +85,7 @@ class SettingController extends Controller
                     ],
                 ]);
 
-            event(EndpointHit::onUpdate($request, "Updated settings"));
+            event(EndpointHit::onUpdate($request, 'Updated settings'));
 
             return Setting::toResponse();
         });

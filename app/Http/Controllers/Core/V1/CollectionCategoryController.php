@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionCategory\DestroyRequest;
 use App\Http\Requests\CollectionCategory\IndexRequest;
 use App\Http\Requests\CollectionCategory\ShowRequest;
@@ -11,7 +12,6 @@ use App\Http\Requests\CollectionCategory\UpdateRequest;
 use App\Http\Resources\CollectionCategoryResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
-use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -50,7 +50,6 @@ class CollectionCategoryController extends Controller
 
         return CollectionCategoryResource::collection($categories);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -98,7 +97,7 @@ class CollectionCategoryController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionCategory\ShowRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionCategoryResource
      */
     public function show(ShowRequest $request, Collection $collection)
@@ -118,7 +117,7 @@ class CollectionCategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\CollectionCategory\UpdateRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Collection $collection)
@@ -157,7 +156,7 @@ class CollectionCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\CollectionCategory\DestroyRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Collection $collection)

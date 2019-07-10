@@ -30,8 +30,8 @@ class UpdateRequest extends Model
     ];
 
     /**
-     * @return \Illuminate\Support\MessageBag
      * @throws \Exception
+     * @return \Illuminate\Support\MessageBag
      */
     public function getValidationErrors(): MessageBag
     {
@@ -43,8 +43,8 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @return bool
      * @throws \Exception
+     * @return bool
      */
     public function validate(): bool
     {
@@ -56,8 +56,8 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @return \App\Models\UpdateRequest
      * @throws \Exception
+     * @return \App\Models\UpdateRequest
      */
     public function apply(): self
     {

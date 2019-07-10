@@ -42,7 +42,7 @@ class NominatimGeocoder extends Geocoder
                 'format' => 'json',
                 'q' => $this->normaliseAddress($address),
                 'limit' => 1,
-            ]
+            ],
         ]);
 
         // Parse the results.
@@ -51,6 +51,7 @@ class NominatimGeocoder extends Geocoder
         // Throw an exception if no address was found.
         if (count($results) === 0) {
             $this->saveToCache($address, null);
+
             throw new AddressNotFoundException();
         }
 

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Contracts\Search;
-use App\Support\Coordinate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Search\Request;
+use App\Support\Coordinate;
 
 class SearchController extends Controller
 {

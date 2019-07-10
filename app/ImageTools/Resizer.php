@@ -5,7 +5,7 @@ namespace App\ImageTools;
 class Resizer
 {
     /**
-     * Based upon the following Stack Overflow answer:
+     * Based upon the following Stack Overflow answer:.
      * @link https://stackoverflow.com/a/16774644/5745438
      *
      * @param string $srcImageContent

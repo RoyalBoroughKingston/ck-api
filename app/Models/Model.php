@@ -47,8 +47,7 @@ abstract class Model extends BaseModel
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array  $attributes
-     * @return void
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -59,8 +58,6 @@ abstract class Model extends BaseModel
 
     /**
      * The "booting" method of the model.
-     *
-     * @return void
      */
     protected static function boot()
     {

@@ -84,9 +84,6 @@ abstract class Email implements ShouldQueue
      */
     abstract public function getContent(): string;
 
-    /**
-     * @return void
-     */
     public function send()
     {
         $this->handle(resolve(EmailSender::class));
@@ -96,7 +93,6 @@ abstract class Email implements ShouldQueue
      * Execute the job.
      *
      * @param \App\Contracts\EmailSender $emailSender
-     * @return void
      */
     public function handle(EmailSender $emailSender)
     {

@@ -17,12 +17,12 @@ class EndpointHit
     use SerializesModels;
 
     /**
-     * @var null|\App\Models\User
+     * @var \App\Models\User|null
      */
     protected $user;
 
     /**
-     * @var null|\Laravel\Passport\Client
+     * @var \Laravel\Passport\Client|null
      */
     protected $oauthClient;
 
@@ -32,7 +32,7 @@ class EndpointHit
     protected $action;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     protected $description;
 
@@ -147,7 +147,7 @@ class EndpointHit
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getDescription(): ?string
     {

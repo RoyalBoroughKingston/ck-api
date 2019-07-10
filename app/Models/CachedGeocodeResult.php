@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Support\Coordinate;
 use App\Models\Mutators\CachedGeocodeResultMutators;
 use App\Models\Relationships\CachedGeocodeResultRelationships;
 use App\Models\Scopes\CachedGeocodeResultScopes;
+use App\Support\Coordinate;
 
 class CachedGeocodeResult extends Model
 {

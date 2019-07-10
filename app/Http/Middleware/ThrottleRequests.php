@@ -10,12 +10,12 @@ class ThrottleRequests extends BaseThrottleRequests
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  int|string  $maxAttempts
-     * @param  float|int  $decayMinutes
-     * @return mixed
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @param int|string $maxAttempts
+     * @param float|int $decayMinutes
      * @throws \Illuminate\Http\Exceptions\ThrottleRequestsException
+     * @return mixed
      */
     public function handle($request, Closure $next, $maxAttempts = 60, $decayMinutes = 1)
     {

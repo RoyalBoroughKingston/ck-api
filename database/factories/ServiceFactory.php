@@ -11,7 +11,7 @@ $factory->define(Service::class, function (Faker $faker) {
         'organisation_id' => function () {
             return factory(\App\Models\Organisation::class)->create()->id;
         },
-        'slug' => Str::slug($name).'-'.rand(1, 1000),
+        'slug' => Str::slug($name) . '-' . mt_rand(1, 1000),
         'name' => $name,
         'type' => Service::TYPE_SERVICE,
         'status' => Service::STATUS_ACTIVE,
@@ -27,7 +27,6 @@ $factory->define(Service::class, function (Faker $faker) {
         'last_modified_at' => now(),
     ];
 });
-
 
 $factory->afterCreating(Service::class, function (Service $service, Faker $faker) {
     \App\Models\ServiceCriterion::create([

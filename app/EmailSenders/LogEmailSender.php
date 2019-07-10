@@ -12,7 +12,7 @@ class LogEmailSender implements EmailSender
      */
     public function send(Email $email)
     {
-        logger()->debug('Email sent at ['.now()->toDateTimeString().']', [
+        logger()->debug('Email sent at [' . now()->toDateTimeString() . ']', [
             'to' => $email->to,
             'templateId' => $email->templateId,
             'values' => $email->values,

@@ -32,7 +32,7 @@ class Taxonomy extends Model
     }
 
     /**
-     * @param null|\App\Models\Taxonomy $taxonomy
+     * @param \App\Models\Taxonomy|null $taxonomy
      * @return \App\Models\Taxonomy
      */
     public function getRootTaxonomy(Taxonomy $taxonomy = null): Taxonomy

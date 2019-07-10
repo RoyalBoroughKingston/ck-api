@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Audit\IndexRequest;
 use App\Http\Requests\Audit\ShowRequest;
 use App\Http\Resources\AuditResource;
 use App\Http\Sorts\Audit\UserFullNameSort;
 use App\Models\Audit;
-use App\Http\Controllers\Controller;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sort;
@@ -62,7 +62,7 @@ class AuditController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\Audit\ShowRequest $request
-     * @param  \App\Models\Audit $audit
+     * @param \App\Models\Audit $audit
      * @return \App\Http\Resources\AuditResource
      */
     public function show(ShowRequest $request, Audit $audit)

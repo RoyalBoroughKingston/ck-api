@@ -120,7 +120,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                     'location' => ['type' => 'geo_point'],
                 ],
             ],
-        ]
+        ],
     ];
 
     /**
@@ -428,8 +428,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
 
     /**
      * @param int|null $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

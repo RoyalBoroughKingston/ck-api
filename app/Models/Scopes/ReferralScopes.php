@@ -44,7 +44,7 @@ trait ReferralScopes
          * This query will select the latest status update, which has
          * a changed status, or fall back to the referral creation date.
          */
-        $sql = <<< EOT
+        $sql = <<< 'EOT'
 IFNULL(
     (
         SELECT `status_updates`.`created_at` 

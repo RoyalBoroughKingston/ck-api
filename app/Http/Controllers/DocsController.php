@@ -19,8 +19,8 @@ class DocsController extends Controller
      * Parse the specified YAML file through Blade.
      *
      * @param string $path
-     * @return \Illuminate\Http\Response
      * @throws \Throwable
+     * @return \Illuminate\Http\Response
      */
     public function show(string $path)
     {
@@ -38,6 +38,7 @@ class DocsController extends Controller
 
         // Parse the YAML Blade template and retrieve the string contents.
         $yaml = view($view)->render();
+
         return response()->make($yaml, Response::HTTP_OK, [
             'Content-Type' => 'application/x-yaml',
             'Content-Disposition' => sprintf('inline; filename="%s.yaml"', $filename),
