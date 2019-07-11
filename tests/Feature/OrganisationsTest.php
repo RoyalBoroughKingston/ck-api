@@ -9,8 +9,8 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
@@ -39,9 +39,9 @@ class OrganisationsTest extends TestCase
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
-                'created_at' => $organisation->created_at->format(Carbon::ISO8601),
-                'updated_at' => $organisation->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $organisation->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $organisation->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -208,9 +208,9 @@ class OrganisationsTest extends TestCase
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
-                'created_at' => $organisation->created_at->format(Carbon::ISO8601),
-                'updated_at' => $organisation->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $organisation->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $organisation->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -231,9 +231,9 @@ class OrganisationsTest extends TestCase
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
-                'created_at' => $organisation->created_at->format(Carbon::ISO8601),
-                'updated_at' => $organisation->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $organisation->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $organisation->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 

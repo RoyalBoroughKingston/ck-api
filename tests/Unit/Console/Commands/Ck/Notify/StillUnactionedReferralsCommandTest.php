@@ -6,6 +6,7 @@ use App\Console\Commands\Ck\Notify\StillUnactionedReferralsCommand;
 use App\Emails\ReferralStillUnactioned\NotifyGlobalAdminEmail;
 use App\Models\Referral;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -19,7 +20,7 @@ class StillUnactionedReferralsCommandTest extends TestCase
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_NEW,
-            'created_at' => now()->subWeekdays(9),
+            'created_at' => Date::now()->subWeekdays(9),
         ]);
 
         Artisan::call(StillUnactionedReferralsCommand::class);

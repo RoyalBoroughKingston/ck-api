@@ -4,11 +4,12 @@ namespace App\Events;
 
 use App\Models\Audit;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Laravel\Passport\Client;
 
 class EndpointHit
@@ -47,7 +48,7 @@ class EndpointHit
     protected $userAgent;
 
     /**
-     * @var \Illuminate\Support\Carbon
+     * @var \Carbon\CarbonImmutable
      */
     protected $createdAt;
 
@@ -74,7 +75,7 @@ class EndpointHit
         $this->description = $description;
         $this->ipAddress = $request->ip();
         $this->userAgent = $request->userAgent();
-        $this->createdAt = now();
+        $this->createdAt = Date::now();
         $this->model = $model;
     }
 
@@ -171,9 +172,9 @@ class EndpointHit
     }
 
     /**
-     * @return \Illuminate\Support\Carbon
+     * @return \Carbon\CarbonImmutable
      */
-    public function getCreatedAt(): Carbon
+    public function getCreatedAt(): CarbonImmutable
     {
         return $this->createdAt;
     }

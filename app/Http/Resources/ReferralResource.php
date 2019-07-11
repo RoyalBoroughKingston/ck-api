@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 
 class ReferralResource extends JsonResource
 {
@@ -27,14 +28,14 @@ class ReferralResource extends JsonResource
             'other_contact' => $this->other_contact,
             'postcode_outward_code' => $this->postcode_outward_code,
             'comments' => $this->comments,
-            'referral_consented_at' => optional($this->referral_consented_at)->format(Carbon::ISO8601),
-            'feedback_consented_at' => optional($this->feedback_consented_at)->format(Carbon::ISO8601),
+            'referral_consented_at' => optional($this->referral_consented_at)->format(CarbonImmutable::ISO8601),
+            'feedback_consented_at' => optional($this->feedback_consented_at)->format(CarbonImmutable::ISO8601),
             'referee_name' => $this->referee_name,
             'referee_email' => $this->referee_email,
             'referee_phone' => $this->referee_phone,
             'referee_organisation' => $this->organisationTaxonomy->name ?? $this->organisation,
-            'created_at' => $this->created_at->format(Carbon::ISO8601),
-            'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+            'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
 
             // Relationships.
             'service' => new ServiceResource($this->whenLoaded('service')),
@@ -42,7 +43,12 @@ class ReferralResource extends JsonResource
             // Appends.
             'status_last_updated_at' => $this->when(
                 isset($this->status_last_updated_at),
-                (new Carbon($this->status_last_updated_at))->format(Carbon::ISO8601)
+                function () {
+                    return Date::createFromFormat(
+                        'Y-m-d H:i:s',
+                        $this->status_last_updated_at
+                    )->format(CarbonImmutable::ISO8601);
+                }
             ),
         ];
     }

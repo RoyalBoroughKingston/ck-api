@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SeedDefaultTaxonomyData extends Migration
 {
     /**
-     * @var \Illuminate\Support\Carbon
+     * @var \Carbon\CarbonImmutable
      */
     protected $now;
 
@@ -18,7 +19,7 @@ class SeedDefaultTaxonomyData extends Migration
      */
     public function up()
     {
-        $this->now = now();
+        $this->now = Date::now();
         $taxonomies = $this->loadOpenEligibilityTaxonomies();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('taxonomies')->insert($taxonomies);

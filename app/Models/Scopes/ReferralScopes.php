@@ -4,6 +4,7 @@ namespace App\Models\Scopes;
 
 use App\Models\Referral;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 
 trait ReferralScopes
 {
@@ -17,7 +18,7 @@ trait ReferralScopes
         return $query
             ->where('status', '!=', Referral::STATUS_COMPLETED)
             ->where('status', '!=', Referral::STATUS_INCOMPLETED)
-            ->where('created_at', '<=', now()->subWeekdays($workingDays));
+            ->where('created_at', '<=', Date::now()->subWeekdays($workingDays));
     }
 
     /**
@@ -26,7 +27,7 @@ trait ReferralScopes
      */
     public function scopeDueForDeletion(Builder $query): Builder
     {
-        $date = today()->subMonths(Referral::AUTO_DELETE_MONTHS);
+        $date = Date::today()->subMonths(Referral::AUTO_DELETE_MONTHS);
 
         return $query
             ->where('updated_at', '<=', $date)

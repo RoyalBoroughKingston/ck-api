@@ -8,6 +8,7 @@ use App\Models\Scopes\UpdateRequestScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\MessageBag;
 
 class UpdateRequest extends Model
@@ -66,7 +67,7 @@ class UpdateRequest extends Model
         }
 
         $this->updateable->applyUpdateRequest($this);
-        $this->update(['approved_at' => now()]);
+        $this->update(['approved_at' => Date::now()]);
 
         return $this;
     }

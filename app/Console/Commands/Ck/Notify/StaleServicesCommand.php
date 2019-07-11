@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Date;
 
 class StaleServicesCommand extends Command
 {
@@ -53,7 +54,7 @@ class StaleServicesCommand extends Command
             ->where('status', '=', Service::STATUS_ACTIVE)
             ->whereBetween(
                 'last_modified_at',
-                [now()->subMonths(12), now()->subMonths(6)]
+                [Date::now()->subMonths(12), now()->subMonths(6)]
             )
             ->chunk(200, function (Collection $services): void {
                 // Loop through each service in the current chunk.
@@ -75,7 +76,7 @@ class StaleServicesCommand extends Command
             ->where('status', '=', Service::STATUS_ACTIVE)
             ->whereBetween(
                 'last_modified_at',
-                [now()->subMonths(13)->addDay(), now()->subMonths(12)]
+                [Date::now()->subMonths(13)->addDay(), now()->subMonths(12)]
             )
             ->chunk(200, function (Collection $services): void {
                 // Loop through each service in the current chunk.

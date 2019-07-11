@@ -9,8 +9,8 @@ use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\Service;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -106,8 +106,8 @@ class NotificationsTest extends TestCase
             'channel' => $notification->channel,
             'recipient' => $notification->recipient,
             'message' => $notification->message,
-            'created_at' => $notification->created_at->format(Carbon::ISO8601),
-            'updated_at' => $notification->updated_at->format(Carbon::ISO8601),
+            'created_at' => $notification->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $notification->updated_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -351,8 +351,8 @@ class NotificationsTest extends TestCase
             'channel' => Notification::CHANNEL_EMAIL,
             'recipient' => 'test@example.com',
             'message' => 'This is a test',
-            'created_at' => $this->now->format(Carbon::ISO8601),
-            'updated_at' => $this->now->format(Carbon::ISO8601),
+            'created_at' => $this->now->format(CarbonImmutable::ISO8601),
+            'updated_at' => $this->now->format(CarbonImmutable::ISO8601),
         ]);
     }
 

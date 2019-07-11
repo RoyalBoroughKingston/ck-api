@@ -8,6 +8,7 @@ use App\Emails\ServiceUpdatePrompt\NotifyServiceAdminEmail;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -21,7 +22,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         $service = factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(5),
+            'last_modified_at' => Date::now()->subMonths(5),
         ]);
 
         factory(User::class)->create()->makeServiceAdmin($service);
@@ -36,7 +37,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         $service = factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(13),
+            'last_modified_at' => Date::now()->subMonths(13),
         ]);
 
         factory(User::class)->create()->makeServiceAdmin($service);
@@ -51,7 +52,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         $service = factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(6),
+            'last_modified_at' => Date::now()->subMonths(6),
         ]);
 
         factory(User::class)->create()->makeServiceAdmin($service);
@@ -72,7 +73,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         $service = factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(12),
+            'last_modified_at' => Date::now()->subMonths(12),
         ]);
 
         factory(User::class)->create()->makeServiceAdmin($service);
@@ -93,7 +94,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         $service = factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(9),
+            'last_modified_at' => Date::now()->subMonths(9),
         ]);
 
         factory(User::class)->create()->makeServiceAdmin($service);
@@ -114,7 +115,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         $service = factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(9),
+            'last_modified_at' => Date::now()->subMonths(9),
         ]);
 
         factory(User::class)->create()->makeServiceWorker($service);
@@ -129,7 +130,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(9),
+            'last_modified_at' => Date::now()->subMonths(9),
         ]);
 
         factory(User::class)->create()->makeGlobalAdmin();
@@ -148,7 +149,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(11),
+            'last_modified_at' => Date::now()->subMonths(11),
         ]);
 
         factory(User::class)->create()->makeSuperAdmin();
@@ -163,7 +164,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(13),
+            'last_modified_at' => Date::now()->subMonths(13),
         ]);
 
         factory(User::class)->create()->makeSuperAdmin();
@@ -178,7 +179,7 @@ class StaleServicesCommandTest extends TestCase
         Queue::fake();
 
         factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(12),
+            'last_modified_at' => Date::now()->subMonths(12),
         ]);
 
         factory(User::class)->create()->makeSuperAdmin();

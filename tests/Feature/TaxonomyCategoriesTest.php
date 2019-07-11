@@ -8,9 +8,9 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -43,9 +43,9 @@ class TaxonomyCategoriesTest extends TestCase
                 'name' => $randomTaxonomy->name,
                 'order' => $randomTaxonomy->order,
                 'children' => [],
-                'created_at' => $randomTaxonomy->created_at->format(Carbon::ISO8601),
-                'updated_at' => $randomTaxonomy->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $randomTaxonomy->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $randomTaxonomy->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -151,7 +151,8 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
         foreach ($topLevelCategories as $category) {
-            $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order + 1]);
+            $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                ['id' => $category->id, 'order' => $category->order + 1]);
         }
     }
 
@@ -172,9 +173,11 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertJsonFragment($payload);
         foreach ($topLevelCategories as $category) {
             if ($category->order < 2) {
-                $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order]);
+                $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                    ['id' => $category->id, 'order' => $category->order]);
             } else {
-                $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order + 1]);
+                $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                    ['id' => $category->id, 'order' => $category->order + 1]);
             }
         }
     }
@@ -195,7 +198,8 @@ class TaxonomyCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
         foreach ($topLevelCategories as $category) {
-            $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $category->id, 'order' => $category->order]);
+            $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                ['id' => $category->id, 'order' => $category->order]);
         }
     }
 
@@ -277,9 +281,9 @@ class TaxonomyCategoriesTest extends TestCase
                 'name' => $randomTaxonomy->name,
                 'order' => $randomTaxonomy->order,
                 'children' => [],
-                'created_at' => $randomTaxonomy->created_at->format(Carbon::ISO8601),
-                'updated_at' => $randomTaxonomy->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $randomTaxonomy->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $randomTaxonomy->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 

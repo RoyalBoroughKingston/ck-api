@@ -4,7 +4,7 @@ namespace Tests\Unit\Models;
 
 use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
 class ServiceLocationTest extends TestCase
@@ -25,7 +25,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_WEEKLY,
-            'weekday' => today()->dayOfWeek,
+            'weekday' => Date::today()->dayOfWeek,
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -38,7 +38,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_WEEKLY,
-            'weekday' => today()->addDay()->dayOfWeek,
+            'weekday' => Date::today()->addDay()->dayOfWeek,
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -48,12 +48,12 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_weekly_frequency_returns_false_if_weekday_is_today_but_out_of_hours()
     {
-        Carbon::setTestNow(now()->setTime(9, 0));
+        Date::setTestNow(Date::now()->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_WEEKLY,
-            'weekday' => today()->dayOfWeek,
+            'weekday' => Date::today()->dayOfWeek,
             'opens_at' => '10:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -70,7 +70,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
-            'day_of_month' => today()->day,
+            'day_of_month' => Date::today()->day,
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -83,7 +83,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
-            'day_of_month' => today()->addDay()->day,
+            'day_of_month' => Date::today()->addDay()->day,
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -93,12 +93,12 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_monthly_frequency_returns_false_if_day_of_month_is_today_but_out_of_hours()
     {
-        Carbon::setTestNow(now()->setTime(9, 0));
+        Date::setTestNow(Date::now()->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
-            'day_of_month' => today()->day,
+            'day_of_month' => Date::today()->day,
             'opens_at' => '12:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -115,7 +115,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
-            'starts_at' => today(),
+            'starts_at' => Date::today(),
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -128,7 +128,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
-            'starts_at' => today()->subWeeks(2),
+            'starts_at' => Date::today()->subWeeks(2),
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -141,7 +141,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
-            'starts_at' => today()->addWeeks(2),
+            'starts_at' => Date::today()->addWeeks(2),
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -154,7 +154,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
-            'starts_at' => today()->addWeek(),
+            'starts_at' => Date::today()->addWeek(),
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -167,7 +167,7 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
-            'starts_at' => today()->addDays(3),
+            'starts_at' => Date::today()->addDays(3),
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -177,12 +177,12 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_fortnightly_frequency_returns_false_if_lands_on_today_but_out_of_hours()
     {
-        Carbon::setTestNow(now()->setTime(9, 0));
+        Date::setTestNow(Date::now()->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
-            'starts_at' => today(),
+            'starts_at' => Date::today(),
             'opens_at' => '10:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -196,8 +196,8 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_if_lands_on_today()
     {
-        $now = Carbon::createFromTimestamp(strtotime('second tuesday of august 2018'));
-        Carbon::setTestNow($now->setTime(9, 0));
+        $now = Date::createFromTimestamp(strtotime('second tuesday of august 2018'));
+        Date::setTestNow($now->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
@@ -213,8 +213,8 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_false_if_lands_on_different_day()
     {
-        $now = Carbon::createFromTimestamp(strtotime('second tuesday of august 2018'));
-        Carbon::setTestNow($now->setTime(9, 0));
+        $now = Date::createFromTimestamp(strtotime('second tuesday of august 2018'));
+        Date::setTestNow($now->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
@@ -228,10 +228,11 @@ class ServiceLocationTest extends TestCase
         $this->assertFalse($serviceLocation->isOpenNow());
     }
 
-    public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_if_lands_on_today_but_out_of_hours()
+    public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_if_lands_on_today_but_out_of_hours(
+    )
     {
-        $now = Carbon::createFromTimestamp(strtotime('second tuesday of august 2018'));
-        Carbon::setTestNow($now->setTime(9, 0));
+        $now = Date::createFromTimestamp(strtotime('second tuesday of august 2018'));
+        Date::setTestNow($now->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
@@ -247,8 +248,8 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_for_last_day_of_month()
     {
-        $now = Carbon::createFromTimestamp(strtotime('last friday of september 2018'));
-        Carbon::setTestNow($now->setTime(9, 0));
+        $now = Date::createFromTimestamp(strtotime('last friday of september 2018'));
+        Date::setTestNow($now->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->regularOpeningHours()->create([
@@ -271,8 +272,8 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->holidayOpeningHours()->create([
             'is_closed' => false,
-            'starts_at' => today()->subDay(),
-            'ends_at' => today()->addDay(),
+            'starts_at' => Date::today()->subDay(),
+            'ends_at' => Date::today()->addDay(),
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -282,13 +283,13 @@ class ServiceLocationTest extends TestCase
 
     public function test_is_open_now_returns_false_if_holiday_opening_hours_include_today_but_out_of_hours()
     {
-        Carbon::setTestNow(now()->setTime(9, 0));
+        Date::setTestNow(Date::now()->setTime(9, 0));
 
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->holidayOpeningHours()->create([
             'is_closed' => false,
-            'starts_at' => today()->subDay(),
-            'ends_at' => today()->addDay(),
+            'starts_at' => Date::today()->subDay(),
+            'ends_at' => Date::today()->addDay(),
             'opens_at' => '10:00:00',
             'closes_at' => '24:00:00',
         ]);
@@ -301,14 +302,14 @@ class ServiceLocationTest extends TestCase
         $serviceLocation = factory(ServiceLocation::class)->create();
         $serviceLocation->holidayOpeningHours()->create([
             'is_closed' => true,
-            'starts_at' => today()->subDay(),
-            'ends_at' => today()->addDay(),
+            'starts_at' => Date::today()->subDay(),
+            'ends_at' => Date::today()->addDay(),
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);
         $serviceLocation->regularOpeningHours()->create([
             'frequency' => RegularOpeningHour::FREQUENCY_WEEKLY,
-            'weekday' => today()->dayOfWeek,
+            'weekday' => Date::today()->dayOfWeek,
             'opens_at' => '00:00:00',
             'closes_at' => '24:00:00',
         ]);

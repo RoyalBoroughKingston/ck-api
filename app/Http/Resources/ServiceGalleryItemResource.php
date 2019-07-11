@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Carbon;
 
 class ServiceGalleryItemResource extends JsonResource
 {
@@ -18,8 +18,8 @@ class ServiceGalleryItemResource extends JsonResource
         return [
             'file_id' => $this->file_id,
             'url' => $this->url(),
-            'created_at' => $this->created_at->format(Carbon::ISO8601),
-            'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+            'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
         ];
     }
 }

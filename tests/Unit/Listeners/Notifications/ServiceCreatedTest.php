@@ -32,19 +32,21 @@ class ServiceCreatedTest extends TestCase
         $listener->handle($event);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
-        Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) use ($service, $user) {
-            $this->assertEquals(config('ck.global_admin.email'), $email->to);
-            $this->assertEquals(config('ck.notifications_template_ids.service_created.notify_global_admin.email'), $email->templateId);
+        Queue::assertPushed(NotifyGlobalAdminEmail::class,
+            function (NotifyGlobalAdminEmail $email) use ($service, $user) {
+                $this->assertEquals(config('ck.global_admin.email'), $email->to);
+                $this->assertEquals(config('ck.notifications_template_ids.service_created.notify_global_admin.email'),
+                    $email->templateId);
 
-            $this->assertEquals($service->name, $email->values['SERVICE_NAME']);
-            $this->assertEquals($user->full_name, $email->values['ORGANISATION_ADMIN_NAME']);
-            $this->assertEquals($service->intro, $email->values['SERVICE_INTRO']);
-            $this->assertEquals($service->organisation->name, $email->values['ORGANISATION_NAME']);
-            $this->assertEquals($user->email, $email->values['ORGANISATION_ADMIN_EMAIL']);
-            $this->assertEquals(backend_uri("/services/{$service->id}"), $email->values['SERVICE_URL']);
+                $this->assertEquals($service->name, $email->values['SERVICE_NAME']);
+                $this->assertEquals($user->full_name, $email->values['ORGANISATION_ADMIN_NAME']);
+                $this->assertEquals($service->intro, $email->values['SERVICE_INTRO']);
+                $this->assertEquals($service->organisation->name, $email->values['ORGANISATION_NAME']);
+                $this->assertEquals($user->email, $email->values['ORGANISATION_ADMIN_EMAIL']);
+                $this->assertEquals(backend_uri("/services/{$service->id}"), $email->values['SERVICE_URL']);
 
-            return true;
-        });
+                return true;
+            });
     }
 
     public function test_email_not_sent_to_global_admin_email_when_created_by_global_admin()

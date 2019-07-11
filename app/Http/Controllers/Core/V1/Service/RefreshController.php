@@ -8,6 +8,7 @@ use App\Http\Requests\Service\Refresh\UpdateRequest;
 use App\Http\Resources\ServiceResource;
 use App\Models\Service;
 use App\Models\ServiceRefreshToken;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class RefreshController extends Controller
@@ -23,7 +24,7 @@ class RefreshController extends Controller
     {
         return DB::transaction(function () use ($request, $service) {
             // Update the last_modified_at timestamp to now.
-            $service->update(['last_modified_at' => now()]);
+            $service->update(['last_modified_at' => Date::now()]);
 
             // Delete the token used.
             ServiceRefreshToken::query()->findOrFail($request->token)->delete();

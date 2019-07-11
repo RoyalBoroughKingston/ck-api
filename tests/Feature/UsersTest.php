@@ -47,7 +47,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
     }
@@ -188,7 +188,7 @@ class UsersTest extends TestCase
     public function test_guest_cannot_create_one()
     {
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_SUPER_ADMIN]
+            ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -204,7 +204,7 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_SUPER_ADMIN]
+            ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -223,7 +223,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => factory(Service::class)->create()->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -239,7 +239,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -259,7 +259,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => factory(Service::class)->create()->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -275,7 +275,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -296,7 +296,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -315,7 +315,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => factory(Service::class)->create()->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -331,7 +331,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -351,7 +351,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => factory(Service::class)->create()->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -367,7 +367,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -388,7 +388,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => factory(Organisation::class)->create()->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -404,7 +404,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -423,7 +423,7 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_GLOBAL_ADMIN]
+            ['role' => Role::NAME_GLOBAL_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -442,7 +442,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -462,7 +462,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -483,7 +483,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -502,7 +502,7 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_GLOBAL_ADMIN]
+            ['role' => Role::NAME_GLOBAL_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -521,7 +521,7 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_SUPER_ADMIN]
+            ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -541,7 +541,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -561,7 +561,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -582,7 +582,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -601,7 +601,7 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_GLOBAL_ADMIN]
+            ['role' => Role::NAME_GLOBAL_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -621,7 +621,7 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_SUPER_ADMIN]
+            ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -650,7 +650,7 @@ class UsersTest extends TestCase
             'phone' => random_uk_phone(),
             'password' => 'Pa$$w0rd',
             'roles' => [
-                ['role' => Role::NAME_SUPER_ADMIN]
+                ['role' => Role::NAME_SUPER_ADMIN],
             ],
         ]);
 
@@ -682,7 +682,7 @@ class UsersTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/users', $this->getCreateUserPayload([
-            ['role' => Role::NAME_SUPER_ADMIN]
+            ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
@@ -727,7 +727,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
     }
@@ -783,7 +783,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
     }
@@ -820,7 +820,7 @@ class UsersTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
 
         $response = $this->json('PUT', "/core/v1/users/{$user->id}", $this->getCreateUserPayload([
-            ['role' => Role::NAME_SERVICE_ADMIN]
+            ['role' => Role::NAME_SERVICE_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -838,7 +838,7 @@ class UsersTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
 
         $response = $this->json('PUT', "/core/v1/users/{$user->id}", $this->getCreateUserPayload([
-            ['role' => Role::NAME_SUPER_ADMIN]
+            ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
@@ -854,7 +854,7 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_OK);
@@ -881,7 +881,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
 
@@ -895,7 +895,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
     }
@@ -999,7 +999,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
 
@@ -1013,7 +1013,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
     }
@@ -1104,19 +1104,19 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]);
     }
 
@@ -1178,7 +1178,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
 
@@ -1192,7 +1192,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
     }
@@ -1283,19 +1283,19 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]);
     }
 
@@ -1341,22 +1341,22 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
-            ['role' => Role::NAME_GLOBAL_ADMIN]
+            ['role' => Role::NAME_GLOBAL_ADMIN],
         ]);
     }
 
@@ -1417,7 +1417,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
 
@@ -1431,7 +1431,7 @@ class UsersTest extends TestCase
                 [
                     'role' => Role::NAME_SERVICE_WORKER,
                     'service_id' => $service->id,
-                ]
+                ],
             ],
         ]);
     }
@@ -1522,19 +1522,19 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]);
     }
 
@@ -1580,22 +1580,22 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
-            ['role' => Role::NAME_GLOBAL_ADMIN]
+            ['role' => Role::NAME_GLOBAL_ADMIN],
         ]);
     }
 
@@ -1642,25 +1642,25 @@ class UsersTest extends TestCase
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,
-            ]
+            ],
         ]);
         $response->assertJsonFragment([
-            ['role' => Role::NAME_GLOBAL_ADMIN]
+            ['role' => Role::NAME_GLOBAL_ADMIN],
         ]);
         $response->assertJsonFragment([
-            ['role' => Role::NAME_SUPER_ADMIN]
+            ['role' => Role::NAME_SUPER_ADMIN],
         ]);
     }
 

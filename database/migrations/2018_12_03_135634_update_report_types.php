@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class UpdateReportTypes extends Migration
@@ -12,7 +13,7 @@ class UpdateReportTypes extends Migration
     {
         DB::table('report_types')->delete();
 
-        $now = now();
+        $now = Date::now();
 
         DB::table('report_types')->insert([
             'id' => uuid(),
@@ -78,7 +79,7 @@ class UpdateReportTypes extends Migration
     {
         DB::table('report_types')->delete();
 
-        $now = now();
+        $now = Date::now();
 
         DB::table('report_types')->insert([
             'id' => uuid(),

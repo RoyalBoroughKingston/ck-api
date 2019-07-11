@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 
 class Time
 {
@@ -51,7 +51,7 @@ class Time
      */
     public static function createFromFormat(string $format, string $time): Time
     {
-        $carbon = Carbon::createFromFormat($format, $time);
+        $carbon = Date::createFromFormat($format, $time);
 
         return new static($carbon->format('H:i:s'));
     }
@@ -61,7 +61,7 @@ class Time
      */
     public static function now(): Time
     {
-        return new static(now()->format('H:i:s'));
+        return new static(Date::now()->format('H:i:s'));
     }
 
     /**
@@ -70,7 +70,7 @@ class Time
      */
     public function format(string $format): string
     {
-        $carbon = Carbon::createFromFormat('H:i:s', $this->toString());
+        $carbon = Date::createFromFormat('H:i:s', $this->toString());
 
         return $carbon->format($format);
     }
@@ -98,9 +98,9 @@ class Time
      */
     public function between(Time $time1, Time $time2): bool
     {
-        $now = Carbon::now()->setTime($this->hours, $this->minutes, $this->seconds);
-        $time1 = Carbon::now()->setTime($time1->hours, $time1->minutes, $time1->seconds);
-        $time2 = Carbon::now()->setTime($time2->hours, $time2->minutes, $time2->seconds);
+        $now = Date::now()->setTime($this->hours, $this->minutes, $this->seconds);
+        $time1 = Date::now()->setTime($time1->hours, $time1->minutes, $time1->seconds);
+        $time2 = Date::now()->setTime($time2->hours, $time2->minutes, $time2->seconds);
 
         return $now->between($time1, $time2);
     }

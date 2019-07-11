@@ -18,6 +18,7 @@ use App\Http\Sorts\Referral\ServiceNameSort;
 use App\Models\Referral;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -108,8 +109,8 @@ class ReferralController extends Controller
                 'other_contact' => $request->other_contact,
                 'postcode_outward_code' => $request->postcode_outward_code,
                 'comments' => $request->comments,
-                'referral_consented_at' => $request->referral_consented ? now() : null,
-                'feedback_consented_at' => $request->feedback_consented ? now() : null,
+                'referral_consented_at' => $request->referral_consented ? Date::now() : null,
+                'feedback_consented_at' => $request->feedback_consented ? Date::now() : null,
             ]);
 
             // Fill in the fields for client referral.

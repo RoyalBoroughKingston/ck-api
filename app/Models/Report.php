@@ -5,11 +5,12 @@ namespace App\Models;
 use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
+use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
 class Report extends Model
@@ -35,17 +36,17 @@ class Report extends Model
      * Then delegates the physical file creation to a `generateReportName` method.
      *
      * @param \App\Models\ReportType $type
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @throws \Exception
      * @return \App\Models\Report
      */
-    public static function generate(ReportType $type, Carbon $startsAt = null, Carbon $endsAt = null): self
+    public static function generate(ReportType $type, CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
     {
         // Generate the file name.
         $filename = sprintf(
             '%s_%s_%s.csv',
-            now()->format('Y-m-d_H-i'),
+            Date::now()->format('Y-m-d_H-i'),
             Str::slug(config('app.name')),
             Str::slug($type->name)
         );
@@ -187,7 +188,7 @@ class Report extends Model
                         $service->name,
                         $service->url,
                         $service->contact_name,
-                        $service->updated_at->format(Carbon::ISO8601),
+                        $service->updated_at->format(CarbonImmutable::ISO8601),
                         $service->referral_method,
                         $service->referral_email,
                         $service->status,
@@ -289,11 +290,11 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateReferralsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateReferralsExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
     {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
@@ -332,13 +333,13 @@ class Report extends Model
                         $referral->service->organisation->name,
                         $referral->service->id,
                         $referral->service->name,
-                        optional($referral->created_at)->format(Carbon::ISO8601),
+                        optional($referral->created_at)->format(CarbonImmutable::ISO8601),
                         $referral->isCompleted()
-                            ? $referral->latestCompletedStatusUpdate->created_at->format(Carbon::ISO8601)
+                            ? $referral->latestCompletedStatusUpdate->created_at->format(CarbonImmutable::ISO8601)
                             : '',
                         $referral->isSelfReferral() ? 'Self' : 'Champion',
                         $referral->isSelfReferral() ? null : $referral->organisationName(),
-                        optional($referral->referral_consented_at)->format(Carbon::ISO8601),
+                        optional($referral->referral_consented_at)->format(CarbonImmutable::ISO8601),
                     ];
                 });
             });
@@ -350,11 +351,11 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateFeedbackExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateFeedbackExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
     {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
@@ -396,11 +397,11 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateAuditLogsExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateAuditLogsExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
     {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
@@ -435,7 +436,7 @@ class Report extends Model
                         $audit->action,
                         $audit->description,
                         optional($audit->user)->full_name,
-                        optional($audit->created_at)->format(Carbon::ISO8601),
+                        optional($audit->created_at)->format(CarbonImmutable::ISO8601),
                         $audit->ip_address,
                         $audit->user_agent,
                     ];
@@ -449,11 +450,11 @@ class Report extends Model
     }
 
     /**
-     * @param \Illuminate\Support\Carbon|null $startsAt
-     * @param \Illuminate\Support\Carbon|null $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateSearchHistoriesExport(Carbon $startsAt = null, Carbon $endsAt = null): self
+    public function generateSearchHistoriesExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
     {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
