@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class SeedDefaultReportTypeData extends Migration
@@ -10,7 +11,7 @@ class SeedDefaultReportTypeData extends Migration
      */
     public function up()
     {
-        $now = now();
+        $now = Date::now();
 
         DB::table('report_types')->insert([
             'id' => uuid(),

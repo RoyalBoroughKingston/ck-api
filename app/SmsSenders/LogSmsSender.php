@@ -4,6 +4,7 @@ namespace App\SmsSenders;
 
 use App\Contracts\SmsSender;
 use App\Sms\Sms;
+use Illuminate\Support\Facades\Date;
 
 class LogSmsSender implements SmsSender
 {
@@ -12,7 +13,7 @@ class LogSmsSender implements SmsSender
      */
     public function send(Sms $sms)
     {
-        logger()->debug('SMS sent at [' . now()->toDateTimeString() . ']', [
+        logger()->debug('SMS sent at [' . Date::now()->toDateTimeString() . ']', [
             'to' => $sms->to,
             'templateId' => $sms->templateId,
             'values' => $sms->values,

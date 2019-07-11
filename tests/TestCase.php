@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 
@@ -51,7 +52,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->setUpElasticsearch();
 
-        $this->now = now();
+        $this->now = Date::now();
     }
 
     /**

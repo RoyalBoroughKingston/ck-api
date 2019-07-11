@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Date;
 
 class UnactionedReferralsCommand extends Command
 {
@@ -72,10 +73,10 @@ class UnactionedReferralsCommand extends Command
                 'REFERRAL_SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_INITIALS' => $referral->initials(),
                 'REFERRAL_ID' => $referral->reference,
-                'REFERRAL_DAYS_AGO' => $referral->created_at->diffInWeekdays(now()),
+                'REFERRAL_DAYS_AGO' => $referral->created_at->diffInWeekdays(Date::now()),
                 'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
                 'REFERRAL_CONTACT_METHOD' => $contactMethod,
-                'REFERRAL_DAYS_LEFT' => now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('ck.working_days_for_service_to_respond'))),
+                'REFERRAL_DAYS_LEFT' => Date::now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('ck.working_days_for_service_to_respond'))),
             ]));
 
             // Send a copy of the email to the global admin team.
@@ -83,10 +84,10 @@ class UnactionedReferralsCommand extends Command
                 'REFERRAL_SERVICE_NAME' => $referral->service->name,
                 'REFERRAL_INITIALS' => $referral->initials(),
                 'REFERRAL_ID' => $referral->reference,
-                'REFERRAL_DAYS_AGO' => $referral->created_at->diffInWeekdays(now()),
+                'REFERRAL_DAYS_AGO' => $referral->created_at->diffInWeekdays(Date::now()),
                 'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
                 'REFERRAL_CONTACT_METHOD' => $contactMethod,
-                'REFERRAL_DAYS_LEFT' => now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('ck.working_days_for_service_to_respond'))),
+                'REFERRAL_DAYS_LEFT' => Date::now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('ck.working_days_for_service_to_respond'))),
             ]));
 
             // Output a success message.

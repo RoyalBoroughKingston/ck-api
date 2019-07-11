@@ -9,6 +9,7 @@ use App\Http\Requests\PageFeedback\ShowRequest;
 use App\Http\Requests\PageFeedback\StoreRequest;
 use App\Http\Resources\PageFeedbackResource;
 use App\Models\PageFeedback;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -66,7 +67,7 @@ class PageFeedbackController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
-                'consented_at' => now(),
+                'consented_at' => Date::now(),
             ]);
 
             event(EndpointHit::onCreate($request, "Created page feedback [{$pageFeedback->id}]", $pageFeedback));

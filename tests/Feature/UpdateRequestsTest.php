@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -763,8 +764,8 @@ class UpdateRequestsTest extends TestCase
 
     public function test_last_modified_at_is_set_to_now_when_service_updated()
     {
-        $oldNow = now()->subMonths(6);
-        $newNow = now();
+        $oldNow = Date::now()->subMonths(6);
+        $newNow = Date::now();
         Carbon::setTestNow($newNow);
 
         $user = factory(User::class)->create()->makeGlobalAdmin();

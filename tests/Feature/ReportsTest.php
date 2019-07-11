@@ -11,6 +11,7 @@ use App\Models\ReportType;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -199,20 +200,20 @@ class ReportsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/reports', [
             'report_type' => ReportType::referralsExport()->name,
-            'starts_at' => today()->startOfMonth()->toDateString(),
-            'ends_at' => today()->endOfMonth()->toDateString(),
+            'starts_at' => Date::today()->startOfMonth()->toDateString(),
+            'ends_at' => Date::today()->endOfMonth()->toDateString(),
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
             'report_type' => ReportType::referralsExport()->name,
-            'starts_at' => today()->startOfMonth()->toDateString(),
-            'ends_at' => today()->endOfMonth()->toDateString(),
+            'starts_at' => Date::today()->startOfMonth()->toDateString(),
+            'ends_at' => Date::today()->endOfMonth()->toDateString(),
         ]);
         $this->assertDatabaseHas((new Report())->getTable(), [
             'report_type_id' => ReportType::referralsExport()->id,
-            'starts_at' => today()->startOfMonth()->toDateString(),
-            'ends_at' => today()->endOfMonth()->toDateString(),
+            'starts_at' => Date::today()->startOfMonth()->toDateString(),
+            'ends_at' => Date::today()->endOfMonth()->toDateString(),
         ]);
     }
 

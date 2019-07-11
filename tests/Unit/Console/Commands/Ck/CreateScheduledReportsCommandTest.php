@@ -9,6 +9,7 @@ use App\Models\ReportSchedule;
 use App\Models\ReportType;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -23,14 +24,14 @@ class CreateScheduledReportsCommandTest extends TestCase
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
 
-        Carbon::setTestNow(now()->startOfWeek());
+        Carbon::setTestNow(Date::now()->startOfWeek());
 
         Artisan::call(CreateScheduledReportsCommand::class);
 
         $this->assertDatabaseHas(table(Report::class), [
             'report_type_id' => $reportSchedule->reportType->id,
-            'starts_at' => now()->subWeek()->startOfWeek()->toDateString(),
-            'ends_at' => now()->subWeek()->endOfWeek()->toDateString(),
+            'starts_at' => Date::now()->subWeek()->startOfWeek()->toDateString(),
+            'ends_at' => Date::now()->subWeek()->endOfWeek()->toDateString(),
         ]);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
@@ -50,14 +51,14 @@ class CreateScheduledReportsCommandTest extends TestCase
             'repeat_type' => ReportSchedule::REPEAT_TYPE_MONTHLY,
         ]);
 
-        Carbon::setTestNow(now()->startOfMonth());
+        Carbon::setTestNow(Date::now()->startOfMonth());
 
         Artisan::call(CreateScheduledReportsCommand::class);
 
         $this->assertDatabaseHas(table(Report::class), [
             'report_type_id' => $reportSchedule->reportType->id,
-            'starts_at' => now()->subMonth()->startOfMonth()->toDateString(),
-            'ends_at' => now()->subMonth()->endOfMonth()->toDateString(),
+            'starts_at' => Date::now()->subMonth()->startOfMonth()->toDateString(),
+            'ends_at' => Date::now()->subMonth()->endOfMonth()->toDateString(),
         ]);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);

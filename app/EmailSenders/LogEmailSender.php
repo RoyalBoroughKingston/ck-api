@@ -4,6 +4,7 @@ namespace App\EmailSenders;
 
 use App\Contracts\EmailSender;
 use App\Emails\Email;
+use Illuminate\Support\Facades\Date;
 
 class LogEmailSender implements EmailSender
 {
@@ -12,7 +13,7 @@ class LogEmailSender implements EmailSender
      */
     public function send(Email $email)
     {
-        logger()->debug('Email sent at [' . now()->toDateTimeString() . ']', [
+        logger()->debug('Email sent at [' . Date::now()->toDateTimeString() . ']', [
             'to' => $email->to,
             'templateId' => $email->templateId,
             'values' => $email->values,

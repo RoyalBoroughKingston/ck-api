@@ -4,6 +4,7 @@ namespace App\Models\Scopes;
 
 use App\Models\File;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 
 trait FileScopes
 {
@@ -13,7 +14,7 @@ trait FileScopes
      */
     public function scopePendingAssignmentDueForDeletion(Builder $query): Builder
     {
-        $date = today()->subDays(File::PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS);
+        $date = Date::today()->subDays(File::PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS);
 
         return $query
             ->whereRaw('`meta`->>"$.type" = ?', [File::META_TYPE_PENDING_ASSIGNMENT])

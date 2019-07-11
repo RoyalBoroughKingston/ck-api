@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
@@ -234,7 +235,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                 ? $data['logo_file_id']
                 : $this->logo_file_id,
             // This must always be updated regardless of the fields changed.
-            'last_modified_at' => now(),
+            'last_modified_at' => Date::now(),
         ]);
 
         // Update the service criterion record.

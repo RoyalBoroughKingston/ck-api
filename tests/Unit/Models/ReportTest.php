@@ -17,6 +17,7 @@ use App\Models\ServiceLocation;
 use App\Models\User;
 use App\Support\Coordinate;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
 class ReportTest extends TestCase
@@ -292,7 +293,7 @@ class ReportTest extends TestCase
     public function test_referrals_export_works()
     {
         // Create a single referral.
-        $referral = factory(Referral::class)->create(['referral_consented_at' => now()]);
+        $referral = factory(Referral::class)->create(['referral_consented_at' => Date::now()]);
 
         // Generate the report.
         $report = Report::generate(ReportType::referralsExport());
@@ -335,10 +336,10 @@ class ReportTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
 
         // Create a single referral.
-        $referral = factory(Referral::class)->create(['referral_consented_at' => now()]);
+        $referral = factory(Referral::class)->create(['referral_consented_at' => Date::now()]);
 
         // Update the referral.
-        Carbon::setTestNow(now()->addHour());
+        Carbon::setTestNow(Date::now()->addHour());
         $statusUpdate = $referral->updateStatus($user, Referral::STATUS_COMPLETED);
 
         // Generate the report.
@@ -381,20 +382,20 @@ class ReportTest extends TestCase
     {
         // Create an in range referral.
         $referralInRange = factory(Referral::class)->create([
-            'referral_consented_at' => now(),
+            'referral_consented_at' => Date::now(),
         ]);
 
         // Create an out of range referral.
         factory(Referral::class)->create([
-            'referral_consented_at' => now(),
-            'created_at' => today()->subMonths(2),
+            'referral_consented_at' => Date::now(),
+            'created_at' => Date::today()->subMonths(2),
         ]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::referralsExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.
@@ -434,7 +435,7 @@ class ReportTest extends TestCase
     {
         // Create a single referral.
         $referral = factory(Referral::class)->create([
-            'referral_consented_at' => now(),
+            'referral_consented_at' => Date::now(),
             'referee_name' => $this->faker->name,
             'referee_email' => $this->faker->email,
             'referee_phone' => '07700000000',
@@ -514,13 +515,13 @@ class ReportTest extends TestCase
     {
         // Create a single feedback.
         $feedbackWithinRange = factory(PageFeedback::class)->create();
-        factory(PageFeedback::class)->create(['created_at' => today()->subMonths(2)]);
+        factory(PageFeedback::class)->create(['created_at' => Date::today()->subMonths(2)]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::feedbackExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.
@@ -587,13 +588,13 @@ class ReportTest extends TestCase
     {
         // Create a single audit log.
         $auditWithinRange = factory(Audit::class)->create();
-        factory(Audit::class)->create(['created_at' => today()->subMonths(2)]);
+        factory(Audit::class)->create(['created_at' => Date::today()->subMonths(2)]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::auditLogsExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.
@@ -716,14 +717,14 @@ class ReportTest extends TestCase
         SearchHistory::create([
             'query' => $search->getQuery(),
             'count' => 1,
-            'created_at' => today()->subMonths(2),
+            'created_at' => Date::today()->subMonths(2),
         ]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::searchHistoriesExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.

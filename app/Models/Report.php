@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
 class Report extends Model
@@ -45,7 +46,7 @@ class Report extends Model
         // Generate the file name.
         $filename = sprintf(
             '%s_%s_%s.csv',
-            now()->format('Y-m-d_H-i'),
+            Date::now()->format('Y-m-d_H-i'),
             Str::slug(config('app.name')),
             Str::slug($type->name)
         );

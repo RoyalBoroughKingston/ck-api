@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
@@ -2300,11 +2301,11 @@ class ServicesTest extends TestCase
 
     public function test_guest_with_valid_token_can_refresh()
     {
-        $now = now();
+        $now = Date::now();
         Carbon::setTestNow($now);
 
         $service = factory(Service::class)->create([
-            'last_modified_at' => now()->subMonths(6),
+            'last_modified_at' => Date::now()->subMonths(6),
         ]);
 
         $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [

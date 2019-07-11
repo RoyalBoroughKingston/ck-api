@@ -14,6 +14,7 @@ use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
@@ -67,12 +68,12 @@ class ServiceLocationsTest extends TestCase
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
         $regularOpeningHour = factory(RegularOpeningHour::class)->create([
             'service_location_id' => $serviceLocation->id,
-            'weekday' => now()->addDay()->day,
+            'weekday' => Date::now()->addDay()->day,
         ]);
         $holidayOpeningHour = factory(HolidayOpeningHour::class)->create([
             'service_location_id' => $serviceLocation->id,
-            'starts_at' => now()->addMonth(),
-            'ends_at' => now()->addMonths(2),
+            'starts_at' => Date::now()->addMonth(),
+            'ends_at' => Date::now()->addMonths(2),
         ]);
 
         $response = $this->json('GET', '/core/v1/service-locations');
@@ -302,12 +303,12 @@ class ServiceLocationsTest extends TestCase
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
         $regularOpeningHour = factory(RegularOpeningHour::class)->create([
             'service_location_id' => $serviceLocation->id,
-            'weekday' => now()->addDay()->day,
+            'weekday' => Date::now()->addDay()->day,
         ]);
         $holidayOpeningHour = factory(HolidayOpeningHour::class)->create([
             'service_location_id' => $serviceLocation->id,
-            'starts_at' => now()->addMonth(),
-            'ends_at' => now()->addMonths(2),
+            'starts_at' => Date::now()->addMonth(),
+            'ends_at' => Date::now()->addMonths(2),
         ]);
 
         $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");

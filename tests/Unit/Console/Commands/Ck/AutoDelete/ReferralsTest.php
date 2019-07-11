@@ -5,6 +5,7 @@ namespace Tests\Unit\Console\Commands\Ck;
 use App\Console\Commands\Ck\AutoDelete\ReferralsCommand;
 use App\Models\Referral;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
 class ReferralsTest extends TestCase
@@ -15,16 +16,16 @@ class ReferralsTest extends TestCase
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_COMPLETED,
-            'created_at' => today(),
-            'updated_at' => today(),
+            'created_at' => Date::today(),
+            'updated_at' => Date::today(),
         ]);
 
         $dueForDeletionReferral = factory(Referral::class)->create([
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_COMPLETED,
-            'created_at' => today()->subMonths(Referral::AUTO_DELETE_MONTHS),
-            'updated_at' => today()->subMonths(Referral::AUTO_DELETE_MONTHS),
+            'created_at' => Date::today()->subMonths(Referral::AUTO_DELETE_MONTHS),
+            'updated_at' => Date::today()->subMonths(Referral::AUTO_DELETE_MONTHS),
         ]);
 
         Artisan::call(ReferralsCommand::class);
@@ -39,8 +40,8 @@ class ReferralsTest extends TestCase
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_INCOMPLETED,
-            'created_at' => today()->subMonths(Referral::AUTO_DELETE_MONTHS),
-            'updated_at' => today()->subMonths(Referral::AUTO_DELETE_MONTHS),
+            'created_at' => Date::today()->subMonths(Referral::AUTO_DELETE_MONTHS),
+            'updated_at' => Date::today()->subMonths(Referral::AUTO_DELETE_MONTHS),
         ]);
 
         Artisan::call(ReferralsCommand::class);

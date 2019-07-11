@@ -13,6 +13,7 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
@@ -281,7 +282,7 @@ class BatchUploader
                 'referral_button_text' => !$isNone ? 'Make referral' : null,
                 'referral_email' => $isInternal ? $serviceArray['Referral Email'] : null,
                 'referral_url' => $isExternal ? $serviceArray['Referral URL'] : null,
-                'last_modified_at' => now(),
+                'last_modified_at' => Date::now(),
             ]);
 
             $service->_id = $serviceArray['ID*'];

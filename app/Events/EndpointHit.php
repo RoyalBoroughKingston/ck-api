@@ -9,6 +9,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Laravel\Passport\Client;
 
 class EndpointHit
@@ -74,7 +75,7 @@ class EndpointHit
         $this->description = $description;
         $this->ipAddress = $request->ip();
         $this->userAgent = $request->userAgent();
-        $this->createdAt = now();
+        $this->createdAt = Date::now();
         $this->model = $model;
     }
 

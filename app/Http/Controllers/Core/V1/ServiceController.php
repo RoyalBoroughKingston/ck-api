@@ -21,6 +21,7 @@ use App\Models\Taxonomy;
 use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Support\MissingValue;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -119,7 +120,7 @@ class ServiceController extends Controller
                 'referral_email' => $request->referral_email,
                 'referral_url' => $request->referral_url,
                 'logo_file_id' => $request->logo_file_id,
-                'last_modified_at' => now(),
+                'last_modified_at' => Date::now(),
             ]);
 
             if ($request->filled('gallery_items')) {
