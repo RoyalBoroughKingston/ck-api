@@ -9,8 +9,8 @@ use App\Models\Referral;
 use App\Models\Service;
 use App\Models\StatusUpdate;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -84,15 +84,15 @@ class ReferralsTest extends TestCase
                 'other_contact' => $referral->other_contact,
                 'postcode_outward_code' => $referral->postcode_outward_code,
                 'comments' => $referral->comments,
-                'referral_consented_at' => $referral->referral_consented_at->format(Carbon::ISO8601),
+                'referral_consented_at' => $referral->referral_consented_at->format(CarbonImmutable::ISO8601),
                 'feedback_consented_at' => null,
                 'referee_name' => $referral->referee_name,
                 'referee_email' => $referral->referee_email,
                 'referee_phone' => $referral->referee_phone,
                 'referee_organisation' => $referral->organisation,
-                'created_at' => $referral->created_at->format(Carbon::ISO8601),
-                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $referral->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $referral->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -462,7 +462,7 @@ class ReferralsTest extends TestCase
                 ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
         });
     }
-    
+
     /*
      * Get a specific referral.
      */
@@ -517,15 +517,15 @@ class ReferralsTest extends TestCase
                 'other_contact' => null,
                 'postcode_outward_code' => null,
                 'comments' => null,
-                'referral_consented_at' => $this->now->format(Carbon::ISO8601),
+                'referral_consented_at' => $this->now->format(CarbonImmutable::ISO8601),
                 'feedback_consented_at' => null,
                 'referee_name' => null,
                 'referee_email' => null,
                 'referee_phone' => null,
                 'referee_organisation' => null,
-                'created_at' => $referral->created_at->format(Carbon::ISO8601),
-                'updated_at' => $referral->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $referral->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $referral->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -612,14 +612,14 @@ class ReferralsTest extends TestCase
                 'other_contact' => null,
                 'postcode_outward_code' => null,
                 'comments' => null,
-                'referral_consented_at' => $this->now->format(Carbon::ISO8601),
+                'referral_consented_at' => $this->now->format(CarbonImmutable::ISO8601),
                 'feedback_consented_at' => null,
                 'referee_name' => null,
                 'referee_email' => null,
                 'referee_phone' => null,
                 'referee_organisation' => null,
-                'created_at' => $referral->created_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $referral->created_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
         $this->assertDatabaseHas((new StatusUpdate())->getTable(), [
             'user_id' => $user->id,

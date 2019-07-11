@@ -16,10 +16,10 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -116,12 +116,12 @@ class ServicesTest extends TestCase
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
                     'name' => Taxonomy::category()->children()->first()->name,
-                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
-                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
+                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
                 ],
             ],
-            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
-            'created_at' => $service->created_at->format(Carbon::ISO8601),
+            'last_modified_at' => $service->last_modified_at->format(CarbonImmutable::ISO8601),
+            'created_at' => $service->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -671,8 +671,8 @@ class ServicesTest extends TestCase
                 'id' => Taxonomy::category()->children()->firstOrFail()->id,
                 'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
-                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
-                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
+                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ];
         $response->assertJsonFragment($responsePayload);
@@ -749,8 +749,8 @@ class ServicesTest extends TestCase
                 'id' => Taxonomy::category()->children()->firstOrFail()->id,
                 'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
-                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
-                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
+                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ];
         $response->assertJsonFragment($responsePayload);
@@ -982,13 +982,13 @@ class ServicesTest extends TestCase
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
                     'name' => Taxonomy::category()->children()->first()->name,
-                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
-                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
+                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
                 ],
             ],
             'gallery_items' => [],
-            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
-            'created_at' => $service->created_at->format(Carbon::ISO8601),
+            'last_modified_at' => $service->last_modified_at->format(CarbonImmutable::ISO8601),
+            'created_at' => $service->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -1074,13 +1074,13 @@ class ServicesTest extends TestCase
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
                     'name' => Taxonomy::category()->children()->first()->name,
-                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
-                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
+                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
                 ],
             ],
             'gallery_items' => [],
-            'last_modified_at' => $service->last_modified_at->format(Carbon::ISO8601),
-            'created_at' => $service->created_at->format(Carbon::ISO8601),
+            'last_modified_at' => $service->last_modified_at->format(CarbonImmutable::ISO8601),
+            'created_at' => $service->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -2302,7 +2302,7 @@ class ServicesTest extends TestCase
     public function test_guest_with_valid_token_can_refresh()
     {
         $now = Date::now();
-        Carbon::setTestNow($now);
+        Date::setTestNow($now);
 
         $service = factory(Service::class)->create([
             'last_modified_at' => Date::now()->subMonths(6),
@@ -2316,7 +2316,7 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            'last_modified_at' => $now->format(Carbon::ISO8601),
+            'last_modified_at' => $now->format(CarbonImmutable::ISO8601),
         ]);
     }
 

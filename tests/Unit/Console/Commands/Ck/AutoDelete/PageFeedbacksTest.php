@@ -12,7 +12,7 @@ class PageFeedbacksTest extends TestCase
 {
     public function test_auto_delete_works()
     {
-        $newPageFeedback= factory(PageFeedback::class)->create([
+        $newPageFeedback = factory(PageFeedback::class)->create([
             'created_at' => Date::today(),
             'updated_at' => Date::today(),
         ]);
@@ -25,6 +25,7 @@ class PageFeedbacksTest extends TestCase
         Artisan::call(PageFeedbacksCommand::class);
 
         $this->assertDatabaseHas($newPageFeedback->getTable(), ['id' => $newPageFeedback->id]);
-        $this->assertDatabaseMissing($dueForDeletionPageFeedback->getTable(), ['id' => $dueForDeletionPageFeedback->id]);
+        $this->assertDatabaseMissing($dueForDeletionPageFeedback->getTable(),
+            ['id' => $dueForDeletionPageFeedback->id]);
     }
 }

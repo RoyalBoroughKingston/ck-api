@@ -10,8 +10,8 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -46,7 +46,7 @@ class CollectionCategoriesTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',
@@ -186,7 +186,7 @@ class CollectionCategoriesTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',
@@ -514,7 +514,7 @@ class CollectionCategoriesTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',
@@ -526,8 +526,8 @@ class CollectionCategoriesTest extends TestCase
             'icon' => $collectionCategory->meta['icon'],
             'order' => $collectionCategory->order,
             'sideboxes' => $collectionCategory->meta['sideboxes'],
-            'created_at' => $collectionCategory->created_at->format(Carbon::ISO8601),
-            'updated_at' => $collectionCategory->updated_at->format(Carbon::ISO8601),
+            'created_at' => $collectionCategory->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $collectionCategory->updated_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -653,7 +653,7 @@ class CollectionCategoriesTest extends TestCase
                     'name',
                     'created_at',
                     'updated_at',
-                ]
+                ],
             ],
             'created_at',
             'updated_at',

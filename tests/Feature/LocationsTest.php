@@ -10,8 +10,8 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
@@ -63,8 +63,8 @@ class LocationsTest extends TestCase
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,
             'has_induction_loop' => $location->has_induction_loop,
-            'created_at' => $location->created_at->format(Carbon::ISO8601),
-            'updated_at' => $location->updated_at->format(Carbon::ISO8601),
+            'created_at' => $location->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $location->updated_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -208,8 +208,8 @@ class LocationsTest extends TestCase
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,
             'has_induction_loop' => $location->has_induction_loop,
-            'created_at' => $location->created_at->format(Carbon::ISO8601),
-            'updated_at' => $location->updated_at->format(Carbon::ISO8601),
+            'created_at' => $location->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $location->updated_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 

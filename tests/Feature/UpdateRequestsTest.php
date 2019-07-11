@@ -13,8 +13,8 @@ use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
 use App\Models\UserRole;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
@@ -766,7 +766,7 @@ class UpdateRequestsTest extends TestCase
     {
         $oldNow = Date::now()->subMonths(6);
         $newNow = Date::now();
-        Carbon::setTestNow($newNow);
+        Date::setTestNow($newNow);
 
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
@@ -787,7 +787,7 @@ class UpdateRequestsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas($service->getTable(), [
-            'last_modified_at' => $newNow->format(Carbon::ISO8601),
+            'last_modified_at' => $newNow->format(CarbonImmutable::ISO8601),
         ]);
     }
 }

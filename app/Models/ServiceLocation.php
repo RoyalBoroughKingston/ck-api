@@ -10,9 +10,9 @@ use App\Rules\FileIsMimeType;
 use App\Support\Time;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
@@ -101,7 +101,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
                     break;
                 // If fortnightly then check that today falls directly on a multiple of 2 weeks.
                 case RegularOpeningHour::FREQUENCY_FORTNIGHTLY:
-                    if (fmod(Date::today()->diffInDays($regularOpeningHour->starts_at) / Carbon::DAYS_PER_WEEK, 2) === 0.0) {
+                    if (fmod(Date::today()->diffInDays($regularOpeningHour->starts_at) / CarbonImmutable::DAYS_PER_WEEK, 2) === 0.0) {
                         return true;
                     }
                     break;
@@ -112,7 +112,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
                     $month = month(Date::today()->month);
                     $year = Date::today()->year;
                     $dateString = "$occurrence $weekday of $month $year";
-                    $date = Carbon::createFromTimestamp(strtotime($dateString));
+                    $date = Date::createFromTimestamp(strtotime($dateString));
                     if (Date::today()->equalTo($date)) {
                         return true;
                     }

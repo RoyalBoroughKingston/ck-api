@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Carbon;
 
 class ReportResource extends JsonResource
 {
@@ -20,8 +20,8 @@ class ReportResource extends JsonResource
             'report_type' => $this->reportType->name,
             'starts_at' => optional($this->starts_at)->toDateString(),
             'ends_at' => optional($this->ends_at)->toDateString(),
-            'created_at' => $this->created_at->format(Carbon::ISO8601),
-            'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+            'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
         ];
     }
 }

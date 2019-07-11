@@ -7,7 +7,6 @@ use App\Emails\ScheduledReportGenerated\NotifyGlobalAdminEmail;
 use App\Models\Report;
 use App\Models\ReportSchedule;
 use App\Models\ReportType;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
@@ -24,7 +23,7 @@ class CreateScheduledReportsCommandTest extends TestCase
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
 
-        Carbon::setTestNow(Date::now()->startOfWeek());
+        Date::setTestNow(Date::now()->startOfWeek());
 
         Artisan::call(CreateScheduledReportsCommand::class);
 
@@ -51,7 +50,7 @@ class CreateScheduledReportsCommandTest extends TestCase
             'repeat_type' => ReportSchedule::REPEAT_TYPE_MONTHLY,
         ]);
 
-        Carbon::setTestNow(Date::now()->startOfMonth());
+        Date::setTestNow(Date::now()->startOfMonth());
 
         Artisan::call(CreateScheduledReportsCommand::class);
 

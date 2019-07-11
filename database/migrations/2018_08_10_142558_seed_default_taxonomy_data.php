@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 class SeedDefaultTaxonomyData extends Migration
 {
     /**
-     * @var \Illuminate\Support\Carbon
+     * @var \Carbon\CarbonImmutable
      */
     protected $now;
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Carbon;
 
 class PageFeedbackResource extends JsonResource
 {
@@ -22,9 +22,9 @@ class PageFeedbackResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'consented_at' => optional($this->consented_at)->format(Carbon::ISO8601),
-            'created_at' => optional($this->created_at)->format(Carbon::ISO8601),
-            'updated_at' => optional($this->updated_at)->format(Carbon::ISO8601),
+            'consented_at' => optional($this->consented_at)->format(CarbonImmutable::ISO8601),
+            'created_at' => optional($this->created_at)->format(CarbonImmutable::ISO8601),
+            'updated_at' => optional($this->updated_at)->format(CarbonImmutable::ISO8601),
         ];
     }
 }

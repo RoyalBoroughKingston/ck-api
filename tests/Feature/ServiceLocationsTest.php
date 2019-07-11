@@ -12,8 +12,8 @@ use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -44,7 +44,7 @@ class ServiceLocationsTest extends TestCase
             'is_open_now' => false,
             'regular_opening_hours' => [],
             'holiday_opening_hours' => [],
-            'created_at' => $serviceLocation->created_at->format(Carbon::ISO8601),
+            'created_at' => $serviceLocation->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -92,7 +92,7 @@ class ServiceLocationsTest extends TestCase
                     'weekday' => $regularOpeningHour->weekday,
                     'opens_at' => $regularOpeningHour->opens_at->toString(),
                     'closes_at' => $regularOpeningHour->closes_at->toString(),
-                ]
+                ],
             ],
             'holiday_opening_hours' => [
                 [
@@ -101,9 +101,9 @@ class ServiceLocationsTest extends TestCase
                     'ends_at' => $holidayOpeningHour->ends_at->toDateString(),
                     'opens_at' => $holidayOpeningHour->opens_at->toString(),
                     'closes_at' => $holidayOpeningHour->closes_at->toString(),
-                ]
+                ],
             ],
-            'created_at' => $serviceLocation->created_at->format(Carbon::ISO8601),
+            'created_at' => $serviceLocation->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -206,7 +206,7 @@ class ServiceLocationsTest extends TestCase
                     'weekday' => RegularOpeningHour::WEEKDAY_FRIDAY,
                     'opens_at' => '09:00:00',
                     'closes_at' => '17:30:00',
-                ]
+                ],
             ],
             'holiday_opening_hours' => [
                 [
@@ -215,7 +215,7 @@ class ServiceLocationsTest extends TestCase
                     'ends_at' => '2019-01-02',
                     'opens_at' => '00:00:00',
                     'closes_at' => '00:00:00',
-                ]
+                ],
             ],
         ]);
 
@@ -231,7 +231,7 @@ class ServiceLocationsTest extends TestCase
                     'weekday' => RegularOpeningHour::WEEKDAY_FRIDAY,
                     'opens_at' => '09:00:00',
                     'closes_at' => '17:30:00',
-                ]
+                ],
             ],
             'holiday_opening_hours' => [
                 [
@@ -240,7 +240,7 @@ class ServiceLocationsTest extends TestCase
                     'ends_at' => '2019-01-02',
                     'opens_at' => '00:00:00',
                     'closes_at' => '00:00:00',
-                ]
+                ],
             ],
         ]);
     }
@@ -292,7 +292,7 @@ class ServiceLocationsTest extends TestCase
             'is_open_now' => false,
             'regular_opening_hours' => [],
             'holiday_opening_hours' => [],
-            'created_at' => $serviceLocation->created_at->format(Carbon::ISO8601),
+            'created_at' => $serviceLocation->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -327,7 +327,7 @@ class ServiceLocationsTest extends TestCase
                     'weekday' => $regularOpeningHour->weekday,
                     'opens_at' => $regularOpeningHour->opens_at->toString(),
                     'closes_at' => $regularOpeningHour->closes_at->toString(),
-                ]
+                ],
             ],
             'holiday_opening_hours' => [
                 [
@@ -336,9 +336,9 @@ class ServiceLocationsTest extends TestCase
                     'ends_at' => $holidayOpeningHour->ends_at->toDateString(),
                     'opens_at' => $holidayOpeningHour->opens_at->toString(),
                     'closes_at' => $holidayOpeningHour->closes_at->toString(),
-                ]
+                ],
             ],
-            'created_at' => $serviceLocation->created_at->format(Carbon::ISO8601),
+            'created_at' => $serviceLocation->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -398,7 +398,7 @@ class ServiceLocationsTest extends TestCase
                     'day_of_month' => 10,
                     'opens_at' => '10:00:00',
                     'closes_at' => '14:00:00',
-                ]
+                ],
             ],
             'holiday_opening_hours' => [
                 [
@@ -407,7 +407,7 @@ class ServiceLocationsTest extends TestCase
                     'ends_at' => '2018-01-01',
                     'opens_at' => '00:00:00',
                     'closes_at' => '00:00:00',
-                ]
+                ],
             ],
         ];
         $response = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", $payload);

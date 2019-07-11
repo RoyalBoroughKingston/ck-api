@@ -15,8 +15,8 @@ class StopWordsTest extends TestCase
     /**
      * Clean up the testing environment before the next test.
      *
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return void
      */
     protected function tearDown(): void
     {

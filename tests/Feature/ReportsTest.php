@@ -169,7 +169,7 @@ class ReportsTest extends TestCase
                 'ends_at',
                 'created_at',
                 'updated_at',
-            ]
+            ],
         ]);
     }
 

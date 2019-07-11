@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 class SeedDefaultCollectionData extends Migration
 {
     /**
-     * @var \Illuminate\Support\Carbon
+     * @var \Carbon\CarbonImmutable
      */
     protected $now;
 

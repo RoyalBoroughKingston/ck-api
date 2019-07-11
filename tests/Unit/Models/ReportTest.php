@@ -16,7 +16,7 @@ use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\User;
 use App\Support\Coordinate;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
@@ -64,44 +64,44 @@ class ReportTest extends TestCase
     }
 
     public function test_users_export_works_with_organisation_admin()
-{
-    // Create an organisation.
-    $organisation = factory(Organisation::class)->create();
+    {
+        // Create an organisation.
+        $organisation = factory(Organisation::class)->create();
 
-    // Create a single user.
-    $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        // Create a single user.
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
 
-    // Generate the report.
-    $report = Report::generate(ReportType::usersExport());
+        // Generate the report.
+        $report = Report::generate(ReportType::usersExport());
 
-    // Test that the data is correct.
-    $csv = csv_to_array($report->file->getContent());
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
 
-    // Assert correct number of records exported.
-    $this->assertEquals(2, count($csv));
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
 
-    // Assert headings are correct.
-    $this->assertEquals([
-        'User Reference ID',
-        'User First Name',
-        'User Last Name',
-        'Email address',
-        'Highest Permission Level',
-        'Organisation/Service Permission Levels',
-        'Organisation/Service IDs',
-    ], $csv[0]);
+        // Assert headings are correct.
+        $this->assertEquals([
+            'User Reference ID',
+            'User First Name',
+            'User Last Name',
+            'Email address',
+            'Highest Permission Level',
+            'Organisation/Service Permission Levels',
+            'Organisation/Service IDs',
+        ], $csv[0]);
 
-    // Assert created user exported.
-    $this->assertEquals([
-        $user->id,
-        $user->first_name,
-        $user->last_name,
-        $user->email,
-        Role::NAME_ORGANISATION_ADMIN,
-        Role::NAME_ORGANISATION_ADMIN,
-        $organisation->id,
-    ], $csv[1]);
-}
+        // Assert created user exported.
+        $this->assertEquals([
+            $user->id,
+            $user->first_name,
+            $user->last_name,
+            $user->email,
+            Role::NAME_ORGANISATION_ADMIN,
+            Role::NAME_ORGANISATION_ADMIN,
+            $organisation->id,
+        ], $csv[1]);
+    }
 
     public function test_users_export_works_with_service_admin()
     {
@@ -188,7 +188,7 @@ class ReportTest extends TestCase
             $service->name,
             $service->url,
             $service->contact_name,
-            $service->updated_at->format(Carbon::ISO8601),
+            $service->updated_at->format(CarbonImmutable::ISO8601),
             $service->referral_method,
             $service->referral_email ?? '',
             $service->status,
@@ -323,11 +323,11 @@ class ReportTest extends TestCase
             $referral->service->organisation->name,
             $referral->service->id,
             $referral->service->name,
-            $referral->created_at->format(Carbon::ISO8601),
+            $referral->created_at->format(CarbonImmutable::ISO8601),
             '',
             'Self',
             '',
-            $referral->referral_consented_at->format(Carbon::ISO8601),
+            $referral->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -339,7 +339,7 @@ class ReportTest extends TestCase
         $referral = factory(Referral::class)->create(['referral_consented_at' => Date::now()]);
 
         // Update the referral.
-        Carbon::setTestNow(Date::now()->addHour());
+        Date::setTestNow(Date::now()->addHour());
         $statusUpdate = $referral->updateStatus($user, Referral::STATUS_COMPLETED);
 
         // Generate the report.
@@ -370,11 +370,11 @@ class ReportTest extends TestCase
             $referral->service->organisation->name,
             $referral->service->id,
             $referral->service->name,
-            $referral->created_at->format(Carbon::ISO8601),
-            $statusUpdate->created_at->format(Carbon::ISO8601),
+            $referral->created_at->format(CarbonImmutable::ISO8601),
+            $statusUpdate->created_at->format(CarbonImmutable::ISO8601),
             'Self',
             '',
-            $referral->referral_consented_at->format(Carbon::ISO8601),
+            $referral->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -423,11 +423,11 @@ class ReportTest extends TestCase
             $referralInRange->service->organisation->name,
             $referralInRange->service->id,
             $referralInRange->service->name,
-            $referralInRange->created_at->format(Carbon::ISO8601),
+            $referralInRange->created_at->format(CarbonImmutable::ISO8601),
             '',
             'Self',
             '',
-            $referralInRange->referral_consented_at->format(Carbon::ISO8601),
+            $referralInRange->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -470,11 +470,11 @@ class ReportTest extends TestCase
             $referral->service->organisation->name,
             $referral->service->id,
             $referral->service->name,
-            $referral->created_at->format(Carbon::ISO8601),
+            $referral->created_at->format(CarbonImmutable::ISO8601),
             '',
             'Champion',
             $referral->organisation,
-            $referral->referral_consented_at->format(Carbon::ISO8601),
+            $referral->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -578,7 +578,7 @@ class ReportTest extends TestCase
             $audit->action,
             $audit->description,
             '',
-            $audit->created_at->format(Carbon::ISO8601),
+            $audit->created_at->format(CarbonImmutable::ISO8601),
             $audit->ip_address,
             $audit->user_agent ?? '',
         ], $csv[1]);
@@ -618,7 +618,7 @@ class ReportTest extends TestCase
             $auditWithinRange->action,
             $auditWithinRange->description,
             '',
-            $auditWithinRange->created_at->format(Carbon::ISO8601),
+            $auditWithinRange->created_at->format(CarbonImmutable::ISO8601),
             $auditWithinRange->ip_address,
             $auditWithinRange->user_agent ?? '',
         ], $csv[1]);
