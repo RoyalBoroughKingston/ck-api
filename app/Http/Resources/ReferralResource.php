@@ -46,8 +46,8 @@ class ReferralResource extends JsonResource
                 function () {
                     return Date::createFromFormat(
                         'Y-m-d H:i:s',
-                        $this->status_last_updated_at)->format(CarbonImmutable::ISO8601
-                    );
+                        $this->status_last_updated_at
+                    )->format(CarbonImmutable::ISO8601);
                 }
             ),
         ];
