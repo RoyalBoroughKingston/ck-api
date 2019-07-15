@@ -16,9 +16,11 @@ class SortParameter extends Parameter
      */
     public static function create(
         string $objectId = null,
-        array $fields = [],
+        array $fields = ['N/A'],
         string $default = null
     ): BaseObject {
+        $fields = sprintf('`%s`', implode('`, `', $fields));
+
         return parent::create($objectId)
             ->in(static::IN_QUERY)
             ->name('sort')
