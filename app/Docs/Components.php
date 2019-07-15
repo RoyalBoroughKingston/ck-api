@@ -10,7 +10,7 @@ class Components extends BaseComponents
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Components
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

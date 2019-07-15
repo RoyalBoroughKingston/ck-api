@@ -9,7 +9,7 @@ class TaxonomyOrganisationsTag extends Tag
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Tag
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

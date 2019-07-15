@@ -10,7 +10,7 @@ class Info extends BaseInfo
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Info
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

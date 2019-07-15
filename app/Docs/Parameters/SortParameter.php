@@ -12,7 +12,7 @@ class SortParameter extends Parameter
      * @param string|null $objectId
      * @param string[] $fields
      * @param string|null $default
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter
+     * @return static
      */
     public static function create(
         string $objectId = null,

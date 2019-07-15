@@ -10,7 +10,7 @@ class OAuth2SecurityScheme extends SecurityScheme
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityScheme
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

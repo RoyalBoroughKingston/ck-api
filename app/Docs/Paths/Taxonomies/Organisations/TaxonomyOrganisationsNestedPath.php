@@ -9,7 +9,7 @@ class TaxonomyOrganisationsNestedPath extends PathItem
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

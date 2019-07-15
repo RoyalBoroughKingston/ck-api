@@ -13,7 +13,7 @@ class ResourceDeletedResponse extends Response
     /**
      * @param string|null $objectId
      * @param string|null $resource
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Response
+     * @return static
      */
     public static function create(string $objectId = null, string $resource = null): BaseObject
     {

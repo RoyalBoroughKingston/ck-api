@@ -10,7 +10,7 @@ class FilterParameter extends Parameter
     /**
      * @param string|null $objectId
      * @param string $field
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter
+     * @return static
      */
     public static function create(string $objectId = null, string $field = ''): BaseObject
     {

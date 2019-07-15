@@ -9,7 +9,7 @@ class Server extends BaseServer
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Server
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

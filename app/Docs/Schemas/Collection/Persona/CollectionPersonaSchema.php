@@ -10,7 +10,7 @@ class CollectionPersonaSchema extends Schema
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\Schema
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

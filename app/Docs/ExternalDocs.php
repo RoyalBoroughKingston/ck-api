@@ -9,7 +9,7 @@ class ExternalDocs extends BaseExternalDocs
 {
     /**
      * @param string|null $objectId
-     * @return \GoldSpecDigital\ObjectOrientedOAS\Objects\ExternalDocs
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {
