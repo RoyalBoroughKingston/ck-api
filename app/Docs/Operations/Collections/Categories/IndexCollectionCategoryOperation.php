@@ -27,7 +27,7 @@ class IndexCollectionCategoryOperation extends Operation
             ->tags(CollectionCategoriesTag::create())
             ->summary('List all the category collections')
             ->description(
-<<<'EOT'
+                <<<'EOT'
 **Permission:** `Open`
 
 ---

@@ -2,7 +2,6 @@
 
 namespace App\Docs\Schemas\Service;
 
-use App\Docs\Schemas\Taxonomy\Category\TaxonomyCategorySchema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 

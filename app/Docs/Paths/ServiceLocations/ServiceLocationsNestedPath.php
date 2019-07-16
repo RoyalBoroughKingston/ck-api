@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Docs\Paths\ServiceLocations;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;

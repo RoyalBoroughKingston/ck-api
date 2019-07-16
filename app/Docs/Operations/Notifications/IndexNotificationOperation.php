@@ -29,7 +29,7 @@ class IndexNotificationOperation extends Operation
             ->tags(NotificationsTag::create())
             ->summary('List all the notifications')
             ->description(
-<<<EOT
+                <<<'EOT'
 **Permission:** `Global Admin`
 
 ---

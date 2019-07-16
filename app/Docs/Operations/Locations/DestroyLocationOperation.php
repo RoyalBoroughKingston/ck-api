@@ -3,13 +3,10 @@
 namespace App\Docs\Operations\Locations;
 
 use App\Docs\Responses\ResourceDeletedResponse;
-use App\Docs\Schemas\Location\LocationSchema;
 use App\Docs\Tags\LocationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class DestroyLocationOperation extends Operation

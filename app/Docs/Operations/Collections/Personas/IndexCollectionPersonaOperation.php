@@ -27,7 +27,7 @@ class IndexCollectionPersonaOperation extends Operation
             ->tags(CollectionPersonasTag::create())
             ->summary('List all the persona collections')
             ->description(
-<<<'EOT'
+                <<<'EOT'
 **Permission:** `Open`
 
 ---

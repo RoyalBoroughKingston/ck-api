@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Docs\Paths\PageFeedbacks;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;

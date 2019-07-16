@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Docs\Paths\ReportSchedules;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;

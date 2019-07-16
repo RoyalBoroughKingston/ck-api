@@ -2,7 +2,6 @@
 
 namespace App\Docs\Operations\Referrals;
 
-use App\Docs\Parameters\IncludeParameter;
 use App\Docs\Schemas\Referral\ReferralSchema;
 use App\Docs\Schemas\Referral\UpdateReferralSchema;
 use App\Docs\Schemas\ResourceSchema;

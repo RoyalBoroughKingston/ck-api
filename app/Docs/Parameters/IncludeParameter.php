@@ -21,7 +21,7 @@ class IncludeParameter extends Parameter
             ->in(static::IN_QUERY)
             ->name('include')
             ->description(
-<<<EOT
+                <<<EOT
 Comma separated list of relationships to include.
 
 Supported relationships: [{$includes}]

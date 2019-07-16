@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Docs\Paths\Audits;
 
 use App\Docs\Operations\Audits\IndexAuditOperation;
@@ -22,7 +21,7 @@ class AuditsIndexPath extends PathItem
                 IndexAuditOperation::create()
                     ->action(IndexAuditOperation::ACTION_POST)
                     ->description(
-<<<'EOT'
+                        <<<'EOT'
 This is an alias of `GET /audits` which allows all the query string parameters to be passed as part 
 of the request body.
 EOT

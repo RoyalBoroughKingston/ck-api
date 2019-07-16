@@ -3,7 +3,6 @@
 namespace App\Docs\Operations\Organisations;
 
 use App\Docs\Responses\ResourceDeletedResponse;
-use App\Docs\Responses\UpdateRequestReceivedResponse;
 use App\Docs\Schemas\Organisation\UpdateOrganisationSchema;
 use App\Docs\Tags\OrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;

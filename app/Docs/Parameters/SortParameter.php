@@ -25,7 +25,7 @@ class SortParameter extends Parameter
             ->in(static::IN_QUERY)
             ->name('sort')
             ->description(
-<<<EOT
+                <<<EOT
 Comma separated list of fields to sort by.
 The results are sorted in the order of which the fields have been provided.
 Prefix a field with `-` to indicate a descending sort.

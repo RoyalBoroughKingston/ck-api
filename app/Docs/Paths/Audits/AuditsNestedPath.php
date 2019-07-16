@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Docs\Paths\Audits;
 
 use App\Docs\Operations\Audits\ShowAuditOperation;

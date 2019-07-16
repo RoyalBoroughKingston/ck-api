@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Docs\Paths\Notifications;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;

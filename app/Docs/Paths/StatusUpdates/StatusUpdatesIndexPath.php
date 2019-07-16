@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Docs\Paths\StatusUpdates;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
