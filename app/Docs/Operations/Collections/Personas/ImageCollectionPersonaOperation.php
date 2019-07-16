@@ -2,12 +2,11 @@
 
 namespace App\Docs\Operations\Collections\Personas;
 
+use App\Docs\Responses\PngResponse;
 use App\Docs\Tags\CollectionPersonasTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ImageCollectionPersonaOperation extends Operation
@@ -32,12 +31,6 @@ class ImageCollectionPersonaOperation extends Operation
                     ->required()
                     ->schema(Schema::string()->format(Schema::FORMAT_UUID))
             )
-            ->responses(
-                Response::ok()->content(
-                    MediaType::png()->schema(
-                        Schema::string()->format(Schema::FORMAT_BINARY)
-                    )
-                )
-            );
+            ->responses(PngResponse::create());
     }
 }

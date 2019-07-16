@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Docs\Operations\Locations;
+namespace App\Docs\Operations\Organisations;
 
-use App\Docs\Schemas\Location\LocationSchema;
-use App\Docs\Schemas\Location\StoreLocationSchema;
+use App\Docs\Schemas\Organisation\OrganisationSchema;
+use App\Docs\Schemas\Organisation\StoreOrganisationSchema;
 use App\Docs\Schemas\ResourceSchema;
-use App\Docs\Tags\LocationsTag;
+use App\Docs\Tags\OrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 
-class StoreLocationOperation extends Operation
+class StoreOrganisationOperation extends Operation
 {
     /**
      * @param string|null $objectId
@@ -23,20 +23,18 @@ class StoreLocationOperation extends Operation
     {
         return parent::create($objectId)
             ->action(static::ACTION_POST)
-            ->tags(LocationsTag::create())
-            ->summary('Create a location')
-            ->description('**Permission:** `Service Admin`')
+            ->tags(OrganisationsTag::create())
+            ->summary('Create an organisation')
+            ->description('**Permission:** `Global Admin`')
             ->requestBody(
-                RequestBody::create()
-                    ->required()
-                    ->content(
-                        MediaType::json()->schema(StoreLocationSchema::create())
-                    )
+                RequestBody::create()->content(
+                    MediaType::json()->schema(StoreOrganisationSchema::create())
+                )
             )
             ->responses(
                 Response::created()->content(
                     MediaType::json()->schema(
-                        ResourceSchema::create(null, LocationSchema::create())
+                        ResourceSchema::create(null, OrganisationSchema::create())
                     )
                 )
             );

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Docs\Operations\Locations;
+namespace App\Docs\Operations\Organisations;
 
 use App\Docs\Responses\UpdateRequestReceivedResponse;
-use App\Docs\Schemas\Location\UpdateLocationSchema;
-use App\Docs\Tags\LocationsTag;
+use App\Docs\Schemas\Organisation\UpdateOrganisationSchema;
+use App\Docs\Tags\OrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
@@ -12,7 +12,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class UpdateLocationOperation extends Operation
+class UpdateOrganisationOperation extends Operation
 {
     /**
      * @param string|null $objectId
@@ -23,23 +23,25 @@ class UpdateLocationOperation extends Operation
     {
         return parent::create($objectId)
             ->action(static::ACTION_PUT)
-            ->tags(LocationsTag::create())
-            ->summary('Update a specific location')
-            ->description('**Permission:** `Service Admin`')
+            ->tags(OrganisationsTag::create())
+            ->summary('Update a specific organisation')
+            ->description('**Permission:** `Organisation Admin`')
             ->parameters(
                 Parameter::path()
-                    ->name('location')
-                    ->description('The ID of the location')
+                    ->name('organisation')
+                    ->description('The ID or slug of the organisation')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->requestBody(
-                RequestBody::create()->content(
-                    MediaType::json()->schema(UpdateLocationSchema::create())
-                )
+                RequestBody::create()
+                    ->required()
+                    ->content(
+                        MediaType::json()->schema(UpdateOrganisationSchema::create())
+                    )
             )
             ->responses(
-                UpdateRequestReceivedResponse::create(null, UpdateLocationSchema::create())
+                UpdateRequestReceivedResponse::create(null, UpdateOrganisationSchema::create())
             );
     }
 }

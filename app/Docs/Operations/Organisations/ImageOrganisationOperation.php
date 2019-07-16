@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Docs\Operations\Locations;
+namespace App\Docs\Operations\Organisations;
 
 use App\Docs\Parameters\MaxDimensionParameter;
 use App\Docs\Parameters\UpdateRequestIdParameter;
 use App\Docs\Responses\PngResponse;
-use App\Docs\Tags\LocationsTag;
+use App\Docs\Tags\OrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class ImageLocationOperation extends Operation
+class ImageOrganisationOperation extends Operation
 {
     /**
      * @param string|null $objectId
@@ -22,16 +22,16 @@ class ImageLocationOperation extends Operation
     {
         return parent::create($objectId)
             ->action(static::ACTION_GET)
-            ->tags(LocationsTag::create())
-            ->summary("Get a specific location's image")
+            ->tags(OrganisationsTag::create())
+            ->summary("Get a specific organisation's logo")
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->parameters(
                 Parameter::path()
-                    ->name('location')
-                    ->description('The ID of the location')
+                    ->name('organisation')
+                    ->description('The ID or slug of the organisation')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID)),
+                    ->schema(Schema::string()),
                 MaxDimensionParameter::create(),
                 UpdateRequestIdParameter::create()
             )

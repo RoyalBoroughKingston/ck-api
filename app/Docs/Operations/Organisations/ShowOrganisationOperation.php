@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Docs\Operations\Notifications;
+namespace App\Docs\Operations\Organisations;
 
-use App\Docs\Schemas\Notification\NotificationSchema;
+use App\Docs\Schemas\Organisation\OrganisationSchema;
 use App\Docs\Schemas\ResourceSchema;
-use App\Docs\Tags\NotificationsTag;
+use App\Docs\Tags\OrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
@@ -12,7 +12,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class ShowNotificationOperation extends Operation
+class ShowOrganisationOperation extends Operation
 {
     /**
      * @param string|null $objectId
@@ -23,20 +23,21 @@ class ShowNotificationOperation extends Operation
     {
         return parent::create($objectId)
             ->action(static::ACTION_GET)
-            ->tags(NotificationsTag::create())
-            ->summary('Get a specific notification')
-            ->description('**Permission:** `Global Admin`')
+            ->tags(OrganisationsTag::create())
+            ->summary('Get a specific organisation')
+            ->description('**Permission:** `Open`')
+            ->noSecurity()
             ->parameters(
                 Parameter::path()
-                    ->name('notification')
-                    ->description('The ID of the notification')
+                    ->name('organisation')
+                    ->description('The ID or slug of the organisation')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->responses(
                 Response::ok()->content(
                     MediaType::json()->schema(
-                        ResourceSchema::create(null, NotificationSchema::create())
+                        ResourceSchema::create(null, OrganisationSchema::create())
                     )
                 )
             );
