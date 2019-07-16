@@ -15,6 +15,10 @@ class ThesaurusSchema extends Schema
     {
         return parent::create($objectId)
             ->type(static::TYPE_ARRAY)
-            ->items(Schema::string());
+            ->items(
+                Schema::array('data')->items(
+                    Schema::string()
+                )
+            );
     }
 }
