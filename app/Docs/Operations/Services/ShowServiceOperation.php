@@ -32,6 +32,7 @@ class ShowServiceOperation extends Operation
                 Parameter::path()
                     ->name('service')
                     ->description('The ID or slug of the service')
+                    ->required()
                     ->schema(Schema::string()),
                 IncludeParameter::create(null, ['organisation'])
             )

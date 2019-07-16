@@ -30,10 +30,12 @@ class ShowServiceGalleryItemOperation extends Operation
                 Parameter::path()
                     ->name('service')
                     ->description('The ID or slug of the service')
+                    ->required()
                     ->schema(Schema::string()),
                 Parameter::path()
                     ->name('file')
                     ->description('The ID of the file')
+                    ->required()
                     ->schema(Schema::string()->format(Schema::FORMAT_UUID)),
                 MaxDimensionParameter::create(),
                 UpdateRequestIdParameter::create()

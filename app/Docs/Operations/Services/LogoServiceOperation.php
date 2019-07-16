@@ -30,6 +30,7 @@ class LogoServiceOperation extends Operation
                 Parameter::path()
                     ->name('service')
                     ->description('The ID or slug of the service')
+                    ->required()
                     ->schema(Schema::string()),
                 MaxDimensionParameter::create(),
                 UpdateRequestIdParameter::create()
