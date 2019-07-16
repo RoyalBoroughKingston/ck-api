@@ -39,6 +39,8 @@ class UpdateLocationSchema extends Schema
                     ->example(null),
                 Schema::string('city')
                     ->example('Leeds'),
+                Schema::string('county')
+                    ->example('West Yorkshire'),
                 Schema::string('postcode')
                     ->example('LS1 4HT'),
                 Schema::string('country')
