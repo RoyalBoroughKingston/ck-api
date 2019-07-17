@@ -163,9 +163,9 @@ paths:
     $ref: /docs/core/paths/users.yaml#/index
   /users/{user}:
     $ref: /docs/core/paths/users.yaml#/nested
-  /users/{user}/user:
+  /users/user:
     $ref: /docs/core/paths/users.yaml#/user
-  /users/{user}/user/sessions:
+  /users/user/sessions:
     $ref: /docs/core/paths/users.yaml#/sessions
 
 components:

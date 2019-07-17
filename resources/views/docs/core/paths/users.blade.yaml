@@ -212,7 +212,7 @@ nested:
             schema:
               $ref: /docs/core/responses/resource-deleted.yaml
 
-# /users/{user}/user
+# /users/user
 user:
   get:
     tags: [Users]
@@ -235,7 +235,7 @@ user:
                 data:
                   $ref: /docs/core/resources/user.yaml
 
-# /users/{user}/user/sessions
+# /users//user/sessions
 sessions:
   delete:
     tags: [Users]
