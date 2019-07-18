@@ -44,7 +44,7 @@ class UpdateSettingSchema extends SettingSchema
                 }
 
                 // Add the current property to the list of required properties.
-                $schema = $schema->required($property, ...$schema->required);
+                $schema = $schema->required($property, ...($schema->required ?? []));
             }
         }
 
