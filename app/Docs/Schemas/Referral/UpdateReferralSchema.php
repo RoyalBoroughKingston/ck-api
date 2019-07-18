@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\Referral;
 
+use App\Models\Referral;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -19,10 +20,13 @@ class UpdateReferralSchema extends Schema
             ->required('status', 'comments')
             ->properties(
                 Schema::string('status')
-                    ->enum('new', 'in_progress', 'completed', 'incompleted')
-                    ->example('in_progress'),
+                    ->enum(
+                        Referral::STATUS_NEW,
+                        Referral::STATUS_IN_PROGRESS,
+                        Referral::STATUS_COMPLETED,
+                        Referral::STATUS_INCOMPLETED
+                    ),
                 Schema::string('comments')
-                    ->example('Assigned to me')
             );
     }
 }

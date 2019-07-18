@@ -23,11 +23,9 @@ class UpdateRequestReceivedResponse extends Response
             ->content(
                 MediaType::json()->schema(
                     Schema::object()->properties(
-                        Schema::string('message')
-                            ->example('The update request has been received and needs to be reviewed'),
+                        Schema::string('message'),
                         Schema::string('id')
-                            ->format(Schema::FORMAT_UUID)
-                            ->example('The ID of the update request'),
+                            ->format(Schema::FORMAT_UUID),
                         $data->objectId('data')
                     )
                 )

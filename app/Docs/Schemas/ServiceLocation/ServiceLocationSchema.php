@@ -17,20 +17,15 @@ class ServiceLocationSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::string('service_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::string('location_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::boolean('has_image'),
-                Schema::string('name')
-                    ->example('Floor 4'),
+                Schema::string('name'),
                 Schema::boolean('is_open_now')
-                    ->nullable(true)
-                    ->example(false),
+                    ->nullable(true),
                 Schema::array('regular_opening_hours')
                     ->items(RegularOpeningHourSchema::create()),
                 Schema::array('holiday_opening_hours')

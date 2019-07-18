@@ -17,15 +17,8 @@ class GalleryItemSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('file_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
-                Schema::string('url')
-                    ->example(
-                        route('core.v1.services.gallery-items', [
-                            'service' => '38e06e93-79b2-4c38-85bf-7749ebc7044b',
-                            'file' => '38e06e93-79b2-4c38-85bf-7749ebc7044b',
-                        ])
-                    ),
+                    ->format(Schema::FORMAT_UUID),
+                Schema::string('url'),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

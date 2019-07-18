@@ -2,6 +2,8 @@
 
 namespace App\Docs\Schemas\Search;
 
+use App\Contracts\Search;
+use App\Models\Service;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -17,31 +19,31 @@ class StoreSearchSchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->properties(
-                Schema::integer('page')
-                    ->example(1),
+                Schema::integer('page'),
                 Schema::integer('per_page')
                     ->default(config('ck.pagination_results')),
-                Schema::string('query')
-                    ->example('Health and Social'),
-                Schema::string('category')
-                    ->example('Self Help'),
-                Schema::string('persona')
-                    ->example('Refugees'),
+                Schema::string('query'),
+                Schema::string('category'),
+                Schema::string('persona'),
                 Schema::string('wait_time')
-                    ->enum('one_week', 'two_weeks', 'three_weeks', 'month', 'longer'),
+                    ->enum(
+                        Service::WAIT_TIME_ONE_WEEK,
+                        Service::WAIT_TIME_TWO_WEEKS,
+                        Service::WAIT_TIME_THREE_WEEKS,
+                        Service::WAIT_TIME_MONTH,
+                        Service::WAIT_TIME_LONGER
+                    ),
                 Schema::boolean('is_free'),
                 Schema::string('order')
-                    ->enum('relevance', 'distance')
+                    ->enum(Search::ORDER_RELEVANCE, Search::ORDER_DISTANCE)
                     ->default('relevance'),
                 Schema::object('location')
                     ->required('lat', 'lon')
                     ->properties(
                         Schema::number('lat')
-                            ->type(Schema::FORMAT_FLOAT)
-                            ->example(5.78263),
+                            ->type(Schema::FORMAT_FLOAT),
                         Schema::number('lon')
                             ->type(Schema::FORMAT_FLOAT)
-                            ->example(-52.12710)
                     ),
                 Schema::integer('distance')
                     ->default(config('ck.search_distance'))

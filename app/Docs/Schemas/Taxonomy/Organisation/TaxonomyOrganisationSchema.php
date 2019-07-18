@@ -17,12 +17,9 @@ class TaxonomyOrganisationSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
-                Schema::string('name')
-                    ->example('Ayup Digital'),
-                Schema::integer('order')
-                    ->example(1),
+                    ->format(Schema::FORMAT_UUID),
+                Schema::string('name'),
+                Schema::integer('order'),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

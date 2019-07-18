@@ -17,34 +17,23 @@ class LocationSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::boolean('has_image'),
-                Schema::string('address_line_1')
-                    ->example('30-34 Aire St'),
+                Schema::string('address_line_1'),
                 Schema::string('address_line_2')
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('address_line_3')
-                    ->nullable()
-                    ->example(null),
-                Schema::string('city')
-                    ->example('Leeds'),
-                Schema::string('county')
-                    ->example('West Yorkshire'),
-                Schema::string('postcode')
-                    ->example('LS1 4HT'),
-                Schema::string('country')
-                    ->example('United Kingdom'),
+                    ->nullable(),
+                Schema::string('city'),
+                Schema::string('county'),
+                Schema::string('postcode'),
+                Schema::string('country'),
                 Schema::number('lat')
-                    ->format(Schema::FORMAT_FLOAT)
-                    ->example(5.78263),
+                    ->format(Schema::FORMAT_FLOAT),
                 Schema::number('lon')
-                    ->format(Schema::FORMAT_FLOAT)
-                    ->example(-52.12710),
+                    ->format(Schema::FORMAT_FLOAT),
                 Schema::string('accessibility_info')
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::boolean('has_wheelchair_access'),
                 Schema::boolean('has_induction_loop'),
                 Schema::string('created_at')

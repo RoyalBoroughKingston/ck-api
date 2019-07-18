@@ -18,10 +18,8 @@ class UpdateTaxonomyOrganisationSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->required('name', 'order')
             ->properties(
-                Schema::string('name')
-                    ->example('Ayup Digital'),
+                Schema::string('name'),
                 Schema::integer('order')
-                    ->example(1)
             );
     }
 }

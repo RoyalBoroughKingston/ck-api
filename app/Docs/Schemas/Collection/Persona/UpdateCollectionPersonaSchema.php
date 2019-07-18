@@ -25,35 +25,27 @@ class UpdateCollectionPersonaSchema extends Schema
                 'category_taxonomies'
             )
             ->properties(
-                Schema::string('name')
-                    ->example('Refugees'),
-                Schema::string('intro')
-                    ->example('Lorem ipsum'),
-                Schema::string('subtitle')
-                    ->example('Lorem ipsum'),
-                Schema::integer('order')
-                    ->example(1),
+                Schema::string('name'),
+                Schema::string('intro'),
+                Schema::string('subtitle'),
+                Schema::integer('order'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(
                         Schema::object()
                             ->required('title', 'content')
                             ->properties(
-                                Schema::string('title')
-                                    ->example('Lorem ipsum'),
+                                Schema::string('title'),
                                 Schema::string('content')
-                                    ->example('Lorem ipsum dolar sit amet')
                             )
                     ),
                 Schema::array('category_taxonomies')
                     ->items(
                         Schema::string()
                             ->format(Schema::FORMAT_UUID)
-                            ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b')
                     ),
                 Schema::string('image_file_id')
                     ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b')
                     ->description('The ID of the file uploaded')
                     ->nullable()
             );

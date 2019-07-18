@@ -28,7 +28,6 @@ class DestroyUserSessionOperation extends Operation
                     MediaType::json()->schema(
                         Schema::object()->properties(
                             Schema::string('message')
-                                ->example('All your sessions have been cleared.')
                         )
                     )
                 )

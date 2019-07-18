@@ -49,7 +49,7 @@ class IndexUserOperation extends Operation
                     ->schema(Schema::string()),
                 FilterParameter::create(null, 'highest_role')
                     ->description('Comma separated list of highest role to filter by')
-                    ->schema(Schema::string()->example('Super Admin')),
+                    ->schema(Schema::string()),
                 FilterParameter::create('has_permission')
                     ->description('Filter users to only ones they have permissions for')
                     ->schema(Schema::boolean()),

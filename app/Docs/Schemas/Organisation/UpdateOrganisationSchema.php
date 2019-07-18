@@ -25,21 +25,14 @@ class UpdateOrganisationSchema extends Schema
                 'phone'
             )
             ->properties(
-                Schema::string('name')
-                    ->example('Ayup Digital'),
-                Schema::string('slug')
-                    ->example('ayup-digital'),
-                Schema::string('description')
-                    ->example('Digital product agency'),
-                Schema::string('url')
-                    ->example('https://ayup.agency'),
-                Schema::string('email')
-                    ->example('info@ayup.agency'),
-                Schema::string('phone')
-                    ->example('01138591020'),
+                Schema::string('name'),
+                Schema::string('slug'),
+                Schema::string('description'),
+                Schema::string('url'),
+                Schema::string('email'),
+                Schema::string('phone'),
                 Schema::string('logo_file_id')
                     ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b')
                     ->description('The ID of the file uploaded')
                     ->nullable()
             );

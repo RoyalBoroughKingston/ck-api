@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\File;
 
+use App\Models\File;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -17,11 +18,10 @@ class FileSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::boolean('is_private'),
                 Schema::string('mime_type')
-                    ->enum('image/png'),
+                    ->enum(File::MIME_TYPE_PNG),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

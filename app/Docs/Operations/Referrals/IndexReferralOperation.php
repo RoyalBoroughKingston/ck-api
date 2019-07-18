@@ -11,6 +11,7 @@ use App\Docs\Parameters\SortParameter;
 use App\Docs\Schemas\PaginationSchema;
 use App\Docs\Schemas\Referral\ReferralSchema;
 use App\Docs\Tags\ReferralsTag;
+use App\Models\Referral;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
@@ -49,7 +50,14 @@ class IndexReferralOperation extends Operation
                     ->schema(Schema::string()),
                 FilterParameter::create(null, 'status')
                     ->description('The status for the referral to filter by')
-                    ->schema(Schema::string()->enum('new', 'in_progress', 'completed', 'incompleted')),
+                    ->schema(
+                        Schema::string()->enum(
+                            Referral::STATUS_NEW,
+                            Referral::STATUS_IN_PROGRESS,
+                            Referral::STATUS_COMPLETED,
+                            Referral::STATUS_INCOMPLETED
+                        )
+                    ),
                 IncludeParameter::create(null, ['service.organisation']),
                 SortParameter::create(null, [
                     'reference',

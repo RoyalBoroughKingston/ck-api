@@ -35,7 +35,6 @@ class RelatedServiceOperation extends Operation
                     ->schema(
                         Schema::number()
                             ->format(Schema::FORMAT_FLOAT)
-                            ->example(5.78263)
                     ),
                 Parameter::query()
                     ->name('location[lon]')
@@ -43,7 +42,6 @@ class RelatedServiceOperation extends Operation
                     ->schema(
                         Schema::number()
                             ->format(Schema::FORMAT_FLOAT)
-                            ->example(-52.12710)
                     ),
                 IncludeParameter::create(null, ['organisation'])
             )

@@ -29,30 +29,21 @@ class UpdateLocationSchema extends Schema
                 'has_induction_loop'
             )
             ->properties(
-                Schema::string('address_line_1')
-                    ->example('30-34 Aire St'),
+                Schema::string('address_line_1'),
                 Schema::string('address_line_2')
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('address_line_3')
-                    ->nullable()
-                    ->example(null),
-                Schema::string('city')
-                    ->example('Leeds'),
-                Schema::string('county')
-                    ->example('West Yorkshire'),
-                Schema::string('postcode')
-                    ->example('LS1 4HT'),
-                Schema::string('country')
-                    ->example('United Kingdom'),
+                    ->nullable(),
+                Schema::string('city'),
+                Schema::string('county'),
+                Schema::string('postcode'),
+                Schema::string('country'),
                 Schema::string('accessibility_info')
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::boolean('has_wheelchair_access'),
                 Schema::boolean('has_induction_loop'),
                 Schema::string('image_file_id')
                     ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b')
                     ->description('The ID of the file uploaded')
                     ->nullable()
             );

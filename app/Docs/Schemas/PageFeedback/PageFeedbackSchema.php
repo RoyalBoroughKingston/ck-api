@@ -17,21 +17,15 @@ class PageFeedbackSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
-                Schema::string('url')
-                    ->example(url('/path/to/page')),
-                Schema::string('feedback')
-                    ->example('This does not work on my browser'),
+                    ->format(Schema::FORMAT_UUID),
+                Schema::string('url'),
+                Schema::string('feedback'),
                 Schema::string('name')
-                    ->nullable()
-                    ->example('John Doe'),
+                    ->nullable(),
                 Schema::string('email')
-                    ->nullable()
-                    ->example('john.doe@example.com'),
+                    ->nullable(),
                 Schema::string('phone')
-                    ->nullable()
-                    ->example('07700000000'),
+                    ->nullable(),
                 Schema::string('consented_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

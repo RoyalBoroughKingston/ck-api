@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\StatusUpdate;
 
+use App\Models\StatusUpdate;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -18,20 +19,25 @@ class StatusUpdateSchema extends Schema
             ->properties(
                 Schema::string('user_id')
                     ->format(Schema::FORMAT_UUID)
-                    ->nullable()
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->nullable(),
                 Schema::string('referral_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::string('from')
-                    ->enum('new', 'in_progress', 'completed', 'incompleted')
-                    ->example('new'),
+                    ->enum(
+                        StatusUpdate::FROM_NEW,
+                        StatusUpdate::FROM_IN_PROGRESS,
+                        StatusUpdate::FROM_COMPLETED,
+                        StatusUpdate::FROM_INCOMPLETED
+                    ),
                 Schema::string('to')
-                    ->enum('new', 'in_progress', 'completed', 'incompleted')
-                    ->example('new'),
+                    ->enum(
+                        StatusUpdate::TO_NEW,
+                        StatusUpdate::TO_IN_PROGRESS,
+                        StatusUpdate::TO_COMPLETED,
+                        StatusUpdate::TO_INCOMPLETED
+                    ),
                 Schema::string('comments')
-                    ->nullable()
-                    ->example('Assigned to me'),
+                    ->nullable(),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

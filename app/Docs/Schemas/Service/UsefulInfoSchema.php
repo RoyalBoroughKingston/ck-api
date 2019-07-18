@@ -16,12 +16,9 @@ class UsefulInfoSchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->properties(
-                Schema::string('title')
-                    ->example('How to apply'),
-                Schema::string('description')
-                    ->example('Lorem ipsum'),
+                Schema::string('title'),
+                Schema::string('description'),
                 Schema::integer('order')
-                    ->example(1)
             );
     }
 }

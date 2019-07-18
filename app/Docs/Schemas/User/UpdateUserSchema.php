@@ -18,14 +18,10 @@ class UpdateUserSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->required('first_name', 'last_name', 'email', 'phone', 'roles')
             ->properties(
-                Schema::string('first_name')
-                    ->example('John'),
-                Schema::string('last_name')
-                    ->example('Doe'),
-                Schema::string('email')
-                    ->example('john.doe@example.com'),
-                Schema::string('phone')
-                    ->example('07700000000'),
+                Schema::string('first_name'),
+                Schema::string('last_name'),
+                Schema::string('email'),
+                Schema::string('phone'),
                 Schema::array('roles')
                     ->items(
                         RoleSchema::create()

@@ -16,10 +16,8 @@ class OfferingSchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->properties(
-                Schema::string('offering')
-                    ->example('Lorem ipsum'),
+                Schema::string('offering'),
                 Schema::integer('order')
-                    ->example(1)
             );
     }
 }

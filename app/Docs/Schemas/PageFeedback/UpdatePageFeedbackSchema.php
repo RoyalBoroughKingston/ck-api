@@ -24,19 +24,14 @@ class UpdatePageFeedbackSchema extends Schema
                 'phone'
             )
             ->properties(
-                Schema::string('url')
-                    ->example(url('/path/to/page')),
-                Schema::string('feedback')
-                    ->example('This does not work on my browser'),
+                Schema::string('url'),
+                Schema::string('feedback'),
                 Schema::string('name')
-                    ->nullable()
-                    ->example('John Doe'),
+                    ->nullable(),
                 Schema::string('email')
-                    ->nullable()
-                    ->example('john.doe@example.com'),
+                    ->nullable(),
                 Schema::string('phone')
                     ->nullable()
-                    ->example('07700000000')
             );
     }
 }

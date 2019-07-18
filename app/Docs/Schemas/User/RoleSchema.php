@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\User;
 
+use App\Models\Role;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -18,21 +19,14 @@ class RoleSchema extends Schema
             ->properties(
                 Schema::string('role')
                     ->enum(
-                        'Service Worker',
-                        'Service Admin',
-                        'Organisation Admin',
-                        'Global Admin',
-                        'Super Admin'
-                    )
-                    ->example('Service Worker'),
+                        ...Role::query()->pluck('name')->toArray()
+                    ),
                 Schema::string('organisation_id')
                     ->format(Schema::FORMAT_UUID)
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('service_id')
                     ->format(Schema::FORMAT_UUID)
                     ->nullable()
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b')
             );
     }
 }

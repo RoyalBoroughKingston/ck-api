@@ -11,6 +11,7 @@ use App\Docs\Parameters\SortParameter;
 use App\Docs\Schemas\PaginationSchema;
 use App\Docs\Schemas\Service\ServiceSchema;
 use App\Docs\Tags\ServicesTag;
+use App\Models\Service;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
@@ -57,10 +58,21 @@ EOT
                     ->schema(Schema::string()),
                 FilterParameter::create(null, 'status')
                     ->description('Status to filter by')
-                    ->schema(Schema::string()->enum('active', 'inactive')),
+                    ->schema(
+                        Schema::string()->enum(
+                            Service::STATUS_ACTIVE,
+                            Service::STATUS_INACTIVE
+                        )
+                    ),
                 FilterParameter::create(null, 'referral_method')
                     ->description('Referral method to filter by')
-                    ->schema(Schema::string()->enum('internal', 'external', 'none')),
+                    ->schema(
+                        Schema::string()->enum(
+                            Service::REFERRAL_METHOD_INTERNAL,
+                            Service::REFERRAL_METHOD_EXTERNAL,
+                            Service::REFERRAL_METHOD_NONE
+                        )
+                    ),
                 FilterParameter::create(null, 'has_permission')
                     ->description('Filter services to only ones they have permissions for')
                     ->schema(Schema::boolean()),

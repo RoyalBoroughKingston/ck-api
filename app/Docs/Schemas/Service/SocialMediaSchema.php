@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\Service;
 
+use App\Models\SocialMedia;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -17,10 +18,14 @@ class SocialMediaSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('type')
-                    ->enum('twitter', 'facebook', 'instagram', 'youtube', 'other')
-                    ->example('instagram'),
+                    ->enum(
+                        SocialMedia::TYPE_TWITTER,
+                        SocialMedia::TYPE_FACEBOOK,
+                        SocialMedia::TYPE_INSTAGRAM,
+                        SocialMedia::TYPE_YOUTUBE,
+                        SocialMedia::TYPE_OTHER
+                    ),
                 Schema::string('url')
-                    ->example('https://www.instagram.com/ayupdigital')
             );
     }
 }

@@ -17,11 +17,9 @@ class UpdateRequestSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::string('user_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::string('updateable_type')
                     ->enum(
                         'locations',
@@ -30,11 +28,9 @@ class UpdateRequestSchema extends Schema
                         'service_locations',
                         'organisations',
                         'users'
-                    )
-                    ->example('locations'),
+                    ),
                 Schema::string('updateable_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::string('entry'),
                 Schema::object('data'),
                 Schema::string('created_at')
@@ -45,12 +41,10 @@ class UpdateRequestSchema extends Schema
                     ->nullable(),
                 Schema::string('approved_at')
                     ->format(Schema::FORMAT_DATE_TIME)
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('deleted_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable()
-                    ->example(null)
             );
     }
 }

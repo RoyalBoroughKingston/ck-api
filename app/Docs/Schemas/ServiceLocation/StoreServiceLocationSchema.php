@@ -20,11 +20,9 @@ class StoreServiceLocationSchema extends UpdateServiceLocationSchema
             ->required('service_id', 'location_id', ...$instance->required)
             ->properties(
                 Schema::string('service_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 Schema::string('location_id')
-                    ->format(Schema::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::FORMAT_UUID),
                 ...$instance->properties
             );
 

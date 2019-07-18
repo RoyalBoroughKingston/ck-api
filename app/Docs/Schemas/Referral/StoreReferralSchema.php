@@ -34,43 +34,30 @@ class StoreReferralSchema extends Schema
             )
             ->properties(
                 Schema::string('service_id')
-                    ->format(static::FORMAT_UUID)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
-                Schema::string('name')
-                    ->example('John Doe'),
+                    ->format(static::FORMAT_UUID),
+                Schema::string('name'),
                 Schema::string('email')
-                    ->nullable()
-                    ->example('jonh.doe@example.com'),
+                    ->nullable(),
                 Schema::string('phone')
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('other_contact')
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('postcode_outward_code')
-                    ->nullable()
-                    ->example('LS6'),
+                    ->nullable(),
                 Schema::string('comments')
-                    ->nullable()
-                    ->example(null),
-                Schema::boolean('referral_consented')
-                    ->example(false),
+                    ->nullable(),
+                Schema::boolean('referral_consented'),
                 Schema::string('referee_name')
-                    ->nullable()
-                    ->example('Foo Bar'),
+                    ->nullable(),
                 Schema::string('referee_email')
-                    ->nullable()
-                    ->example('foo.bar@example.com'),
+                    ->nullable(),
                 Schema::string('referee_phone')
-                    ->nullable()
-                    ->example('01138591020'),
+                    ->nullable(),
                 Schema::string('organisation_taxonomy_id')
                     ->format(Schema::FORMAT_UUID)
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('organisation')
                     ->nullable()
-                    ->example('Ayup Digital')
             );
     }
 }

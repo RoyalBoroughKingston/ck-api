@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\ServiceLocation;
 
+use App\Models\RegularOpeningHour;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -17,23 +18,21 @@ class RegularOpeningHourSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('frequency')
-                    ->enum('weekly', 'monthly', 'fortnightly', 'nth_occurrence_of_month')
-                    ->example('weekly'),
-                Schema::integer('weekday')
-                    ->example(2),
-                Schema::integer('day_of_month')
-                    ->example(null),
-                Schema::integer('occurrence_of_month')
-                    ->example(null),
+                    ->enum(
+                        RegularOpeningHour::FREQUENCY_WEEKLY,
+                        RegularOpeningHour::FREQUENCY_MONTHLY,
+                        RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+                        RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH
+                    ),
+                Schema::integer('weekday'),
+                Schema::integer('day_of_month'),
+                Schema::integer('occurrence_of_month'),
                 Schema::string('starts_at')
-                    ->format(Schema::FORMAT_DATE)
-                    ->example(null),
+                    ->format(Schema::FORMAT_DATE),
                 Schema::string('opens_at')
-                    ->format('time')
-                    ->example('09:00:00'),
+                    ->format('time'),
                 Schema::string('closes_at')
                     ->format('time')
-                    ->example('17:30:00')
             );
     }
 }

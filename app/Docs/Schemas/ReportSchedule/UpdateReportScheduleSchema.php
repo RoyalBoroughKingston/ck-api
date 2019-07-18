@@ -2,6 +2,8 @@
 
 namespace App\Docs\Schemas\ReportSchedule;
 
+use App\Models\ReportSchedule;
+use App\Models\ReportType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -20,18 +22,13 @@ class UpdateReportScheduleSchema extends Schema
             ->properties(
                 Schema::string('report_type')
                     ->enum(
-                        'Users Export',
-                        'Services Export',
-                        'Organisations Export',
-                        'Locations Export',
-                        'Referrals Export',
-                        'Feedback Export',
-                        'Audit Logs Export',
-                        'Search Histories Export',
-                        'Thesaurus Export'
+                        ...ReportType::query()->pluck('name')->toArray()
                     ),
                 Schema::string('repeat_type')
-                    ->enum('weekly', 'monthly')
+                    ->enum(
+                        ReportSchedule::REPEAT_TYPE_WEEKLY,
+                        ReportSchedule::REPEAT_TYPE_MONTHLY
+                    )
             );
     }
 }

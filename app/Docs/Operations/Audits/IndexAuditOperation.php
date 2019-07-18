@@ -11,6 +11,7 @@ use App\Docs\Parameters\SortParameter;
 use App\Docs\Schemas\Audit\AuditSchema;
 use App\Docs\Schemas\PaginationSchema;
 use App\Docs\Tags\AuditsTag;
+use App\Models\Audit;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
@@ -43,7 +44,14 @@ class IndexAuditOperation extends Operation
                     ->schema(Schema::string()),
                 FilterParameter::create(null, 'action')
                     ->description('Action to filter by')
-                    ->schema(Schema::string()->enum('create', 'read', 'update', 'delete')),
+                    ->schema(
+                        Schema::string()->enum(
+                            Audit::ACTION_CREATE,
+                            Audit::ACTION_READ,
+                            Audit::ACTION_UPDATE,
+                            Audit::ACTION_DELETE
+                        )
+                    ),
                 FilterParameter::create(null, 'description')
                     ->description('Description to filter by')
                     ->schema(Schema::string()),

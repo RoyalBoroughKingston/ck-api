@@ -17,21 +17,14 @@ class OrganisationSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::TYPE_OBJECT)
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->format(Schema::TYPE_OBJECT),
                 Schema::boolean('has_logo'),
-                Schema::string('name')
-                    ->example('Ayup Digital'),
-                Schema::string('slug')
-                    ->example('ayup-digital'),
-                Schema::string('description')
-                    ->example('Digital product agency'),
-                Schema::string('url')
-                    ->example('https://ayup.agency'),
-                Schema::string('email')
-                    ->example('info@ayup.agency'),
-                Schema::string('phone')
-                    ->example('01138591020'),
+                Schema::string('name'),
+                Schema::string('slug'),
+                Schema::string('description'),
+                Schema::string('url'),
+                Schema::string('email'),
+                Schema::string('phone'),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

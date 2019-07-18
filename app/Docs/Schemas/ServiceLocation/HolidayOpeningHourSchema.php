@@ -16,20 +16,15 @@ class HolidayOpeningHourSchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->properties(
-                Schema::boolean('is_closed')
-                    ->example(true),
+                Schema::boolean('is_closed'),
                 Schema::string('starts_at')
-                    ->format(Schema::FORMAT_DATE)
-                    ->example('2018-12-24'),
+                    ->format(Schema::FORMAT_DATE),
                 Schema::string('ends_at')
-                    ->format(Schema::FORMAT_DATE)
-                    ->example('2019-01-01'),
+                    ->format(Schema::FORMAT_DATE),
                 Schema::string('opens_at')
-                    ->format('time')
-                    ->example('09:00:00'),
+                    ->format('time'),
                 Schema::string('closes_at')
                     ->format('time')
-                    ->example('17:30:00')
             );
     }
 }

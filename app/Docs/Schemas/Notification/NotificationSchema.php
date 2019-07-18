@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\Notification;
 
+use App\Models\Notification;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -16,29 +17,22 @@ class NotificationSchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->properties(
-                Schema::string('id')
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                Schema::string('id'),
                 Schema::string('notifiable_type')
-                    ->nullable()
-                    ->example('referrals'),
+                    ->nullable(),
                 Schema::string('notifiable_id')
                     ->format(Schema::FORMAT_UUID)
-                    ->nullable()
-                    ->example('38e06e93-79b2-4c38-85bf-7749ebc7044b'),
+                    ->nullable(),
                 Schema::string('channel')
-                    ->enum('email', 'sms')
-                    ->example('email'),
-                Schema::string('recipient')
-                    ->example('john.doe@example.com'),
-                Schema::string('message')
-                    ->example('Lorem ipsum'),
+                    ->enum(Notification::CHANNEL_EMAIL, Notification::CHANNEL_SMS),
+                Schema::string('recipient'),
+                Schema::string('message'),
                 Schema::string('sent_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),
                 Schema::string('failed_at')
                     ->format(Schema::FORMAT_DATE_TIME)
-                    ->nullable()
-                    ->example(null),
+                    ->nullable(),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),
