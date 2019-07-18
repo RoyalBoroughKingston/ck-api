@@ -1,8 +1,0 @@
-type: object
-properties:
-  offering:
-    type: string
-    example: Lorem ipsum
-  order:
-    type: integer
-    example: 1

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f6ce1254480d4494659ebe97339ee98",
+    "content-hash": "5d8f6614b6380523108570fe30e4f603",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -1320,6 +1320,54 @@
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
             "time": "2015-07-22T18:31:08+00:00"
+        },
+        {
+            "name": "goldspecdigital/oooas",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/goldspecdigital/oooas.git",
+                "reference": "58e6018111065f4135cf27cab337dd81e8a30e1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/goldspecdigital/oooas/zipball/58e6018111065f4135cf27cab337dd81e8a30e1f",
+                "reference": "58e6018111065f4135cf27cab337dd81e8a30e1f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.15",
+                "phpunit/phpunit": "^7.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GoldSpecDigital\\ObjectOrientedOAS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Inamdar",
+                    "email": "matt@goldspecdigital.com"
+                }
+            ],
+            "description": "An object oriented approach to generating OpenAPI specs, implemented in PHP.",
+            "homepage": "https://github.com/goldspecdigital/oooas",
+            "keywords": [
+                "oas",
+                "openapi",
+                "php",
+                "swagger"
+            ],
+            "time": "2019-06-27T11:02:29+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

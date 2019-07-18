@@ -1,7 +1,0 @@
-name: max_dimension
-in: query
-description: The maximum dimension to resize the image to (preserves aspect ratio)
-schema:
-  type: integer
-  minimum: 1
-  maxium: 1000
