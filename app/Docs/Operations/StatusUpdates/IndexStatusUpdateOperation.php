@@ -45,7 +45,12 @@ EOT
                 FilterParameter::create(null, 'referral_id')
                     ->description('Comma separated list of referral IDs to filter by')
                     ->required()
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 IncludeParameter::create(null, ['user'])
             )
             ->responses(

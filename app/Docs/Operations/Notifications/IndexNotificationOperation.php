@@ -43,13 +43,28 @@ EOT
                 FilterIdParameter::create(),
                 FilterParameter::create(null, 'referral_id')
                     ->description('Comma separated list of referral IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'service_id')
                     ->description('Comma separated list of service IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'user_id')
                     ->description('Comma separated list of user IDs to filter by')
-                    ->schema(Schema::string())
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE)
             )
             ->responses(
                 Response::ok()->content(

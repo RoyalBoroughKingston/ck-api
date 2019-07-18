@@ -45,16 +45,36 @@ EOT
                 FilterIdParameter::create(),
                 FilterParameter::create(null, 'service_id')
                     ->description('Comma separated list of service IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'service_location_id')
                     ->description('Comma separated list of service location IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'location_id')
                     ->description('Comma separated list of location IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'organisation_id')
                     ->description('Comma separated list of organisation IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'entry')
                     ->description(
                         <<<'EOT'

@@ -27,6 +27,11 @@ Comma separated list of relationships to include.
 Supported relationships: [{$includes}]
 EOT
             )
-            ->schema(Schema::string());
+            ->schema(
+                Schema::array()->items(
+                    Schema::string()
+                )
+            )
+            ->style(static::STYLE_SIMPLE);
     }
 }

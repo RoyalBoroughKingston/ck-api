@@ -19,7 +19,7 @@ class SortParameter extends Parameter
         array $fields = ['N/A'],
         string $default = null
     ): BaseObject {
-        $fields = sprintf('`%s`', implode('`, `', $fields));
+        $fieldsMarkdown = sprintf('`%s`', implode('`, `', $fields));
 
         return parent::create($objectId)
             ->in(static::IN_QUERY)
@@ -30,11 +30,14 @@ Comma separated list of fields to sort by.
 The results are sorted in the order of which the fields have been provided.
 Prefix a field with `-` to indicate a descending sort.
 
-Supported fields: [{$fields}]
+Supported fields: [{$fieldsMarkdown}]
 EOT
             )
             ->schema(
-                Schema::string()->default($default)
-            );
+                Schema::array()->items(
+                    Schema::string()->default($default)
+                )
+            )
+            ->style(FilterParameter::STYLE_SIMPLE);
     }
 }

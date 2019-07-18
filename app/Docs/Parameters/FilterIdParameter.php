@@ -16,6 +16,11 @@ class FilterIdParameter extends FilterParameter
     {
         return parent::create($objectId, $field)
             ->description('Comma separated list of IDs to filter by')
-            ->schema(Schema::string());
+            ->schema(
+                Schema::array()->items(
+                    Schema::string()->format(Schema::FORMAT_UUID)
+                )
+            )
+            ->style(static::STYLE_SIMPLE);
     }
 }

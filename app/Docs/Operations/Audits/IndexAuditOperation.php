@@ -38,10 +38,20 @@ class IndexAuditOperation extends Operation
                 FilterIdParameter::create(),
                 FilterParameter::create(null, 'user_id')
                     ->description('Comma separated list of user IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'oauth_client_id')
                     ->description('Comma separated list of OAuth client IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'action')
                     ->description('Action to filter by')
                     ->schema(

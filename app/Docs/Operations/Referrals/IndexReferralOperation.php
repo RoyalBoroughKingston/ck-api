@@ -38,7 +38,12 @@ class IndexReferralOperation extends Operation
                 FilterIdParameter::create(),
                 FilterParameter::create(null, 'service_id')
                     ->description('Comma separated list of service IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'reference')
                     ->description('The reference for the referral to filter by')
                     ->schema(Schema::string()),

@@ -49,7 +49,12 @@ EOT
                 FilterIdParameter::create(),
                 FilterParameter::create(null, 'organisation_id')
                     ->description('Comma separated list of organisation IDs to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->format(Schema::FORMAT_UUID)
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'name')
                     ->description('Name to filter by')
                     ->schema(Schema::string()),

@@ -11,6 +11,7 @@ use App\Docs\Parameters\SortParameter;
 use App\Docs\Schemas\PaginationSchema;
 use App\Docs\Schemas\User\UserSchema;
 use App\Docs\Tags\UsersTag;
+use App\Models\Role;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
@@ -49,7 +50,14 @@ class IndexUserOperation extends Operation
                     ->schema(Schema::string()),
                 FilterParameter::create(null, 'highest_role')
                     ->description('Comma separated list of highest role to filter by')
-                    ->schema(Schema::string()),
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()->enum(
+                                ...Role::query()->pluck('name')->toArray()
+                            )
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create('has_permission')
                     ->description('Filter users to only ones they have permissions for')
                     ->schema(Schema::boolean()),
