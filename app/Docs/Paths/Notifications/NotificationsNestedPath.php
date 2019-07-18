@@ -2,6 +2,7 @@
 
 namespace App\Docs\Paths\Notifications;
 
+use App\Docs\Operations\Notifications\ShowNotificationOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 
@@ -9,6 +10,7 @@ class NotificationsNestedPath extends PathItem
 {
     /**
      * @param string|null $objectId
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      * @return static
      */
     public static function create(string $objectId = null): BaseObject
@@ -16,7 +18,7 @@ class NotificationsNestedPath extends PathItem
         return parent::create($objectId)
             ->route('/notifications/{notification}')
             ->operations(
-                //
+                ShowNotificationOperation::create()
             );
     }
 }

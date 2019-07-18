@@ -11,7 +11,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class ImageOrganisationOperation extends Operation
+class LogoOrganisationOperation extends Operation
 {
     /**
      * @param string|null $objectId
