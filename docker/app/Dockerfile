@@ -25,12 +25,12 @@ RUN apt-add-repository -y ppa:ondrej/php \
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY default /etc/nginx/sites-available/default
-COPY php-fpm.conf /etc/php/7.2/fpm/php-fpm.conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY etc/nginx/sites-available/default /etc/nginx/sites-available/default
+COPY etc/php/7.2/fpm/php-fpm.conf /etc/php/7.2/fpm/php-fpm.conf
+COPY etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-COPY start-container /usr/local/bin/start-container
+COPY usr/local/bin/start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
 
 WORKDIR /var/www/html
