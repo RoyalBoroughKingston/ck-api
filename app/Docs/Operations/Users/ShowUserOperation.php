@@ -9,9 +9,7 @@ use App\Docs\Tags\UsersTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ShowUserOperation extends Operation
 {
@@ -28,11 +26,6 @@ class ShowUserOperation extends Operation
             ->summary('Get a specific user')
             ->description('**Permission:** `Service Worker`')
             ->parameters(
-                Parameter::path()
-                    ->name('user')
-                    ->description('The ID of the user')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID)),
                 IncludeParameter::create(null, [
                     'user-roles',
                     'user-roles.organisation',

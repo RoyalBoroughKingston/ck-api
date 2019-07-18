@@ -6,8 +6,6 @@ use App\Docs\Responses\ResourceDeletedResponse;
 use App\Docs\Tags\UsersTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class DestroyUserOperation extends Operation
 {
@@ -34,13 +32,6 @@ class DestroyUserOperation extends Operation
 **Permission:** `Super Admin`
 - Can delete other super admins
 EOT
-            )
-            ->parameters(
-                Parameter::path()
-                    ->name('user')
-                    ->description('The ID of the user')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
             )
             ->responses(ResourceDeletedResponse::create(null, 'user'));
     }

@@ -9,10 +9,8 @@ use App\Docs\Tags\UsersTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class UpdateUserOperation extends Operation
 {
@@ -39,13 +37,6 @@ class UpdateUserOperation extends Operation
 **Permission:** `Super Admin`
 - Can update other super admins
 EOT
-            )
-            ->parameters(
-                Parameter::path()
-                    ->name('user')
-                    ->description('The ID of the user')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
             )
             ->requestBody(
                 RequestBody::create()

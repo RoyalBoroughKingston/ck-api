@@ -8,8 +8,6 @@ use App\Docs\Responses\PngResponse;
 use App\Docs\Tags\ServiceLocationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ImageServiceLocationOperation extends Operation
 {
@@ -27,11 +25,6 @@ class ImageServiceLocationOperation extends Operation
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->parameters(
-                Parameter::path()
-                    ->name('service_location')
-                    ->description('The ID of the service location')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID)),
                 MaxDimensionParameter::create(),
                 UpdateRequestIdParameter::create()
             )

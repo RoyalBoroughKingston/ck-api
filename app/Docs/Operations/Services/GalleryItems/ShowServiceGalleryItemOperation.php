@@ -8,8 +8,6 @@ use App\Docs\Responses\PngResponse;
 use App\Docs\Tags\ServicesTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ShowServiceGalleryItemOperation extends Operation
 {
@@ -27,16 +25,6 @@ class ShowServiceGalleryItemOperation extends Operation
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->parameters(
-                Parameter::path()
-                    ->name('service')
-                    ->description('The ID or slug of the service')
-                    ->required()
-                    ->schema(Schema::string()),
-                Parameter::path()
-                    ->name('file')
-                    ->description('The ID of the file')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID)),
                 MaxDimensionParameter::create(),
                 UpdateRequestIdParameter::create()
             )

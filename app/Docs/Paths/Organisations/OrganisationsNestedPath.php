@@ -6,7 +6,9 @@ use App\Docs\Operations\Organisations\DestroyOrganisationOperation;
 use App\Docs\Operations\Organisations\ShowOrganisationOperation;
 use App\Docs\Operations\Organisations\UpdateOrganisationOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class OrganisationsNestedPath extends PathItem
 {
@@ -19,6 +21,13 @@ class OrganisationsNestedPath extends PathItem
     {
         return parent::create($objectId)
             ->route('/organisations/{organisation}')
+            ->parameters(
+                Parameter::path()
+                    ->name('organisation')
+                    ->description('The ID or slug of the organisation')
+                    ->required()
+                    ->schema(Schema::string())
+            )
             ->operations(
                 ShowOrganisationOperation::create(),
                 UpdateOrganisationOperation::create(),

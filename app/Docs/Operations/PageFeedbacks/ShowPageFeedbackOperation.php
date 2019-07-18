@@ -8,9 +8,7 @@ use App\Docs\Tags\PageFeedbacksTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ShowPageFeedbackOperation extends Operation
 {
@@ -26,13 +24,6 @@ class ShowPageFeedbackOperation extends Operation
             ->tags(PageFeedbacksTag::create())
             ->summary('Get a specific page feedback')
             ->description('**Permission:** `Global Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('page_feedback')
-                    ->description('The ID of the page feedback')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->responses(
                 Response::ok()->content(
                     MediaType::json()->schema(

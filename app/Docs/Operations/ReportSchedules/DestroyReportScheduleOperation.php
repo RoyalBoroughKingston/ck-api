@@ -6,8 +6,6 @@ use App\Docs\Responses\ResourceDeletedResponse;
 use App\Docs\Tags\ReportSchedulesTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class DestroyReportScheduleOperation extends Operation
 {
@@ -23,13 +21,6 @@ class DestroyReportScheduleOperation extends Operation
             ->tags(ReportSchedulesTag::create())
             ->summary('Delete a specific report schedule')
             ->description('**Permission:** `Global Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('report_schedule')
-                    ->description('The ID of the report schedule')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->responses(ResourceDeletedResponse::create());
     }
 }

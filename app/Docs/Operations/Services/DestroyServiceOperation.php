@@ -6,8 +6,6 @@ use App\Docs\Responses\ResourceDeletedResponse;
 use App\Docs\Tags\ServicesTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class DestroyServiceOperation extends Operation
 {
@@ -23,13 +21,6 @@ class DestroyServiceOperation extends Operation
             ->tags(ServicesTag::create())
             ->summary('Delete a specific service')
             ->description('**Permission:** `Global Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('service')
-                    ->description('The ID or slug of the service')
-                    ->required()
-                    ->schema(Schema::string())
-            )
             ->responses(ResourceDeletedResponse::create());
     }
 }

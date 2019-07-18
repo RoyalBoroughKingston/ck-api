@@ -6,7 +6,9 @@ use App\Docs\Operations\Collections\Categories\DestroyCollectionCategoryOperatio
 use App\Docs\Operations\Collections\Categories\ShowCollectionCategoryOperation;
 use App\Docs\Operations\Collections\Categories\UpdateCollectionCategoryOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class CollectionCategoriesNestedPath extends PathItem
 {
@@ -19,6 +21,13 @@ class CollectionCategoriesNestedPath extends PathItem
     {
         return parent::create($objectId)
             ->route('/collections/categories/{category}')
+            ->parameters(
+                Parameter::path()
+                    ->name('category')
+                    ->description('The ID of the category collection')
+                    ->required()
+                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+            )
             ->operations(
                 ShowCollectionCategoryOperation::create(),
                 UpdateCollectionCategoryOperation::create(),

@@ -8,9 +8,7 @@ use App\Docs\Tags\NotificationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ShowNotificationOperation extends Operation
 {
@@ -26,13 +24,6 @@ class ShowNotificationOperation extends Operation
             ->tags(NotificationsTag::create())
             ->summary('Get a specific notification')
             ->description('**Permission:** `Global Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('notification')
-                    ->description('The ID of the notification')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->responses(
                 Response::ok()->content(
                     MediaType::json()->schema(

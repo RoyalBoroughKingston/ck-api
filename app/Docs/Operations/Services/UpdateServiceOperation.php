@@ -8,7 +8,6 @@ use App\Docs\Tags\ServicesTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -41,13 +40,6 @@ class UpdateServiceOperation extends Operation
 **Permission:** `Global Admin`
 - Can update a service location
 EOT
-            )
-            ->parameters(
-                Parameter::path()
-                    ->name('service')
-                    ->description('The ID or slug of the service')
-                    ->required()
-                    ->schema(Schema::string())
             )
             ->requestBody(
                 RequestBody::create()

@@ -29,11 +29,6 @@ class RelatedServiceOperation extends Operation
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->parameters(
-                Parameter::path()
-                    ->name('service')
-                    ->description('The ID or slug of the service')
-                    ->required()
-                    ->schema(Schema::string()),
                 Parameter::query()
                     ->name('location[lat]')
                     ->description('The latitude to sort by')

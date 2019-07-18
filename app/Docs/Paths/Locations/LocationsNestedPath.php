@@ -6,7 +6,9 @@ use App\Docs\Operations\Locations\DestroyLocationOperation;
 use App\Docs\Operations\Locations\ShowLocationOperation;
 use App\Docs\Operations\Locations\UpdateLocationOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class LocationsNestedPath extends PathItem
 {
@@ -19,6 +21,13 @@ class LocationsNestedPath extends PathItem
     {
         return parent::create($objectId)
             ->route('/locations/{location}')
+            ->parameters(
+                Parameter::path()
+                    ->name('location')
+                    ->description('The ID of the location')
+                    ->required()
+                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+            )
             ->operations(
                 ShowLocationOperation::create(),
                 UpdateLocationOperation::create(),

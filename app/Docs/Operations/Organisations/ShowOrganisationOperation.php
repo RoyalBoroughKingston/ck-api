@@ -8,9 +8,7 @@ use App\Docs\Tags\OrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ShowOrganisationOperation extends Operation
 {
@@ -27,13 +25,6 @@ class ShowOrganisationOperation extends Operation
             ->summary('Get a specific organisation')
             ->description('**Permission:** `Open`')
             ->noSecurity()
-            ->parameters(
-                Parameter::path()
-                    ->name('organisation')
-                    ->description('The ID or slug of the organisation')
-                    ->required()
-                    ->schema(Schema::string())
-            )
             ->responses(
                 Response::ok()->content(
                     MediaType::json()->schema(

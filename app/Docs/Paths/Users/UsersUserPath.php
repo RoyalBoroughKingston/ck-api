@@ -16,7 +16,7 @@ class UsersUserPath extends PathItem
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->route('/users/{user}/user')
+            ->route('/users/user')
             ->operations(
                 UserUserOperation::create()
             );

@@ -9,10 +9,8 @@ use App\Docs\Tags\ReferralsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class UpdateReferralOperation extends Operation
 {
@@ -28,13 +26,6 @@ class UpdateReferralOperation extends Operation
             ->tags(ReferralsTag::create())
             ->summary('Update a specific referral')
             ->description('**Permission:** `Service Worker`')
-            ->parameters(
-                Parameter::path()
-                    ->name('referral')
-                    ->description('The ID of the referral')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->requestBody(
                 RequestBody::create()
                     ->required()

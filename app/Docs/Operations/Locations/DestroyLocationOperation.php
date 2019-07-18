@@ -6,8 +6,6 @@ use App\Docs\Responses\ResourceDeletedResponse;
 use App\Docs\Tags\LocationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class DestroyLocationOperation extends Operation
 {
@@ -23,13 +21,6 @@ class DestroyLocationOperation extends Operation
             ->tags(LocationsTag::create())
             ->summary('Delete a specific location')
             ->description('**Permission:** `Global Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('location')
-                    ->description('The ID of the location')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->responses(ResourceDeletedResponse::create());
     }
 }

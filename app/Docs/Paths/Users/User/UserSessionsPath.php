@@ -16,7 +16,7 @@ class UserSessionsPath extends PathItem
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->route('/users/{user}/user/sessions')
+            ->route('/users/user/sessions')
             ->operations(
                 DestroyUserSessionOperation::create()
             );

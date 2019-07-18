@@ -8,9 +8,7 @@ use App\Docs\Tags\TaxonomyOrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class ShowTaxonomyOrganisationOperation extends Operation
 {
@@ -27,13 +25,6 @@ class ShowTaxonomyOrganisationOperation extends Operation
             ->summary('Get a specific organisation taxonomy')
             ->description('**Permission:** `Open`')
             ->noSecurity()
-            ->parameters(
-                Parameter::path()
-                    ->name('organisation')
-                    ->description('The ID of the organisation taxonomy')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->responses(
                 Response::ok()->content(
                     MediaType::json()->schema(

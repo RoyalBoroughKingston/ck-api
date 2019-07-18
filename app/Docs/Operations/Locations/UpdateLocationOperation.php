@@ -8,9 +8,7 @@ use App\Docs\Tags\LocationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class UpdateLocationOperation extends Operation
 {
@@ -26,13 +24,6 @@ class UpdateLocationOperation extends Operation
             ->tags(LocationsTag::create())
             ->summary('Update a specific location')
             ->description('**Permission:** `Service Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('location')
-                    ->description('The ID of the location')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->requestBody(
                 RequestBody::create()->content(
                     MediaType::json()->schema(UpdateLocationSchema::create())

@@ -8,8 +8,6 @@ use App\Docs\Responses\PngResponse;
 use App\Docs\Tags\OrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class LogoOrganisationOperation extends Operation
 {
@@ -27,11 +25,6 @@ class LogoOrganisationOperation extends Operation
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->parameters(
-                Parameter::path()
-                    ->name('organisation')
-                    ->description('The ID or slug of the organisation')
-                    ->required()
-                    ->schema(Schema::string()),
                 MaxDimensionParameter::create(),
                 UpdateRequestIdParameter::create()
             )

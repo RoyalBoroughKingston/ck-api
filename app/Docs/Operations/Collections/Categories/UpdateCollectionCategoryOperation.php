@@ -9,10 +9,8 @@ use App\Docs\Tags\CollectionCategoriesTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class UpdateCollectionCategoryOperation extends Operation
 {
@@ -28,13 +26,6 @@ class UpdateCollectionCategoryOperation extends Operation
             ->tags(CollectionCategoriesTag::create())
             ->summary('Update a specific category collection')
             ->description('**Permission:** `Global Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('category')
-                    ->description('The ID of the category collection')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->requestBody(
                 RequestBody::create()
                     ->required()

@@ -6,7 +6,9 @@ use App\Docs\Operations\Collections\Personas\DestroyCollectionPersonaOperation;
 use App\Docs\Operations\Collections\Personas\ShowCollectionPersonaOperation;
 use App\Docs\Operations\Collections\Personas\UpdateCollectionPersonaOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class CollectionPersonasNestedPath extends PathItem
 {
@@ -19,6 +21,13 @@ class CollectionPersonasNestedPath extends PathItem
     {
         return parent::create($objectId)
             ->route('/collections/personas/{persona}')
+            ->parameters(
+                Parameter::path()
+                    ->name('persona')
+                    ->description('The ID of the persona collection')
+                    ->required()
+                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+            )
             ->operations(
                 ShowCollectionPersonaOperation::create(),
                 UpdateCollectionPersonaOperation::create(),

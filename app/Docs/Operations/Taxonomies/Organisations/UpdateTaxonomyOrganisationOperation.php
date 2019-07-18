@@ -9,10 +9,8 @@ use App\Docs\Tags\TaxonomyOrganisationsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class UpdateTaxonomyOrganisationOperation extends Operation
 {
@@ -28,13 +26,6 @@ class UpdateTaxonomyOrganisationOperation extends Operation
             ->tags(TaxonomyOrganisationsTag::create())
             ->summary('Update a specific organisation taxonomy')
             ->description('**Permission:** `Global Admin`')
-            ->parameters(
-                Parameter::path()
-                    ->name('organisation')
-                    ->description('The ID of the organisation taxonomy')
-                    ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
-            )
             ->requestBody(
                 RequestBody::create()
                     ->required()

@@ -6,7 +6,9 @@ use App\Docs\Operations\Taxonomies\Categories\DestroyTaxonomyCategoryOperation;
 use App\Docs\Operations\Taxonomies\Categories\ShowTaxonomyCategoryOperation;
 use App\Docs\Operations\Taxonomies\Categories\UpdateTaxonomyCategoryOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class TaxonomyCategoriesNestedPath extends PathItem
 {
@@ -19,6 +21,13 @@ class TaxonomyCategoriesNestedPath extends PathItem
     {
         return parent::create($objectId)
             ->route('/taxonomies/categories/{category}')
+            ->parameters(
+                Parameter::path()
+                    ->name('category')
+                    ->description('The ID of the category taxonomy')
+                    ->required()
+                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+            )
             ->operations(
                 ShowTaxonomyCategoryOperation::create(),
                 UpdateTaxonomyCategoryOperation::create(),
