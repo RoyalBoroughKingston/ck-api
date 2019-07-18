@@ -3,14 +3,10 @@
 namespace App\Docs\Operations\Reports;
 
 use App\Docs\Responses\ResourceDeletedResponse;
-use App\Docs\Schemas\Report\ReportSchema;
-use App\Docs\Schemas\ResourceSchema;
 use App\Docs\Tags\ReportsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class DestroyReportOperation extends Operation

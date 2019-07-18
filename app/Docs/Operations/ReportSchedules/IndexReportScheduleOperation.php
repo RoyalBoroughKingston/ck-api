@@ -26,7 +26,8 @@ class IndexReportScheduleOperation extends Operation
             ->action(static::ACTION_GET)
             ->tags(ReportSchedulesTag::create())
             ->summary('List all the report schedules')
-            ->description(<<<'EOT'
+            ->description(
+                <<<'EOT'
 **Permission:** `Global Admin`
 
 ---

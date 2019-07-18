@@ -23,7 +23,8 @@ class IndexSettingOperation extends Operation
             ->action(static::ACTION_GET)
             ->tags(SettingsTag::create())
             ->summary('List all of the settings')
-            ->description(<<<'EOT'
+            ->description(
+                <<<'EOT'
 **Permission:** `Open`
 
 ---

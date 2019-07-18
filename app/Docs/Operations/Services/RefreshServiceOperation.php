@@ -2,7 +2,6 @@
 
 namespace App\Docs\Operations\Services;
 
-use App\Docs\Parameters\IncludeParameter;
 use App\Docs\Schemas\ResourceSchema;
 use App\Docs\Schemas\Service\RefreshServiceSchema;
 use App\Docs\Schemas\Service\ServiceSchema;
