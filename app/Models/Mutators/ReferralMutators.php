@@ -23,7 +23,7 @@ trait ReferralMutators
 
     /**
      * @param string $email
-     * @return null|string
+     * @return string|null
      */
     public function getEmailAttribute(?string $email): ?string
     {
@@ -31,7 +31,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $email
+     * @param string|null $email
      */
     public function setEmailAttribute(?string $email)
     {
@@ -39,8 +39,8 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $phone
-     * @return null|string
+     * @param string|null $phone
+     * @return string|null
      */
     public function getPhoneAttribute(?string $phone): ?string
     {
@@ -48,7 +48,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $phone
+     * @param string|null $phone
      */
     public function setPhoneAttribute(?string $phone)
     {
@@ -56,8 +56,8 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $otherContact
-     * @return null|string
+     * @param string|null $otherContact
+     * @return string|null
      */
     public function getOtherContactAttribute(?string $otherContact): ?string
     {
@@ -65,7 +65,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $otherContact
+     * @param string|null $otherContact
      */
     public function setOtherContactAttribute(?string $otherContact)
     {
@@ -73,8 +73,8 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $postcodeOutwardCode
-     * @return null|string
+     * @param string|null $postcodeOutwardCode
+     * @return string|null
      */
     public function getPostcodeOutwardCodeAttribute(?string $postcodeOutwardCode): ?string
     {
@@ -82,7 +82,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $postcodeOutwardCode
+     * @param string|null $postcodeOutwardCode
      */
     public function setPostcodeOutwardCodeAttribute(?string $postcodeOutwardCode)
     {
@@ -90,8 +90,8 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $comments
-     * @return null|string
+     * @param string|null $comments
+     * @return string|null
      */
     public function getCommentsAttribute(?string $comments): ?string
     {
@@ -99,7 +99,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $comments
+     * @param string|null $comments
      */
     public function setCommentsAttribute(?string $comments)
     {
@@ -107,8 +107,8 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $refereeName
-     * @return null|string
+     * @param string|null $refereeName
+     * @return string|null
      */
     public function getRefereeNameAttribute(?string $refereeName): ?string
     {
@@ -116,7 +116,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $refereeName
+     * @param string|null $refereeName
      */
     public function setRefereeNameAttribute(?string $refereeName)
     {
@@ -124,8 +124,8 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $refereeEmail
-     * @return null|string
+     * @param string|null $refereeEmail
+     * @return string|null
      */
     public function getRefereeEmailAttribute(?string $refereeEmail): ?string
     {
@@ -133,7 +133,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $refereeEmail
+     * @param string|null $refereeEmail
      */
     public function setRefereeEmailAttribute(?string $refereeEmail)
     {
@@ -141,8 +141,8 @@ trait ReferralMutators
     }
 
     /**
-     * @param null|string $refereePhone
-     * @return null|string
+     * @param string|null $refereePhone
+     * @return string|null
      */
     public function getRefereePhoneAttribute(?string $refereePhone): ?string
     {

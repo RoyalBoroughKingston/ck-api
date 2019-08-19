@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
@@ -32,6 +33,11 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     use ServiceRelationships;
     use ServiceScopes;
     use UpdateRequests;
+
+    const TYPE_SERVICE = 'service';
+    const TYPE_ACTIVITY = 'activity';
+    const TYPE_CLUB = 'club';
+    const TYPE_GROUP = 'group';
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -54,6 +60,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     protected $casts = [
         'is_free' => 'boolean',
         'show_referral_disclaimer' => 'boolean',
+        'last_modified_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -114,7 +121,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                     'location' => ['type' => 'geo_point'],
                 ],
             ],
-        ]
+        ],
     ];
 
     /**
@@ -122,7 +129,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
      */
     public static function bootSearchable()
     {
-        self::bootScoutSearchable();
+        self::sourceBootSearchable();
     }
 
     /**
@@ -205,6 +212,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'organisation_id' => $data['organisation_id'] ?? $this->organisation_id,
             'slug' => $data['slug'] ?? $this->slug,
             'name' => $data['name'] ?? $this->name,
+            'type' => $data['type'] ?? $this->type,
             'status' => $data['status'] ?? $this->status,
             'intro' => $data['intro'] ?? $this->intro,
             'description' => sanitize_markdown($data['description'] ?? $this->description),
@@ -226,6 +234,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'logo_file_id' => array_key_exists('logo_file_id', $data)
                 ? $data['logo_file_id']
                 : $this->logo_file_id,
+            // This must always be updated regardless of the fields changed.
+            'last_modified_at' => Date::now(),
         ]);
 
         // Update the service criterion record.
@@ -263,6 +273,17 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                     'title' => $usefulInfo['title'],
                     'description' => sanitize_markdown($usefulInfo['description']),
                     'order' => $usefulInfo['order'],
+                ]);
+            }
+        }
+
+        // Update the offering records.
+        if (array_key_exists('offerings', $data)) {
+            $this->offerings()->delete();
+            foreach ($data['offerings'] as $offering) {
+                $this->offerings()->create([
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
                 ]);
             }
         }
@@ -408,8 +429,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
 
     /**
      * @param int|null $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

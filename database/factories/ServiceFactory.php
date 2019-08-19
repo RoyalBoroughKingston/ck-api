@@ -2,6 +2,7 @@
 
 use App\Models\Service;
 use Faker\Generator as Faker;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
 $factory->define(Service::class, function (Faker $faker) {
@@ -11,8 +12,9 @@ $factory->define(Service::class, function (Faker $faker) {
         'organisation_id' => function () {
             return factory(\App\Models\Organisation::class)->create()->id;
         },
-        'slug' => Str::slug($name).'-'.rand(1, 1000),
+        'slug' => Str::slug($name) . '-' . mt_rand(1, 1000),
         'name' => $name,
+        'type' => Service::TYPE_SERVICE,
         'status' => Service::STATUS_ACTIVE,
         'intro' => $faker->sentence,
         'description' => $faker->sentence,
@@ -23,9 +25,9 @@ $factory->define(Service::class, function (Faker $faker) {
         'contact_email' => $faker->safeEmail,
         'show_referral_disclaimer' => false,
         'referral_method' => Service::REFERRAL_METHOD_NONE,
+        'last_modified_at' => Date::now(),
     ];
 });
-
 
 $factory->afterCreating(Service::class, function (Service $service, Faker $faker) {
     \App\Models\ServiceCriterion::create([

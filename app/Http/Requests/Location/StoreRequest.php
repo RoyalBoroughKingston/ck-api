@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests\Location;
 
+use App\Models\File;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\Postcode;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -39,6 +42,12 @@ class StoreRequest extends FormRequest
             'accessibility_info' => ['present', 'nullable', 'string', 'min:1', 'max:10000'],
             'has_wheelchair_access' => ['required', 'boolean'],
             'has_induction_loop' => ['required', 'boolean'],
+            'image_file_id' => [
+                'nullable',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 }

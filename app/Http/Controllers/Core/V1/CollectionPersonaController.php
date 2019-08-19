@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionPersona\DestroyRequest;
 use App\Http\Requests\CollectionPersona\IndexRequest;
 use App\Http\Requests\CollectionPersona\ShowRequest;
@@ -11,7 +12,6 @@ use App\Http\Requests\CollectionPersona\UpdateRequest;
 use App\Http\Resources\CollectionPersonaResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
-use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
@@ -52,7 +52,6 @@ class CollectionPersonaController extends Controller
         return CollectionPersonaResource::collection($personas);
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -62,6 +61,14 @@ class CollectionPersonaController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Create the collection record.
             $persona = Collection::create([
                 'type' => Collection::TYPE_PERSONA,
@@ -70,10 +77,7 @@ class CollectionPersonaController extends Controller
                     'intro' => $request->intro,
                     'subtitle' => $request->subtitle,
                     'image_file_id' => $request->image_file_id,
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
@@ -99,7 +103,7 @@ class CollectionPersonaController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionPersona\ShowRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionPersonaResource
      */
     public function show(ShowRequest $request, Collection $collection)
@@ -119,12 +123,20 @@ class CollectionPersonaController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\CollectionPersona\UpdateRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Collection $collection)
     {
         return DB::transaction(function () use ($request, $collection) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Update the collection record.
             $collection->update([
                 'name' => $request->name,
@@ -134,10 +146,7 @@ class CollectionPersonaController extends Controller
                     'image_file_id' => $request->has('image_file_id')
                         ? $request->image_file_id
                         : $collection->meta['image_file_id'],
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
@@ -160,7 +169,7 @@ class CollectionPersonaController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\CollectionPersona\DestroyRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Collection $collection)

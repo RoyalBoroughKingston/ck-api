@@ -10,15 +10,17 @@ use App\Models\Organisation;
 use App\Models\RegularOpeningHour;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\ServiceRefreshToken;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
@@ -32,10 +34,15 @@ class ServicesTest extends TestCase
 
     public function test_guest_can_list_them()
     {
+        /** @var \App\Models\Service $service */
         $service = factory(Service::class)->create();
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -55,6 +62,7 @@ class ServicesTest extends TestCase
             'has_logo' => $service->hasLogo(),
             'slug' => $service->slug,
             'name' => $service->name,
+            'type' => $service->type,
             'status' => $service->status,
             'intro' => $service->intro,
             'description' => $service->description,
@@ -90,6 +98,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -102,11 +116,12 @@ class ServicesTest extends TestCase
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
                     'name' => Taxonomy::category()->children()->first()->name,
-                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
-                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
+                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
                 ],
             ],
-            'created_at' => $service->created_at->format(Carbon::ISO8601),
+            'last_modified_at' => $service->last_modified_at->format(CarbonImmutable::ISO8601),
+            'created_at' => $service->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -117,6 +132,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -145,6 +164,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -251,6 +274,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -286,6 +310,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -312,6 +342,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -347,6 +378,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -374,6 +411,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -406,6 +444,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -444,6 +488,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $anotherOrganisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -473,6 +518,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
@@ -495,6 +541,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -530,6 +577,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -558,6 +611,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -593,6 +647,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -611,8 +671,8 @@ class ServicesTest extends TestCase
                 'id' => Taxonomy::category()->children()->firstOrFail()->id,
                 'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
-                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
-                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
+                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ];
         $response->assertJsonFragment($responsePayload);
@@ -629,6 +689,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -664,6 +725,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -682,8 +749,8 @@ class ServicesTest extends TestCase
                 'id' => Taxonomy::category()->children()->firstOrFail()->id,
                 'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
-                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(Carbon::ISO8601),
-                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(Carbon::ISO8601),
+                'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ];
         $response->assertJsonFragment($responsePayload);
@@ -700,6 +767,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -732,6 +800,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -764,6 +838,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -799,6 +874,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -827,6 +908,10 @@ class ServicesTest extends TestCase
             'description' => 'This is a test description',
             'order' => 1,
         ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
+            'order' => 1,
+        ]);
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
             'url' => 'https://www.instagram.com/ayupdigital/',
@@ -844,6 +929,7 @@ class ServicesTest extends TestCase
             'has_logo' => $service->hasLogo(),
             'slug' => $service->slug,
             'name' => $service->name,
+            'type' => $service->type,
             'status' => $service->status,
             'intro' => $service->intro,
             'description' => $service->description,
@@ -879,6 +965,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -890,12 +982,13 @@ class ServicesTest extends TestCase
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
                     'name' => Taxonomy::category()->children()->first()->name,
-                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
-                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
+                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
                 ],
             ],
             'gallery_items' => [],
-            'created_at' => $service->created_at->format(Carbon::ISO8601),
+            'last_modified_at' => $service->last_modified_at->format(CarbonImmutable::ISO8601),
+            'created_at' => $service->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -905,6 +998,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -924,6 +1021,7 @@ class ServicesTest extends TestCase
             'has_logo' => $service->hasLogo(),
             'slug' => $service->slug,
             'name' => $service->name,
+            'type' => $service->type,
             'status' => $service->status,
             'intro' => $service->intro,
             'description' => $service->description,
@@ -959,6 +1057,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -970,12 +1074,13 @@ class ServicesTest extends TestCase
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
                     'name' => Taxonomy::category()->children()->first()->name,
-                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(Carbon::ISO8601),
-                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(Carbon::ISO8601),
+                    'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
                 ],
             ],
             'gallery_items' => [],
-            'created_at' => $service->created_at->format(Carbon::ISO8601),
+            'last_modified_at' => $service->last_modified_at->format(CarbonImmutable::ISO8601),
+            'created_at' => $service->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -987,6 +1092,10 @@ class ServicesTest extends TestCase
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $service->offerings()->create([
+            'offering' => 'Weekly club',
             'order' => 1,
         ]);
         $service->socialMedias()->create([
@@ -1045,6 +1154,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1080,6 +1190,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1111,6 +1227,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1146,6 +1263,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1178,6 +1301,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1213,6 +1337,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1245,6 +1375,7 @@ class ServicesTest extends TestCase
         $this->json('PUT', "/core/v1/services/{$service->id}", [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1277,6 +1408,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -1314,6 +1451,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1346,6 +1484,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],
@@ -1381,6 +1525,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1416,6 +1561,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
             'social_medias' => [
                 [
                     'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -1447,6 +1598,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1476,6 +1628,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1501,6 +1654,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'new-slug',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1530,6 +1684,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1555,6 +1710,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1584,6 +1740,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1609,6 +1766,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'new-slug',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1638,6 +1796,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1663,6 +1822,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'new-slug',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1692,6 +1852,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1719,6 +1880,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1748,6 +1910,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1777,6 +1940,7 @@ class ServicesTest extends TestCase
         $payload = [
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -1806,6 +1970,7 @@ class ServicesTest extends TestCase
                 'other' => null,
             ],
             'useful_infos' => [],
+            'offerings' => [],
             'social_medias' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1983,6 +2148,31 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
+    public function test_global_admin_can_update_organisation_id_with_preview_only()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => factory(Organisation::class)->create()->id,
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", array_merge(
+            $payload,
+            ['preview' => true]
+        ));
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => null, 'data' => $payload]);
+    }
+
     /*
      * Delete a specific service.
      */
@@ -2086,6 +2276,51 @@ class ServicesTest extends TestCase
     }
 
     /*
+     * Refresh service.
+     */
+
+    public function test_guest_without_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_guest_with_invalid_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [
+            'token' => 'invalid-token',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_guest_with_valid_token_can_refresh()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => Date::now()->subMonths(6),
+        ]);
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh", [
+            'token' => factory(ServiceRefreshToken::class)->create([
+                'service_id' => $service->id,
+            ])->id,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'last_modified_at' => $now->format(CarbonImmutable::ISO8601),
+        ]);
+    }
+
+    /*
      * List all the related services.
      */
 
@@ -2132,6 +2367,7 @@ class ServicesTest extends TestCase
                     'has_logo',
                     'name',
                     'slug',
+                    'type',
                     'status',
                     'intro',
                     'description',
@@ -2190,6 +2426,7 @@ class ServicesTest extends TestCase
                             'updated_at',
                         ],
                     ],
+                    'last_modified_at',
                     'created_at',
                     'updated_at',
                 ],
@@ -2266,6 +2503,7 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
@@ -2298,6 +2536,12 @@ class ServicesTest extends TestCase
                 [
                     'title' => 'Did you know?',
                     'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
                     'order' => 1,
                 ],
             ],

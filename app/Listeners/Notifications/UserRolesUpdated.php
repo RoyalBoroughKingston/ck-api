@@ -14,7 +14,6 @@ class UserRolesUpdated
      * Handle the event.
      *
      * @param \App\Events\UserRolesUpdated $event
-     * @return void
      */
     public function handle(UserRolesUpdatedEvent $event)
     {
@@ -61,7 +60,6 @@ class UserRolesUpdated
             )
             ->map($humanReadableRole)
             ->implode(', ');
-        ;
 
         $event->user->sendEmail(new NotifyUserEmail($event->user->email, [
             'NAME' => $event->user->first_name,

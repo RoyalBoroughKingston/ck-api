@@ -9,8 +9,7 @@ class CollectionObserver
     /**
      * Handle the collection "created" event.
      *
-     * @param  \App\Models\Collection $collection
-     * @return void
+     * @param \App\Models\Collection $collection
      * @throws \Exception
      */
     public function created(Collection $collection)
@@ -26,8 +25,7 @@ class CollectionObserver
     /**
      * Handle the collection "updating" event.
      *
-     * @param  \App\Models\Collection $collection
-     * @return void
+     * @param \App\Models\Collection $collection
      * @throws \Exception
      */
     public function updating(Collection $collection)
@@ -62,8 +60,7 @@ class CollectionObserver
     /**
      * Handle the collection "updated" event.
      *
-     * @param  \App\Models\Collection $collection
-     * @return void
+     * @param \App\Models\Collection $collection
      * @throws \Exception
      */
     public function updated(Collection $collection)
@@ -74,8 +71,7 @@ class CollectionObserver
     /**
      * Handle the organisation "deleting" event.
      *
-     * @param  \App\Models\Collection $collection
-     * @return void
+     * @param \App\Models\Collection $collection
      */
     public function deleting(Collection $collection)
     {
@@ -85,8 +81,7 @@ class CollectionObserver
     /**
      * Handle the collection "deleted" event.
      *
-     * @param  \App\Models\Collection $collection
-     * @return void
+     * @param \App\Models\Collection $collection
      * @throws \Exception
      */
     public function deleted(Collection $collection)

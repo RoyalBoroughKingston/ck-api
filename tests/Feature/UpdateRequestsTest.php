@@ -13,7 +13,9 @@ use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
 use App\Models\UserRole;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -21,6 +23,7 @@ use Tests\TestCase;
 class UpdateRequestsTest extends TestCase
 {
     const BASE64_ENCODED_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+
     /*
      * List all the update requests.
      */
@@ -80,7 +83,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
 
         Passport::actingAs($user);
@@ -120,7 +123,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
         $organisation = factory(Organisation::class)->create();
         $organisationUpdateRequest = $organisation->updateRequests()->create([
@@ -172,7 +175,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
         $organisation = factory(Organisation::class)->create([
             'name' => 'Name with, comma',
@@ -213,7 +216,7 @@ class UpdateRequestsTest extends TestCase
                 'postcode' => $this->faker->postcode,
                 'country' => 'United Kingdom',
                 'accessibility_info' => null,
-            ]
+            ],
         ]);
         $organisation = factory(Organisation::class)->create([
             'name' => 'Entry B',
@@ -544,8 +547,10 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
-        $this->assertDatabaseHas((new ServiceLocation())->getTable(), ['id' => $serviceLocation->id, 'name' => 'Test Name']);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new ServiceLocation())->getTable(),
+            ['id' => $serviceLocation->id, 'name' => 'Test Name']);
     }
 
     public function test_global_admin_can_approve_one_for_organisation()
@@ -569,7 +574,8 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new Organisation())->getTable(), [
             'id' => $organisation->id,
             'slug' => $updateRequest->data['slug'],
@@ -606,7 +612,8 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new Location())->getTable(), [
             'id' => $location->id,
             'address_line_1' => $updateRequest->data['address_line_1'],
@@ -636,6 +643,7 @@ class UpdateRequestsTest extends TestCase
             'data' => [
                 'slug' => $service->slug,
                 'name' => 'Test Name',
+                'type' => $service->type,
                 'status' => $service->status,
                 'intro' => $service->intro,
                 'description' => $service->description,
@@ -673,7 +681,8 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(), ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
         $this->assertDatabaseHas((new Service())->getTable(), [
             'id' => $service->id,
             'name' => 'Test Name',
@@ -746,6 +755,39 @@ class UpdateRequestsTest extends TestCase
             'user_id' => $newOrganisationAdmin->id,
             'role_id' => Role::serviceAdmin()->id,
             'service_id' => $service->id,
+        ]);
+    }
+
+    /*
+     * Service specific.
+     */
+
+    public function test_last_modified_at_is_set_to_now_when_service_updated()
+    {
+        $oldNow = Date::now()->subMonths(6);
+        $newNow = Date::now();
+        Date::setTestNow($newNow);
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => $oldNow,
+            'created_at' => $oldNow,
+            'updated_at' => $oldNow,
+        ]);
+        $updateRequest = $service->updateRequests()->create([
+            'user_id' => factory(User::class)->create()->id,
+            'data' => [
+                'name' => 'Test Name',
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas($service->getTable(), [
+            'last_modified_at' => $newNow->format(CarbonImmutable::ISO8601),
         ]);
     }
 }

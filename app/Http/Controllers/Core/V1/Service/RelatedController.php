@@ -58,7 +58,7 @@ class RelatedController extends Controller
 
                 $query->orderByRaw($sql, [$location->lat(), $location->lon(), $location->lat()]);
             })
-            ->orderBy('name');
+            ->orderBy('services.name');
 
         $services = QueryBuilder::for($baseQuery)
             ->allowedIncludes(['organisation'])

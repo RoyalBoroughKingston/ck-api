@@ -1,23 +1,22 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class SeedDefaultCollectionData extends Migration
 {
     /**
-     * @var \Illuminate\Support\Carbon
+     * @var \Carbon\CarbonImmutable
      */
     protected $now;
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
-        $this->now = now();
+        $this->now = Date::now();
         $this->categoryTaxonomy = DB::table('taxonomies')
             ->whereNull('parent_id')
             ->where('name', 'Category')
@@ -29,8 +28,6 @@ class SeedDefaultCollectionData extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

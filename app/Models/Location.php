@@ -7,11 +7,14 @@ use App\Http\Requests\Location\UpdateRequest as Request;
 use App\Models\Mutators\LocationMutators;
 use App\Models\Relationships\LocationRelationships;
 use App\Models\Scopes\LocationScopes;
+use App\Rules\FileIsMimeType;
 use App\Support\Address;
 use App\Support\Coordinate;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class Location extends Model implements AppliesUpdateRequests
@@ -41,7 +44,7 @@ class Location extends Model implements AppliesUpdateRequests
     public function updateCoordinate(): self
     {
         /**
-         * @var \App\Contracts\Geocoder $geocoder
+         * @var \App\Contracts\Geocoder
          */
         $geocoder = resolve(Geocoder::class);
         $coordinate = $geocoder->geocode($this->toAddress());
@@ -61,6 +64,13 @@ class Location extends Model implements AppliesUpdateRequests
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = (new Request())->rules();
+
+        // Remove the pending assignment rule since the file is now uploaded.
+        $rules['image_file_id'] = [
+            'nullable',
+            'exists:files,id',
+            new FileIsMimeType(File::MIME_TYPE_PNG),
+        ];
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
@@ -86,6 +96,9 @@ class Location extends Model implements AppliesUpdateRequests
             'accessibility_info' => $data['accessibility_info'] ?? $this->accessibility_info,
             'has_wheelchair_access' => $data['has_wheelchair_access'] ?? $this->has_wheelchair_access,
             'has_induction_loop' => $data['has_induction_loop'] ?? $this->has_induction_loop,
+            'image_file_id' => array_key_exists('image_file_id', $data)
+                ? $data['image_file_id']
+                : $this->image_file_id,
         ]);
 
         $this->updateCoordinate()->save();
@@ -123,5 +136,31 @@ class Location extends Model implements AppliesUpdateRequests
     public function toCoordinate(): Coordinate
     {
         return new Coordinate($this->lat, $this->lon);
+    }
+
+    /**
+     * @param int|null $maxDimension
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     */
+    public static function placeholderImage(int $maxDimension = null)
+    {
+        if ($maxDimension !== null) {
+            return File::resizedPlaceholder($maxDimension, File::META_PLACEHOLDER_FOR_LOCATION);
+        }
+
+        return response()->make(
+            Storage::disk('local')->get('/placeholders/location.png'),
+            Response::HTTP_OK,
+            ['Content-Type' => File::MIME_TYPE_PNG]
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasImage(): bool
+    {
+        return $this->image_file_id !== null;
     }
 }

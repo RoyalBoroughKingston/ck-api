@@ -58,8 +58,7 @@ class User extends Authenticatable implements Notifiable
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array  $attributes
-     * @return void
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -70,8 +69,6 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * The "booting" method of the model.
-     *
-     * @return void
      */
     protected static function boot()
     {
@@ -96,8 +93,7 @@ class User extends Authenticatable implements Notifiable
     /**
      * Send the password reset notification.
      *
-     * @param  string  $token
-     * @return void
+     * @param string $token
      */
     public function sendPasswordResetNotification($token)
     {
@@ -215,7 +211,6 @@ class User extends Authenticatable implements Notifiable
     /**
      * Performs a check to see if the current user instance (invoker) can revoke a role on the subject.
      * This is an extremely important algorithm for user management.
-     *
      * This algorithm does not care about the exact role the invoker is trying to revoke on the subject.
      * All that matters is that the subject is not higher up than the invoker in the ACL hierarchy.
      *
@@ -224,8 +219,11 @@ class User extends Authenticatable implements Notifiable
      * @param \App\Models\Service|null $service
      * @return bool
      */
-    protected function canRevokeRole(User $subject, Organisation $organisation = null, Service $service = null): bool
-    {
+    protected function canRevokeRole(
+        User $subject,
+        Organisation $organisation = null,
+        Service $service = null
+    ): bool {
         // If the invoker is a super admin.
         if ($this->isSuperAdmin()) {
             return true;
@@ -261,7 +259,6 @@ class User extends Authenticatable implements Notifiable
     /**
      * Performs a check to see if the current user instance (invoker) can update the subject.
      * This is an extremely important algorithm for user management.
-     *
      * This algorithm does not care about the exact role the invoker is trying to revoke on the subject.
      * All that matters is that the subject is not higher up than the invoker in the ACL hierarchy.
      *
@@ -277,7 +274,7 @@ class User extends Authenticatable implements Notifiable
         if ($this->id === $subject->id) {
             return true;
         }
-        
+
         // If the invoker is a super admin.
         if ($this->isSuperAdmin()) {
             return true;
@@ -320,30 +317,31 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @param null|\App\Models\Service $service
+     * @param \App\Models\Service|null $service
      * @return bool
      */
     public function isServiceWorker(Service $service = null): bool
     {
-        return $this->hasRole(Role::serviceWorker(), $service) || $this->hasRole(Role::globalAdmin());
+        return $this->hasRole(Role::serviceWorker(), $service) || $this->isServiceAdmin($service);
     }
 
     /**
-     * @param null|\App\Models\Service $service
+     * @param \App\Models\Service|null $service
      * @return bool
      */
     public function isServiceAdmin(Service $service = null): bool
     {
-        return $this->hasRole(Role::serviceAdmin(), $service) || $this->hasRole(Role::globalAdmin());
+        return $this->hasRole(Role::serviceAdmin(), $service)
+            || $this->isOrganisationAdmin($service->organisation ?? null);
     }
 
     /**
-     * @param null|\App\Models\Organisation $organisation
+     * @param \App\Models\Organisation|null $organisation
      * @return bool
      */
     public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
-        return $this->hasRole(Role::organisationAdmin(), null, $organisation) || $this->hasRole(Role::globalAdmin());
+        return $this->hasRole(Role::organisationAdmin(), null, $organisation) || $this->isGlobalAdmin();
     }
 
     /**
@@ -351,7 +349,7 @@ class User extends Authenticatable implements Notifiable
      */
     public function isGlobalAdmin(): bool
     {
-        return $this->hasRole(Role::globalAdmin());
+        return $this->hasRole(Role::globalAdmin()) || $this->isSuperAdmin();
     }
 
     /**
@@ -428,8 +426,8 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * @param \App\Models\Service $service
-     * @return \App\Models\User
      * @throws \App\Exceptions\CannotRevokeRoleException
+     * @return \App\Models\User
      */
     public function revokeServiceWorker(Service $service)
     {
@@ -442,8 +440,8 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * @param \App\Models\Service $service
-     * @return \App\Models\User
      * @throws \App\Exceptions\CannotRevokeRoleException
+     * @return \App\Models\User
      */
     public function revokeServiceAdmin(Service $service)
     {
@@ -458,8 +456,8 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * @param \App\Models\Organisation $organisation
-     * @return \App\Models\User
      * @throws \App\Exceptions\CannotRevokeRoleException
+     * @return \App\Models\User
      */
     public function revokeOrganisationAdmin(Organisation $organisation)
     {
@@ -473,8 +471,8 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @return \App\Models\User
      * @throws \App\Exceptions\CannotRevokeRoleException
+     * @return \App\Models\User
      */
     public function revokeGlobalAdmin()
     {
@@ -489,7 +487,6 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * @return \App\Models\User
-     * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeSuperAdmin()
     {

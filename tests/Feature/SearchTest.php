@@ -174,7 +174,12 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_filter_by_category_works()
     {
         $service = factory(Service::class)->create();
-        $collection = Collection::create(['type' => Collection::TYPE_CATEGORY, 'name' => 'Self Help', 'meta' => [], 'order' => 1]);
+        $collection = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'name' => 'Self Help',
+            'meta' => [],
+            'order' => 1,
+        ]);
         $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
         $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
@@ -191,7 +196,12 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_filter_by_persona_works()
     {
         $service = factory(Service::class)->create();
-        $collection = Collection::create(['type' => Collection::TYPE_PERSONA, 'name' => 'Refugees', 'meta' => [], 'order' => 1]);
+        $collection = Collection::create([
+            'type' => Collection::TYPE_PERSONA,
+            'name' => 'Refugees',
+            'meta' => [],
+            'order' => 1,
+        ]);
         $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
         $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
@@ -271,14 +281,24 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_query_and_filter_works()
     {
         $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $collection = Collection::create(['type' => Collection::TYPE_CATEGORY, 'name' => 'Self Help', 'meta' => [], 'order' => 1]);
+        $collection = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'name' => 'Self Help',
+            'meta' => [],
+            'order' => 1,
+        ]);
         $taxonomy = Taxonomy::category()->children()->create(['name' => 'Collection', 'order' => 1]);
         $collectionTaxonomy = $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
         $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $differentCollection = Collection::create(['type' => Collection::TYPE_PERSONA, 'name' => 'Refugees', 'meta' => [], 'order' => 1]);
+        $differentCollection = Collection::create([
+            'type' => Collection::TYPE_PERSONA,
+            'name' => 'Refugees',
+            'meta' => [],
+            'order' => 1,
+        ]);
         $differentTaxonomy = Taxonomy::category()->children()->create(['name' => 'Persona', 'order' => 2]);
         $differentCollection->collectionTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
@@ -297,14 +317,24 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_query_and_filter_works_when_query_does_not_match()
     {
         $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $collection = Collection::create(['type' => Collection::TYPE_CATEGORY, 'name' => 'Self Help', 'meta' => [], 'order' => 1]);
+        $collection = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'name' => 'Self Help',
+            'meta' => [],
+            'order' => 1,
+        ]);
         $taxonomy = Taxonomy::category()->children()->create(['name' => 'Collection', 'order' => 1]);
         $collectionTaxonomy = $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
         $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
-        $differentCollection = Collection::create(['type' => Collection::TYPE_PERSONA, 'name' => 'Refugees', 'meta' => [], 'order' => 1]);
+        $differentCollection = Collection::create([
+            'type' => Collection::TYPE_PERSONA,
+            'name' => 'Refugees',
+            'meta' => [],
+            'order' => 1,
+        ]);
         $differentTaxonomy = Taxonomy::category()->children()->create(['name' => 'Persona', 'order' => 2]);
         $differentCollection->collectionTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);

@@ -2,15 +2,15 @@
 
 namespace App\Http\Resources;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Carbon;
 
 class ServiceResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
@@ -21,6 +21,7 @@ class ServiceResource extends JsonResource
             'has_logo' => $this->hasLogo(),
             'slug' => $this->slug,
             'name' => $this->name,
+            'type' => $this->type,
             'status' => $this->status,
             'intro' => $this->intro,
             'description' => $this->description,
@@ -41,11 +42,13 @@ class ServiceResource extends JsonResource
             'referral_url' => $this->referral_url,
             'criteria' => new ServiceCriterionResource($this->serviceCriterion),
             'useful_infos' => UsefulInfoResource::collection($this->usefulInfos),
+            'offerings' => OfferingResource::collection($this->offerings),
             'social_medias' => SocialMediaResource::collection($this->socialMedias),
             'gallery_items' => ServiceGalleryItemResource::collection($this->serviceGalleryItems),
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
-            'created_at' => $this->created_at->format(Carbon::ISO8601),
-            'updated_at' => $this->updated_at->format(Carbon::ISO8601),
+            'last_modified_at' => $this->last_modified_at->format(CarbonImmutable::ISO8601),
+            'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
 
             // Relationships.
             'service_locations' => ServiceLocationResource::collection($this->whenLoaded('serviceLocations')),

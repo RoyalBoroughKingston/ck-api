@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionCategory\DestroyRequest;
 use App\Http\Requests\CollectionCategory\IndexRequest;
 use App\Http\Requests\CollectionCategory\ShowRequest;
@@ -11,7 +12,6 @@ use App\Http\Requests\CollectionCategory\UpdateRequest;
 use App\Http\Resources\CollectionCategoryResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
-use App\Http\Controllers\Controller;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -51,7 +51,6 @@ class CollectionCategoryController extends Controller
         return CollectionCategoryResource::collection($categories);
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -61,6 +60,14 @@ class CollectionCategoryController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Create the collection record.
             $category = Collection::create([
                 'type' => Collection::TYPE_CATEGORY,
@@ -68,10 +75,7 @@ class CollectionCategoryController extends Controller
                 'meta' => [
                     'intro' => $request->intro,
                     'icon' => $request->icon,
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
@@ -93,7 +97,7 @@ class CollectionCategoryController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionCategory\ShowRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionCategoryResource
      */
     public function show(ShowRequest $request, Collection $collection)
@@ -113,22 +117,27 @@ class CollectionCategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\CollectionCategory\UpdateRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Collection $collection)
     {
         return DB::transaction(function () use ($request, $collection) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
             // Update the collection record.
             $collection->update([
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
                     'icon' => $request->icon,
-                    'sidebox_title' => $request->sidebox_title,
-                    'sidebox_content' => $request->filled('sidebox_content')
-                        ? sanitize_markdown($request->sidebox_content)
-                        : null,
+                    'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
             ]);
@@ -147,7 +156,7 @@ class CollectionCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\CollectionCategory\DestroyRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Collection $collection)

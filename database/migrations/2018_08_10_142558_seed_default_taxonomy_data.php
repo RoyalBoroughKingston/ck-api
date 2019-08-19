@@ -1,25 +1,25 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SeedDefaultTaxonomyData extends Migration
 {
     /**
-     * @var \Illuminate\Support\Carbon
+     * @var \Carbon\CarbonImmutable
      */
     protected $now;
 
     /**
      * Run the migrations.
      *
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function up()
     {
-        $this->now = now();
+        $this->now = Date::now();
         $taxonomies = $this->loadOpenEligibilityTaxonomies();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('taxonomies')->insert($taxonomies);
@@ -28,8 +28,6 @@ class SeedDefaultTaxonomyData extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
@@ -39,8 +37,8 @@ class SeedDefaultTaxonomyData extends Migration
     /**
      * Load the Open Eligibility taxonomies into an array.
      *
-     * @return array
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return array
      */
     protected function loadOpenEligibilityTaxonomies(): array
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Filters\Organisation\HasPermissionFilter;
 use App\Http\Requests\Organisation\DestroyRequest;
 use App\Http\Requests\Organisation\IndexRequest;
@@ -14,7 +15,6 @@ use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\Organisation;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -95,7 +95,7 @@ class OrganisationController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\Organisation\ShowRequest $request
-     * @param  \App\Models\Organisation $organisation
+     * @param \App\Models\Organisation $organisation
      * @return \App\Http\Resources\OrganisationResource
      */
     public function show(ShowRequest $request, Organisation $organisation)
@@ -115,7 +115,7 @@ class OrganisationController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\Organisation\UpdateRequest $request
-     * @param  \App\Models\Organisation $organisation
+     * @param \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Organisation $organisation)
@@ -157,7 +157,7 @@ class OrganisationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\Organisation\DestroyRequest $request
-     * @param  \App\Models\Organisation $organisation
+     * @param \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Organisation $organisation)

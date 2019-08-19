@@ -1,9 +1,0 @@
-update:
-  type: object
-  required:
-  - stop_words
-  properties:
-    stop_words:
-      type: array
-      items:
-        type: string

@@ -8,8 +8,8 @@ use App\Models\Organisation;
 use App\Models\PageFeedback;
 use App\Models\Service;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -106,10 +106,10 @@ class PageFeedbacksTest extends TestCase
                 'name' => null,
                 'email' => null,
                 'phone' => null,
-                'consented_at' => $pageFeedback->consented_at->format(Carbon::ISO8601),
-                'created_at' => $pageFeedback->created_at->format(Carbon::ISO8601),
-                'updated_at' => $pageFeedback->updated_at->format(Carbon::ISO8601),
-            ]
+                'consented_at' => $pageFeedback->consented_at->format(CarbonImmutable::ISO8601),
+                'created_at' => $pageFeedback->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $pageFeedback->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -286,10 +286,10 @@ class PageFeedbacksTest extends TestCase
                 'name' => null,
                 'email' => null,
                 'phone' => null,
-                'consented_at' => $pageFeedback->consented_at->format(Carbon::ISO8601),
-                'created_at' => $pageFeedback->created_at->format(Carbon::ISO8601),
-                'updated_at' => $pageFeedback->updated_at->format(Carbon::ISO8601),
-            ]
+                'consented_at' => $pageFeedback->consented_at->format(CarbonImmutable::ISO8601),
+                'created_at' => $pageFeedback->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $pageFeedback->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 

@@ -10,8 +10,8 @@ class VideoEmbed implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
@@ -22,8 +22,8 @@ class VideoEmbed implements Rule
         }
 
         $validDomains = [
-            "https://www.youtube.com",
-            "https://player.vimeo.com",
+            'https://www.youtube.com',
+            'https://player.vimeo.com',
         ];
 
         return Str::startsWith($value, $validDomains);

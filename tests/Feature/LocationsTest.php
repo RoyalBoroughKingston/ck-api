@@ -4,14 +4,16 @@ namespace Tests\Feature;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
+use App\Models\File;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -30,6 +32,7 @@ class LocationsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCollection([
             'id',
+            'has_image',
             'address_line_1',
             'address_line_2',
             'address_line_3',
@@ -47,6 +50,7 @@ class LocationsTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $location->id,
+            'has_image' => $location->hasImage(),
             'address_line_1' => $location->address_line_1,
             'address_line_2' => $location->address_line_2,
             'address_line_3' => $location->address_line_3,
@@ -59,8 +63,8 @@ class LocationsTest extends TestCase
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,
             'has_induction_loop' => $location->has_induction_loop,
-            'created_at' => $location->created_at->format(Carbon::ISO8601),
-            'updated_at' => $location->updated_at->format(Carbon::ISO8601),
+            'created_at' => $location->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $location->updated_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -130,6 +134,7 @@ class LocationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
+            'has_image' => false,
             'address_line_1' => '30-34 Aire St',
             'address_line_2' => null,
             'address_line_3' => null,
@@ -190,6 +195,7 @@ class LocationsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $location->id,
+            'has_image' => $location->hasImage(),
             'address_line_1' => $location->address_line_1,
             'address_line_2' => $location->address_line_2,
             'address_line_3' => $location->address_line_3,
@@ -202,8 +208,8 @@ class LocationsTest extends TestCase
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,
             'has_induction_loop' => $location->has_induction_loop,
-            'created_at' => $location->created_at->format(Carbon::ISO8601),
-            'updated_at' => $location->updated_at->format(Carbon::ISO8601),
+            'created_at' => $location->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $location->updated_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -497,5 +503,115 @@ class LocationsTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $location->id);
         });
+    }
+
+    /*
+     * Get a specific location's image.
+     */
+
+    public function test_guest_can_view_image()
+    {
+        $location = factory(Location::class)->create();
+
+        $response = $this->get("/core/v1/locations/{$location->id}/image.png");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    public function test_audit_created_when_image_viewed()
+    {
+        $this->fakeEvents();
+
+        $location = factory(Location::class)->create();
+
+        $this->get("/core/v1/locations/{$location->id}/image.png");
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($location) {
+            return ($event->getAction() === Audit::ACTION_READ) &&
+                ($event->getModel()->id === $location->id);
+        });
+    }
+
+    /*
+     * Upload a specific location's image.
+     */
+
+
+    public function test_organisation_admin_can_upload_image()
+    {
+        /** @var \App\Models\User $user */
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $image = Storage::disk('local')->get('/test-data/image.png');
+
+        Passport::actingAs($user);
+
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $response = $this->json('POST', '/core/v1/locations', [
+            'address_line_1' => '30-34 Aire St',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Leeds',
+            'county' => 'West Yorkshire',
+            'postcode' => 'LS1 4HT',
+            'country' => 'England',
+            'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
+            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+        ]);
+        $locationId = $this->getResponseContent($response, 'data.id');
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseHas(table(Location::class), [
+            'id' => $locationId,
+        ]);
+        $this->assertDatabaseMissing(table(Location::class), [
+            'id' => $locationId,
+            'image_file_id' => null,
+        ]);
+    }
+
+    /*
+     * Delete a specific location's image.
+     */
+
+    public function test_organisation_admin_can_delete_image()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $location = factory(Location::class)->create([
+            'image_file_id' => factory(File::class)->create()->id,
+        ]);
+        $payload = [
+            'address_line_1' => $location->address_line_1,
+            'address_line_2' => $location->address_line_2,
+            'address_line_3' => $location->address_line_3,
+            'city' => $location->city,
+            'county' => $location->county,
+            'postcode' => $location->postcode,
+            'country' => $location->country,
+            'accessibility_info' => $location->accessibility_info,
+            'has_wheelchair_access' => $location->has_wheelchair_access,
+            'has_induction_loop' => $location->has_induction_loop,
+            'image_file_id' => null,
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $location->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $location->id)->firstOrFail();
+        $this->assertEquals(null, $updateRequest->data['image_file_id']);
     }
 }

@@ -33,6 +33,5 @@ Route::get('/', 'HomeController')->name('home');
 Route::get('/docs', 'DocsController@index')
     ->name('docs.index');
 
-Route::get('/docs/{path}', 'DocsController@show')
-    ->where('path', '.*(.yaml)')
+Route::get('/docs/openapi.json', 'DocsController@show')
     ->name('docs.show');

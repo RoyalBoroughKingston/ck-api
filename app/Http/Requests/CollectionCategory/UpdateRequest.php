@@ -16,7 +16,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->user()->isSuperAdmin()) {
+        if ($this->user()->isGlobalAdmin()) {
             return true;
         }
 
@@ -34,9 +34,11 @@ class UpdateRequest extends FormRequest
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'intro' => ['required', 'string', 'min:1', 'max:255'],
             'icon' => ['required', 'string', 'min:1', 'max:255'],
-            'order' => ['required', 'integer', 'min:1', 'max:'.Collection::categories()->count()],
-            'sidebox_title' => ['present', 'required_with:sidebox_content', 'nullable', 'string'],
-            'sidebox_content' => ['present', 'required_with:sidebox_title', 'nullable', 'string'],
+            'order' => ['required', 'integer', 'min:1', 'max:' . Collection::categories()->count()],
+            'sideboxes' => ['present', 'array', 'max:3'],
+            'sideboxes.*' => ['array'],
+            'sideboxes.*.title' => ['required_with:sideboxes.*', 'string'],
+            'sideboxes.*.content' => ['required_with:sideboxes.*', 'string'],
             'category_taxonomies' => ['present', 'array'],
             'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
         ];

@@ -2,17 +2,15 @@
 
 use App\Models\Organisation;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class AddSlugColumnToOrganisationsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -26,7 +24,7 @@ class AddSlugColumnToOrganisationsTable extends Migration
                 do {
                     $slug = $iteration === 0
                         ? Str::slug($organisation->name)
-                        : Str::slug($organisation->name).'-'.$iteration;
+                        : Str::slug($organisation->name) . '-' . $iteration;
                     $iteration++;
                 } while (Organisation::query()->where('slug', $slug)->exists());
 
@@ -41,8 +39,6 @@ class AddSlugColumnToOrganisationsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

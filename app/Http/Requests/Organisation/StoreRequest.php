@@ -33,13 +33,14 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:'.table(Organisation::class).',slug', new Slug()],
+            'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:' . table(Organisation::class) . ',slug', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'description' => ['required', 'string', 'min:1', 'max:10000'],
             'url' => ['required', 'url', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'min:1', 'max:255'],
             'logo_file_id' => [
+                'nullable',
                 'exists:files,id',
                 new FileIsMimeType(File::MIME_TYPE_PNG),
                 new FileIsPendingAssignment(),

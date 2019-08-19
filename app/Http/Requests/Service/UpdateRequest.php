@@ -76,6 +76,14 @@ class UpdateRequest extends FormRequest
                 ),
             ],
             'name' => ['string', 'min:1', 'max:255'],
+            'type' => [
+                Rule::in([
+                    Service::TYPE_SERVICE,
+                    Service::TYPE_ACTIVITY,
+                    Service::TYPE_CLUB,
+                    Service::TYPE_GROUP,
+                ]),
+            ],
             'status' => [
                 Rule::in([
                     Service::STATUS_ACTIVE,
@@ -221,6 +229,19 @@ class UpdateRequest extends FormRequest
                 )),
             ],
 
+            'offerings' => ['array'],
+            'offerings.*' => ['array'],
+            'offerings.*.offering' => ['required_with:offerings.*', 'string', 'min:1', 'max:255'],
+            'offerings.*.order' => [
+                'required_with:offerings.*',
+                'integer',
+                'min:1',
+                new InOrder(array_pluck_multi(
+                    $this->input('offerings', []),
+                    'order'
+                )),
+            ],
+
             'social_medias' => ['array'],
             'social_medias.*' => ['array'],
             'social_medias.*.type' => [
@@ -262,6 +283,16 @@ class UpdateRequest extends FormRequest
                 new FileIsPendingAssignment(),
             ],
         ];
+    }
+
+    /**
+     * Check if the user requested only a preview of the update request.
+     *
+     * @return bool
+     */
+    public function isPreview(): bool
+    {
+        return $this->preview === true;
     }
 
     /**

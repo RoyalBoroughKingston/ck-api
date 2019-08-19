@@ -51,6 +51,7 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     // Locations.
     Route::match(['GET', 'POST'], '/locations/index', 'LocationController@index');
     Route::apiResource('/locations', 'LocationController');
+    Route::get('/locations/{location}/image.png', 'Location\\ImageController')->name('locations.image');
 
     // Notifications.
     Route::match(['GET', 'POST'], '/notifications/index', 'NotificationController@index');
@@ -84,13 +85,19 @@ Route::prefix('core/v1')->namespace('Core\\V1')->name('core.v1.')->group(functio
     // Service Locations.
     Route::match(['GET', 'POST'], '/service-locations/index', 'ServiceLocationController@index');
     Route::apiResource('/service-locations', 'ServiceLocationController');
+    Route::get('/service-locations/{service_location}/image.png', 'ServiceLocation\\ImageController')->name('service-locations.image');
 
     // Services.
     Route::match(['GET', 'POST'], '/services/index', 'ServiceController@index');
     Route::apiResource('/services', 'ServiceController');
+    Route::put('/services/{service}/refresh', 'Service\\RefreshController')->name('services.refresh');
     Route::get('/services/{service}/related', 'Service\\RelatedController')->name('services.related');
     Route::get('/services/{service}/logo.png', 'Service\\LogoController')->name('services.logo');
     Route::get('/services/{service}/gallery-items/{file}', 'Service\\GalleryItemController')->name('services.gallery-items');
+
+    // Settings.
+    Route::get('/settings', 'SettingController@index')->name('settings.index');
+    Route::put('/settings', 'SettingController@update')->name('settings.update');
 
     // Status Updates.
     Route::match(['GET', 'POST'], '/status-updates/index', 'StatusUpdateController@index');

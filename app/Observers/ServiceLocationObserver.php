@@ -9,8 +9,7 @@ class ServiceLocationObserver
     /**
      * Handle the service location "created" event.
      *
-     * @param  \App\Models\ServiceLocation $serviceLocation
-     * @return void
+     * @param \App\Models\ServiceLocation $serviceLocation
      */
     public function created(ServiceLocation $serviceLocation)
     {
@@ -20,8 +19,7 @@ class ServiceLocationObserver
     /**
      * Handle the service location "deleting" event.
      *
-     * @param  \App\Models\ServiceLocation $serviceLocation
-     * @return void
+     * @param \App\Models\ServiceLocation $serviceLocation
      */
     public function deleting(ServiceLocation $serviceLocation)
     {
@@ -33,8 +31,7 @@ class ServiceLocationObserver
     /**
      * Handle the service location "deleted" event.
      *
-     * @param  \App\Models\ServiceLocation $serviceLocation
-     * @return void
+     * @param \App\Models\ServiceLocation $serviceLocation
      */
     public function deleted(ServiceLocation $serviceLocation)
     {

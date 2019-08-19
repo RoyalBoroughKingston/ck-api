@@ -9,8 +9,8 @@ use App\Models\ReportSchedule;
 use App\Models\ReportType;
 use App\Models\Service;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -85,7 +85,7 @@ class ReportSchedulesTest extends TestCase
             'id' => $reportSchedule->id,
             'report_type' => ReportType::usersExport()->name,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
-            'created_at' => $reportSchedule->created_at->format(Carbon::ISO8601),
+            'created_at' => $reportSchedule->created_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 
@@ -267,8 +267,8 @@ class ReportSchedulesTest extends TestCase
                 'id' => $reportSchedule->id,
                 'report_type' => $reportSchedule->reportType->name,
                 'repeat_type' => $reportSchedule->repeat_type,
-                'created_at' => $reportSchedule->created_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $reportSchedule->created_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -362,8 +362,8 @@ class ReportSchedulesTest extends TestCase
                 'id' => $reportSchedule->id,
                 'report_type' => $reportSchedule->reportType->name,
                 'repeat_type' => ReportSchedule::REPEAT_TYPE_MONTHLY,
-                'created_at' => $reportSchedule->created_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $reportSchedule->created_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 

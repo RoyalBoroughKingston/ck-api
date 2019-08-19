@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Ck;
 
-use Exception;
 use Illuminate\Console\Command;
 use Symfony\Component\Yaml\Yaml;
 
@@ -27,8 +26,8 @@ class SetCfSecretsCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
      * @throws \Exception
+     * @return mixed
      */
     public function handle()
     {

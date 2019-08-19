@@ -9,8 +9,6 @@ class CloudFoundryServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -35,9 +33,9 @@ class CloudFoundryServiceProvider extends ServiceProvider
             Config::set('database.connections.mysql.password', $mysqlConfig['password']);
 
             // Set the Redis config.
-            Config::set('database.redis.clusters.default.0.host', $redisConfig['host']);
-            Config::set('database.redis.clusters.default.0.password', $redisConfig['password']);
-            Config::set('database.redis.clusters.default.0.port', $redisConfig['port']);
+            Config::set('database.redis.default.host', $redisConfig['host']);
+            Config::set('database.redis.default.password', $redisConfig['password']);
+            Config::set('database.redis.default.port', $redisConfig['port']);
 
             // Set the Elasticsearch config.
             Config::set('scout_elastic.client.hosts.0', $elasticsearchConfig['uri']);
@@ -49,8 +47,6 @@ class CloudFoundryServiceProvider extends ServiceProvider
 
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register()
     {

@@ -7,6 +7,7 @@ use App\Emails\ReferralUnactioned\NotifyServiceEmail;
 use App\Models\Referral;
 use App\Models\Service;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -26,7 +27,7 @@ class UnactionedReferralsCommandTest extends TestCase
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_NEW,
-            'created_at' => now()->subWeekdays(6),
+            'created_at' => Date::now()->subWeekdays(6),
         ]);
 
         Artisan::call(UnactionedReferralsCommand::class);

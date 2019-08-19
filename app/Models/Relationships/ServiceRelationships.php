@@ -4,17 +4,20 @@ namespace App\Models\Relationships;
 
 use App\Models\File;
 use App\Models\Location;
+use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\ServiceCriterion;
 use App\Models\ServiceGalleryItem;
 use App\Models\ServiceLocation;
+use App\Models\ServiceRefreshToken;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UsefulInfo;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait ServiceRelationships
 {
@@ -85,6 +88,14 @@ trait ServiceRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function offerings()
+    {
+        return $this->hasMany(Offering::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function serviceTaxonomies()
     {
         return $this->hasMany(ServiceTaxonomy::class);
@@ -120,5 +131,13 @@ trait ServiceRelationships
     public function serviceGalleryItems()
     {
         return $this->hasMany(ServiceGalleryItem::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function serviceRefreshTokens(): HasMany
+    {
+        return $this->hasMany(ServiceRefreshToken::class);
     }
 }

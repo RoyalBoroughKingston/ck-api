@@ -25,6 +25,8 @@ class File extends Model implements Responsable
     const META_PLACEHOLDER_FOR_ORGANISATION = 'organisation';
     const META_PLACEHOLDER_FOR_SERVICE = 'service';
     const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
+    const META_PLACEHOLDER_FOR_LOCATION= 'location';
+    const META_PLACEHOLDER_FOR_SERVICE_LOCATION= 'service_location';
 
     const PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS = 1;
 
@@ -45,7 +47,7 @@ class File extends Model implements Responsable
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function toResponse($request)
@@ -122,7 +124,7 @@ class File extends Model implements Responsable
     }
 
     /**
-     * @deprecated You should now use the uploadBase64EncodedFile() method instead.
+     * @deprecated you should now use the uploadBase64EncodedFile() method instead
      * @param string $content
      * @return \App\Models\File
      */
@@ -187,9 +189,9 @@ class File extends Model implements Responsable
      *
      * @param int $maxDimension
      * @param string $placeholderFor
-     * @return \App\Models\File
      * @throws \InvalidArgumentException
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \App\Models\File
      */
     public static function resizedPlaceholder(int $maxDimension, string $placeholderFor): self
     {
@@ -198,6 +200,8 @@ class File extends Model implements Responsable
             static::META_PLACEHOLDER_FOR_ORGANISATION,
             static::META_PLACEHOLDER_FOR_SERVICE,
             static::META_PLACEHOLDER_FOR_COLLECTION_PERSONA,
+            static::META_PLACEHOLDER_FOR_LOCATION,
+            static::META_PLACEHOLDER_FOR_SERVICE_LOCATION,
         ];
 
         if (!in_array($placeholderFor, $validPlaceholdersFor)) {

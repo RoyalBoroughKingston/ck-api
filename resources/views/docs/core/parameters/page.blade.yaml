@@ -1,7 +1,0 @@
-name: page
-in: query
-description: The page of pagination
-schema:
-  type: integer
-  default: 1
-  minimum: 1

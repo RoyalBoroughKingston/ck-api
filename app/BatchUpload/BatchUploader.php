@@ -12,11 +12,12 @@ use App\Models\ServiceLocation;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use Exception;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class BatchUploader
 {
@@ -281,6 +282,7 @@ class BatchUploader
                 'referral_button_text' => !$isNone ? 'Make referral' : null,
                 'referral_email' => $isInternal ? $serviceArray['Referral Email'] : null,
                 'referral_url' => $isExternal ? $serviceArray['Referral URL'] : null,
+                'last_modified_at' => Date::now(),
             ]);
 
             $service->_id = $serviceArray['ID*'];
@@ -295,8 +297,8 @@ class BatchUploader
     }
 
     /**
-     * @param null|string $waitTime
-     * @return null|string
+     * @param string|null $waitTime
+     * @return string|null
      */
     protected function parseWaitTime(?string $waitTime): ?string
     {
@@ -454,6 +456,7 @@ class BatchUploader
         $taxonomies = $serviceTaxonomies->map(function (array $serviceTaxonomyArray) {
             $taxonomy = Taxonomy::findOrFail($serviceTaxonomyArray['Taxonomy ID']);
             $taxonomy->_service_id = $serviceTaxonomyArray['Service ID'];
+
             return $taxonomy;
         })->groupBy('_service_id');
 

@@ -7,8 +7,8 @@ use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -106,9 +106,9 @@ class AuditsTest extends TestCase
                 'description' => 'Someone viewed a resource',
                 'ip_address' => '127.0.0.1',
                 'user_agent' => null,
-                'created_at' => $this->now->format(Carbon::ISO8601),
-                'updated_at' => $this->now->format(Carbon::ISO8601),
-            ]
+                'created_at' => $this->now->format(CarbonImmutable::ISO8601),
+                'updated_at' => $this->now->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -143,9 +143,9 @@ class AuditsTest extends TestCase
                 'description' => 'Someone viewed a resource',
                 'ip_address' => '127.0.0.1',
                 'user_agent' => null,
-                'created_at' => $this->now->format(Carbon::ISO8601),
-                'updated_at' => $this->now->format(Carbon::ISO8601),
-            ]
+                'created_at' => $this->now->format(CarbonImmutable::ISO8601),
+                'updated_at' => $this->now->format(CarbonImmutable::ISO8601),
+            ],
         ]);
         $response->assertJsonMissing([
             [
@@ -156,9 +156,9 @@ class AuditsTest extends TestCase
                 'description' => $anotherAudit->description,
                 'ip_address' => $anotherAudit->ip_address,
                 'user_agent' => $anotherAudit->user_agent,
-                'created_at' => $anotherAudit->created_at->format(Carbon::ISO8601),
-                'updated_at' => $anotherAudit->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $anotherAudit->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $anotherAudit->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -273,9 +273,9 @@ class AuditsTest extends TestCase
                 'description' => 'Someone viewed a resource',
                 'ip_address' => '127.0.0.1',
                 'user_agent' => null,
-                'created_at' => $this->now->format(Carbon::ISO8601),
-                'updated_at' => $this->now->format(Carbon::ISO8601),
-            ]
+                'created_at' => $this->now->format(CarbonImmutable::ISO8601),
+                'updated_at' => $this->now->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 

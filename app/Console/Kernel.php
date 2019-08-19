@@ -19,11 +19,13 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command(Commands\Ck\Notify\StaleServicesCommand::class)
+            ->monthlyOn(15, '09:00');
+
         $schedule->command(Commands\Ck\Notify\UnactionedReferralsCommand::class)
             ->dailyAt('09:00');
 
@@ -41,16 +43,17 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(Commands\Ck\AutoDelete\ReferralsCommand::class)
             ->daily();
+
+        $schedule->command(Commands\Ck\AutoDelete\ServiceRefreshTokensCommand::class)
+            ->daily();
     }
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

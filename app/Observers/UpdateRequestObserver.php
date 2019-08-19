@@ -18,8 +18,7 @@ class UpdateRequestObserver
     /**
      * Handle to the update request "created" event.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
-     * @return void
+     * @param \App\Models\UpdateRequest $updateRequest
      */
     public function created(UpdateRequest $updateRequest)
     {

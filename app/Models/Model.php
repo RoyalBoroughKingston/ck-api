@@ -7,6 +7,20 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 abstract class Model extends BaseModel
 {
     /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Determines if the primary key is a UUID.
+     *
+     * @var bool
+     */
+    protected $keyIsUuid = true;
+
+    /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool
@@ -33,8 +47,7 @@ abstract class Model extends BaseModel
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array  $attributes
-     * @return void
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -45,15 +58,13 @@ abstract class Model extends BaseModel
 
     /**
      * The "booting" method of the model.
-     *
-     * @return void
      */
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
+            if ($model->keyIsUuid && empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = uuid();
             }
         });

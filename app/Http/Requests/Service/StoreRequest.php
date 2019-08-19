@@ -46,8 +46,17 @@ class StoreRequest extends FormRequest
     {
         return [
             'organisation_id' => ['required', 'exists:organisations,id', new IsOrganisationAdmin($this->user())],
-            'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:'.table(Service::class).',slug', new Slug()],
+            'slug' => ['required', 'string', 'min:1', 'max:255', 'unique:' . table(Service::class) . ',slug', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
+            'type' => [
+                'required',
+                Rule::in([
+                    Service::TYPE_SERVICE,
+                    Service::TYPE_ACTIVITY,
+                    Service::TYPE_CLUB,
+                    Service::TYPE_GROUP,
+                ]),
+            ],
             'status' => [
                 'required',
                 Rule::in([
@@ -169,6 +178,11 @@ class StoreRequest extends FormRequest
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
             'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(10000)],
             'useful_infos.*.order' => ['required_with:useful_infos.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->useful_infos, 'order'))],
+
+            'offerings' => ['present', 'array'],
+            'offerings.*' => ['array'],
+            'offerings.*.offering' => ['required_with:offerings.*', 'string', 'min:1', 'max:255'],
+            'offerings.*.order' => ['required_with:offerings.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->offerings, 'order'))],
 
             'social_medias' => ['present', 'array'],
             'social_medias.*' => ['array'],

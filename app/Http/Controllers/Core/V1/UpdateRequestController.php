@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Filters\UpdateRequest\EntryFilter;
 use App\Http\Requests\UpdateRequest\DestroyRequest;
 use App\Http\Requests\UpdateRequest\IndexRequest;
@@ -10,7 +11,6 @@ use App\Http\Requests\UpdateRequest\ShowRequest;
 use App\Http\Resources\UpdateRequestResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\UpdateRequest;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -65,7 +65,7 @@ class UpdateRequestController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\UpdateRequest\ShowRequest $request
-     * @param  \App\Models\UpdateRequest $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \App\Http\Resources\UpdateRequestResource
      */
     public function show(ShowRequest $request, UpdateRequest $updateRequest)
@@ -87,7 +87,7 @@ class UpdateRequestController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\UpdateRequest\DestroyRequest $request
-     * @param  \App\Models\UpdateRequest $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, UpdateRequest $updateRequest)

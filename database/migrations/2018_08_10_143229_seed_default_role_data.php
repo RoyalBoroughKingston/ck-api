@@ -1,18 +1,17 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class SeedDefaultRoleData extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
-        $now = now();
+        $now = Date::now();
 
         DB::table('roles')->insert([
             'id' => uuid(),
@@ -52,8 +51,6 @@ class SeedDefaultRoleData extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

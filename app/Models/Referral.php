@@ -44,8 +44,8 @@ class Referral extends Model implements Notifiable
 
     /**
      * @param int $tries
-     * @return string
      * @throws \Exception
+     * @return string
      */
     public function generateReference(int $tries = 0): string
     {
@@ -55,7 +55,7 @@ class Referral extends Model implements Notifiable
         }
 
         // Generate a random reference.
-        $reference = strtoupper(Str::random(10));
+        $reference = mb_strtoupper(Str::random(10));
 
         // Check if the reference already exists.
         if (static::where('reference', $reference)->exists()) {
@@ -112,7 +112,7 @@ class Referral extends Model implements Notifiable
             $initials .= $name[0];
         }
 
-        return strtoupper($initials);
+        return mb_strtoupper($initials);
     }
 
     /**
