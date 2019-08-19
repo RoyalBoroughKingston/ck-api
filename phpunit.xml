@@ -49,9 +49,9 @@
 
         <server name="GEOCODE_DRIVER" value="stub"/>
 
-        <server name="EMAIL_DRIVER" value="(null)"/>
+        <server name="EMAIL_DRIVER" value='"null"'/>
 
-        <server name="SMS_DRIVER" value="(null)"/>
+        <server name="SMS_DRIVER" value='"null"'/>
 
         <server name="SCOUT_ELASTIC_HOST" value="elasticsearch"/>
         <server name="SCOUT_PREFIX" value="testing_"/>
