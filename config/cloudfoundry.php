@@ -2,6 +2,6 @@
 
 return [
 
-    'vcap_services' => env('VCAP_SERVICES'),
+    'vcap_services' => json_decode(env('VCAP_SERVICES'), true),
 
 ];

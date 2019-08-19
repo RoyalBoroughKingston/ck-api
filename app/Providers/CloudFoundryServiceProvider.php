@@ -12,16 +12,13 @@ class CloudFoundryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        /** @var string|null $config */
+        /** @var string|null $config The config provided by Cloud Foundry */
         $config = Config::get('cloudfoundry.vcap_services');
 
         // Skip overriding config if not running in CloudFoundry environments.
         if ($config === null) {
             return;
         }
-
-        // Decode the JSON provided by Cloud Foundry.
-        $config = json_decode($config, true);
 
         /** @var array $mysqlConfig */
         $mysqlConfig = $config['mysql'][0]['credentials'];
