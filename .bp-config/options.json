@@ -6,7 +6,6 @@
     "ADDITIONAL_PREPROCESS_CMDS": [
         "php artisan migrate --force",
         "php artisan config:cache",
-        "php artisan route:cache",
-        "php artisan ck:decrypt-oauth-keys --public-key-name=oauth-public-staging.key --private-key-name=oauth-private-staging.key"
+        "php artisan route:cache"
     ]
 }

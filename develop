@@ -36,17 +36,6 @@ if [[ $# -gt 0  ]]; then
                 composer "$@"
             ;;
 
-        phpunit )
-            shift 1
-            docker-compose run --rm ${TTY} \
-                -e DB_HOST=mysql-testing \
-                -e REDIS_CLUSTER=redis \
-                -e REDIS_HOST=redis-testing \
-                -e REDIS_PORT=7000 \
-                app \
-                php vendor/bin/phpunit "$@"
-            ;;
-
         npm )
             shift 1
             docker-compose run --rm ${TTY} \
