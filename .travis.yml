@@ -16,6 +16,8 @@ before_script:
   - sudo service mysql stop
   - ./develop build
   - ./develop up -d
+  - ./develop npm ci
+  - ./develop npm run dev
   - ./develop composer install
   - ./develop run --rm -T app mv .env.example .env
   - ./develop artisan key:generate
@@ -31,6 +33,9 @@ after_failure:
 before_deploy: |
   if ! [[ ${HAS_RAN_BEFORE_DEPLOY} ]]; then
     export HAS_RAN_BEFORE_DEPLOY="TRUE"
+
+    echo "Compiling assets for production..."
+    ./develop npm run prod
 
     echo "Installing AWS CLI..."
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
