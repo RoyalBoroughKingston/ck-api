@@ -1,5 +1,5 @@
 {
-    "PHP_VERSION": "{PHP_72_LATEST}",
+    "PHP_VERSION": "PHP_72_LATEST",
     "PHP_EXTENSIONS": ["bz2", "zlib", "openssl", "tokenizer", "curl", "mcrypt", "mbstring", "pdo", "pdo_mysql"],
     "PHP_MODULES": ["fpm", "cli"],
     "WEBDIR": "public",
