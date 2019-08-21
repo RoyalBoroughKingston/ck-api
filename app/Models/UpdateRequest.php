@@ -61,7 +61,6 @@ class UpdateRequest extends Model
      */
     public function getValidationErrors(): MessageBag
     {
-        // TODO: Update this check to allow for new requests.
         if (!$this->updateable instanceof AppliesUpdateRequests) {
             throw new Exception(
                 sprintf(
@@ -81,7 +80,6 @@ class UpdateRequest extends Model
      */
     public function validate(): bool
     {
-        // TODO: Update this check to allow for new requests.
         if (!$this->updateable instanceof AppliesUpdateRequests) {
             throw new Exception(
                 sprintf(
@@ -101,7 +99,6 @@ class UpdateRequest extends Model
      */
     public function apply(): self
     {
-        // TODO: Update this check to allow for new requests.
         if (!$this->updateable instanceof AppliesUpdateRequests) {
             throw new Exception(
                 sprintf(
