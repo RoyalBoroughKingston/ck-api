@@ -40,13 +40,36 @@ class UpdateRequest extends Model
     ];
 
     /**
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->updateable_id === null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExisting(): bool
+    {
+        return !$this->isNew();
+    }
+
+    /**
      * @throws \Exception
      * @return \Illuminate\Support\MessageBag
      */
     public function getValidationErrors(): MessageBag
     {
+        // TODO: Update this check to allow for new requests.
         if (!$this->updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+            throw new Exception(
+                sprintf(
+                    '[%s] must be an instance of %s',
+                    get_class($this->updateable),
+                    AppliesUpdateRequests::class
+                )
+            );
         }
 
         return $this->updateable->validateUpdateRequest($this)->errors();
@@ -58,8 +81,15 @@ class UpdateRequest extends Model
      */
     public function validate(): bool
     {
+        // TODO: Update this check to allow for new requests.
         if (!$this->updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+            throw new Exception(
+                sprintf(
+                    '[%s] must be an instance of %s',
+                    get_class($this->updateable),
+                    AppliesUpdateRequests::class
+                )
+            );
         }
 
         return $this->updateable->validateUpdateRequest($this)->fails() === false;
@@ -71,8 +101,15 @@ class UpdateRequest extends Model
      */
     public function apply(): self
     {
+        // TODO: Update this check to allow for new requests.
         if (!$this->updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+            throw new Exception(
+                sprintf(
+                    '[%s] must be an instance of %s',
+                    get_class($this->updateable),
+                    AppliesUpdateRequests::class
+                )
+            );
         }
 
         $this->updateable->applyUpdateRequest($this);

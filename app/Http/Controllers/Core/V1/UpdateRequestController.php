@@ -37,7 +37,7 @@ class UpdateRequestController extends Controller
         $baseQuery = UpdateRequest::query()
             ->select('*')
             ->withEntry()
-            ->whereNull('approved_at');
+            ->pending();
 
         $updateRequests = QueryBuilder::for($baseQuery)
             ->allowedFilters([
