@@ -58,6 +58,12 @@ class StoreOrganisationSignUpFormSchema extends Schema
                             function (string $required): bool {
                                 return !in_array($required, [
                                     'organisation_id',
+                                    'status',
+                                    'show_referral_disclaimer',
+                                    'referral_method',
+                                    'referral_button_text',
+                                    'referral_email',
+                                    'referral_url',
                                     'gallery_items',
                                     'category_taxonomies',
                                 ]);
@@ -70,6 +76,12 @@ class StoreOrganisationSignUpFormSchema extends Schema
                             function (Schema $property): bool {
                                 return !in_array($property->objectId, [
                                     'organisation_id',
+                                    'status',
+                                    'show_referral_disclaimer',
+                                    'referral_method',
+                                    'referral_button_text',
+                                    'referral_email',
+                                    'referral_url',
                                     'logo_file_id',
                                     'gallery_items',
                                     'category_taxonomies',
