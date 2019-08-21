@@ -56,6 +56,7 @@ class UpdateRequestObserver
             ->where('updateable_type', '=', $updateRequest->updateable_type)
             ->where('updateable_id', '=', $updateRequest->updateable_id)
             ->where('id', '!=', $updateRequest->id)
+            ->existing()
             ->pending()
             ->update(['data' => DB::raw("JSON_REMOVE(`update_requests`.`data`, {$implodedDataKeys})")]);
     }
@@ -74,6 +75,7 @@ class UpdateRequestObserver
             ->where('updateable_type', '=', $updateRequest->updateable_type)
             ->where('updateable_id', '=', $updateRequest->updateable_id)
             ->whereRaw('JSON_DEPTH(`update_requests`.`data`) = ?', [1])
+            ->existing()
             ->pending()
             ->delete();
     }

@@ -292,7 +292,8 @@ class LocationsTest extends TestCase
             'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
         ]);
-        $data = UpdateRequest::where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
+        $data = UpdateRequest::qury()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
             ->where('updateable_id', $location->id)
             ->firstOrFail()
             ->data;
@@ -359,7 +360,8 @@ class LocationsTest extends TestCase
             'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
         ]);
-        $data = UpdateRequest::where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
+        $data = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
             ->where('updateable_id', $location->id)
             ->firstOrFail()
             ->data;

@@ -10,6 +10,24 @@ trait UpdateRequestScopes
 {
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNew(Builder $query): Builder
+    {
+        return $query->whereNull('updateable_id');
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeExisting(Builder $query): Builder
+    {
+        return $query->whereNotNull('updateable_id');
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param int $id
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -86,6 +104,7 @@ trait UpdateRequestScopes
         $locations = UpdateRequest::EXISTING_TYPE_LOCATION;
         $serviceLocations = UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION;
         $organisations = UpdateRequest::EXISTING_TYPE_ORGANISATION;
+        $organisationSignUpForm = UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM;
 
         return <<<EOT
 CASE `update_requests`.`updateable_type`
@@ -113,6 +132,9 @@ CASE `update_requests`.`updateable_type`
         FROM `organisations`
         WHERE `update_requests`.`updateable_id` = `organisations`.`id`
         LIMIT 1
+    )
+    WHEN "{$organisationSignUpForm}" THEN (
+        `update_requests`.`data`->>"$.organisation.name"
     )
 END
 EOT;

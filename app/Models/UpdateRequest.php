@@ -25,6 +25,8 @@ class UpdateRequest extends Model
     const EXISTING_TYPE_ORGANISATION = 'organisations';
     const EXISTING_TYPE_USER = 'users';
 
+    const NEW_TYPE_ORGANISATION_SIGN_UP_FORM = 'organisation_sign_up_form';
+
     /**
      * The attributes that should be cast to native types.
      *
