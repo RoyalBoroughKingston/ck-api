@@ -8,7 +8,6 @@ use App\Models\SocialMedia;
 use App\Rules\InOrder;
 use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
-use App\Rules\Password;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserEmailNotTaken;
