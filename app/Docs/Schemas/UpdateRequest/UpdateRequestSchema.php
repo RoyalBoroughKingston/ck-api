@@ -32,7 +32,8 @@ class UpdateRequestSchema extends Schema
                         UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM
                     ),
                 Schema::string('updateable_id')
-                    ->format(Schema::FORMAT_UUID),
+                    ->format(Schema::FORMAT_UUID)
+                    ->nullable(),
                 Schema::string('entry'),
                 Schema::object('data'),
                 Schema::string('created_at')
