@@ -292,7 +292,7 @@ class LocationsTest extends TestCase
             'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
         ]);
-        $data = UpdateRequest::qury()
+        $data = UpdateRequest::query()
             ->where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
             ->where('updateable_id', $location->id)
             ->firstOrFail()
