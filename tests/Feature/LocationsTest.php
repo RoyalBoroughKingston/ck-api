@@ -289,10 +289,10 @@ class LocationsTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => 'locations',
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
         ]);
-        $data = UpdateRequest::where('updateable_type', 'locations')
+        $data = UpdateRequest::where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
             ->where('updateable_id', $location->id)
             ->firstOrFail()
             ->data;
@@ -356,10 +356,10 @@ class LocationsTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => 'locations',
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
         ]);
-        $data = UpdateRequest::where('updateable_type', 'locations')
+        $data = UpdateRequest::where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
             ->where('updateable_id', $location->id)
             ->firstOrFail()
             ->data;

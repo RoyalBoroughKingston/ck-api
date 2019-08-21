@@ -18,6 +18,13 @@ class UpdateRequest extends Model
     use UpdateRequestRelationships;
     use UpdateRequestScopes;
 
+    const EXISTING_TYPE_LOCATION = 'locations';
+    const EXISTING_TYPE_REFERRAL = 'referrals';
+    const EXISTING_TYPE_SERVICE = 'services';
+    const EXISTING_TYPE_SERVICE_LOCATION = 'service_locations';
+    const EXISTING_TYPE_ORGANISATION = 'organisations';
+    const EXISTING_TYPE_USER = 'users';
+
     /**
      * The attributes that should be cast to native types.
      *

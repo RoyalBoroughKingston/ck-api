@@ -93,7 +93,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertJsonFragment([
             'id' => $updateRequest->id,
             'user_id' => $user->id,
-            'updateable_type' => 'locations',
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
             'data' => [
                 'address_line_1' => $updateRequest->data['address_line_1'],
@@ -326,7 +326,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertJsonFragment([
             'id' => $updateRequest->id,
             'user_id' => $updateRequest->user_id,
-            'updateable_type' => 'service_locations',
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION,
             'updateable_id' => $serviceLocation->id,
             'data' => ['name' => 'Test Name'],
         ]);
