@@ -49,9 +49,11 @@ class StoreSearchOperation extends Operation
                 PerPageParameter::create()
             )
             ->requestBody(
-                RequestBody::create()->content(
-                    MediaType::json()->schema(StoreSearchSchema::create())
-                )
+                RequestBody::create()
+                    ->required()
+                    ->content(
+                        MediaType::json()->schema(StoreSearchSchema::create())
+                    )
             )
             ->responses(
                 Response::ok()->content(

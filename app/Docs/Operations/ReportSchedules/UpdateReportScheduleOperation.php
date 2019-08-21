@@ -27,9 +27,11 @@ class UpdateReportScheduleOperation extends Operation
             ->summary('Update a specific report schedule')
             ->description('**Permission:** `Global Admin`')
             ->requestBody(
-                RequestBody::create()->content(
-                    MediaType::json()->schema(UpdateReportScheduleSchema::create())
-                )
+                RequestBody::create()
+                    ->required()
+                    ->content(
+                        MediaType::json()->schema(UpdateReportScheduleSchema::create())
+                    )
             )
             ->responses(
                 Response::ok()->content(
