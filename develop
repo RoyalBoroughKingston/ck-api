@@ -8,6 +8,7 @@ export DB_NAME=${DB_NAME:-connected_kingston}
 export DB_USER=${DB_USER:-connected_kingston}
 export DB_PASS=${DB_PASS:-secret}
 export ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
+export CFN_TEMPLATE=${CFN_TEMPLATE:-cloudformation}
 
 # Disable pseudo-TTY allocation for CI. The -T flag removes interaction.
 TTY=""
@@ -41,6 +42,11 @@ if [[ $# -gt 0  ]]; then
             docker-compose run --rm ${TTY} \
                 node \
                 npm "$@"
+            ;;
+
+        cfn|cloudformation )
+            docker-compose run --rm troposphere > aws/${CFN_TEMPLATE}.json
+            cat aws/${CFN_TEMPLATE}.json
             ;;
 
         * ) docker-compose "$@"; ;;
