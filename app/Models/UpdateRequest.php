@@ -8,8 +8,10 @@ use App\Models\Scopes\UpdateRequestScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
 
 class UpdateRequest extends Model
 {
@@ -80,17 +82,21 @@ class UpdateRequest extends Model
      */
     public function validate(): bool
     {
-        if (!$this->updateable instanceof AppliesUpdateRequests) {
+        $updateable = $this->isExisting()
+            ? $this->updateable
+            : $this->createUpdateableInstance($this->updateable_type);
+
+        if (!$updateable instanceof AppliesUpdateRequests) {
             throw new Exception(
                 sprintf(
                     '[%s] must be an instance of %s',
-                    get_class($this->updateable),
+                    get_class($updateable),
                     AppliesUpdateRequests::class
                 )
             );
         }
 
-        return $this->updateable->validateUpdateRequest($this)->fails() === false;
+        return $updateable->validateUpdateRequest($this)->fails() === false;
     }
 
     /**
@@ -99,19 +105,44 @@ class UpdateRequest extends Model
      */
     public function apply(): self
     {
-        if (!$this->updateable instanceof AppliesUpdateRequests) {
+        $updateable = $this->isExisting()
+            ? $this->updateable
+            : $this->createUpdateableInstance($this->updateable_type);
+
+        if (!$updateable instanceof AppliesUpdateRequests) {
             throw new Exception(
                 sprintf(
                     '[%s] must be an instance of %s',
-                    get_class($this->updateable),
+                    get_class($updateable),
                     AppliesUpdateRequests::class
                 )
             );
         }
 
-        $this->updateable->applyUpdateRequest($this);
+        $updateable->applyUpdateRequest($this);
         $this->update(['approved_at' => Date::now()]);
 
         return $this;
+    }
+
+    /**
+     * @param string $updateableType
+     * @return \App\UpdateRequest\AppliesUpdateRequests
+     */
+    protected function createUpdateableInstance(string $updateableType): AppliesUpdateRequests
+    {
+        $className = '\\App\\UpdateRequest\\' . Str::studly($updateableType);
+
+        return resolve($className);
+    }
+
+    /**
+     * @param string $key
+     * @param mixed|null $default
+     * @return mixed
+     */
+    public function getFromData(string $key, $default = null)
+    {
+        return Arr::get($this->data, $key, $default);
     }
 }

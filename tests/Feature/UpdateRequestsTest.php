@@ -5,12 +5,16 @@ namespace Tests\Feature;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Location;
+use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
+use App\Models\ServiceCriterion;
 use App\Models\ServiceLocation;
+use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
+use App\Models\UsefulInfo;
 use App\Models\User;
 use App\Models\UserRole;
 use Carbon\CarbonImmutable;
@@ -686,6 +690,139 @@ class UpdateRequestsTest extends TestCase
         $this->assertDatabaseHas((new Service())->getTable(), [
             'id' => $service->id,
             'name' => 'Test Name',
+        ]);
+    }
+
+    public function test_global_admin_can_approve_one_for_organisation_sign_up_form()
+    {
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        /** @var \App\Models\UpdateRequest $updateRequest */
+        $updateRequest = UpdateRequest::create([
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM,
+            'data' => [
+                'user' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john.doe@example.com',
+                    'phone' => '07700000000',
+                ],
+                'organisation' => [
+                    'slug' => 'test-org',
+                    'name' => 'Test Org',
+                    'description' => 'Test description',
+                    'url' => 'http://test-org.example.com',
+                    'email' => 'info@test-org.example.com',
+                    'phone' => '07700000000',
+                ],
+                'service' => [
+                    'slug' => 'test-service',
+                    'name' => 'Test Service',
+                    'type' => Service::TYPE_SERVICE,
+                    'intro' => 'This is a test intro',
+                    'description' => 'Lorem ipsum',
+                    'wait_time' => null,
+                    'is_free' => true,
+                    'fees_text' => null,
+                    'fees_url' => null,
+                    'testimonial' => null,
+                    'video_embed' => null,
+                    'url' => 'https://example.com',
+                    'contact_name' => 'Foo Bar',
+                    'contact_phone' => '01130000000',
+                    'contact_email' => 'foo.bar@example.com',
+                    'criteria' => [
+                        'age_group' => '18+',
+                        'disability' => null,
+                        'employment' => null,
+                        'gender' => null,
+                        'housing' => null,
+                        'income' => null,
+                        'language' => null,
+                        'other' => null,
+                    ],
+                    'useful_infos' => [
+                        [
+                            'title' => 'Did you know?',
+                            'description' => 'Lorem ipsum',
+                            'order' => 1,
+                        ],
+                    ],
+                    'offerings' => [
+                        [
+                            'offering' => 'Weekly club',
+                            'order' => 1,
+                        ],
+                    ],
+                    'social_medias' => [
+                        [
+                            'type' => SocialMedia::TYPE_INSTAGRAM,
+                            'url' => 'https://www.instagram.com/ayupdigital',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
+            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new User())->getTable(), [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john.doe@example.com',
+            'phone' => '07700000000',
+        ]);
+        $this->assertDatabaseHas((new Organisation())->getTable(), [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '07700000000',
+        ]);
+        $this->assertDatabaseHas((new Service())->getTable(), [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => 'https://example.com',
+            'contact_name' => 'Foo Bar',
+            'contact_phone' => '01130000000',
+            'contact_email' => 'foo.bar@example.com',
+        ]);
+        $this->assertDatabaseHas((new ServiceCriterion())->getTable(), [
+            'age_group' => '18+',
+            'disability' => null,
+            'employment' => null,
+            'gender' => null,
+            'housing' => null,
+            'income' => null,
+            'language' => null,
+            'other' => null,
+        ]);
+        $this->assertDatabaseHas((new UsefulInfo())->getTable(), [
+            'title' => 'Did you know?',
+            'description' => 'Lorem ipsum',
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new Offering())->getTable(), [
+            'offering' => 'Weekly club',
+            'order' => 1,
+        ]);
+        $this->assertDatabaseHas((new SocialMedia())->getTable(), [
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital',
         ]);
     }
 
