@@ -29,8 +29,8 @@ class ThesaurusController extends Controller
      * Display a listing of the resource.
      *
      * @param \App\Http\Requests\Thesaurus\IndexRequest $request
-     * @return \App\Http\Responses\Thesaurus
      * @throws \Exception
+     * @return \App\Http\Responses\Thesaurus
      */
     public function index(IndexRequest $request)
     {
@@ -69,8 +69,8 @@ class ThesaurusController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\Thesaurus\UpdateRequest $request
-     * @return \App\Http\Responses\Thesaurus
      * @throws \Exception
+     * @return \App\Http\Responses\Thesaurus
      */
     public function update(UpdateRequest $request)
     {

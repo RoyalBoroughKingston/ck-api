@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceLocation\DestroyRequest;
 use App\Http\Requests\ServiceLocation\IndexRequest;
 use App\Http\Requests\ServiceLocation\ShowRequest;
@@ -14,7 +15,6 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
-use App\Http\Controllers\Controller;
 use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -125,7 +125,7 @@ class ServiceLocationController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\ServiceLocation\ShowRequest $request
-     * @param  \App\Models\ServiceLocation $serviceLocation
+     * @param \App\Models\ServiceLocation $serviceLocation
      * @return \App\Http\Resources\ServiceLocationResource
      */
     public function show(ShowRequest $request, ServiceLocation $serviceLocation)
@@ -146,7 +146,7 @@ class ServiceLocationController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\ServiceLocation\UpdateRequest $request
-     * @param  \App\Models\ServiceLocation $serviceLocation
+     * @param \App\Models\ServiceLocation $serviceLocation
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, ServiceLocation $serviceLocation)
@@ -217,7 +217,7 @@ class ServiceLocationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\ServiceLocation\DestroyRequest $request
-     * @param  \App\Models\ServiceLocation $serviceLocation
+     * @param \App\Models\ServiceLocation $serviceLocation
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, ServiceLocation $serviceLocation)

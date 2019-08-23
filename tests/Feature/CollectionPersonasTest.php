@@ -11,8 +11,8 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
@@ -518,8 +518,8 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => $persona->meta['subtitle'],
             'order' => $persona->order,
             'sideboxes' => $persona->meta['sideboxes'],
-            'created_at' => $persona->created_at->format(Carbon::ISO8601),
-            'updated_at' => $persona->updated_at->format(Carbon::ISO8601),
+            'created_at' => $persona->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $persona->updated_at->format(CarbonImmutable::ISO8601),
         ]);
     }
 

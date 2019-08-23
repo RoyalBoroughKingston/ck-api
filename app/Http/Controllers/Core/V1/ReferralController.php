@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Filters\Referral\OrganisationNameFilter;
 use App\Http\Filters\Referral\ServiceNameFilter;
 use App\Http\Requests\Referral\DestroyRequest;
@@ -15,9 +16,9 @@ use App\Http\Responses\ResourceDeleted;
 use App\Http\Sorts\Referral\OrganisationNameSort;
 use App\Http\Sorts\Referral\ServiceNameSort;
 use App\Models\Referral;
-use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -108,8 +109,8 @@ class ReferralController extends Controller
                 'other_contact' => $request->other_contact,
                 'postcode_outward_code' => $request->postcode_outward_code,
                 'comments' => $request->comments,
-                'referral_consented_at' => $request->referral_consented ? now() : null,
-                'feedback_consented_at' => $request->feedback_consented ? now() : null,
+                'referral_consented_at' => $request->referral_consented ? Date::now() : null,
+                'feedback_consented_at' => $request->feedback_consented ? Date::now() : null,
             ]);
 
             // Fill in the fields for client referral.
@@ -135,7 +136,7 @@ class ReferralController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\Referral\ShowRequest $request
-     * @param  \App\Models\Referral $referral
+     * @param \App\Models\Referral $referral
      * @return \App\Http\Resources\ReferralResource
      */
     public function show(ShowRequest $request, Referral $referral)
@@ -169,7 +170,7 @@ class ReferralController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\Referral\UpdateRequest $request
-     * @param  \App\Models\Referral $referral
+     * @param \App\Models\Referral $referral
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Referral $referral)

@@ -16,7 +16,8 @@ use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\User;
 use App\Support\Coordinate;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
 class ReportTest extends TestCase
@@ -63,44 +64,44 @@ class ReportTest extends TestCase
     }
 
     public function test_users_export_works_with_organisation_admin()
-{
-    // Create an organisation.
-    $organisation = factory(Organisation::class)->create();
+    {
+        // Create an organisation.
+        $organisation = factory(Organisation::class)->create();
 
-    // Create a single user.
-    $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        // Create a single user.
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
 
-    // Generate the report.
-    $report = Report::generate(ReportType::usersExport());
+        // Generate the report.
+        $report = Report::generate(ReportType::usersExport());
 
-    // Test that the data is correct.
-    $csv = csv_to_array($report->file->getContent());
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
 
-    // Assert correct number of records exported.
-    $this->assertEquals(2, count($csv));
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
 
-    // Assert headings are correct.
-    $this->assertEquals([
-        'User Reference ID',
-        'User First Name',
-        'User Last Name',
-        'Email address',
-        'Highest Permission Level',
-        'Organisation/Service Permission Levels',
-        'Organisation/Service IDs',
-    ], $csv[0]);
+        // Assert headings are correct.
+        $this->assertEquals([
+            'User Reference ID',
+            'User First Name',
+            'User Last Name',
+            'Email address',
+            'Highest Permission Level',
+            'Organisation/Service Permission Levels',
+            'Organisation/Service IDs',
+        ], $csv[0]);
 
-    // Assert created user exported.
-    $this->assertEquals([
-        $user->id,
-        $user->first_name,
-        $user->last_name,
-        $user->email,
-        Role::NAME_ORGANISATION_ADMIN,
-        Role::NAME_ORGANISATION_ADMIN,
-        $organisation->id,
-    ], $csv[1]);
-}
+        // Assert created user exported.
+        $this->assertEquals([
+            $user->id,
+            $user->first_name,
+            $user->last_name,
+            $user->email,
+            Role::NAME_ORGANISATION_ADMIN,
+            Role::NAME_ORGANISATION_ADMIN,
+            $organisation->id,
+        ], $csv[1]);
+    }
 
     public function test_users_export_works_with_service_admin()
     {
@@ -187,7 +188,7 @@ class ReportTest extends TestCase
             $service->name,
             $service->url,
             $service->contact_name,
-            $service->updated_at->format(Carbon::ISO8601),
+            $service->updated_at->format(CarbonImmutable::ISO8601),
             $service->referral_method,
             $service->referral_email ?? '',
             $service->status,
@@ -292,7 +293,7 @@ class ReportTest extends TestCase
     public function test_referrals_export_works()
     {
         // Create a single referral.
-        $referral = factory(Referral::class)->create(['referral_consented_at' => now()]);
+        $referral = factory(Referral::class)->create(['referral_consented_at' => Date::now()]);
 
         // Generate the report.
         $report = Report::generate(ReportType::referralsExport());
@@ -322,11 +323,11 @@ class ReportTest extends TestCase
             $referral->service->organisation->name,
             $referral->service->id,
             $referral->service->name,
-            $referral->created_at->format(Carbon::ISO8601),
+            $referral->created_at->format(CarbonImmutable::ISO8601),
             '',
             'Self',
             '',
-            $referral->referral_consented_at->format(Carbon::ISO8601),
+            $referral->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -335,10 +336,10 @@ class ReportTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
 
         // Create a single referral.
-        $referral = factory(Referral::class)->create(['referral_consented_at' => now()]);
+        $referral = factory(Referral::class)->create(['referral_consented_at' => Date::now()]);
 
         // Update the referral.
-        Carbon::setTestNow(now()->addHour());
+        Date::setTestNow(Date::now()->addHour());
         $statusUpdate = $referral->updateStatus($user, Referral::STATUS_COMPLETED);
 
         // Generate the report.
@@ -369,11 +370,11 @@ class ReportTest extends TestCase
             $referral->service->organisation->name,
             $referral->service->id,
             $referral->service->name,
-            $referral->created_at->format(Carbon::ISO8601),
-            $statusUpdate->created_at->format(Carbon::ISO8601),
+            $referral->created_at->format(CarbonImmutable::ISO8601),
+            $statusUpdate->created_at->format(CarbonImmutable::ISO8601),
             'Self',
             '',
-            $referral->referral_consented_at->format(Carbon::ISO8601),
+            $referral->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -381,20 +382,20 @@ class ReportTest extends TestCase
     {
         // Create an in range referral.
         $referralInRange = factory(Referral::class)->create([
-            'referral_consented_at' => now(),
+            'referral_consented_at' => Date::now(),
         ]);
 
         // Create an out of range referral.
         factory(Referral::class)->create([
-            'referral_consented_at' => now(),
-            'created_at' => today()->subMonths(2),
+            'referral_consented_at' => Date::now(),
+            'created_at' => Date::today()->subMonths(2),
         ]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::referralsExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.
@@ -422,11 +423,11 @@ class ReportTest extends TestCase
             $referralInRange->service->organisation->name,
             $referralInRange->service->id,
             $referralInRange->service->name,
-            $referralInRange->created_at->format(Carbon::ISO8601),
+            $referralInRange->created_at->format(CarbonImmutable::ISO8601),
             '',
             'Self',
             '',
-            $referralInRange->referral_consented_at->format(Carbon::ISO8601),
+            $referralInRange->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -434,7 +435,7 @@ class ReportTest extends TestCase
     {
         // Create a single referral.
         $referral = factory(Referral::class)->create([
-            'referral_consented_at' => now(),
+            'referral_consented_at' => Date::now(),
             'referee_name' => $this->faker->name,
             'referee_email' => $this->faker->email,
             'referee_phone' => '07700000000',
@@ -469,11 +470,11 @@ class ReportTest extends TestCase
             $referral->service->organisation->name,
             $referral->service->id,
             $referral->service->name,
-            $referral->created_at->format(Carbon::ISO8601),
+            $referral->created_at->format(CarbonImmutable::ISO8601),
             '',
             'Champion',
             $referral->organisation,
-            $referral->referral_consented_at->format(Carbon::ISO8601),
+            $referral->referral_consented_at->format(CarbonImmutable::ISO8601),
         ], $csv[1]);
     }
 
@@ -514,13 +515,13 @@ class ReportTest extends TestCase
     {
         // Create a single feedback.
         $feedbackWithinRange = factory(PageFeedback::class)->create();
-        factory(PageFeedback::class)->create(['created_at' => today()->subMonths(2)]);
+        factory(PageFeedback::class)->create(['created_at' => Date::today()->subMonths(2)]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::feedbackExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.
@@ -577,7 +578,7 @@ class ReportTest extends TestCase
             $audit->action,
             $audit->description,
             '',
-            $audit->created_at->format(Carbon::ISO8601),
+            $audit->created_at->format(CarbonImmutable::ISO8601),
             $audit->ip_address,
             $audit->user_agent ?? '',
         ], $csv[1]);
@@ -587,13 +588,13 @@ class ReportTest extends TestCase
     {
         // Create a single audit log.
         $auditWithinRange = factory(Audit::class)->create();
-        factory(Audit::class)->create(['created_at' => today()->subMonths(2)]);
+        factory(Audit::class)->create(['created_at' => Date::today()->subMonths(2)]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::auditLogsExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.
@@ -617,7 +618,7 @@ class ReportTest extends TestCase
             $auditWithinRange->action,
             $auditWithinRange->description,
             '',
-            $auditWithinRange->created_at->format(Carbon::ISO8601),
+            $auditWithinRange->created_at->format(CarbonImmutable::ISO8601),
             $auditWithinRange->ip_address,
             $auditWithinRange->user_agent ?? '',
         ], $csv[1]);
@@ -716,14 +717,14 @@ class ReportTest extends TestCase
         SearchHistory::create([
             'query' => $search->getQuery(),
             'count' => 1,
-            'created_at' => today()->subMonths(2),
+            'created_at' => Date::today()->subMonths(2),
         ]);
 
         // Generate the report.
         $report = Report::generate(
             ReportType::searchHistoriesExport(),
-            today()->startOfMonth(),
-            today()->endOfMonth()
+            Date::today()->startOfMonth(),
+            Date::today()->endOfMonth()
         );
 
         // Test that the data is correct.

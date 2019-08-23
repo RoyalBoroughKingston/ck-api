@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ReportSchedule\DestroyRequest;
 use App\Http\Requests\ReportSchedule\IndexRequest;
 use App\Http\Requests\ReportSchedule\ShowRequest;
@@ -11,7 +12,6 @@ use App\Http\Requests\ReportSchedule\UpdateRequest;
 use App\Http\Resources\ReportScheduleResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\ReportSchedule;
-use App\Http\Controllers\Controller;
 use App\Models\ReportType;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -74,7 +74,7 @@ class ReportScheduleController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\ReportSchedule\ShowRequest $request
-     * @param  \App\Models\ReportSchedule $reportSchedule
+     * @param \App\Models\ReportSchedule $reportSchedule
      * @return \App\Http\Resources\ReportScheduleResource
      */
     public function show(ShowRequest $request, ReportSchedule $reportSchedule)
@@ -94,7 +94,7 @@ class ReportScheduleController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\ReportSchedule\UpdateRequest $request
-     * @param  \App\Models\ReportSchedule $reportSchedule
+     * @param \App\Models\ReportSchedule $reportSchedule
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, ReportSchedule $reportSchedule)
@@ -115,7 +115,7 @@ class ReportScheduleController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\ReportSchedule\DestroyRequest $request
-     * @param  \App\Models\ReportSchedule $reportSchedule
+     * @param \App\Models\ReportSchedule $reportSchedule
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, ReportSchedule $reportSchedule)

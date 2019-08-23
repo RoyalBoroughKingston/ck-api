@@ -16,6 +16,6 @@ class StubGeocoder extends Geocoder
     public function geocode(Address $address): Coordinate
     {
         // Return coordinates for Leeds, UK.
-        return new Coordinate(rand(-90, 90), rand(-180, 180));
+        return new Coordinate(mt_rand(-90, 90), mt_rand(-180, 180));
     }
 }

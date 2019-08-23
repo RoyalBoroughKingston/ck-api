@@ -10,9 +10,10 @@ use App\Rules\FileIsMimeType;
 use App\Support\Time;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
@@ -51,8 +52,8 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
     {
         // Get the holiday opening hours that today falls within.
         $holidayOpeningHour = $this->holidayOpeningHours()
-            ->where('starts_at', '<=', today())
-            ->where('ends_at', '>=', today())
+            ->where('starts_at', '<=', Date::today())
+            ->where('ends_at', '>=', Date::today())
             ->first();
 
         // If none found, return null.
@@ -88,19 +89,19 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
             switch ($regularOpeningHour->frequency) {
                 // If weekly then check that the weekday is the same as today.
                 case RegularOpeningHour::FREQUENCY_WEEKLY:
-                    if (today()->dayOfWeek === $regularOpeningHour->weekday) {
+                    if (Date::today()->dayOfWeek === $regularOpeningHour->weekday) {
                         return true;
                     }
                     break;
                 // If monthly then check that the day of the month is the same as today.
                 case RegularOpeningHour::FREQUENCY_MONTHLY:
-                    if (today()->day === $regularOpeningHour->day_of_month) {
+                    if (Date::today()->day === $regularOpeningHour->day_of_month) {
                         return true;
                     }
                     break;
                 // If fortnightly then check that today falls directly on a multiple of 2 weeks.
                 case RegularOpeningHour::FREQUENCY_FORTNIGHTLY:
-                    if (fmod(today()->diffInDays($regularOpeningHour->starts_at) / Carbon::DAYS_PER_WEEK, 2) === 0.0) {
+                    if (fmod(Date::today()->diffInDays($regularOpeningHour->starts_at) / CarbonImmutable::DAYS_PER_WEEK, 2) === 0.0) {
                         return true;
                     }
                     break;
@@ -108,11 +109,11 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
                 case RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH:
                     $occurrence = occurrence($regularOpeningHour->occurrence_of_month);
                     $weekday = weekday($regularOpeningHour->weekday);
-                    $month = month(today()->month);
-                    $year = today()->year;
+                    $month = month(Date::today()->month);
+                    $year = Date::today()->year;
                     $dateString = "$occurrence $weekday of $month $year";
-                    $date = Carbon::createFromTimestamp(strtotime($dateString));
-                    if (today()->equalTo($date)) {
+                    $date = Date::createFromTimestamp(strtotime($dateString));
+                    if (Date::today()->equalTo($date)) {
                         return true;
                     }
                     break;
@@ -216,8 +217,8 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
 
     /**
      * @param int|null $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {

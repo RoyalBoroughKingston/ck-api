@@ -8,6 +8,7 @@ use App\Models\ReportSchedule;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 use Throwable;
 
 class CreateScheduledReportsCommand extends Command
@@ -47,8 +48,6 @@ class CreateScheduledReportsCommand extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -98,7 +97,7 @@ class CreateScheduledReportsCommand extends Command
     protected function handleWeekly(ReportSchedule $reportSchedule)
     {
         // Skip if not a Monday.
-        if (now()->dayOfWeekIso !== static::MONDAY) {
+        if (Date::now()->dayOfWeekIso !== static::MONDAY) {
             // Output skipped message.
             $this->info("Report not due for report schedule [$reportSchedule->id]");
 
@@ -109,8 +108,8 @@ class CreateScheduledReportsCommand extends Command
             // Attempt to create.
             $report = Report::generate(
                 $reportSchedule->reportType,
-                now()->subWeek()->startOfWeek(),
-                now()->subWeek()->endOfWeek()
+                Date::now()->subWeek()->startOfWeek(),
+                Date::now()->subWeek()->endOfWeek()
             );
 
             // Send a notification.
@@ -139,7 +138,7 @@ class CreateScheduledReportsCommand extends Command
     protected function handleMonthly(ReportSchedule $reportSchedule)
     {
         // Skip if not the first day of the month.
-        if (now()->day !== 1) {
+        if (Date::now()->day !== 1) {
             // Output skipped message.
             $this->info("Report not due for report schedule [$reportSchedule->id]");
 
@@ -150,8 +149,8 @@ class CreateScheduledReportsCommand extends Command
             // Attempt to create.
             $report = Report::generate(
                 $reportSchedule->reportType,
-                now()->subMonth()->startOfMonth(),
-                now()->subMonth()->endOfMonth()
+                Date::now()->subMonth()->startOfMonth(),
+                Date::now()->subMonth()->endOfMonth()
             );
 
             // Send a notification.

@@ -1,10 +1,10 @@
 version: "3"
 
 services:
-  api:
-    image: connected-kingston/api
+  app:
+    image: royal-borough-kingston/ck-api/app
     build:
-      context: ./docker/api
+      context: ./docker/app
       dockerfile: Dockerfile
     environment:
       IS_LOCAL: "true"
@@ -12,17 +12,19 @@ services:
       - .:/var/www/html
     networks:
       - app-net
+    ports:
+      - "${APP_PORT}:80"
 
   queue-worker:
-    image: connected-kingston/api
+    image: royal-borough-kingston/ck-api/app
     volumes:
       - .:/var/www/html
     networks:
       - app-net
-    command: php artisan queue:work --tries=1
+    command: php artisan queue:work --queue=default,search,notifications --tries=1
 
   scheduler:
-    image: connected-kingston/api
+    image: royal-borough-kingston/ck-api/app
     volumes:
       - .:/var/www/html
     networks:
@@ -30,12 +32,26 @@ services:
     command: php artisan ck:run-scheduler
 
   node:
-    image: connected-kingston/node
+    image: royal-borough-kingston/ck-api/node
     build:
       context: ./docker/node
       dockerfile: Dockerfile
     volumes:
       - .:/var/www/html
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASS}"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-net
+    ports:
+      - "${DB_PORT}:3306"
 
   mysql-testing:
     image: mysql:5.7
@@ -44,6 +60,15 @@ services:
       MYSQL_DATABASE: "${DB_NAME}"
       MYSQL_USER: "${DB_USER}"
       MYSQL_PASSWORD: "${DB_PASS}"
+    networks:
+      - app-net
+
+  redis:
+    image: grokzen/redis-cluster:5.0.2
+    environment:
+      REDIS_CLUSTER_IP: 0.0.0.0
+    volumes:
+      - redis-data:/data
     networks:
       - app-net
 
@@ -60,11 +85,24 @@ services:
       discovery-type: single-node
     networks:
       - app-net
+    ports:
+      - "${ELASTICSEARCH_PORT}:9200"
+
+  troposphere:
+    image: royal-borough-kingston/ck-api/troposphere
+    build:
+      context: ./docker/troposphere
+      dockerfile: Dockerfile
+    volumes:
+      - ./aws:/tmp
+    command: "python ${CFN_TEMPLATE}.py"
 
 networks:
   app-net:
     driver: bridge
 
 volumes:
+  mysql-data:
+    driver: local
   redis-data:
     driver: local

@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Models\Client;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Date;
 use Laravel\Passport\Passport;
-use Laravel\Passport\RouteRegistrar;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -20,22 +20,18 @@ class AuthServiceProvider extends ServiceProvider
 
     /**
      * Register any authentication / authorization services.
-     *
-     * @return void
      */
     public function boot()
     {
         $this->registerPolicies();
 
         Passport::enableImplicitGrant();
-        Passport::tokensExpireIn(now()->addMonths(18));
+        Passport::tokensExpireIn(Date::now()->addMonths(18));
         Passport::useClientModel(Client::class);
     }
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register()
     {

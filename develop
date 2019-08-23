@@ -8,74 +8,50 @@ export DB_NAME=${DB_NAME:-connected_kingston}
 export DB_USER=${DB_USER:-connected_kingston}
 export DB_PASS=${DB_PASS:-secret}
 export ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
+export CFN_TEMPLATE=${CFN_TEMPLATE:-cloudformation}
 
-# Decide which docker-compose file to use.
-COMPOSE_FILE="dev"
-
-# Disable pseudo-TTY allocation for CI (Travis).
-# The -T flag removes interaction.
+# Disable pseudo-TTY allocation for CI. The -T flag removes interaction.
 TTY=""
 
-# Travis CI provides a CI flag which can be used to check
-# if this is running in a CI environment.
-if [ ${CI:-false} == "true" ]; then
-    COMPOSE_FILE="ci"
+# Travis CI provides a CI environment variable which can be used to check if
+# this is running in a CI environment.
+if [[ ${CI:-false} == "true" ]]; then
     TTY="-T"
 fi
 
-COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.$COMPOSE_FILE.yml"
-
 # Pass arguments to docker-compose, or default to docker-compose ps.
-if [ $# -gt 0  ]; then
+if [[ $# -gt 0  ]]; then
     case "$1" in
+
         art|artisan )
             shift 1
-            ${COMPOSE} run --rm ${TTY} \
-                api \
+            docker-compose run --rm ${TTY} \
+                app \
                 php artisan "$@"
             ;;
-        dump-server|dumpserver )
-            shift 1
-            ${COMPOSE} exec \
-                api \
-                php artisan dump-server "$@"
-            ;;
+
         composer )
             shift 1
-            ${COMPOSE} run --rm ${TTY} \
-                api \
+            docker-compose run --rm ${TTY} \
+                app \
                 composer "$@"
             ;;
-        phpunit )
-            shift 1
-            ${COMPOSE} run --rm ${TTY} \
-                -e DB_HOST=mysql-testing \
-                -e REDIS_CLUSTER=redis \
-                -e REDIS_HOST=redis-testing \
-                -e REDIS_PORT=7000 \
-                api \
-                php vendor/bin/phpunit "$@"
-            ;;
-        phpcs )
-            shift 1
-            ${COMPOSE} run --rm ${TTY} \
-                api \
-                php vendor/bin/phpcs "$@"
-            ;;
-        phpcbf )
-            shift 1
-            ${COMPOSE} run --rm ${TTY} \
-                api \
-                php vendor/bin/phpcbf "$@"
-            ;;
+
         npm )
             shift 1
-            ${COMPOSE} run --rm ${TTY} \
+            docker-compose run --rm ${TTY} \
                 node \
                 npm "$@"
             ;;
-        * ) ${COMPOSE} "$@"; ;;
+
+        cfn|cloudformation )
+            docker-compose run --rm troposphere > aws/${CFN_TEMPLATE}.json
+            cat aws/${CFN_TEMPLATE}.json
+            ;;
+
+        * ) docker-compose "$@"; ;;
+
     esac
 else
-    ${COMPOSE} ps
+    docker-compose ps
 fi

@@ -8,8 +8,8 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -32,9 +32,9 @@ class TaxonomyOrganisationsTest extends TestCase
                 'id' => $taxonomy->id,
                 'name' => $taxonomy->name,
                 'order' => $taxonomy->order,
-                'created_at' => $taxonomy->created_at->format(Carbon::ISO8601),
-                'updated_at' => $taxonomy->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 
@@ -131,7 +131,8 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
         foreach ($taxonomyOrganisation as $organisation) {
-            $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisation->id, 'order' => $organisation->order + 1]);
+            $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                ['id' => $organisation->id, 'order' => $organisation->order + 1]);
         }
     }
 
@@ -155,9 +156,11 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertJsonFragment($payload);
         foreach ($taxonomyOrganisations as $organisation) {
             if ($organisation->order < 2) {
-                $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisation->id, 'order' => $organisation->order]);
+                $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                    ['id' => $organisation->id, 'order' => $organisation->order]);
             } else {
-                $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisation->id, 'order' => $organisation->order + 1]);
+                $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                    ['id' => $organisation->id, 'order' => $organisation->order + 1]);
             }
         }
     }
@@ -181,7 +184,8 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
         foreach ($taxonomyOrganisations as $organisation) {
-            $this->assertDatabaseHas((new Taxonomy())->getTable(), ['id' => $organisation->id, 'order' => $organisation->order]);
+            $this->assertDatabaseHas((new Taxonomy())->getTable(),
+                ['id' => $organisation->id, 'order' => $organisation->order]);
         }
     }
 
@@ -250,9 +254,9 @@ class TaxonomyOrganisationsTest extends TestCase
                 'id' => $taxonomy->id,
                 'name' => $taxonomy->name,
                 'order' => $taxonomy->order,
-                'created_at' => $taxonomy->created_at->format(Carbon::ISO8601),
-                'updated_at' => $taxonomy->updated_at->format(Carbon::ISO8601),
-            ]
+                'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
+            ],
         ]);
     }
 

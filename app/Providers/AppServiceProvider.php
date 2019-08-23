@@ -2,17 +2,20 @@
 
 namespace App\Providers;
 
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot()
     {
+        // Use CarbonImmutable instead of Carbon.
+        Date::use(CarbonImmutable::class);
+
         // Geocode.
         switch (config('ck.geocode_driver')) {
             case 'google':
@@ -66,8 +69,6 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register()
     {

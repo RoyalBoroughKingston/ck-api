@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Date;
 
 abstract class Sms implements ShouldQueue
 {
@@ -84,9 +85,6 @@ abstract class Sms implements ShouldQueue
      */
     abstract public function getContent(): string;
 
-    /**
-     * @return void
-     */
     public function send()
     {
         $this->handle(resolve(SmsSender::class));
@@ -96,7 +94,6 @@ abstract class Sms implements ShouldQueue
      * Execute the job.
      *
      * @param \App\Contracts\SmsSender $smsSender
-     * @return void
      */
     public function handle(SmsSender $smsSender)
     {
@@ -106,7 +103,7 @@ abstract class Sms implements ShouldQueue
 
             // Update the notification.
             if ($this->notification) {
-                $this->notification->update(['sent_at' => now()]);
+                $this->notification->update(['sent_at' => Date::now()]);
             }
         } catch (Exception $exception) {
             // Log the error.
@@ -114,7 +111,7 @@ abstract class Sms implements ShouldQueue
 
             // Update the notification.
             if ($this->notification) {
-                $this->notification->update(['failed_at' => now()]);
+                $this->notification->update(['failed_at' => Date::now()]);
             }
         }
     }

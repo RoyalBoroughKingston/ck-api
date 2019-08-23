@@ -10,8 +10,7 @@ class QueueServiceProvider extends BaseQueueServiceProvider
     /**
      * Register the Amazon SQS queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
-     * @return void
+     * @param \Illuminate\Queue\QueueManager $manager
      */
     protected function registerSqsConnector($manager)
     {

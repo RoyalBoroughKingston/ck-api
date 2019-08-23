@@ -42,8 +42,8 @@ class CanRevokeRoleFromUser implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $role
+     * @param string $attribute
+     * @param mixed $role
      * @return bool
      */
     public function passes($attribute, $role)
@@ -178,8 +178,8 @@ class CanRevokeRoleFromUser implements Rule
                     break;
                 case Role::NAME_GLOBAL_ADMIN:
                 case Role::NAME_SUPER_ADMIN:
-                    unset($role['service_id']);
-                    unset($role['organisation_id']);
+                    unset($role['service_id'], $role['organisation_id']);
+
                     break;
             }
         }

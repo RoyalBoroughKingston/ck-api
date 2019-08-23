@@ -8,6 +8,7 @@ use App\Models\Scopes\UpdateRequestScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\MessageBag;
 
 class UpdateRequest extends Model
@@ -30,8 +31,8 @@ class UpdateRequest extends Model
     ];
 
     /**
-     * @return \Illuminate\Support\MessageBag
      * @throws \Exception
+     * @return \Illuminate\Support\MessageBag
      */
     public function getValidationErrors(): MessageBag
     {
@@ -43,8 +44,8 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @return bool
      * @throws \Exception
+     * @return bool
      */
     public function validate(): bool
     {
@@ -56,8 +57,8 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @return \App\Models\UpdateRequest
      * @throws \Exception
+     * @return \App\Models\UpdateRequest
      */
     public function apply(): self
     {
@@ -66,7 +67,7 @@ class UpdateRequest extends Model
         }
 
         $this->updateable->applyUpdateRequest($this);
-        $this->update(['approved_at' => now()]);
+        $this->update(['approved_at' => Date::now()]);
 
         return $this;
     }

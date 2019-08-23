@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,7 +27,7 @@ abstract class TestCase extends BaseTestCase
     protected static $elasticsearchInitialised = false;
 
     /**
-     * @var \Illuminate\Support\Carbon
+     * @var \Carbon\CarbonImmutable
      */
     protected $now;
 
@@ -40,9 +40,6 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // Set the log path.
-        Config::set('logging.channels.single.path', storage_path('logs/testing.log'));
-
         // Clear the cache.
         $this->artisan('cache:clear');
 
@@ -51,7 +48,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->setUpElasticsearch();
 
-        $this->now = now();
+        $this->now = Date::now();
     }
 
     /**
@@ -113,7 +110,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUpElasticsearch()
     {
-        if (! $this instanceof UsesElasticsearch) {
+        if (!$this instanceof UsesElasticsearch) {
             Service::disableSearchSyncing();
             return;
         } else {
@@ -131,7 +128,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function tearDownElasticsearch()
     {
-        if (! $this instanceof UsesElasticsearch) {
+        if (!$this instanceof UsesElasticsearch) {
             Service::disableSearchSyncing();
             return;
         } else {

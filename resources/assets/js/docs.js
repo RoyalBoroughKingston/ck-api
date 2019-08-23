@@ -2,7 +2,7 @@ import SwaggerUI from 'swagger-ui';
 
 SwaggerUI({
     dom_id: '#docs',
-    url: '/docs/core/openapi.yaml',
+    url: '/docs/openapi.json',
     defaultModelsExpandDepth: -1,
     docExpansion: 'none'
 });

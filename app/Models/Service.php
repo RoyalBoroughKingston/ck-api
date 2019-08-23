@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
@@ -120,7 +121,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                     'location' => ['type' => 'geo_point'],
                 ],
             ],
-        ]
+        ],
     ];
 
     /**
@@ -128,7 +129,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
      */
     public static function bootSearchable()
     {
-        self::bootScoutSearchable();
+        self::sourceBootSearchable();
     }
 
     /**
@@ -234,7 +235,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
                 ? $data['logo_file_id']
                 : $this->logo_file_id,
             // This must always be updated regardless of the fields changed.
-            'last_modified_at' => now(),
+            'last_modified_at' => Date::now(),
         ]);
 
         // Update the service criterion record.
@@ -428,8 +429,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
 
     /**
      * @param int|null $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

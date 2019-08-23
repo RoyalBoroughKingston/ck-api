@@ -19,7 +19,7 @@ class ArrayDiffMultiTest extends TestCase
         $difference = array_diff_multi($arrayA, $arrayB);
 
         $this->assertEquals([
-            ['name' => 'Bob', 'age' => 20]
+            ['name' => 'Bob', 'age' => 20],
         ], $difference);
     }
 
@@ -36,7 +36,7 @@ class ArrayDiffMultiTest extends TestCase
         $difference = array_diff_multi($arrayB, $arrayA);
 
         $this->assertEquals([
-            ['name' => 'Bob', 'age' => 20]
+            ['name' => 'Bob', 'age' => 20],
         ], $difference);
     }
 
@@ -54,7 +54,7 @@ class ArrayDiffMultiTest extends TestCase
         $difference = array_diff_multi($arrayA, $arrayB);
 
         $this->assertEquals([
-            ['name' => 'Mike', 'age' => 23]
+            ['name' => 'Mike', 'age' => 23],
         ], $difference);
     }
 }

@@ -5,7 +5,7 @@
     "license": "GNU AGPLv3",
     "type": "project",
     "require": {
-        "php": "^7.2.0",
+        "php": "~7.2.0",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-pdo": "*",
@@ -17,6 +17,7 @@
         "erusev/parsedown": "^1.7",
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "~3.0",
+        "goldspecdigital/oooas": "^2.4",
         "laravel/framework": "5.8.*",
         "laravel/passport": "^6.0",
         "laravel/tinker": "^1.0",
@@ -30,12 +31,12 @@
     "require-dev": {
         "beyondcode/laravel-dump-server": "~1.1",
         "filp/whoops": "^2.0",
+        "friendsofphp/php-cs-fixer": "^2.15",
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
         "pda/pheanstalk": "~3.0",
-        "phpunit/phpunit": "^8.0",
-        "squizlabs/php_codesniffer": "^3.3"
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "classmap": [
@@ -70,11 +71,25 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
+        ],
+        "test": [
+            "@test:style",
+            "@test:unit"
+        ],
+        "test:style": [
+            "@fix:style --dry-run"
+        ],
+        "test:unit": [
+            "@php vendor/bin/phpunit"
+        ],
+        "fix:style": [
+            "@php vendor/bin/php-cs-fixer fix --config=.php_cs --allow-risky=yes --verbose"
         ]
     },
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
+        "process-timeout": 0,
         "optimize-autoloader": true
     },
     "minimum-stability": "dev",

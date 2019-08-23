@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionPersona\DestroyRequest;
 use App\Http\Requests\CollectionPersona\IndexRequest;
 use App\Http\Requests\CollectionPersona\ShowRequest;
@@ -11,7 +12,6 @@ use App\Http\Requests\CollectionPersona\UpdateRequest;
 use App\Http\Resources\CollectionPersonaResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
-use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
@@ -51,7 +51,6 @@ class CollectionPersonaController extends Controller
 
         return CollectionPersonaResource::collection($personas);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -104,7 +103,7 @@ class CollectionPersonaController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\CollectionPersona\ShowRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionPersonaResource
      */
     public function show(ShowRequest $request, Collection $collection)
@@ -124,7 +123,7 @@ class CollectionPersonaController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\CollectionPersona\UpdateRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Collection $collection)
@@ -170,7 +169,7 @@ class CollectionPersonaController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\CollectionPersona\DestroyRequest $request
-     * @param  \App\Models\Collection $collection
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Collection $collection)

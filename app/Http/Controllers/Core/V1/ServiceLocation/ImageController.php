@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Core\V1\ServiceLocation;
 
 use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceLocation\Image\ShowRequest;
 use App\Models\File;
-use App\Http\Controllers\Controller;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
 
@@ -16,8 +16,8 @@ class ImageController extends Controller
      *
      * @param \App\Http\Requests\ServiceLocation\Image\ShowRequest $request
      * @param \App\Models\ServiceLocation $serviceLocation
-     * @return \Illuminate\Http\Response
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request, ServiceLocation $serviceLocation)
     {

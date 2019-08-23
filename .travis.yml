@@ -1,112 +1,58 @@
-language: php
-
-php:
-  - "7.2"
-
-env:
-  - ES_VERSION=6.3.0 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
-
-services:
-  - redis-server
-
-addons:
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
-
-dist: trusty
-
-sudo: required
-
 if: tag IS blank
-
 branches:
   only:
     - master
     - develop
 
-cache:
-  directories:
-    - vendor
-    - node_modules
+language: python
+python:
+  - "2.7"
 
-before_install:
-  - wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
-  - echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-  - sudo apt-get update
-  - sudo apt-get install -y --allow-unauthenticated cf-cli
-  - wget ${ES_DOWNLOAD_URL} -P /tmp
-  - mkdir -p /opt/elasticsearch-${ES_VERSION} && tar -xzf /tmp/elasticsearch-${ES_VERSION}.tar.gz -C /opt/elasticsearch-${ES_VERSION}
-  - /opt/elasticsearch-${ES_VERSION}/bin/elasticsearch &
-
-install:
-  - composer self-update
-  - composer install --no-interaction
-  - npm install
-  - npm run dev
+sudo: required
+services:
+  - docker
 
 before_script:
-  - sudo -i service elasticsearch start && sleep 10
-  - mysql -e 'create database ck_testing;'
-  - php artisan migrate --force
-  - php artisan passport:keys
+  - sudo service mysql stop
+  - ./develop build
+  - ./develop up -d
+  - ./develop npm ci
+  - ./develop npm run dev
+  - ./develop composer install
+  - ./develop run --rm -T app mv .env.example .env
+  - ./develop artisan key:generate
+  - ./develop artisan passport:keys
 
 script:
-  - vendor/bin/phpcs
-  - vendor/bin/phpunit
+  - ./develop composer test:style
+  - ./develop composer test:unit
 
 after_failure:
   - cat storage/logs/testing.log
 
+before_deploy: |
+  if ! [[ ${HAS_RAN_BEFORE_DEPLOY} ]]; then
+    export HAS_RAN_BEFORE_DEPLOY="TRUE"
+
+    echo "Compiling assets for production..."
+    ./develop npm run prod
+
+    echo "Installing AWS CLI..."
+    curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+    unzip awscli-bundle.zip
+    sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+
+    echo "Installing CloudFoundry CLI..."
+    wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+    echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+    sudo apt-get update && sudo apt-get install -y --allow-unauthenticated cf-cli
+  fi
+
 deploy:
   - provider: script
-    script: bash scripts/Deploy.sh
+    script: ./.travis/deploy
     skip_cleanup: true
     on:
-      repo: RoyalBoroughKingston/ck-api
-      branch: develop
-  - provider: codedeploy
-    revision_type: github
-    access_key_id:
-      secure: OHgcyqIqktrpJN8F9/Q2UZP5Q5V6EFqj26DIqzVaPUq/o0sm9u+JF1+JBHMtXroRtVYWBmofEn7bfmas3vTTaHwUutj/cbqTwMdSGq+JCLxAlm+Guvqh0aN/8lc8dfrkqeenaI9+ymRYVNVcc0OqimugO1INdysjaTmvZmCEE8gAX2KmfusuDscgw3sC4/Auk3JekfvVpB/JnhVVZNzpoT6DBn+tCYcv00Mk2MAFVxkZpKrjm54sAhiBfZFmeHnaQCcTIsIVV8rIEX2lmIfx2k/DBRjpLMlsjJtvii7nsTUKCSX3XNJzSUD+hKTy4Dwgt3svgaPpX1Fl01uFoXWY2Z2/cPGjTymbGVsdQ12NfmfhdiId9Q3dgwIOkFt64vnmne8YKaAn9qyxLHfpN3qxnvSZfxN6fnRmRK1CxCSwIQ8l/3u8di46NpXAQBMJZgNx8bRdnA09lW7/WAuYYQYxnKz72giHCOAJ1MwkD2EgklJMzOUIo8smJrcAEsosscOEZdIKzmbPvutY+5zrzUHoPyVMf2mLj9AT86IggbQysuG7+vSL6laBTr/BUjhye8fn6Oq2n+qfNNfd+bvWX2VU9baN9xkJfGhYJD9IBasxP2h3J5FTKIxa6LOmmq2zVAeVz7qyHLLMNOz99nJqTilhvTKLhUfiS+7Krwqwz7liFdk=
-    secret_access_key:
-      secure: Go8xNf3Z4+OOGyJ8NlwL9RUD8boyX1+5WN59L6nHUx3TYVKE0qtyBMb1m1SGyZVhvUN1vC+rYNX1AOA5hMhLBuG3VsSVJGjMBGWJfoXo1PfMg6AyinrCWeUuntR3TXA2RE3urt404QkF8hz+0Mbj4aBEa/qxciQ37eSK7d1T2kSeVcihJzVcXo8hYB1Z9Acq1XbQQAdxwQC1mrw7KfKWQi3hsYoVRXfbatCux9Tx/8F14BPsjHCL6zrEuw1KTzOf5RgAbAZWXbPIK/9kPtHKHWv007bhQ0gMP5A248fMRSHeqBmZ4t1IkCt61fvQUnR3kf7ZQvJHN5nsRRIJhMDbOvqqwKTy0inCMHB5EGW2vc9oF5Q/YQMyNITjSMrkwUn9E23geB7HFNASoUN4wH/FSiB++GC+8QbDpEzFi7vLTIxxDScjT8iFJozp8LIq6s1pkdvV07tiRwayx0R2HK4GkzJH9q0JN5e5DDLMPoaDQqshGm+mc3wu1L9hN9Z0wJqHbWMs6iBv3Zj5KJbyt++s26+DSo3VJgUlA66lSJRfxsFVO23uyBAsda09gLgRCqZjfNddoBcdys62qP0kyIcbNyEAsrMJI8irW6rkcIa9BxbXPmpYc2djJtHJdSAjWIbe+/F8rOl90YOsno3cbvjMNSDKimm4xB4CucN42gJkvkw=
-    application: CK-API-v2
-    deployment_group: CK-API-v2-Deployment-Production
-    region: eu-west-1
-    skip_cleanup: true
-    on:
-      repo: RoyalBoroughKingston/ck-api
-      branch: master
-  - provider: codedeploy
-    revision_type: github
-    access_key_id:
-      secure: OHgcyqIqktrpJN8F9/Q2UZP5Q5V6EFqj26DIqzVaPUq/o0sm9u+JF1+JBHMtXroRtVYWBmofEn7bfmas3vTTaHwUutj/cbqTwMdSGq+JCLxAlm+Guvqh0aN/8lc8dfrkqeenaI9+ymRYVNVcc0OqimugO1INdysjaTmvZmCEE8gAX2KmfusuDscgw3sC4/Auk3JekfvVpB/JnhVVZNzpoT6DBn+tCYcv00Mk2MAFVxkZpKrjm54sAhiBfZFmeHnaQCcTIsIVV8rIEX2lmIfx2k/DBRjpLMlsjJtvii7nsTUKCSX3XNJzSUD+hKTy4Dwgt3svgaPpX1Fl01uFoXWY2Z2/cPGjTymbGVsdQ12NfmfhdiId9Q3dgwIOkFt64vnmne8YKaAn9qyxLHfpN3qxnvSZfxN6fnRmRK1CxCSwIQ8l/3u8di46NpXAQBMJZgNx8bRdnA09lW7/WAuYYQYxnKz72giHCOAJ1MwkD2EgklJMzOUIo8smJrcAEsosscOEZdIKzmbPvutY+5zrzUHoPyVMf2mLj9AT86IggbQysuG7+vSL6laBTr/BUjhye8fn6Oq2n+qfNNfd+bvWX2VU9baN9xkJfGhYJD9IBasxP2h3J5FTKIxa6LOmmq2zVAeVz7qyHLLMNOz99nJqTilhvTKLhUfiS+7Krwqwz7liFdk=
-    secret_access_key:
-      secure: Go8xNf3Z4+OOGyJ8NlwL9RUD8boyX1+5WN59L6nHUx3TYVKE0qtyBMb1m1SGyZVhvUN1vC+rYNX1AOA5hMhLBuG3VsSVJGjMBGWJfoXo1PfMg6AyinrCWeUuntR3TXA2RE3urt404QkF8hz+0Mbj4aBEa/qxciQ37eSK7d1T2kSeVcihJzVcXo8hYB1Z9Acq1XbQQAdxwQC1mrw7KfKWQi3hsYoVRXfbatCux9Tx/8F14BPsjHCL6zrEuw1KTzOf5RgAbAZWXbPIK/9kPtHKHWv007bhQ0gMP5A248fMRSHeqBmZ4t1IkCt61fvQUnR3kf7ZQvJHN5nsRRIJhMDbOvqqwKTy0inCMHB5EGW2vc9oF5Q/YQMyNITjSMrkwUn9E23geB7HFNASoUN4wH/FSiB++GC+8QbDpEzFi7vLTIxxDScjT8iFJozp8LIq6s1pkdvV07tiRwayx0R2HK4GkzJH9q0JN5e5DDLMPoaDQqshGm+mc3wu1L9hN9Z0wJqHbWMs6iBv3Zj5KJbyt++s26+DSo3VJgUlA66lSJRfxsFVO23uyBAsda09gLgRCqZjfNddoBcdys62qP0kyIcbNyEAsrMJI8irW6rkcIa9BxbXPmpYc2djJtHJdSAjWIbe+/F8rOl90YOsno3cbvjMNSDKimm4xB4CucN42gJkvkw=
-    application: CK-API-Queue
-    deployment_group: ck-queue-workers
-    region: eu-west-1
-    skip_cleanup: true
-    on:
-      repo: RoyalBoroughKingston/ck-api
-      branch: master
-  - provider: codedeploy
-    revision_type: github
-    access_key_id:
-      secure: OHgcyqIqktrpJN8F9/Q2UZP5Q5V6EFqj26DIqzVaPUq/o0sm9u+JF1+JBHMtXroRtVYWBmofEn7bfmas3vTTaHwUutj/cbqTwMdSGq+JCLxAlm+Guvqh0aN/8lc8dfrkqeenaI9+ymRYVNVcc0OqimugO1INdysjaTmvZmCEE8gAX2KmfusuDscgw3sC4/Auk3JekfvVpB/JnhVVZNzpoT6DBn+tCYcv00Mk2MAFVxkZpKrjm54sAhiBfZFmeHnaQCcTIsIVV8rIEX2lmIfx2k/DBRjpLMlsjJtvii7nsTUKCSX3XNJzSUD+hKTy4Dwgt3svgaPpX1Fl01uFoXWY2Z2/cPGjTymbGVsdQ12NfmfhdiId9Q3dgwIOkFt64vnmne8YKaAn9qyxLHfpN3qxnvSZfxN6fnRmRK1CxCSwIQ8l/3u8di46NpXAQBMJZgNx8bRdnA09lW7/WAuYYQYxnKz72giHCOAJ1MwkD2EgklJMzOUIo8smJrcAEsosscOEZdIKzmbPvutY+5zrzUHoPyVMf2mLj9AT86IggbQysuG7+vSL6laBTr/BUjhye8fn6Oq2n+qfNNfd+bvWX2VU9baN9xkJfGhYJD9IBasxP2h3J5FTKIxa6LOmmq2zVAeVz7qyHLLMNOz99nJqTilhvTKLhUfiS+7Krwqwz7liFdk=
-    secret_access_key:
-      secure: Go8xNf3Z4+OOGyJ8NlwL9RUD8boyX1+5WN59L6nHUx3TYVKE0qtyBMb1m1SGyZVhvUN1vC+rYNX1AOA5hMhLBuG3VsSVJGjMBGWJfoXo1PfMg6AyinrCWeUuntR3TXA2RE3urt404QkF8hz+0Mbj4aBEa/qxciQ37eSK7d1T2kSeVcihJzVcXo8hYB1Z9Acq1XbQQAdxwQC1mrw7KfKWQi3hsYoVRXfbatCux9Tx/8F14BPsjHCL6zrEuw1KTzOf5RgAbAZWXbPIK/9kPtHKHWv007bhQ0gMP5A248fMRSHeqBmZ4t1IkCt61fvQUnR3kf7ZQvJHN5nsRRIJhMDbOvqqwKTy0inCMHB5EGW2vc9oF5Q/YQMyNITjSMrkwUn9E23geB7HFNASoUN4wH/FSiB++GC+8QbDpEzFi7vLTIxxDScjT8iFJozp8LIq6s1pkdvV07tiRwayx0R2HK4GkzJH9q0JN5e5DDLMPoaDQqshGm+mc3wu1L9hN9Z0wJqHbWMs6iBv3Zj5KJbyt++s26+DSo3VJgUlA66lSJRfxsFVO23uyBAsda09gLgRCqZjfNddoBcdys62qP0kyIcbNyEAsrMJI8irW6rkcIa9BxbXPmpYc2djJtHJdSAjWIbe+/F8rOl90YOsno3cbvjMNSDKimm4xB4CucN42gJkvkw=
-    application: CK-API-Scheduler
-    deployment_group: CK-API-Scheduler-Deployment-Production
-    region: eu-west-1
-    skip_cleanup: true
-    on:
-      repo: RoyalBoroughKingston/ck-api
-      branch: master
-
-notifications:
-  slack:
-    secure: "UYQa59/m3YMI/8Ycdsh6B6fc11k9Qy0ZJG2VovLwLhZLPZiN+wCvt70cqvGwSDvDLIhU2QgVMe7/oTl2vrHpJNdkTKuy/wbVrJkBK9q2/i/WF8YxCdrfsXFphXF3M90OjblvT3AHRakvoNGN4ChV3VDXWr7hG3+leJSBWXRszvztlGZ2ag6xxDqglY5rj+xVQh2rjAIEVvwr8BahLLpYWYl+tcKzHrK0X1tXHXf0VqdJI29Y4GggyroCSknLmD40c2Bcr4BwHmBkcGBCFIO0cIAEV2qxjejCxCoOVFlucqKcR4BH0lkf8FmRhuhgBD32mCFa7zYXUNmwj5KaIMsvZDI2wAQiIR/zYUeqxRriij20ag7IpaTyJY2VNXbUtb+/tHAg/Zd7MHhdgIjRSbrPnaFKz7920HvPcUXLFr9saBC+DuI9ratqWwhAoi2UtAFgfbx/oA8Ztzp9bpZoYf6D/4XWeKt8p3o1dhbDng1j6uZPSyhxGJ8EuiWu9iiyd9MbZU2A9K3Qi7dHs9m7d5wVHS0yf0N4jbiTbO/5G4/ZS71D50lfeAyjTBlfLhtHengVqbl5JVgXnW/MgSxawJPdYxv4CeiWrjvzn4VtPvKFtZUVQ9EeDcMD7PVPwjgPuMY5AeLNSll43jMU8j/wqrM0GhfzHqvy52JijV0BmPAvS/I="
+      branch:
+        - master
+        - develop

@@ -15,8 +15,7 @@ class ReferralCompleted
     /**
      * Handle the event.
      *
-     * @param  EndpointHit $event
-     * @return void
+     * @param EndpointHit $event
      */
     public function handle(EndpointHit $event)
     {

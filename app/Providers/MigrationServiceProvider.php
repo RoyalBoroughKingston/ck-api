@@ -9,8 +9,6 @@ class MigrationServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -63,8 +61,6 @@ class MigrationServiceProvider extends ServiceProvider
 
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register()
     {

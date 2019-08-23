@@ -9,8 +9,6 @@ class TestingServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -29,8 +27,6 @@ class TestingServiceProvider extends ServiceProvider
 
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register()
     {

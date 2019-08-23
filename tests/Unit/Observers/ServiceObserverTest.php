@@ -5,6 +5,7 @@ namespace Tests\Unit\Observers;
 use App\Emails\StaleServiceDisabled\NotifyGlobalAdminEmail;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -15,7 +16,7 @@ class ServiceObserverTest extends TestCase
     {
         Queue::fake();
 
-        $oldNow = now()->subMonths(13);
+        $oldNow = Date::now()->subMonths(13);
 
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);

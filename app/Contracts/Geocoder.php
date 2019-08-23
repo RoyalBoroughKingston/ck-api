@@ -2,8 +2,8 @@
 
 namespace App\Contracts;
 
-use App\Support\Coordinate;
 use App\Support\Address;
+use App\Support\Coordinate;
 
 interface Geocoder
 {
