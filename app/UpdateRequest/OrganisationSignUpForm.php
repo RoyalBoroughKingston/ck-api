@@ -22,7 +22,9 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        $rules = (new StoreOrganisationSignUpFormRequest())->rules();
+        $rules = (new StoreOrganisationSignUpFormRequest())
+            ->merge($updateRequest->data)
+            ->rules();
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
@@ -37,10 +39,10 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
     {
         /** @var \App\Models\User $user */
         $user = User::create([
-            'first_name' => $updateRequest->getFromData('service.first_name'),
-            'last_name' => $updateRequest->getFromData('service.last_name'),
-            'email' => $updateRequest->getFromData('service.email'),
-            'phone' => $updateRequest->getFromData('service.phone'),
+            'first_name' => $updateRequest->getFromData('user.first_name'),
+            'last_name' => $updateRequest->getFromData('user.last_name'),
+            'email' => $updateRequest->getFromData('user.email'),
+            'phone' => $updateRequest->getFromData('user.phone'),
             'password' => bcrypt(Str::random()),
         ]);
 
