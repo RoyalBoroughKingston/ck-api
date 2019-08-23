@@ -125,7 +125,7 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
             ]);
         }
 
-        $user->makeOrganisationAdmin($organisation);
+        $user->makeOrganisationAdmin($organisation->load('services'));
 
         return $updateRequest;
     }
