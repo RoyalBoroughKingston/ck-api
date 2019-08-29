@@ -8,8 +8,10 @@ use App\Models\Scopes\UpdateRequestScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
 
 class UpdateRequest extends Model
 {
@@ -17,6 +19,15 @@ class UpdateRequest extends Model
     use UpdateRequestMutators;
     use UpdateRequestRelationships;
     use UpdateRequestScopes;
+
+    const EXISTING_TYPE_LOCATION = 'locations';
+    const EXISTING_TYPE_REFERRAL = 'referrals';
+    const EXISTING_TYPE_SERVICE = 'services';
+    const EXISTING_TYPE_SERVICE_LOCATION = 'service_locations';
+    const EXISTING_TYPE_ORGANISATION = 'organisations';
+    const EXISTING_TYPE_USER = 'users';
+
+    const NEW_TYPE_ORGANISATION_SIGN_UP_FORM = 'organisation_sign_up_form';
 
     /**
      * The attributes that should be cast to native types.
@@ -31,13 +42,35 @@ class UpdateRequest extends Model
     ];
 
     /**
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->updateable_id === null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExisting(): bool
+    {
+        return !$this->isNew();
+    }
+
+    /**
      * @throws \Exception
      * @return \Illuminate\Support\MessageBag
      */
     public function getValidationErrors(): MessageBag
     {
         if (!$this->updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+            throw new Exception(
+                sprintf(
+                    '[%s] must be an instance of %s',
+                    get_class($this->updateable),
+                    AppliesUpdateRequests::class
+                )
+            );
         }
 
         return $this->updateable->validateUpdateRequest($this)->errors();
@@ -49,11 +82,21 @@ class UpdateRequest extends Model
      */
     public function validate(): bool
     {
-        if (!$this->updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+        $updateable = $this->isExisting()
+            ? $this->updateable
+            : $this->createUpdateableInstance($this->updateable_type);
+
+        if (!$updateable instanceof AppliesUpdateRequests) {
+            throw new Exception(
+                sprintf(
+                    '[%s] must be an instance of %s',
+                    get_class($updateable),
+                    AppliesUpdateRequests::class
+                )
+            );
         }
 
-        return $this->updateable->validateUpdateRequest($this)->fails() === false;
+        return $updateable->validateUpdateRequest($this)->fails() === false;
     }
 
     /**
@@ -62,13 +105,44 @@ class UpdateRequest extends Model
      */
     public function apply(): self
     {
-        if (!$this->updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(sprintf('[%s] must be an instance of %s', get_class($this->updateable), AppliesUpdateRequests::class));
+        $updateable = $this->isExisting()
+            ? $this->updateable
+            : $this->createUpdateableInstance($this->updateable_type);
+
+        if (!$updateable instanceof AppliesUpdateRequests) {
+            throw new Exception(
+                sprintf(
+                    '[%s] must be an instance of %s',
+                    get_class($updateable),
+                    AppliesUpdateRequests::class
+                )
+            );
         }
 
-        $this->updateable->applyUpdateRequest($this);
+        $updateable->applyUpdateRequest($this);
         $this->update(['approved_at' => Date::now()]);
 
         return $this;
+    }
+
+    /**
+     * @param string $updateableType
+     * @return \App\UpdateRequest\AppliesUpdateRequests
+     */
+    protected function createUpdateableInstance(string $updateableType): AppliesUpdateRequests
+    {
+        $className = '\\App\\UpdateRequest\\' . Str::studly($updateableType);
+
+        return resolve($className);
+    }
+
+    /**
+     * @param string $key
+     * @param mixed|null $default
+     * @return mixed
+     */
+    public function getFromData(string $key, $default = null)
+    {
+        return Arr::get($this->data, $key, $default);
     }
 }

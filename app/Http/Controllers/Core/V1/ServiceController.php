@@ -344,7 +344,7 @@ class ServiceController extends Controller
             }
 
             $updateRequest = new UpdateRequestModel([
-                'updateable_type' => 'services',
+                'updateable_type' => UpdateRequestModel::EXISTING_TYPE_SERVICE,
                 'updateable_id' => $service->id,
                 'user_id' => $request->user()->id,
                 'data' => $data,
