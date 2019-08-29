@@ -51,12 +51,12 @@ class ModelServiceProvider extends ServiceProvider
         UpdateRequest::observe(UpdateRequestObserver::class);
 
         Relation::morphMap([
-            'locations' => Location::class,
-            'referrals' => Referral::class,
-            'services' => Service::class,
-            'service_locations' => ServiceLocation::class,
-            'organisations' => Organisation::class,
-            'users' => User::class,
+            UpdateRequest::EXISTING_TYPE_LOCATION => Location::class,
+            UpdateRequest::EXISTING_TYPE_REFERRAL => Referral::class,
+            UpdateRequest::EXISTING_TYPE_SERVICE => Service::class,
+            UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION => ServiceLocation::class,
+            UpdateRequest::EXISTING_TYPE_ORGANISATION => Organisation::class,
+            UpdateRequest::EXISTING_TYPE_USER => User::class,
         ]);
     }
 

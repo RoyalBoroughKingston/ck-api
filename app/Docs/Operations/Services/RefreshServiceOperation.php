@@ -28,9 +28,11 @@ class RefreshServiceOperation extends Operation
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->requestBody(
-                RequestBody::create()->content(
-                    MediaType::json()->schema(RefreshServiceSchema::create())
-                )
+                RequestBody::create()
+                    ->required()
+                    ->content(
+                        MediaType::json()->schema(RefreshServiceSchema::create())
+                    )
             )
             ->responses(
                 Response::ok()->content(

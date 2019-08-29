@@ -27,9 +27,11 @@ class StoreOrganisationOperation extends Operation
             ->summary('Create an organisation')
             ->description('**Permission:** `Global Admin`')
             ->requestBody(
-                RequestBody::create()->content(
-                    MediaType::json()->schema(StoreOrganisationSchema::create())
-                )
+                RequestBody::create()
+                    ->required()
+                    ->content(
+                        MediaType::json()->schema(StoreOrganisationSchema::create())
+                    )
             )
             ->responses(
                 Response::created()->content(

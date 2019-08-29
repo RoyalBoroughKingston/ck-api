@@ -22,9 +22,11 @@ class UpdateRequestObserver
      */
     public function created(UpdateRequest $updateRequest)
     {
-        $this->sendCreatedNotifications($updateRequest);
-        $this->removeSameFieldsForPending($updateRequest);
-        $this->deleteEmptyPending($updateRequest);
+        if ($updateRequest->isExisting()) {
+            $this->sendCreatedNotificationsForExisting($updateRequest);
+            $this->removeSameFieldsForPendingAndExisting($updateRequest);
+            $this->deleteEmptyPendingForExisting($updateRequest);
+        }
     }
 
     /**
@@ -33,7 +35,7 @@ class UpdateRequestObserver
      *
      * @param \App\Models\UpdateRequest $updateRequest
      */
-    protected function removeSameFieldsForPending(UpdateRequest $updateRequest)
+    protected function removeSameFieldsForPendingAndExisting(UpdateRequest $updateRequest)
     {
         // Skip if there is no data in the update request.
         if (count($updateRequest->data) === 0) {
@@ -56,6 +58,7 @@ class UpdateRequestObserver
             ->where('updateable_type', '=', $updateRequest->updateable_type)
             ->where('updateable_id', '=', $updateRequest->updateable_id)
             ->where('id', '!=', $updateRequest->id)
+            ->existing()
             ->pending()
             ->update(['data' => DB::raw("JSON_REMOVE(`update_requests`.`data`, {$implodedDataKeys})")]);
     }
@@ -67,13 +70,14 @@ class UpdateRequestObserver
      *
      * @param \App\Models\UpdateRequest $updateRequest
      */
-    protected function deleteEmptyPending(UpdateRequest $updateRequest)
+    protected function deleteEmptyPendingForExisting(UpdateRequest $updateRequest)
     {
         // Uses JSON_DEPTH to determine if the data object is empty (depth of 1).
         UpdateRequest::query()
             ->where('updateable_type', '=', $updateRequest->updateable_type)
             ->where('updateable_id', '=', $updateRequest->updateable_id)
             ->whereRaw('JSON_DEPTH(`update_requests`.`data`) = ?', [1])
+            ->existing()
             ->pending()
             ->delete();
     }
@@ -81,7 +85,7 @@ class UpdateRequestObserver
     /**
      * @param \App\Models\UpdateRequest $updateRequest
      */
-    protected function sendCreatedNotifications(UpdateRequest $updateRequest)
+    protected function sendCreatedNotificationsForExisting(UpdateRequest $updateRequest)
     {
         $resourceName = null;
         $resourceType = null;

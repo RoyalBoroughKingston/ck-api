@@ -83,6 +83,7 @@ Entry to filter by:
 * Location: `address_line_1`
 * Service location: `name` or `address_line_1` for associated location
 * Organisation: `name`
+* Organisation sign up form: `name` for organisation
 EOT
                     )
                     ->schema(Schema::string()),

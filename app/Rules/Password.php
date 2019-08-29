@@ -57,7 +57,7 @@ class Password implements Rule
      */
     protected function escapedSpecialCharacters(): string
     {
-        $characters = str_split(static::ALLOWED_SPECIAL_CHARACTERS);
+        $characters = mb_str_split(static::ALLOWED_SPECIAL_CHARACTERS);
 
         return collect($characters)
             ->map(function (string $character) {

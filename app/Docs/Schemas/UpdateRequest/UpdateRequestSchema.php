@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\UpdateRequest;
 
+use App\Models\UpdateRequest;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -19,18 +20,21 @@ class UpdateRequestSchema extends Schema
                 Schema::string('id')
                     ->format(Schema::FORMAT_UUID),
                 Schema::string('user_id')
-                    ->format(Schema::FORMAT_UUID),
+                    ->format(Schema::FORMAT_UUID)
+                    ->nullable(),
                 Schema::string('updateable_type')
                     ->enum(
-                        'locations',
-                        'referrals',
-                        'services',
-                        'service_locations',
-                        'organisations',
-                        'users'
+                        UpdateRequest::EXISTING_TYPE_LOCATION,
+                        UpdateRequest::EXISTING_TYPE_REFERRAL,
+                        UpdateRequest::EXISTING_TYPE_SERVICE,
+                        UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION,
+                        UpdateRequest::EXISTING_TYPE_ORGANISATION,
+                        UpdateRequest::EXISTING_TYPE_USER,
+                        UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM
                     ),
                 Schema::string('updateable_id')
-                    ->format(Schema::FORMAT_UUID),
+                    ->format(Schema::FORMAT_UUID)
+                    ->nullable(),
                 Schema::string('entry'),
                 Schema::object('data'),
                 Schema::string('created_at')

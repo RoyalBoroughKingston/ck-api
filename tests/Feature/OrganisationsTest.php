@@ -311,11 +311,11 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => 'organisations',
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
             'updateable_id' => $organisation->id,
         ]);
         $data = UpdateRequest::query()
-            ->where('updateable_type', 'organisations')
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
             ->where('updateable_id', $organisation->id)
             ->firstOrFail()->data;
         $this->assertEquals($data, $payload);
@@ -337,11 +337,11 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => 'organisations',
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
             'updateable_id' => $organisation->id,
         ]);
         $data = UpdateRequest::query()
-            ->where('updateable_type', 'organisations')
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
             ->where('updateable_id', $organisation->id)
             ->firstOrFail()->data;
         $this->assertEquals($data, $payload);
