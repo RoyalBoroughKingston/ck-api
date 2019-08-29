@@ -25,7 +25,12 @@ class UpdateRequestRejected
             return;
         }
 
-        $this->notifySubmitter($event->getModel());
+        /** @var \App\Models\UpdateRequest $updateRequest */
+        $updateRequest = $event->getModel();
+
+        if ($updateRequest->isExisting()) {
+            $this->notifySubmitter($updateRequest);
+        }
     }
 
     /**

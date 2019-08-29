@@ -28,9 +28,11 @@ class StoreReferralOperation extends Operation
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->requestBody(
-                RequestBody::create()->content(
-                    MediaType::json()->schema(StoreReferralSchema::create())
-                )
+                RequestBody::create()
+                    ->required()
+                    ->content(
+                        MediaType::json()->schema(StoreReferralSchema::create())
+                    )
             )
             ->responses(
                 Response::created()->content(

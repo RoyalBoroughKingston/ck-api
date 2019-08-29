@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Docs\Operations\Locations;
+namespace App\Docs\Operations\OrganisationSignUpForms;
 
 use App\Docs\Responses\UpdateRequestReceivedResponse;
-use App\Docs\Schemas\Location\UpdateLocationSchema;
-use App\Docs\Tags\LocationsTag;
+use App\Docs\Schemas\OrganisationSignUpForm\StoreOrganisationSignUpFormSchema;
+use App\Docs\Tags\OrganisationSignUpFormsTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 
-class UpdateLocationOperation extends Operation
+class StoreOrganisationSignUpFormOperation extends Operation
 {
     /**
      * @param string|null $objectId
@@ -20,19 +20,22 @@ class UpdateLocationOperation extends Operation
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->action(static::ACTION_PUT)
-            ->tags(LocationsTag::create())
-            ->summary('Update a specific location')
-            ->description('**Permission:** `Service Admin`')
+            ->action(static::ACTION_POST)
+            ->tags(OrganisationSignUpFormsTag::create())
+            ->summary('Submit an organisation sign up form')
+            ->description('**Permission:** `Open`')
+            ->noSecurity()
             ->requestBody(
                 RequestBody::create()
                     ->required()
                     ->content(
-                        MediaType::json()->schema(UpdateLocationSchema::create())
+                        MediaType::json()->schema(
+                            StoreOrganisationSignUpFormSchema::create()
                     )
+                )
             )
             ->responses(
-                UpdateRequestReceivedResponse::create(null, UpdateLocationSchema::create())
+                UpdateRequestReceivedResponse::create(null, StoreOrganisationSignUpFormSchema::create())
             );
     }
 }
