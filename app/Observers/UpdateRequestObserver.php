@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Emails\OrganisationSignUpForm\NotifyGlobalAdminEmail as NotifyOrganisationSignUpFormGlobalAdminEmailAlias;
-use App\Emails\OrganisationSignUpForm\NotifySubmitterEmail as NotifyOrganisationSignUpFormSubmitterEmail;
+use App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail as NotifyOrganisationSignUpFormGlobalAdminEmailAlias;
+use App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail as NotifyOrganisationSignUpFormSubmitterEmail;
 use App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail;
 use App\Emails\UpdateRequestReceived\NotifySubmitterEmail;
 use App\Models\Location;

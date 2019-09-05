@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Emails\OrganisationSignUpForm;
+namespace App\Emails\OrganisationSignUpFormReceived;
 
 use App\Emails\Email;
 

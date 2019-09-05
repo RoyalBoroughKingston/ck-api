@@ -11,7 +11,7 @@ class NotifyGlobalAdminEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.update_request_submitted.notify_global_admin.email');
+        return config('ck.notifications_template_ids.update_request_received.notify_global_admin.email');
     }
 
     /**
