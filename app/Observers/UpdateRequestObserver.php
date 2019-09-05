@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Emails\OrganisationSignUpForm\NotifyGlobalAdminEmail as NotifyOrganisationSignUpFormGlobalAdminEmailAlias;
+use App\Emails\OrganisationSignUpForm\NotifySubmitterEmail as NotifyOrganisationSignUpFormSubmitterEmail;
 use App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail;
 use App\Emails\UpdateRequestReceived\NotifySubmitterEmail;
 use App\Models\Location;
@@ -10,6 +12,7 @@ use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
+use App\UpdateRequest\OrganisationSignUpForm;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +22,7 @@ class UpdateRequestObserver
      * Handle to the update request "created" event.
      *
      * @param \App\Models\UpdateRequest $updateRequest
+     * @throws \Exception
      */
     public function created(UpdateRequest $updateRequest)
     {
@@ -26,7 +30,11 @@ class UpdateRequestObserver
             $this->sendCreatedNotificationsForExisting($updateRequest);
             $this->removeSameFieldsForPendingAndExisting($updateRequest);
             $this->deleteEmptyPendingForExisting($updateRequest);
+
+            return;
         }
+
+        $this->sendCreatedNotificationsForNew($updateRequest);
     }
 
     /**
@@ -84,34 +92,34 @@ class UpdateRequestObserver
 
     /**
      * @param \App\Models\UpdateRequest $updateRequest
+     * @throws \Exception
      */
     protected function sendCreatedNotificationsForExisting(UpdateRequest $updateRequest)
     {
-        $resourceName = null;
-        $resourceType = null;
-        if ($updateRequest->updateable instanceof Location) {
-            $resourceName = $updateRequest->updateable->address_line_1;
+        $resourceName = 'N/A';
+        $resourceType = 'N/A';
+        if ($updateRequest->getUpdateable() instanceof Location) {
+            $resourceName = $updateRequest->getUpdateable()->address_line_1;
             $resourceType = 'location';
-        } elseif ($updateRequest->updateable instanceof Service) {
-            $resourceName = $updateRequest->updateable->name;
+        } elseif ($updateRequest->getUpdateable() instanceof Service) {
+            $resourceName = $updateRequest->getUpdateable()->name;
             $resourceType = 'service';
-        } elseif ($updateRequest->updateable instanceof ServiceLocation) {
-            $resourceName = $updateRequest->updateable->name ?? $updateRequest->updateable->location->address_line_1;
+        } elseif ($updateRequest->getUpdateable() instanceof ServiceLocation) {
+            $resourceName = $updateRequest->getUpdateable()->name ?? $updateRequest->getUpdateable()->location->address_line_1;
             $resourceType = 'service location';
-        } elseif ($updateRequest->updateable instanceof Organisation) {
-            $resourceName = $updateRequest->updateable->name;
+        } elseif ($updateRequest->getUpdateable() instanceof Organisation) {
+            $resourceName = $updateRequest->getUpdateable()->name;
             $resourceType = 'organisation';
-        } else {
-            $resourceName = 'N/A';
-            $resourceType = 'N/A';
         }
 
         // Send notification to the submitter.
-        $updateRequest->user->sendEmail(new NotifySubmitterEmail($updateRequest->user->email, [
-            'SUBMITTER_NAME' => $updateRequest->user->first_name,
-            'RESOURCE_NAME' => $resourceName,
-            'RESOURCE_TYPE' => $resourceType,
-        ]));
+        $updateRequest->user->sendEmail(
+            new NotifySubmitterEmail($updateRequest->user->email, [
+                'SUBMITTER_NAME' => $updateRequest->user->first_name,
+                'RESOURCE_NAME' => $resourceName,
+                'RESOURCE_TYPE' => $resourceType,
+            ])
+        );
 
         // Send notification to the global admins.
         Notification::sendEmail(
@@ -122,5 +130,36 @@ class UpdateRequestObserver
                 'REQUEST_URL' => backend_uri("/update-requests/{$updateRequest->id}"),
             ])
         );
+    }
+
+    /**
+     * @param \App\Models\UpdateRequest $updateRequest
+     * @throws \Exception
+     */
+    protected function sendCreatedNotificationsForNew(UpdateRequest $updateRequest)
+    {
+        if ($updateRequest->getUpdateable() instanceof OrganisationSignUpForm) {
+            // Send notification to the submitter.
+            Notification::sendEmail(
+                new NotifyOrganisationSignUpFormSubmitterEmail(
+                    Arr::get($updateRequest->data, 'user.email'),
+                    [
+                        'SUBMITTER_NAME' => Arr::get($updateRequest->data, 'user.first_name'),
+                        'ORGANISATION_NAME' => Arr::get($updateRequest->data, 'organisation.name'),
+                    ]
+                )
+            );
+
+            // Send notification to the global admins.
+            Notification::sendEmail(
+                new NotifyOrganisationSignUpFormGlobalAdminEmailAlias(
+                    config('ck.global_admin.email'),
+                    [
+                        'ORGANISATION_NAME' => Arr::get($updateRequest->data, 'organisation.name'),
+                        'REQUEST_URL' => backend_uri("/update-requests/{$updateRequest->id}"),
+                    ]
+                )
+            );
+        }
     }
 }

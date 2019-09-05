@@ -63,17 +63,17 @@ class UpdateRequest extends Model
      */
     public function getValidationErrors(): MessageBag
     {
-        if (!$this->updateable instanceof AppliesUpdateRequests) {
+        if (!$this->getUpdateable() instanceof AppliesUpdateRequests) {
             throw new Exception(
                 sprintf(
                     '[%s] must be an instance of %s',
-                    get_class($this->updateable),
+                    get_class($this->getUpdateable()),
                     AppliesUpdateRequests::class
                 )
             );
         }
 
-        return $this->updateable->validateUpdateRequest($this)->errors();
+        return $this->getUpdateable()->validateUpdateRequest($this)->errors();
     }
 
     /**
@@ -83,7 +83,7 @@ class UpdateRequest extends Model
     public function validate(): bool
     {
         $updateable = $this->isExisting()
-            ? $this->updateable
+            ? $this->getUpdateable()
             : $this->createUpdateableInstance($this->updateable_type);
 
         if (!$updateable instanceof AppliesUpdateRequests) {
@@ -105,9 +105,7 @@ class UpdateRequest extends Model
      */
     public function apply(): self
     {
-        $updateable = $this->isExisting()
-            ? $this->updateable
-            : $this->createUpdateableInstance($this->updateable_type);
+        $updateable = $this->getUpdateable();
 
         if (!$updateable instanceof AppliesUpdateRequests) {
             throw new Exception(
@@ -126,14 +124,36 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @param string $updateableType
+     * @throws \Exception
      * @return \App\UpdateRequest\AppliesUpdateRequests
      */
-    protected function createUpdateableInstance(string $updateableType): AppliesUpdateRequests
+    public function getUpdateable(): AppliesUpdateRequests
     {
-        $className = '\\App\\UpdateRequest\\' . Str::studly($updateableType);
+        return $this->isExisting()
+            ? $this->getUpdateable()
+            : $this->createUpdateableInstance();
+    }
 
-        return resolve($className);
+    /**
+     * @throws \Exception
+     * @return \App\UpdateRequest\AppliesUpdateRequests
+     */
+    protected function createUpdateableInstance(): AppliesUpdateRequests
+    {
+        $className = '\\App\\UpdateRequest\\' . Str::studly($this->updateable_type);
+        $instance = resolve($className);
+
+        if (!$instance instanceof AppliesUpdateRequests) {
+            throw new Exception(
+                sprintf(
+                    '[%s] must be an instance of %s',
+                    get_class($instance),
+                    AppliesUpdateRequests::class
+                )
+            );
+        }
+
+        return $instance;
     }
 
     /**

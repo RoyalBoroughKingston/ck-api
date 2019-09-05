@@ -40,17 +40,17 @@ class UpdateRequestApproved
     {
         $resourceName = null;
         $resourceType = null;
-        if ($updateRequest->updateable instanceof Location) {
-            $resourceName = $updateRequest->updateable->address_line_1;
+        if ($updateRequest->getUpdateable() instanceof Location) {
+            $resourceName = $updateRequest->getUpdateable()->address_line_1;
             $resourceType = 'location';
-        } elseif ($updateRequest->updateable instanceof Service) {
-            $resourceName = $updateRequest->updateable->name;
+        } elseif ($updateRequest->getUpdateable() instanceof Service) {
+            $resourceName = $updateRequest->getUpdateable()->name;
             $resourceType = 'service';
-        } elseif ($updateRequest->updateable instanceof ServiceLocation) {
-            $resourceName = $updateRequest->updateable->name ?? $updateRequest->updateable->location->address_line_1;
+        } elseif ($updateRequest->getUpdateable() instanceof ServiceLocation) {
+            $resourceName = $updateRequest->getUpdateable()->name ?? $updateRequest->getUpdateable()->location->address_line_1;
             $resourceType = 'service location';
-        } elseif ($updateRequest->updateable instanceof Organisation) {
-            $resourceName = $updateRequest->updateable->name;
+        } elseif ($updateRequest->getUpdateable() instanceof Organisation) {
+            $resourceName = $updateRequest->getUpdateable()->name;
             $resourceType = 'organisation';
         } else {
             $resourceName = 'N/A';

@@ -85,6 +85,9 @@ abstract class Email implements ShouldQueue
      */
     abstract public function getContent(): string;
 
+    /**
+     * Send the email.
+     */
     public function send()
     {
         $this->handle(resolve(EmailSender::class));

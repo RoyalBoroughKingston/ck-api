@@ -181,6 +181,14 @@ return [
                 'email' => 'fa6f064a-6b63-4dc0-a83d-602e9cbb5bfe',
             ],
         ],
+        'organisation_sign_up_form_received' => [
+            'notify_submitter' => [
+                'email' => 'a6834de1-7144-4183-b3ce-edf481ef6953'
+            ],
+            'notify_global_admin' => [
+                'email' => '0eb7828f-b28f-4c0c-acbe-62c7fbcc0be7',
+            ],
+        ],
     ],
 
 ];
