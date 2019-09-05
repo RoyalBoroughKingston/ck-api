@@ -2,10 +2,6 @@
 
 namespace App\Observers;
 
-use App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail as NotifyOrganisationSignUpFormGlobalAdminEmailAlias;
-use App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail as NotifyOrganisationSignUpFormSubmitterEmail;
-use App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail;
-use App\Emails\UpdateRequestReceived\NotifySubmitterEmail;
 use App\Models\Location;
 use App\Models\Notification;
 use App\Models\Organisation;
@@ -30,11 +26,11 @@ class UpdateRequestObserver
             $this->sendCreatedNotificationsForExisting($updateRequest);
             $this->removeSameFieldsForPendingAndExisting($updateRequest);
             $this->deleteEmptyPendingForExisting($updateRequest);
-
-            return;
         }
 
-        $this->sendCreatedNotificationsForNew($updateRequest);
+        if ($updateRequest->isNew()) {
+            $this->sendCreatedNotificationsForNew($updateRequest);
+        }
     }
 
     /**
@@ -114,21 +110,27 @@ class UpdateRequestObserver
 
         // Send notification to the submitter.
         $updateRequest->user->sendEmail(
-            new NotifySubmitterEmail($updateRequest->user->email, [
-                'SUBMITTER_NAME' => $updateRequest->user->first_name,
-                'RESOURCE_NAME' => $resourceName,
-                'RESOURCE_TYPE' => $resourceType,
-            ])
+            new \App\Emails\UpdateRequestReceived\NotifySubmitterEmail(
+                $updateRequest->user->email,
+                [
+                    'SUBMITTER_NAME' => $updateRequest->user->first_name,
+                    'RESOURCE_NAME' => $resourceName,
+                    'RESOURCE_TYPE' => $resourceType,
+                ]
+            )
         );
 
         // Send notification to the global admins.
         Notification::sendEmail(
-            new NotifyGlobalAdminEmail(config('ck.global_admin.email'), [
-                'RESOURCE_NAME' => $resourceName,
-                'RESOURCE_TYPE' => $resourceType,
-                'RESOURCE_ID' => $updateRequest->updateable_id,
-                'REQUEST_URL' => backend_uri("/update-requests/{$updateRequest->id}"),
-            ])
+            new \App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail(
+                config('ck.global_admin.email'),
+                [
+                    'RESOURCE_NAME' => $resourceName,
+                    'RESOURCE_TYPE' => $resourceType,
+                    'RESOURCE_ID' => $updateRequest->updateable_id,
+                    'REQUEST_URL' => backend_uri("/update-requests/{$updateRequest->id}"),
+                ]
+            )
         );
     }
 
@@ -141,7 +143,7 @@ class UpdateRequestObserver
         if ($updateRequest->getUpdateable() instanceof OrganisationSignUpForm) {
             // Send notification to the submitter.
             Notification::sendEmail(
-                new NotifyOrganisationSignUpFormSubmitterEmail(
+                new \App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail(
                     Arr::get($updateRequest->data, 'user.email'),
                     [
                         'SUBMITTER_NAME' => Arr::get($updateRequest->data, 'user.first_name'),
@@ -152,7 +154,7 @@ class UpdateRequestObserver
 
             // Send notification to the global admins.
             Notification::sendEmail(
-                new NotifyOrganisationSignUpFormGlobalAdminEmailAlias(
+                new \App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail(
                     config('ck.global_admin.email'),
                     [
                         'ORGANISATION_NAME' => Arr::get($updateRequest->data, 'organisation.name'),

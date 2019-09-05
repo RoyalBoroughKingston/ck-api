@@ -189,6 +189,16 @@ return [
                 'email' => '0eb7828f-b28f-4c0c-acbe-62c7fbcc0be7',
             ],
         ],
+        'organisation_sign_up_form_approved' => [
+            'notify_submitter' => [
+                'email' => '18815d90-b2b9-4205-9784-f0e05e801599'
+            ],
+        ],
+        'organisation_sign_up_form_rejected' => [
+            'notify_submitter' => [
+                'email' => ''
+            ],
+        ],
     ],
 
 ];

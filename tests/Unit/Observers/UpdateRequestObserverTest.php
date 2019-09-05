@@ -2,10 +2,6 @@
 
 namespace Tests\Unit\Observers;
 
-use App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail as NotifyOrganisationSignUpFormGlobalAdminEmailAlias;
-use App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail as NotifyOrganisationSignUpFormSubmitterEmail;
-use App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail;
-use App\Emails\UpdateRequestReceived\NotifySubmitterEmail;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\UpdateRequest;
@@ -33,22 +29,34 @@ class UpdateRequestObserverTest extends TestCase
             ],
         ]);
 
-        Queue::assertPushedOn('notifications', NotifySubmitterEmail::class);
-        Queue::assertPushed(NotifySubmitterEmail::class, function (NotifySubmitterEmail $email) {
-            $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
-            $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
-            $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
-            return true;
-        });
+        Queue::assertPushedOn(
+            'notifications',
+            \App\Emails\UpdateRequestReceived\NotifySubmitterEmail::class
+        );
+        Queue::assertPushed(
+            \App\Emails\UpdateRequestReceived\NotifySubmitterEmail::class,
+            function (\App\Emails\UpdateRequestReceived\NotifySubmitterEmail $email) {
+                $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
+                $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
+                $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
+                return true;
+            }
+        );
 
-        Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
-        Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) {
-            $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
-            $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
-            $this->assertArrayHasKey('RESOURCE_ID', $email->values);
-            $this->assertArrayHasKey('REQUEST_URL', $email->values);
-            return true;
-        });
+        Queue::assertPushedOn(
+            'notifications',
+            \App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail::class
+        );
+        Queue::assertPushed(
+            \App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail::class,
+            function (\App\Emails\UpdateRequestReceived\NotifyGlobalAdminEmail $email) {
+                $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
+                $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
+                $this->assertArrayHasKey('RESOURCE_ID', $email->values);
+                $this->assertArrayHasKey('REQUEST_URL', $email->values);
+                return true;
+            }
+        );
     }
 
     public function test_emails_sent_for_new_organisation()
@@ -107,11 +115,11 @@ class UpdateRequestObserverTest extends TestCase
 
         Queue::assertPushedOn(
             'notifications',
-            NotifyOrganisationSignUpFormSubmitterEmail::class
+            \App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail::class
         );
         Queue::assertPushed(
-            NotifyOrganisationSignUpFormSubmitterEmail::class,
-            function (NotifyOrganisationSignUpFormSubmitterEmail $email) {
+            \App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail::class,
+            function (\App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail $email) {
                 $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
                 $this->assertArrayHasKey('ORGANISATION_NAME', $email->values);
                 return true;
@@ -120,11 +128,11 @@ class UpdateRequestObserverTest extends TestCase
 
         Queue::assertPushedOn(
             'notifications',
-            NotifyOrganisationSignUpFormGlobalAdminEmailAlias::class
+            \App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail::class
         );
         Queue::assertPushed(
-            NotifyOrganisationSignUpFormGlobalAdminEmailAlias::class,
-            function (NotifyOrganisationSignUpFormGlobalAdminEmailAlias $email) {
+            \App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail::class,
+            function (\App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail $email) {
                 $this->assertArrayHasKey('ORGANISATION_NAME', $email->values);
                 $this->assertArrayHasKey('REQUEST_URL', $email->values);
                 return true;
