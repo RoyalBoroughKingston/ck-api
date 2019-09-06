@@ -65,8 +65,6 @@ services:
 
   redis:
     image: grokzen/redis-cluster:5.0.5
-    environment:
-      REDIS_CLUSTER_IP: 0.0.0.0
     volumes:
       - redis-data:/data
     networks:
@@ -74,8 +72,6 @@ services:
 
   redis-testing:
     image: grokzen/redis-cluster:5.0.5
-    environment:
-      REDIS_CLUSTER_IP: 0.0.0.0
     networks:
       - app-net
 

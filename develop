@@ -10,6 +10,13 @@ export DB_PASS=${DB_PASS:-secret}
 export ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
 export CFN_TEMPLATE=${CFN_TEMPLATE:-cloudformation}
 
+# Set the docker-compose files to use.
+DOCKER_COMPOSE="docker-compose -f docker-compose.yml"
+
+if [[ $(uname) == "Darwin" ]]; then
+  DOCKER_COMPOSE="${DOCKER_COMPOSE} -f docker-compose.mac.yml"
+fi
+
 # Disable pseudo-TTY allocation for CI. The -T flag removes interaction.
 TTY=""
 
@@ -25,33 +32,33 @@ if [[ $# -gt 0  ]]; then
 
         art|artisan )
             shift 1
-            docker-compose run --rm ${TTY} \
+            ${DOCKER_COMPOSE} run --rm ${TTY} \
                 app \
                 php artisan "$@"
             ;;
 
         composer )
             shift 1
-            docker-compose run --rm ${TTY} \
+            ${DOCKER_COMPOSE} run --rm ${TTY} \
                 app \
                 composer "$@"
             ;;
 
         npm )
             shift 1
-            docker-compose run --rm ${TTY} \
+            ${DOCKER_COMPOSE} run --rm ${TTY} \
                 node \
                 npm "$@"
             ;;
 
         cfn|cloudformation )
-            docker-compose run --rm troposphere > aws/${CFN_TEMPLATE}.json
+            ${DOCKER_COMPOSE} run --rm troposphere > aws/${CFN_TEMPLATE}.json
             cat aws/${CFN_TEMPLATE}.json
             ;;
 
-        * ) docker-compose "$@"; ;;
+        * ) ${DOCKER_COMPOSE} "$@"; ;;
 
     esac
 else
-    docker-compose ps
+    ${DOCKER_COMPOSE} ps
 fi
