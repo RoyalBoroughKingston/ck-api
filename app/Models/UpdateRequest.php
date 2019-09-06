@@ -82,9 +82,7 @@ class UpdateRequest extends Model
      */
     public function validate(): bool
     {
-        $updateable = $this->isExisting()
-            ? $this->getUpdateable()
-            : $this->createUpdateableInstance($this->updateable_type);
+        $updateable = $this->getUpdateable();
 
         if (!$updateable instanceof AppliesUpdateRequests) {
             throw new Exception(
@@ -130,7 +128,7 @@ class UpdateRequest extends Model
     public function getUpdateable(): AppliesUpdateRequests
     {
         return $this->isExisting()
-            ? $this->getUpdateable()
+            ? $this->updateable
             : $this->createUpdateableInstance();
     }
 
