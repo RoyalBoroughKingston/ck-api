@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Emails\UpdateRequestReceived;
+namespace App\Emails\OrganisationSignUpFormApproved;
 
 use App\Emails\Email;
 
-class NotifyGlobalAdminEmail extends Email
+class NotifySubmitterEmail extends Email
 {
     /**
      * @return string
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.update_request_received.notify_global_admin.email');
+        return config('ck.notifications_template_ids.organisation_sign_up_form_approved.notify_submitter.email');
     }
 
     /**

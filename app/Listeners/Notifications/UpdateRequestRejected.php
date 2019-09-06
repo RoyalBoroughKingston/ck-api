@@ -6,10 +6,13 @@ use App\Emails\UpdateRequestRejected\NotifySubmitterEmail;
 use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\Location;
+use App\Models\Notification;
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
+use App\UpdateRequest\OrganisationSignUpForm;
+use Illuminate\Support\Arr;
 
 class UpdateRequestRejected
 {
@@ -17,6 +20,7 @@ class UpdateRequestRejected
      * Handle the event.
      *
      * @param EndpointHit $event
+     * @throws \Exception
      */
     public function handle(EndpointHit $event)
     {
@@ -29,32 +33,34 @@ class UpdateRequestRejected
         $updateRequest = $event->getModel();
 
         if ($updateRequest->isExisting()) {
-            $this->notifySubmitter($updateRequest);
+            $this->notifySubmitterForExisting($updateRequest);
+        }
+
+        if ($updateRequest->isNew()) {
+            $this->notifySubmitterForNew($updateRequest);
         }
     }
 
     /**
      * @param \App\Models\UpdateRequest $updateRequest
+     * @throws \Exception
      */
-    protected function notifySubmitter(UpdateRequest $updateRequest)
+    protected function notifySubmitterForExisting(UpdateRequest $updateRequest)
     {
-        $resourceName = null;
-        $resourceType = null;
-        if ($updateRequest->updateable instanceof Location) {
-            $resourceName = $updateRequest->updateable->address_line_1;
+        $resourceName = 'N/A';
+        $resourceType = 'N/A';
+        if ($updateRequest->getUpdateable() instanceof Location) {
+            $resourceName = $updateRequest->getUpdateable()->address_line_1;
             $resourceType = 'location';
-        } elseif ($updateRequest->updateable instanceof Service) {
-            $resourceName = $updateRequest->updateable->name;
+        } elseif ($updateRequest->getUpdateable() instanceof Service) {
+            $resourceName = $updateRequest->getUpdateable()->name;
             $resourceType = 'service';
-        } elseif ($updateRequest->updateable instanceof ServiceLocation) {
-            $resourceName = $updateRequest->updateable->name ?? $updateRequest->updateable->location->address_line_1;
+        } elseif ($updateRequest->getUpdateable() instanceof ServiceLocation) {
+            $resourceName = $updateRequest->getUpdateable()->name ?? $updateRequest->getUpdateable()->location->address_line_1;
             $resourceType = 'service location';
-        } elseif ($updateRequest->updateable instanceof Organisation) {
-            $resourceName = $updateRequest->updateable->name;
+        } elseif ($updateRequest->getUpdateable() instanceof Organisation) {
+            $resourceName = $updateRequest->getUpdateable()->name;
             $resourceType = 'organisation';
-        } else {
-            $resourceName = 'N/A';
-            $resourceType = 'N/A';
         }
 
         $updateRequest->user->sendEmail(new NotifySubmitterEmail($updateRequest->user->email, [
@@ -63,5 +69,25 @@ class UpdateRequestRejected
             'RESOURCE_TYPE' => $resourceType,
             'REQUEST_DATE' => $updateRequest->created_at->format('j/n/Y'),
         ]));
+    }
+
+    /**
+     * @param \App\Models\UpdateRequest $updateRequest
+     * @throws \Exception
+     */
+    protected function notifySubmitterForNew(UpdateRequest $updateRequest)
+    {
+        if ($updateRequest->getUpdateable() instanceof OrganisationSignUpForm) {
+            Notification::sendEmail(
+                new \App\Emails\OrganisationSignUpFormRejected\NotifySubmitterEmail(
+                    Arr::get($updateRequest->data, 'user.email'),
+                    [
+                        'SUBMITTER_NAME' => Arr::get($updateRequest->data, 'user.first_name'),
+                        'ORGANISATION_NAME' => Arr::get($updateRequest->data, 'organisation.name'),
+                        'REQUEST_DATE' => $updateRequest->created_at->format('j/n/Y'),
+                    ]
+                )
+            );
+        }
     }
 }

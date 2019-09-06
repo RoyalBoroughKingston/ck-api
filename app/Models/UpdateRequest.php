@@ -6,7 +6,6 @@ use App\Models\Mutators\UpdateRequestMutators;
 use App\Models\Relationships\UpdateRequestRelationships;
 use App\Models\Scopes\UpdateRequestScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
-use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
@@ -58,80 +57,48 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @throws \Exception
      * @return \Illuminate\Support\MessageBag
      */
     public function getValidationErrors(): MessageBag
     {
-        if (!$this->updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(
-                sprintf(
-                    '[%s] must be an instance of %s',
-                    get_class($this->updateable),
-                    AppliesUpdateRequests::class
-                )
-            );
-        }
-
-        return $this->updateable->validateUpdateRequest($this)->errors();
+        return $this->getUpdateable()->validateUpdateRequest($this)->errors();
     }
 
     /**
-     * @throws \Exception
      * @return bool
      */
     public function validate(): bool
     {
-        $updateable = $this->isExisting()
-            ? $this->updateable
-            : $this->createUpdateableInstance($this->updateable_type);
-
-        if (!$updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(
-                sprintf(
-                    '[%s] must be an instance of %s',
-                    get_class($updateable),
-                    AppliesUpdateRequests::class
-                )
-            );
-        }
-
-        return $updateable->validateUpdateRequest($this)->fails() === false;
+        return $this->getUpdateable()->validateUpdateRequest($this)->fails() === false;
     }
 
     /**
-     * @throws \Exception
      * @return \App\Models\UpdateRequest
      */
     public function apply(): self
     {
-        $updateable = $this->isExisting()
-            ? $this->updateable
-            : $this->createUpdateableInstance($this->updateable_type);
-
-        if (!$updateable instanceof AppliesUpdateRequests) {
-            throw new Exception(
-                sprintf(
-                    '[%s] must be an instance of %s',
-                    get_class($updateable),
-                    AppliesUpdateRequests::class
-                )
-            );
-        }
-
-        $updateable->applyUpdateRequest($this);
+        $this->getUpdateable()->applyUpdateRequest($this);
         $this->update(['approved_at' => Date::now()]);
 
         return $this;
     }
 
     /**
-     * @param string $updateableType
      * @return \App\UpdateRequest\AppliesUpdateRequests
      */
-    protected function createUpdateableInstance(string $updateableType): AppliesUpdateRequests
+    public function getUpdateable(): AppliesUpdateRequests
     {
-        $className = '\\App\\UpdateRequest\\' . Str::studly($updateableType);
+        return $this->isExisting()
+            ? $this->updateable
+            : $this->createUpdateableInstance();
+    }
+
+    /**
+     * @return \App\UpdateRequest\AppliesUpdateRequests
+     */
+    protected function createUpdateableInstance(): AppliesUpdateRequests
+    {
+        $className = '\\App\\UpdateRequest\\' . Str::studly($this->updateable_type);
 
         return resolve($className);
     }

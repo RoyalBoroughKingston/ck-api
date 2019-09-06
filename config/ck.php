@@ -130,7 +130,7 @@ return [
                 'email' => '55af8b8f-1b36-4854-8cce-07d998fdd82a',
             ],
         ],
-        'update_request_submitted' => [
+        'update_request_received' => [
             'notify_submitter' => [
                 'email' => 'e6cd56cc-6259-4cc7-9568-7c48a4988abc',
             ],
@@ -179,6 +179,24 @@ return [
         'scheduled_report_generated' => [
             'notify_global_admin' => [
                 'email' => 'fa6f064a-6b63-4dc0-a83d-602e9cbb5bfe',
+            ],
+        ],
+        'organisation_sign_up_form_received' => [
+            'notify_submitter' => [
+                'email' => 'a6834de1-7144-4183-b3ce-edf481ef6953',
+            ],
+            'notify_global_admin' => [
+                'email' => '0eb7828f-b28f-4c0c-acbe-62c7fbcc0be7',
+            ],
+        ],
+        'organisation_sign_up_form_approved' => [
+            'notify_submitter' => [
+                'email' => '18815d90-b2b9-4205-9784-f0e05e801599',
+            ],
+        ],
+        'organisation_sign_up_form_rejected' => [
+            'notify_submitter' => [
+                'email' => '6575fea8-5517-41fa-b78d-0c77cdc5d533',
             ],
         ],
     ],
