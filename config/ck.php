@@ -183,7 +183,7 @@ return [
         ],
         'organisation_sign_up_form_received' => [
             'notify_submitter' => [
-                'email' => 'a6834de1-7144-4183-b3ce-edf481ef6953'
+                'email' => 'a6834de1-7144-4183-b3ce-edf481ef6953',
             ],
             'notify_global_admin' => [
                 'email' => '0eb7828f-b28f-4c0c-acbe-62c7fbcc0be7',
@@ -191,12 +191,12 @@ return [
         ],
         'organisation_sign_up_form_approved' => [
             'notify_submitter' => [
-                'email' => '18815d90-b2b9-4205-9784-f0e05e801599'
+                'email' => '18815d90-b2b9-4205-9784-f0e05e801599',
             ],
         ],
         'organisation_sign_up_form_rejected' => [
             'notify_submitter' => [
-                'email' => ''
+                'email' => '6575fea8-5517-41fa-b78d-0c77cdc5d533',
             ],
         ],
     ],
