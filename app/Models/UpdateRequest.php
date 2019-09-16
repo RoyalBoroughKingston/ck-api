@@ -57,6 +57,22 @@ class UpdateRequest extends Model
     }
 
     /**
+     * @return bool
+     */
+    public function isApproved(): bool
+    {
+        return $this->approved_at !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeclined(): bool
+    {
+        return $this->deleted_at !== null;
+    }
+
+    /**
      * @return \Illuminate\Support\MessageBag
      */
     public function getValidationErrors(): MessageBag

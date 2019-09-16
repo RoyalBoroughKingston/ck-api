@@ -14,6 +14,7 @@ use App\Models\Role;
 use App\Models\SearchHistory;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\UpdateRequest;
 use App\Models\User;
 use App\Support\Coordinate;
 use Carbon\CarbonImmutable;
@@ -777,5 +778,72 @@ class ReportTest extends TestCase
             'Number Services Returned',
             'Coordinates (Latitude,Longitude)',
         ], $csv[0]);
+    }
+
+    /*
+     * Historic update requests export.
+     */
+
+    public function test_historic_update_requests_export_works()
+    {
+        // Create an admin user.
+        /** @var \App\Models\User $user */
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        // Create an organisation.
+        /** @var \App\Models\Organisation $organisation */
+        $organisation = factory(Organisation::class)->create();
+
+        // Create a single update request.
+        /** @var \App\Models\UpdateRequest $updateRequest */
+        $updateRequest = $organisation->updateRequests()->create([
+            'user_id' => $user->id,
+            'data' => [
+                'name' => 'Test Org Name',
+            ],
+        ]);
+
+        // Apply the update request.
+        $updateRequest->apply();
+
+        // Reload the update request.
+        $updateRequest = UpdateRequest::query()
+            ->select('*')
+            ->withEntry()
+            ->where('id', '=', $updateRequest->id)
+            ->firstOrFail();
+
+        // Generate the report.
+        $report = Report::generate(ReportType::historicUpdateRequestsExport());
+
+        // Test that the data is correct.
+        $csv = csv_to_array($report->file->getContent());
+
+        // Assert correct number of records exported.
+        $this->assertEquals(2, count($csv));
+
+        // Assert headings are correct.
+        $this->assertEquals([
+            'User Submitted',
+            'Type',
+            'Entry',
+            'Date/Time Request Made',
+            'Approved/Declined',
+            'Date Actioned',
+            // TODO: 'Admin who Actioned',
+        ], $csv[0]);
+
+        // Assert created search history exported.
+        $this->assertEquals([
+            $updateRequest->user->full_name,
+            $updateRequest->updateable_type,
+            $updateRequest->entry,
+            $updateRequest->created_at->format(CarbonImmutable::ISO8601),
+            $updateRequest->isApproved() ? 'Approved' : 'Declined',
+            $updateRequest->isApproved()
+                ? $updateRequest->approved_at->format(CarbonImmutable::ISO8601)
+                : $updateRequest->declined_at->format(CarbonImmutable::ISO8601),
+            // TODO: $updateRequest->actioning_user->full_name,
+        ], $csv[1]);
     }
 }
