@@ -565,7 +565,7 @@ class Report extends Model
                 $updateRequests->each(function (UpdateRequest $updateRequest) use (&$data) {
                     // Append a row to the data array.
                     $data[] = [
-                        $updateRequest->user->full_name,
+                        $updateRequest->user->full_name ?? null,
                         $updateRequest->updateable_type,
                         $updateRequest->entry,
                         $updateRequest->created_at->format(CarbonImmutable::ISO8601),
@@ -573,7 +573,7 @@ class Report extends Model
                         $updateRequest->isApproved()
                             ? $updateRequest->approved_at->format(CarbonImmutable::ISO8601)
                             : $updateRequest->declined_at->format(CarbonImmutable::ISO8601),
-                        $updateRequest->actioningUser->full_name,
+                        $updateRequest->actioningUser->full_name ?? null,
                     ];
                 });
             });
