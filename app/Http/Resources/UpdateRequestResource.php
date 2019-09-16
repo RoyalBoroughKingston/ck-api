@@ -18,6 +18,7 @@ class UpdateRequestResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'actioning_user_id' => $this->actioning_user_id,
             'updateable_type' => $this->updateable_type,
             'updateable_id' => $this->updateable_id,
             'data' => $this->data,

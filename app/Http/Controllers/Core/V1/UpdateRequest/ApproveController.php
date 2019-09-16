@@ -39,7 +39,7 @@ class ApproveController extends Controller
         }
 
         return DB::transaction(function () use ($request, $updateRequest) {
-            $updateRequest->apply();
+            $updateRequest->apply($request->user('api'));
 
             event(EndpointHit::onUpdate($request, "Approved update request [{$updateRequest->id}]", $updateRequest));
 

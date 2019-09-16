@@ -89,14 +89,32 @@ class UpdateRequest extends Model
     }
 
     /**
+     * @param \App\Models\User|null $user
      * @return \App\Models\UpdateRequest
      */
-    public function apply(): self
+    public function apply(User $user = null): self
     {
         $this->getUpdateable()->applyUpdateRequest($this);
-        $this->update(['approved_at' => Date::now()]);
+        $this->update([
+            'actioning_user_id' => $user->id ?? null,
+            'approved_at' => Date::now(),
+        ]);
 
         return $this;
+    }
+
+    /**
+     * @param \App\Models\User|null $user
+     * @throws \Exception
+     * @return bool|null
+     */
+    public function delete(User $user = null)
+    {
+        if ($user) {
+            $this->update(['actioning_user_id' => $user->id]);
+        }
+
+        return parent::delete();
     }
 
     /**
