@@ -30,6 +30,15 @@ class AddHistoricUpdateRequestsToReportTypesTable extends Migration
             ->where('name', '=', 'Historic Update Requests Export')
             ->first();
 
+        $fileIds = DB::table('reports')
+            ->where('report_type_id', '=', $reportType->id)
+            ->pluck('file_id')
+            ->toArray();
+
+        DB::table('files')
+            ->whereIn('id', $fileIds)
+            ->delete();
+
         DB::table('reports')
             ->where('report_type_id', '=', $reportType->id)
             ->delete();
