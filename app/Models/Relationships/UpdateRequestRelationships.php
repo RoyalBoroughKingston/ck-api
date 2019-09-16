@@ -15,6 +15,14 @@ trait UpdateRequestRelationships
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function actioningUser()
+    {
+        return $this->belongsTo(User::class, 'actioning_user_id')->withTrashed();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function updateable()

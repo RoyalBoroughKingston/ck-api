@@ -97,6 +97,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertJsonFragment([
             'id' => $updateRequest->id,
             'user_id' => $user->id,
+            'actioning_user_id' => null,
             'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
             'data' => [
@@ -330,6 +331,7 @@ class UpdateRequestsTest extends TestCase
         $response->assertJsonFragment([
             'id' => $updateRequest->id,
             'user_id' => $updateRequest->user_id,
+            'actioning_user_id' => null,
             'updateable_type' => UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION,
             'updateable_id' => $serviceLocation->id,
             'data' => ['name' => 'Test Name'],
@@ -440,7 +442,10 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('DELETE', "/core/v1/update-requests/{$updateRequest->id}");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertSoftDeleted((new UpdateRequest())->getTable(), ['id' => $updateRequest->id]);
+        $this->assertSoftDeleted((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+        ]);
     }
 
     public function test_audit_created_when_deleted()
@@ -535,6 +540,9 @@ class UpdateRequestsTest extends TestCase
 
     public function test_global_admin_can_approve_one_for_service_location()
     {
+        $now = Date::now();
+        Date::setTestNow($now);
+
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
@@ -551,14 +559,20 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
-            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+            'approved_at' => $now->toDateTimeString(),
+        ]);
         $this->assertDatabaseHas((new ServiceLocation())->getTable(),
             ['id' => $serviceLocation->id, 'name' => 'Test Name']);
     }
 
     public function test_global_admin_can_approve_one_for_organisation()
     {
+        $now = Date::now();
+        Date::setTestNow($now);
+
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
@@ -578,8 +592,11 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
-            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+            'approved_at' => $now->toDateTimeString(),
+        ]);
         $this->assertDatabaseHas((new Organisation())->getTable(), [
             'id' => $organisation->id,
             'slug' => $updateRequest->data['slug'],
@@ -593,6 +610,9 @@ class UpdateRequestsTest extends TestCase
 
     public function test_global_admin_can_approve_one_for_location()
     {
+        $now = Date::now();
+        Date::setTestNow($now);
+
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
@@ -616,8 +636,11 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
-            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+            'approved_at' => $now->toDateTimeString(),
+        ]);
         $this->assertDatabaseHas((new Location())->getTable(), [
             'id' => $location->id,
             'address_line_1' => $updateRequest->data['address_line_1'],
@@ -635,6 +658,9 @@ class UpdateRequestsTest extends TestCase
 
     public function test_global_admin_can_approve_one_for_service()
     {
+        $now = Date::now();
+        Date::setTestNow($now);
+
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
@@ -685,8 +711,11 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
-            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+            'approved_at' => $now->toDateTimeString(),
+        ]);
         $this->assertDatabaseHas((new Service())->getTable(), [
             'id' => $service->id,
             'name' => 'Test Name',
@@ -695,6 +724,9 @@ class UpdateRequestsTest extends TestCase
 
     public function test_global_admin_can_approve_one_for_organisation_sign_up_form()
     {
+        $now = Date::now();
+        Date::setTestNow($now);
+
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
@@ -768,8 +800,11 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new UpdateRequest())->getTable(),
-            ['id' => $updateRequest->id, 'approved_at' => null]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+            'approved_at' => $now->toDateTimeString(),
+        ]);
         $this->assertDatabaseHas((new User())->getTable(), [
             'first_name' => 'John',
             'last_name' => 'Doe',

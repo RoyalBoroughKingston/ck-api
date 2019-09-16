@@ -53,6 +53,14 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function actionedUpdateRequests()
+    {
+        return $this->hasMany(UpdateRequest::class, 'actioning_user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function audits()
     {
         return $this->hasMany(Audit::class);

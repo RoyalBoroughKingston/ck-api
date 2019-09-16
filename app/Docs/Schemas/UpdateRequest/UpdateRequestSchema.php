@@ -22,6 +22,9 @@ class UpdateRequestSchema extends Schema
                 Schema::string('user_id')
                     ->format(Schema::FORMAT_UUID)
                     ->nullable(),
+                Schema::string('actioning_user_id')
+                    ->format(Schema::FORMAT_UUID)
+                    ->nullable(),
                 Schema::string('updateable_type')
                     ->enum(
                         UpdateRequest::EXISTING_TYPE_LOCATION,

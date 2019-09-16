@@ -41,8 +41,11 @@ class Report extends Model
      * @throws \Exception
      * @return \App\Models\Report
      */
-    public static function generate(ReportType $type, CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
-    {
+    public static function generate(
+        ReportType $type,
+        CarbonImmutable $startsAt = null,
+        CarbonImmutable $endsAt = null
+    ): self {
         // Generate the file name.
         $filename = sprintf(
             '%s_%s_%s.csv',
@@ -294,8 +297,10 @@ class Report extends Model
      * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateReferralsExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
-    {
+    public function generateReferralsExport(
+        CarbonImmutable $startsAt = null,
+        CarbonImmutable $endsAt = null
+    ): self {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
             $this->update([
@@ -355,8 +360,10 @@ class Report extends Model
      * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateFeedbackExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
-    {
+    public function generateFeedbackExport(
+        CarbonImmutable $startsAt = null,
+        CarbonImmutable $endsAt = null
+    ): self {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
             $this->update([
@@ -401,8 +408,10 @@ class Report extends Model
      * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateAuditLogsExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
-    {
+    public function generateAuditLogsExport(
+        CarbonImmutable $startsAt = null,
+        CarbonImmutable $endsAt = null
+    ): self {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
             $this->update([
@@ -454,8 +463,10 @@ class Report extends Model
      * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
-    public function generateSearchHistoriesExport(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): self
-    {
+    public function generateSearchHistoriesExport(
+        CarbonImmutable $startsAt = null,
+        CarbonImmutable $endsAt = null
+    ): self {
         // Update the date range fields if passed.
         if ($startsAt && $endsAt) {
             $this->update([
@@ -495,6 +506,74 @@ class Report extends Model
                         $searchQuery,
                         $searchHistory->count,
                         $coordinate,
+                    ];
+                });
+            });
+
+        // Upload the report.
+        $this->file->upload(array_to_csv($data));
+
+        return $this;
+    }
+
+    /**
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
+     * @return \App\Models\Report
+     */
+    public function generateHistoricUpdateRequestsExport(
+        CarbonImmutable $startsAt = null,
+        CarbonImmutable $endsAt = null
+    ): self {
+        // Update the date range fields if passed.
+        if ($startsAt && $endsAt) {
+            $this->update([
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
+            ]);
+        }
+
+        $headings = [
+            'User Submitted',
+            'Type',
+            'Entry',
+            'Date/Time Request Made',
+            'Approved/Declined',
+            'Date Actioned',
+            'Admin who Actioned',
+        ];
+
+        $data = [$headings];
+
+        UpdateRequest::withTrashed()
+            ->select('*')
+            ->withEntry()
+            ->whereNotNull('approved_at')
+            ->orWhereNotNull('deleted_at')
+            ->when($startsAt && $endsAt, function (Builder $query) use ($startsAt, $endsAt) {
+                /*
+                 * When date range provided, filter update requests which were created between the
+                 * date range.
+                 */
+                $query->whereBetween(
+                    table(UpdateRequest::class, 'created_at'),
+                    [$startsAt, $endsAt]
+                );
+            })
+            ->chunk(200, function (Collection $updateRequests) use (&$data) {
+                // Loop through each update requests in the chunk.
+                $updateRequests->each(function (UpdateRequest $updateRequest) use (&$data) {
+                    // Append a row to the data array.
+                    $data[] = [
+                        $updateRequest->user->full_name ?? null,
+                        $updateRequest->updateable_type,
+                        $updateRequest->entry,
+                        $updateRequest->created_at->format(CarbonImmutable::ISO8601),
+                        $updateRequest->isApproved() ? 'Approved' : 'Declined',
+                        $updateRequest->isApproved()
+                            ? $updateRequest->approved_at->format(CarbonImmutable::ISO8601)
+                            : $updateRequest->declined_at->format(CarbonImmutable::ISO8601),
+                        $updateRequest->actioningUser->full_name ?? null,
                     ];
                 });
             });

@@ -95,7 +95,7 @@ class UpdateRequestController extends Controller
         return DB::transaction(function () use ($request, $updateRequest) {
             event(EndpointHit::onDelete($request, "Deleted update request [{$updateRequest->id}]", $updateRequest));
 
-            $updateRequest->delete();
+            $updateRequest->delete($request->user('api'));
 
             return new ResourceDeleted('update request');
         });
