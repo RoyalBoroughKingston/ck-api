@@ -803,8 +803,12 @@ class ReportTest extends TestCase
             ],
         ]);
 
+        // Create an actioning user.
+        /** @var \App\Models\User $user */
+        $actioningUser = factory(User::class)->create()->makeSuperAdmin();
+
         // Apply the update request.
-        $updateRequest->apply();
+        $updateRequest->apply($actioningUser);
 
         // Reload the update request.
         $updateRequest = UpdateRequest::query()
@@ -830,7 +834,7 @@ class ReportTest extends TestCase
             'Date/Time Request Made',
             'Approved/Declined',
             'Date Actioned',
-            // TODO: 'Admin who Actioned',
+            'Admin who Actioned',
         ], $csv[0]);
 
         // Assert created search history exported.
@@ -843,7 +847,7 @@ class ReportTest extends TestCase
             $updateRequest->isApproved()
                 ? $updateRequest->approved_at->format(CarbonImmutable::ISO8601)
                 : $updateRequest->declined_at->format(CarbonImmutable::ISO8601),
-            // TODO: $updateRequest->actioning_user->full_name,
+            $actioningUser->full_name,
         ], $csv[1]);
     }
 }

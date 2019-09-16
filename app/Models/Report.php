@@ -540,7 +540,7 @@ class Report extends Model
             'Date/Time Request Made',
             'Approved/Declined',
             'Date Actioned',
-            // TODO: 'Admin who Actioned',
+            'Admin who Actioned',
         ];
 
         $data = [$headings];
@@ -573,7 +573,7 @@ class Report extends Model
                         $updateRequest->isApproved()
                             ? $updateRequest->approved_at->format(CarbonImmutable::ISO8601)
                             : $updateRequest->declined_at->format(CarbonImmutable::ISO8601),
-                        // TODO: $updateRequest->actioning_user->full_name,
+                        $updateRequest->actioningUser->full_name,
                     ];
                 });
             });
