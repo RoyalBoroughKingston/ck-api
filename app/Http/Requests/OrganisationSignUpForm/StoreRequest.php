@@ -53,8 +53,19 @@ class StoreRequest extends FormRequest
             'organisation.name' => ['required', 'string', 'min:1', 'max:255'],
             'organisation.description' => ['required', 'string', 'min:1', 'max:10000'],
             'organisation.url' => ['required', 'url', 'max:255'],
-            'organisation.email' => ['required', 'email', 'max:255'],
-            'organisation.phone' => ['required', 'string', 'min:1', 'max:255'],
+            'organisation.email' => [
+                'nullable',
+                'required_without:organisation.phone',
+                'email',
+                'max:255',
+            ],
+            'organisation.phone' => [
+                'nullable',
+                'required_without:organisation.email',
+                'string',
+                'min:1',
+                'max:255',
+            ],
 
             'service' => ['required', 'array'],
             'service.slug' => [
