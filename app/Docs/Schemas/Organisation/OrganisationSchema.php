@@ -23,8 +23,10 @@ class OrganisationSchema extends Schema
                 Schema::string('slug'),
                 Schema::string('description'),
                 Schema::string('url'),
-                Schema::string('email'),
-                Schema::string('phone'),
+                Schema::string('email')
+                    ->nullable(),
+                Schema::string('phone')
+                    ->nullable(),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),
