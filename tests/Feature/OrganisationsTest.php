@@ -183,6 +183,29 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
+    public function test_global_admin_cannot_create_one_with_no_form_of_contact()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => null,
+            'phone' => null,
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/organisations', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function test_audit_created_when_created()
     {
         $this->fakeEvents();
@@ -374,6 +397,28 @@ class OrganisationsTest extends TestCase
             ->where('updateable_id', $organisation->id)
             ->firstOrFail()->data;
         $this->assertEquals($data, $payload);
+    }
+
+    public function test_organisation_admin_cannot_update_with_no_form_of_contact()
+    {
+        $organisation = factory(Organisation::class)->create([
+            'email' => 'info@test-org.example.com',
+            'phone' => null,
+        ]);
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => null,
+            'phone' => null,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_only_partial_fields_can_be_updated()

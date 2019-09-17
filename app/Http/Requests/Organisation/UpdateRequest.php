@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\Organisation;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\NullableIf;
 use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -48,8 +49,21 @@ class UpdateRequest extends FormRequest
             'name' => ['string', 'min:1', 'max:255'],
             'description' => ['string', 'min:1', 'max:10000'],
             'url' => ['url', 'max:255'],
-            'email' => ['email', 'max:255'],
-            'phone' => ['string', 'min:1', 'max:255'],
+            'email' => [
+                new NullableIf(function () {
+                    return $this->input('phone', $this->organisation->phone) !== null;
+                }),
+                'email',
+                'max:255',
+            ],
+            'phone' => [
+                new NullableIf(function () {
+                    return $this->input('email', $this->organisation->email) !== null;
+                }),
+                'string',
+                'min:1',
+                'max:255',
+            ],
             'logo_file_id' => [
                 'nullable',
                 'exists:files,id',
