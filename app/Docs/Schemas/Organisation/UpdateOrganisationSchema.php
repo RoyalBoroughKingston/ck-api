@@ -20,17 +20,17 @@ class UpdateOrganisationSchema extends Schema
                 'name',
                 'slug',
                 'description',
-                'url',
-                'email',
-                'phone'
+                'url'
             )
             ->properties(
                 Schema::string('name'),
                 Schema::string('slug'),
                 Schema::string('description'),
                 Schema::string('url'),
-                Schema::string('email'),
-                Schema::string('phone'),
+                Schema::string('email')
+                    ->nullable(),
+                Schema::string('phone')
+                    ->nullable(),
                 Schema::string('logo_file_id')
                     ->format(Schema::FORMAT_UUID)
                     ->description('The ID of the file uploaded')
