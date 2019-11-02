@@ -37,6 +37,7 @@ class OrganisationSignUpFormController extends Controller
                         'last_name' => $request->input('user.last_name'),
                         'email' => $request->input('user.email'),
                         'phone' => $request->input('user.phone'),
+                        'password' => bcrypt($request->input('user.password')),
                     ],
                     'organisation' => [
                         'slug' => $request->input('organisation.slug'),

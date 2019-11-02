@@ -26,6 +26,9 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
             ->merge($updateRequest->data)
             ->rules();
 
+        // Update rules for hashed password instead of raw.
+        $rules['user.password'] = ['required', 'string'];
+
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
 
@@ -43,7 +46,7 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
             'last_name' => $updateRequest->getFromData('user.last_name'),
             'email' => $updateRequest->getFromData('user.email'),
             'phone' => $updateRequest->getFromData('user.phone'),
-            'password' => bcrypt(Str::random()),
+            'password' => $updateRequest->getFromData('user.password'),
         ]);
 
         /** @var \App\Models\Organisation $organisation */
