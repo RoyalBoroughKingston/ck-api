@@ -27,6 +27,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
             ->properties(
                 StoreUserSchema::create('user')
                     ->required(
+                        'password',
                         ...array_filter(
                             StoreUserSchema::create()->required,
                             function (string $required): bool {
@@ -35,6 +36,8 @@ class StoreOrganisationSignUpFormSchema extends Schema
                         )
                     )
                     ->properties(
+                        Schema::string('password')
+                            ->format(Schema::FORMAT_PASSWORD),
                         ...array_filter(
                             StoreUserSchema::create()->properties,
                             function (Schema $property): bool {
