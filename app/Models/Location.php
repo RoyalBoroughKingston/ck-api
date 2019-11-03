@@ -107,6 +107,18 @@ class Location extends Model implements AppliesUpdateRequests
     }
 
     /**
+     * Custom logic for returning the data. Useful when wanting to transform
+     * or modify the data before returning it, e.g. removing passwords.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getData(array $data): array
+    {
+        return $data;
+    }
+
+    /**
      * @return \App\Models\Location
      */
     public function touchServices(): Location
