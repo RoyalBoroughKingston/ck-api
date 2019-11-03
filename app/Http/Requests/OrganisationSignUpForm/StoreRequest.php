@@ -8,6 +8,7 @@ use App\Models\SocialMedia;
 use App\Rules\InOrder;
 use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
+use App\Rules\Password;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserEmailNotTaken;
@@ -40,6 +41,7 @@ class StoreRequest extends FormRequest
             'user.last_name' => ['required', 'string', 'min:1', 'max:255'],
             'user.email' => ['required', 'email', 'max:255', new UserEmailNotTaken()],
             'user.phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
+            'user.password' => ['required', 'string', 'min:8', 'max:255', new Password()],
 
             'organisation' => ['required', 'array'],
             'organisation.slug' => [

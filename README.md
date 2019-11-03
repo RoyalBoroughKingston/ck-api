@@ -64,13 +64,19 @@ script:
 
 ## Running the tests
 
-To run the PHPUnit tests:
+To run all tests:
  
 ```bash
-./develop phpunit
+./develop composer test
 ```
 
-To run the code style tests:
+To run only the PHPUnit tests:
+ 
+```bash
+./develop composer test:unit
+```
+
+To run only the code style tests:
 
 ```bash
 # Run linter.

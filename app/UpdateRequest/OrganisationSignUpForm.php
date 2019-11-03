@@ -8,9 +8,9 @@ use App\Models\Service;
 use App\Models\UpdateRequest;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
-use Illuminate\Support\Str;
 
 class OrganisationSignUpForm implements AppliesUpdateRequests
 {
@@ -25,6 +25,9 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
         $rules = (new StoreOrganisationSignUpFormRequest())
             ->merge($updateRequest->data)
             ->rules();
+
+        // Update rules for hashed password instead of raw.
+        $rules['user.password'] = ['required', 'string'];
 
         return ValidatorFacade::make($updateRequest->data, $rules);
     }
@@ -43,7 +46,7 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
             'last_name' => $updateRequest->getFromData('user.last_name'),
             'email' => $updateRequest->getFromData('user.email'),
             'phone' => $updateRequest->getFromData('user.phone'),
-            'password' => bcrypt(Str::random()),
+            'password' => $updateRequest->getFromData('user.password'),
         ]);
 
         /** @var \App\Models\Organisation $organisation */
@@ -128,5 +131,19 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
         $user->makeOrganisationAdmin($organisation->load('services'));
 
         return $updateRequest;
+    }
+
+    /**
+     * Custom logic for returning the data. Useful when wanting to transform
+     * or modify the data before returning it, e.g. removing passwords.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getData(array $data): array
+    {
+        Arr::forget($data, ['user.password']);
+
+        return $data;
     }
 }

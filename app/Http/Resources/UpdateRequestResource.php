@@ -21,7 +21,7 @@ class UpdateRequestResource extends JsonResource
             'actioning_user_id' => $this->actioning_user_id,
             'updateable_type' => $this->updateable_type,
             'updateable_id' => $this->updateable_id,
-            'data' => $this->data,
+            'data' => $this->getUpdateable()->getData($this->data),
             'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
             'approved_at' => optional($this->approved_at)->format(CarbonImmutable::ISO8601),

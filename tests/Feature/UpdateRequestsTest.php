@@ -739,6 +739,7 @@ class UpdateRequestsTest extends TestCase
                     'last_name' => 'Doe',
                     'email' => 'john.doe@example.com',
                     'phone' => '07700000000',
+                    'password' => 'P@55w0rd.',
                 ],
                 'organisation' => [
                     'slug' => 'test-org',

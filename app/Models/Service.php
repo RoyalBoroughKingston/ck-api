@@ -322,6 +322,18 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     }
 
     /**
+     * Custom logic for returning the data. Useful when wanting to transform
+     * or modify the data before returning it, e.g. removing passwords.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function getData(array $data): array
+    {
+        return $data;
+    }
+
+    /**
      * Ensures conditional fields are reset to expected values.
      *
      * @return \App\Models\Service

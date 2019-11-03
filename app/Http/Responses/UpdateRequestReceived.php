@@ -41,7 +41,9 @@ class UpdateRequestReceived implements Responsable
         return response()->json([
             'message' => 'The update request has been received and needs to be reviewed',
             'id' => $this->updateRequest->id,
-            'data' => $this->updateRequest->data,
+            'data' => $this->updateRequest->getUpdateable()->getData(
+                $this->updateRequest->data
+            ),
         ], $this->code);
     }
 }

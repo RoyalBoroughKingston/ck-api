@@ -26,6 +26,7 @@ class OrganisationSignUpFormTest extends TestCase
                 'last_name' => $this->faker->lastName,
                 'email' => $this->faker->safeEmail,
                 'phone' => random_uk_phone(),
+                'password' => 'P@55w0rd.',
             ],
             'organisation' => [
                 'slug' => 'test-org',
@@ -94,6 +95,7 @@ class OrganisationSignUpFormTest extends TestCase
                 'last_name' => $this->faker->lastName,
                 'email' => $this->faker->safeEmail,
                 'phone' => random_uk_phone(),
+                'password' => 'P@55w0rd.',
             ],
             'organisation' => [
                 'slug' => 'test-org',
@@ -239,6 +241,7 @@ class OrganisationSignUpFormTest extends TestCase
                 'last_name' => $this->faker->lastName,
                 'email' => $this->faker->safeEmail,
                 'phone' => random_uk_phone(),
+                'password' => 'P@55w0rd.',
             ],
             'organisation' => [
                 'slug' => 'test-org',
