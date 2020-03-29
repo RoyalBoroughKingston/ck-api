@@ -10,14 +10,6 @@ use App\Support\Coordinate;
 class SearchController extends Controller
 {
     /**
-     * SearchController constructor.
-     */
-    public function __construct()
-    {
-        $this->middleware('throttle:60,1');
-    }
-
-    /**
      * @param \App\Contracts\Search $search
      * @param \App\Http\Requests\Search\Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
