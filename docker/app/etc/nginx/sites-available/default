@@ -12,6 +12,14 @@ server {
     location = /favicon.ico { log_not_found off; access_log off; }
     location = /robots.txt  { log_not_found off; access_log off; }
 
+    location ~ ^/_php-fpm/(status|ping)$ {
+        access_log off;
+        log_not_found off;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+    }
+
     location / {
         try_files $uri $uri/ /index.php$is_args$args;
     }
