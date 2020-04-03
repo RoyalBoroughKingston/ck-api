@@ -1,5 +1,4 @@
 {
-    "PHP_VERSION": "7.2",
     "PHP_EXTENSIONS": [
         "bz2",
         "zlib",

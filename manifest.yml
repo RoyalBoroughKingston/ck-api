@@ -1,6 +1,5 @@
 ---
 defaults: &defaults
-  memory: 128M
   buildpack: php_buildpack
   services:
   - ck-db
@@ -10,6 +9,7 @@ defaults: &defaults
 applications:
 - name: ck-api
   <<: *defaults
+  memory: 256M
   instances: ((instances))
   routes:
   - route: ((route))
@@ -17,6 +17,7 @@ applications:
 - name: ck-queue-worker
   <<: *defaults
   instances: 1
+  memory: 128M
   no-route: true
   command: php artisan queue:work --queue=default,search,notifications --tries=1
   health-check-type: process
@@ -24,6 +25,7 @@ applications:
 - name: ck-scheduler
   <<: *defaults
   instances: 1
+  memory: 128M
   no-route: true
   command: php artisan ck:run-scheduler
   health-check-type: process
