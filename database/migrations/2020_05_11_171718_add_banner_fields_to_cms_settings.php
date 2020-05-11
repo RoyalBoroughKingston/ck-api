@@ -7,15 +7,14 @@ class AddBannerFieldsToCmsSettings extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
         DB::table('settings')
             ->where('key', '=', 'cms')
             ->update([
-                'value' => DB::raw(<<<'EOT'
+                'value' => DB::raw(
+                    <<<'EOT'
 JSON_INSERT(
     `settings`.`value`,
     '$.frontend.banner',
@@ -28,27 +27,26 @@ JSON_INSERT(
     )
 )
 EOT
-                )
+                ),
             ]);
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
         DB::table('settings')
             ->where('key', '=', 'cms')
             ->update([
-                'value' => DB::raw(<<<'EOT'
+                'value' => DB::raw(
+                    <<<'EOT'
 JSON_REMOVE(
     `settings`.`value`,
     '$.frontend.banner'
 )
 EOT
-                )
+                ),
             ]);
     }
 }
