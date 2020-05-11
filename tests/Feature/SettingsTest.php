@@ -563,6 +563,10 @@ class SettingsTest extends TestCase
         });
     }
 
+    /*
+     * CMS / Frontend / Banner.
+     */
+
     public function test_banner_image_can_be_update()
     {
         Passport::actingAs(
@@ -937,7 +941,7 @@ class SettingsTest extends TestCase
         );
 
         $image = Storage::disk('local')->get('/test-data/image.png');
-        $imageResponse = $this->json('POST', '/core/v1/files', [
+        $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
             'file' => 'data:image/png;base64,' . base64_encode($image),
@@ -996,5 +1000,73 @@ class SettingsTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /*
+     * Get banner image.
+     */
+
+    public function test_guest_cannot_view_banner_image_when_not_provided()
+    {
+        $response = $this->get('/core/v1/settings/banner-image.png');
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_global_admin_can_view_banner_image()
+    {
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        $image = Storage::disk('local')->get('/test-data/image.png');
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $cmsValue = Setting::cms()->value;
+        Arr::set(
+            $cmsValue,
+            'frontend.banner.button_image_file_id',
+            $this->getResponseContent($imageResponse, 'data.id')
+        );
+        Setting::cms()->update(['value' => $cmsValue]);
+
+        $response = $this->get('/core/v1/settings/banner-image.png');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    public function test_audit_created_when_banner_image_viewed()
+    {
+        $this->fakeEvents();
+
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        $image = Storage::disk('local')->get('/test-data/image.png');
+        $imageResponse = $this->json('POST', '/core/v1/files', [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
+        ]);
+
+        $cmsValue = Setting::cms()->value;
+        Arr::set(
+            $cmsValue,
+            'frontend.banner.button_image_file_id',
+            $this->getResponseContent($imageResponse, 'data.id')
+        );
+        Setting::cms()->update(['value' => $cmsValue]);
+
+        $this->get('/core/v1/settings/banner-image.png');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 }
