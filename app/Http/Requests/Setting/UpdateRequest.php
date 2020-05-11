@@ -82,6 +82,7 @@ class UpdateRequest extends FormRequest
                 'present',
                 'nullable',
                 'string',
+                'max:70',
             ],
             'cms.frontend.banner.content' => [
                 'required_with:' . implode(',', [
@@ -93,6 +94,7 @@ class UpdateRequest extends FormRequest
                 'present',
                 'nullable',
                 'string',
+                'max:200',
             ],
             'cms.frontend.banner.button_text' => [
                 'required_with:' . implode(',', [
