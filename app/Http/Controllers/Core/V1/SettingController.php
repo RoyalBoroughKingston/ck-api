@@ -82,7 +82,9 @@ class SettingController extends Controller
                             ],
                             'banner' => [
                                 'title' => $request->input('cms.frontend.banner.title'),
-                                'content' => sanitize_markdown($request->input('cms.frontend.banner.content')),
+                                'content' => $request->filled('cms.frontend.banner.content')
+                                    ? sanitize_markdown($request->input('cms.frontend.banner.content'))
+                                    : null,
                                 'button_text' => $request->input('cms.frontend.banner.button_text'),
                                 'button_url' => $request->input('cms.frontend.banner.button_url'),
                                 'image_file_id' => $request->input(
