@@ -72,6 +72,13 @@ class SettingsTest extends TestCase
                             'title',
                             'content',
                         ],
+                        'banner' => [
+                            'title',
+                            'content',
+                            'button_text',
+                            'button_url',
+                            'has_image',
+                        ],
                     ],
                 ],
             ],
@@ -124,6 +131,13 @@ class SettingsTest extends TestCase
                         'favourites' => [
                             'title' => 'Title',
                             'content' => 'Content',
+                        ],
+                        'banner' => [
+                            'title' => null,
+                            'content' => null,
+                            'button_text' => null,
+                            'button_url' => null,
+                            'has_image' => false,
                         ],
                     ],
                 ],
@@ -240,6 +254,12 @@ class SettingsTest extends TestCase
                         'title' => 'data/cms/frontend/favourites/title',
                         'content' => 'data/cms/frontend/favourites/content',
                     ],
+                    'banner' => [
+                        'title' => 'data/cms/frontend/banner/title',
+                        'content' => 'data/cms/frontend/banner/content',
+                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
+                    ],
                 ],
             ],
         ]);
@@ -295,6 +315,12 @@ class SettingsTest extends TestCase
                         'title' => 'data/cms/frontend/favourites/title',
                         'content' => 'data/cms/frontend/favourites/content',
                     ],
+                    'banner' => [
+                        'title' => 'data/cms/frontend/banner/title',
+                        'content' => 'data/cms/frontend/banner/content',
+                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
+                    ],
                 ],
             ],
         ]);
@@ -341,6 +367,13 @@ class SettingsTest extends TestCase
                         'favourites' => [
                             'title',
                             'content',
+                        ],
+                        'banner' => [
+                            'title',
+                            'content',
+                            'button_text',
+                            'button_url',
+                            'has_image',
                         ],
                     ],
                 ],
@@ -396,6 +429,12 @@ class SettingsTest extends TestCase
                         'title' => 'data/cms/frontend/favourites/title',
                         'content' => 'data/cms/frontend/favourites/content',
                     ],
+                    'banner' => [
+                        'title' => 'data/cms/frontend/banner/title',
+                        'content' => 'data/cms/frontend/banner/content',
+                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
+                    ],
                 ],
             ],
         ]);
@@ -443,6 +482,13 @@ class SettingsTest extends TestCase
                             'title' => 'data/cms/frontend/favourites/title',
                             'content' => 'data/cms/frontend/favourites/content',
                         ],
+                        'banner' => [
+                            'title' => 'data/cms/frontend/banner/title',
+                            'content' => 'data/cms/frontend/banner/content',
+                            'button_text' => 'data/cms/frontend/banner/button_text',
+                            'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
+                            'has_image' => false,
+                        ],
                     ],
                 ],
             ],
@@ -457,7 +503,7 @@ class SettingsTest extends TestCase
             factory(User::class)->create()->makeGlobalAdmin()
         );
 
-        $response = $this->putJson('/core/v1/settings', [
+        $this->putJson('/core/v1/settings', [
             'cms' => [
                 'frontend' => [
                     'global' => [
@@ -498,6 +544,12 @@ class SettingsTest extends TestCase
                     'favourites' => [
                         'title' => 'data/cms/frontend/favourites/title',
                         'content' => 'data/cms/frontend/favourites/content',
+                    ],
+                    'banner' => [
+                        'title' => 'data/cms/frontend/banner/title',
+                        'content' => 'data/cms/frontend/banner/content',
+                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                     ],
                 ],
             ],
