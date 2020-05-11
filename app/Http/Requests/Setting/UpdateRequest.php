@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests\Setting;
 
+use App\Models\File;
+use App\Rules\FileIsMimeType;
+use App\Rules\FileIsPendingAssignment;
 use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -67,6 +70,61 @@ class UpdateRequest extends FormRequest
             'cms.frontend.favourites' => ['required', 'array'],
             'cms.frontend.favourites.title' => ['required', 'string'],
             'cms.frontend.favourites.content' => ['required', 'string'],
+
+            'cms.frontend.banner' => ['required', 'array'],
+            'cms.frontend.banner.title' => [
+                'required_with:' . implode(',', [
+                    'cms.frontend.banner.content',
+                    'cms.frontend.banner.button_text',
+                    'cms.frontend.banner.button_url',
+                    'cms.frontend.banner.image_file_id',
+                ]),
+                'present',
+                'nullable',
+                'string',
+                'max:70',
+            ],
+            'cms.frontend.banner.content' => [
+                'required_with:' . implode(',', [
+                    'cms.frontend.banner.title',
+                    'cms.frontend.banner.button_text',
+                    'cms.frontend.banner.button_url',
+                    'cms.frontend.banner.image_file_id',
+                ]),
+                'present',
+                'nullable',
+                'string',
+                'max:200',
+            ],
+            'cms.frontend.banner.button_text' => [
+                'required_with:' . implode(',', [
+                    'cms.frontend.banner.title',
+                    'cms.frontend.banner.content',
+                    'cms.frontend.banner.button_url',
+                    'cms.frontend.banner.image_file_id',
+                ]),
+                'present',
+                'nullable',
+                'string',
+                'max:30',
+            ],
+            'cms.frontend.banner.button_url' => [
+                'required_with:' . implode(',', [
+                    'cms.frontend.banner.title',
+                    'cms.frontend.banner.content',
+                    'cms.frontend.banner.button_text',
+                    'cms.frontend.banner.image_file_id',
+                ]),
+                'present',
+                'nullable',
+                'string',
+            ],
+            'cms.frontend.banner.image_file_id' => [
+                'nullable',
+                'exists:files,id',
+                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsPendingAssignment(),
+            ],
         ];
     }
 }

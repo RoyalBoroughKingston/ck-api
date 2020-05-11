@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4b3139fdda2083a6e0a9cc8bcb51050",
+    "content-hash": "7a9bc099f39bbc8f7f6be65e33183e66",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -263,12 +263,12 @@
             "version": "v0.11.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/barryvdh/laravel-cors.git",
+                "url": "https://github.com/fruitcake/laravel-cors.git",
                 "reference": "c95ac944f2f20a17949aae6645692dfd3b402bca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/c95ac944f2f20a17949aae6645692dfd3b402bca",
+                "url": "https://api.github.com/repos/fruitcake/laravel-cors/zipball/c95ac944f2f20a17949aae6645692dfd3b402bca",
                 "reference": "c95ac944f2f20a17949aae6645692dfd3b402bca",
                 "shasum": ""
             },
@@ -1326,16 +1326,16 @@
         },
         {
             "name": "goldspecdigital/oooas",
-            "version": "v2.4.2",
+            "version": "v2.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/goldspecdigital/oooas.git",
-                "reference": "d1cb1cf743cc043265eff710c1c4e5128bdab38c"
+                "reference": "5e5e58a561265a1974f34de9020f1297b469d0b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goldspecdigital/oooas/zipball/d1cb1cf743cc043265eff710c1c4e5128bdab38c",
-                "reference": "d1cb1cf743cc043265eff710c1c4e5128bdab38c",
+                "url": "https://api.github.com/repos/goldspecdigital/oooas/zipball/5e5e58a561265a1974f34de9020f1297b469d0b3",
+                "reference": "5e5e58a561265a1974f34de9020f1297b469d0b3",
                 "shasum": ""
             },
             "require": {
@@ -1344,7 +1344,11 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.15",
+                "justinrainbow/json-schema": "^5.2",
                 "phpunit/phpunit": "^7.3"
+            },
+            "suggest": {
+                "justinrainbow/json-schema": "Required to perform validation (^5.2)"
             },
             "type": "library",
             "autoload": {
@@ -1360,6 +1364,10 @@
                 {
                     "name": "Matthew Inamdar",
                     "email": "matt@goldspecdigital.com"
+                },
+                {
+                    "name": "Vladimir Yuldashev",
+                    "email": "vladimir.yuldashev@gmail.com"
                 }
             ],
             "description": "An object oriented approach to generating OpenAPI specs, implemented in PHP.",
@@ -1370,7 +1378,7 @@
                 "php",
                 "swagger"
             ],
-            "time": "2019-07-18T22:08:09+00:00"
+            "time": "2020-04-07T11:18:35+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1608,6 +1616,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "abandoned": true,
             "time": "2018-07-31T13:22:33+00:00"
         },
         {
@@ -1658,6 +1667,7 @@
                 "Guzzle",
                 "stream"
             ],
+            "abandoned": true,
             "time": "2014-10-12T19:18:40+00:00"
         },
         {
@@ -1700,6 +1710,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -1746,6 +1757,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -5527,6 +5539,7 @@
                 "psr",
                 "psr-7"
             ],
+            "abandoned": "laminas/laminas-diactoros",
             "time": "2019-08-06T17:53:53+00:00"
         }
     ],
@@ -7930,5 +7943,6 @@
         "ext-json": "*",
         "ext-pdo": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

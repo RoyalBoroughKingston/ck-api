@@ -27,7 +27,7 @@ class SettingController extends Controller
     {
         event(EndpointHit::onRead($request, 'Viewed all settings'));
 
-        return Setting::toResponse();
+        return new Setting();
     }
 
     /**
@@ -80,13 +80,25 @@ class SettingController extends Controller
                                 'title' => $request->input('cms.frontend.favourites.title'),
                                 'content' => sanitize_markdown($request->input('cms.frontend.favourites.content')),
                             ],
+                            'banner' => [
+                                'title' => $request->input('cms.frontend.banner.title'),
+                                'content' => $request->filled('cms.frontend.banner.content')
+                                    ? sanitize_markdown($request->input('cms.frontend.banner.content'))
+                                    : null,
+                                'button_text' => $request->input('cms.frontend.banner.button_text'),
+                                'button_url' => $request->input('cms.frontend.banner.button_url'),
+                                'image_file_id' => $request->input(
+                                    'cms.frontend.banner.image_file_id',
+                                    Setting::cms()->value['frontend']['banner']['image_file_id']
+                                ),
+                            ],
                         ],
                     ],
                 ]);
 
             event(EndpointHit::onUpdate($request, 'Updated settings'));
 
-            return Setting::toResponse();
+            return new Setting();
         });
     }
 }

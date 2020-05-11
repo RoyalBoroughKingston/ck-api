@@ -123,6 +123,8 @@ Route::prefix('core/v1')
                 ->name('settings.index');
             Route::put('/settings', 'SettingController@update')
                 ->name('settings.update');
+            Route::get('/settings/banner-image.png', 'Setting\\BannerImageController')
+                ->name('settings.banner-image');
 
             // Status Updates.
             Route::match(['GET', 'POST'], '/status-updates/index', 'StatusUpdateController@index');
