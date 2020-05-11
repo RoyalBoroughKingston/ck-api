@@ -60,6 +60,14 @@ class SettingSchema extends Schema
             Schema::string('content')->format('markdown')
         );
 
+        $banner = Schema::object('banner')->properties(
+            Schema::string('title'),
+            Schema::string('content')->format('markdown'),
+            Schema::string('button_text'),
+            Schema::string('button_url'),
+            Schema::boolean('has_image')
+        );
+
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->properties(
@@ -74,7 +82,8 @@ class SettingSchema extends Schema
                                 $about,
                                 $contact,
                                 $getInvolved,
-                                $favourites
+                                $favourites,
+                                $banner
                             )
                     )
             );

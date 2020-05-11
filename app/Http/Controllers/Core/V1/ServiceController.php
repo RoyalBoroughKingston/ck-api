@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Core\v1;
+namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
