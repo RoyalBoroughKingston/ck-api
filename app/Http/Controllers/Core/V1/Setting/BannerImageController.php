@@ -19,7 +19,7 @@ class BannerImageController extends Controller
     {
         event(EndpointHit::onRead($request, 'Viewed banner image'));
 
-        $buttonImageFileId = Setting::cms()->value['frontend']['banner']['button_image_file_id'];
+        $buttonImageFileId = Setting::cms()->value['frontend']['banner']['image_file_id'];
 
         abort_if(
             $buttonImageFileId === null,

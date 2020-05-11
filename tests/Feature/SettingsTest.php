@@ -260,7 +260,7 @@ class SettingsTest extends TestCase
                     'banner' => [
                         'title' => 'data/cms/frontend/banner/title',
                         'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_text' => 'button_text',
                         'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                     ],
                 ],
@@ -321,7 +321,7 @@ class SettingsTest extends TestCase
                     'banner' => [
                         'title' => 'data/cms/frontend/banner/title',
                         'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_text' => 'button_text',
                         'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                     ],
                 ],
@@ -435,7 +435,7 @@ class SettingsTest extends TestCase
                     'banner' => [
                         'title' => 'data/cms/frontend/banner/title',
                         'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_text' => 'button_text',
                         'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                     ],
                 ],
@@ -488,7 +488,7 @@ class SettingsTest extends TestCase
                         'banner' => [
                             'title' => 'data/cms/frontend/banner/title',
                             'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'data/cms/frontend/banner/button_text',
+                            'button_text' => 'button_text',
                             'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                             'has_image' => false,
                         ],
@@ -551,7 +551,7 @@ class SettingsTest extends TestCase
                     'banner' => [
                         'title' => 'data/cms/frontend/banner/title',
                         'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_text' => 'button_text',
                         'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                     ],
                 ],
@@ -625,9 +625,9 @@ class SettingsTest extends TestCase
                     'banner' => [
                         'title' => 'data/cms/frontend/banner/title',
                         'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_text' => 'button_text',
                         'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                        'button_image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+                        'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
                     ],
                 ],
             ],
@@ -679,7 +679,7 @@ class SettingsTest extends TestCase
                         'banner' => [
                             'title' => 'data/cms/frontend/banner/title',
                             'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'data/cms/frontend/banner/button_text',
+                            'button_text' => 'button_text',
                             'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                             'has_image' => true,
                         ],
@@ -698,7 +698,7 @@ class SettingsTest extends TestCase
         $cmsValue = Setting::cms()->value;
         Arr::set(
             $cmsValue,
-            'frontend.banner.button_image_file_id',
+            'frontend.banner.image_file_id',
             uuid()
         );
         Setting::cms()->update(['value' => $cmsValue]);
@@ -748,7 +748,7 @@ class SettingsTest extends TestCase
                     'banner' => [
                         'title' => 'data/cms/frontend/banner/title',
                         'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_text' => 'button_text',
                         'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                     ],
                 ],
@@ -801,7 +801,7 @@ class SettingsTest extends TestCase
                         'banner' => [
                             'title' => 'data/cms/frontend/banner/title',
                             'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'data/cms/frontend/banner/button_text',
+                            'button_text' => 'button_text',
                             'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                             'has_image' => true,
                         ],
@@ -820,7 +820,7 @@ class SettingsTest extends TestCase
         $cmsValue = Setting::cms()->value;
         Arr::set(
             $cmsValue,
-            'frontend.banner.button_image_file_id',
+            'frontend.banner.image_file_id',
             uuid()
         );
         Setting::cms()->update(['value' => $cmsValue]);
@@ -870,9 +870,9 @@ class SettingsTest extends TestCase
                     'banner' => [
                         'title' => 'data/cms/frontend/banner/title',
                         'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'data/cms/frontend/banner/button_text',
+                        'button_text' => 'button_text',
                         'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                        'button_image_file_id' => null,
+                        'image_file_id' => null,
                     ],
                 ],
             ],
@@ -924,7 +924,7 @@ class SettingsTest extends TestCase
                         'banner' => [
                             'title' => 'data/cms/frontend/banner/title',
                             'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'data/cms/frontend/banner/button_text',
+                            'button_text' => 'button_text',
                             'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
                             'has_image' => false,
                         ],
@@ -1029,7 +1029,7 @@ class SettingsTest extends TestCase
         $cmsValue = Setting::cms()->value;
         Arr::set(
             $cmsValue,
-            'frontend.banner.button_image_file_id',
+            'frontend.banner.image_file_id',
             $this->getResponseContent($imageResponse, 'data.id')
         );
         Setting::cms()->update(['value' => $cmsValue]);
@@ -1058,7 +1058,7 @@ class SettingsTest extends TestCase
         $cmsValue = Setting::cms()->value;
         Arr::set(
             $cmsValue,
-            'frontend.banner.button_image_file_id',
+            'frontend.banner.image_file_id',
             $this->getResponseContent($imageResponse, 'data.id')
         );
         Setting::cms()->update(['value' => $cmsValue]);

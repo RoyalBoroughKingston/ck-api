@@ -63,7 +63,7 @@ class Setting extends Model implements Responsable
     {
         $buttonImageFileId = Arr::get(
             $value,
-            'cms.frontend.banner.button_image_file_id'
+            'cms.frontend.banner.image_file_id'
         );
         $cmsFrontendBannerHasImage = $buttonImageFileId !== null;
 
@@ -72,7 +72,7 @@ class Setting extends Model implements Responsable
             'cms.frontend.banner.has_image',
             $cmsFrontendBannerHasImage
         );
-        Arr::forget($value, 'cms.frontend.banner.button_image_file_id');
+        Arr::forget($value, 'cms.frontend.banner.image_file_id');
 
         return $value;
     }

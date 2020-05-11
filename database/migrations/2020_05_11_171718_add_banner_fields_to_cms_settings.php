@@ -23,7 +23,7 @@ JSON_INSERT(
         "content", null,
         "button_text", null,
         "button_url", null,
-        "button_image_file_id", null
+        "image_file_id", null
     )
 )
 EOT

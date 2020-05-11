@@ -85,9 +85,9 @@ class SettingController extends Controller
                                 'content' => sanitize_markdown($request->input('cms.frontend.banner.content')),
                                 'button_text' => $request->input('cms.frontend.banner.button_text'),
                                 'button_url' => $request->input('cms.frontend.banner.button_url'),
-                                'button_image_file_id' => $request->input(
-                                    'cms.frontend.banner.button_image_file_id',
-                                    Setting::cms()->value['frontend']['banner']['button_image_file_id']
+                                'image_file_id' => $request->input(
+                                    'cms.frontend.banner.image_file_id',
+                                    Setting::cms()->value['frontend']['banner']['image_file_id']
                                 ),
                             ],
                         ],
