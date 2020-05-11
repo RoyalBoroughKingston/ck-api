@@ -104,6 +104,7 @@ class UpdateRequest extends FormRequest
                 'present',
                 'nullable',
                 'string',
+                'max:30',
             ],
             'cms.frontend.banner.button_url' => [
                 'required_with:' . implode(',', [
