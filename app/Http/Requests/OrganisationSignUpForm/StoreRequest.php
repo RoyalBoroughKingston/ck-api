@@ -47,10 +47,10 @@ class StoreRequest extends FormRequest
             ],
             'user.phone' => [
                 'required',
-                'string', 
-                'min:1', 
-                'max:255', 
-                new UkPhoneNumber('2. User account - Please enter a valid UK telephone number.')
+                'string',
+                'min:1',
+                'max:255',
+                new UkPhoneNumber('2. User account - Please enter a valid UK telephone number.'),
             ],
             'user.password' => [
                 'required',
