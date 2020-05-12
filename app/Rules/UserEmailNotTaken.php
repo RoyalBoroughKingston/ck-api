@@ -14,13 +14,20 @@ class UserEmailNotTaken implements Rule
     protected $excludedUser;
 
     /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
      * Create a new rule instance.
      *
      * @param \App\Models\User|null $excludedUser
+     * @param string|null $message
      */
-    public function __construct(User $excludedUser = null)
+    public function __construct(User $excludedUser = null, ?string $message = null)
     {
         $this->excludedUser = $excludedUser;
+        $this->message = $message;
     }
 
     /**
@@ -51,6 +58,6 @@ class UserEmailNotTaken implements Rule
      */
     public function message()
     {
-        return 'This email address has already been taken.';
+        return $this->message ?? 'This email address has already been taken.';
     }
 }
