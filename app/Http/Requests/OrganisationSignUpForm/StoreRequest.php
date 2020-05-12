@@ -39,9 +39,26 @@ class StoreRequest extends FormRequest
             'user' => ['required', 'array'],
             'user.first_name' => ['required', 'string', 'min:1', 'max:255'],
             'user.last_name' => ['required', 'string', 'min:1', 'max:255'],
-            'user.email' => ['required', 'email', 'max:255', new UserEmailNotTaken()],
-            'user.phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
-            'user.password' => ['required', 'string', 'min:8', 'max:255', new Password()],
+            'user.email' => [
+                'required',
+                'email',
+                'max:255',
+                new UserEmailNotTaken(null, '2. User account - The email entered is already in use. Please enter a different email address or log into your existing account.'),
+            ],
+            'user.phone' => [
+                'required',
+                'string', 
+                'min:1', 
+                'max:255', 
+                new UkPhoneNumber('2. User account - Please enter a valid UK telephone number.')
+            ],
+            'user.password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:255',
+                new Password('2. User account - Please create a password that is at least eight characters long, contain one uppercase letter, one lowercase letter, one number and one special character (!"#$%&\'()*+,-./:;<=>?@[]^_`{|}~)'),
+            ],
 
             'organisation' => ['required', 'array'],
             'organisation.slug' => [
@@ -93,7 +110,7 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 new MarkdownMinLength(1),
-                new MarkdownMaxLength(1600),
+                new MarkdownMaxLength(3000),
             ],
             'service.wait_time' => ['present', 'nullable', Rule::in([
                 Service::WAIT_TIME_ONE_WEEK,
@@ -168,6 +185,43 @@ class StoreRequest extends FormRequest
                 'url',
                 'max:255',
             ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function messages()
+    {
+        $type = $this->get('service.type', Service::TYPE_SERVICE);
+
+        return [
+            'user.first_name.required' => '2. User account - Please enter your first name.',
+            'user.last_name.required' => '2. User account - Please enter your last name.',
+            'user.email.required' => '2. User account - Please enter your email address.',
+            'user.email.email' => '2. User account - Please enter an email address in the correct format (eg. name@example.com).',
+            'user.phone.required' => '2. User account - Please enter your phone number.',
+            'user.password.required' => '2. User account - Please enter a password.',
+            'user.password.min' => '2. User account - Please create a password that is at least eight characters long.',
+
+            'organisation.slug.required' => '3. Organisation - Please enter the organisation slug.',
+            'organisation.slug.unique' => '3. Organisation - The organisation is already listed. Please contact us for help logging in info@connectedkingston.uk.',
+            'organisation.name.required' => '3. Organisation - Please enter the organisation name.',
+            'organisation.description.required' => '3. Organisation - Please enter a one-line summary of the organisation.',
+            'organisation.url.required' => '3. Organisation - Please enter a valid web address in the correct format (starting with https:// or http://).',
+            'organisation.url.url' => '3. Organisation - Please enter a valid web address in the correct format (starting with https:// or http://).',
+            'organisation.email.required_without' => '3. Organisation - Please enter a public email address and/or a public phone number.',
+            'organisation.phone.required_without' => '3. Organisation - Please enter a public phone number and/or public email address.',
+            'organisation.email.email' => '3. Organisation - Please enter the email for your organisation (eg. name@example.com).',
+
+            'service.slug.required' => "4. Service, Details tab - Please enter the name of your {$type}.",
+            'service.name.required' => "4. Service, Details tab - Please enter the name of your {$type}.",
+            'service.video_embed.url' => '4. Service, Additional info tab - Please enter a valid video link (eg. https://www.youtube.com/watch?v=JyHR_qQLsLM).',
+            'service.intro.required' => "4. Service, Description tab - Please enter a brief description of the {$type}.",
+            'service.description.required' => "4. Service, Description tab - Please enter all the information someone should know about your {$type}.",
+            'service.url.required' => "4. Service, Details tab - Please provide the web address for your {$type}.",
+            'service.url.url' => '4. Service, Details tab - Please enter a valid web address in the correct format (starting with https:// or http://).',
+            'service.contact_email.email' => "4. Service, Additional Info tab - Please enter an email address users can use to contact your {$type} (eg. name@example.com).",
         ];
     }
 }
