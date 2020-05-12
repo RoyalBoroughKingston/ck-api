@@ -99,7 +99,11 @@ class UpdateRequest extends FormRequest
                 ),
             ],
             'intro' => ['string', 'min:1', 'max:300'],
-            'description' => ['string', new MarkdownMinLength(1), new MarkdownMaxLength(1600)],
+            'description' => [
+                'string',
+                new MarkdownMinLength(1),
+                new MarkdownMaxLength(3000, 'Description tab - The long description must be 3000 characters or fewer.'),
+            ],
             'wait_time' => [
                 'nullable',
                 Rule::in([
@@ -341,5 +345,22 @@ class UpdateRequest extends FormRequest
         }
 
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function messages()
+    {
+        $type = $this->input('type', $this->service->type);
+
+        return [
+            'url.url' => 'Details tab - Please enter a valid web address in the correct format (starting with https:// or http://).',
+            'video_embed.url' => 'Additional info tab - Please enter a valid video link (eg. https://www.youtube.com/watch?v=JyHR_qQLsLM).',
+            'contact_email.email' => "Additional Info tab -  Please enter an email address users can use to contact your {$type} (eg. name@example.com).",
+            'useful_infos.*.title.required_with' => 'Good to know tab - Please select a title.',
+            'useful_infos.*.description.required_with' => 'Good to know tab - Please enter a description.',
+            'social_medias.*.url.url' => 'Additional info tab - Please enter a valid social media web address (eg. https://www.youtube.com/watch?v=h-2sgpokvGI).',
+        ];
     }
 }
