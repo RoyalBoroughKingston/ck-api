@@ -136,14 +136,4 @@ class UpdateRequest extends Model
 
         return resolve($className);
     }
-
-    /**
-     * @param string $key
-     * @param mixed|null $default
-     * @return mixed
-     */
-    public function getFromData(string $key, $default = null)
-    {
-        return Arr::get($this->data, $key, $default);
-    }
 }

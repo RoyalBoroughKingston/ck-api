@@ -13,6 +13,7 @@ use App\UpdateRequest\UpdateRequests;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
@@ -155,10 +156,8 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
 
         // Update the service location.
         $this->update([
-            'name' => $data['name'] ?? $this->name,
-            'image_file_id' => array_key_exists('image_file_id', $data)
-                ? $data['image_file_id']
-                : $this->image_file_id,
+            'name' => Arr::get($data, 'name', $this->name),
+            'image_file_id' => Arr::get($data, 'image_file_id', $this->image_file_id),
         ]);
 
         // Attach the regular opening hours.

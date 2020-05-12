@@ -14,6 +14,7 @@ use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
@@ -86,19 +87,17 @@ class Location extends Model implements AppliesUpdateRequests
         $data = $updateRequest->data;
 
         $this->update([
-            'address_line_1' => $data['address_line_1'] ?? $this->address_line_1,
-            'address_line_2' => $data['address_line_2'] ?? $this->address_line_2,
-            'address_line_3' => $data['address_line_3'] ?? $this->address_line_3,
-            'city' => $data['city'] ?? $this->city,
-            'county' => $data['county'] ?? $this->county,
-            'postcode' => $data['postcode'] ?? $this->postcode,
-            'country' => $data['country'] ?? $this->country,
-            'accessibility_info' => $data['accessibility_info'] ?? $this->accessibility_info,
-            'has_wheelchair_access' => $data['has_wheelchair_access'] ?? $this->has_wheelchair_access,
-            'has_induction_loop' => $data['has_induction_loop'] ?? $this->has_induction_loop,
-            'image_file_id' => array_key_exists('image_file_id', $data)
-                ? $data['image_file_id']
-                : $this->image_file_id,
+            'address_line_1' => Arr::get($data, 'address_line_1', $this->address_line_1),
+            'address_line_2' => Arr::get($data, 'address_line_2', $this->address_line_2),
+            'address_line_3' => Arr::get($data, 'address_line_3', $this->address_line_3),
+            'city' => Arr::get($data, 'city', $this->city),
+            'county' => Arr::get($data, 'county', $this->county),
+            'postcode' => Arr::get($data, 'postcode', $this->postcode),
+            'country' => Arr::get($data, 'country', $this->country),
+            'accessibility_info' => Arr::get($data, 'accessibility_info', $this->accessibility_info),
+            'has_wheelchair_access' => Arr::get($data, 'has_wheelchair_access', $this->has_wheelchair_access),
+            'has_induction_loop' => Arr::get($data, 'has_induction_loop', $this->has_induction_loop),
+            'image_file_id' => Arr::get($data, 'image_file_id', $this->image_file_id),
         ]);
 
         $this->updateCoordinate()->save();
