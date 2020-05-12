@@ -572,7 +572,7 @@ class Report extends Model
                         $updateRequest->isApproved() ? 'Approved' : 'Declined',
                         $updateRequest->isApproved()
                             ? $updateRequest->approved_at->format(CarbonImmutable::ISO8601)
-                            : $updateRequest->declined_at->format(CarbonImmutable::ISO8601),
+                            : $updateRequest->deleted_at->format(CarbonImmutable::ISO8601),
                         $updateRequest->actioningUser->full_name ?? null,
                     ];
                 });
