@@ -73,7 +73,12 @@ class StoreRequest extends FormRequest
                 ),
             ],
             'intro' => ['required', 'string', 'min:1', 'max:300'],
-            'description' => ['required', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(1600)],
+            'description' => [
+                'required',
+                'string',
+                new MarkdownMinLength(1),
+                new MarkdownMaxLength(3000, 'Description tab - The long description must be 3000 characters or fewer.'),
+            ],
             'wait_time' => ['present', 'nullable', Rule::in([
                 Service::WAIT_TIME_ONE_WEEK,
                 Service::WAIT_TIME_TWO_WEEKS,
@@ -227,5 +232,30 @@ class StoreRequest extends FormRequest
 
         // If not a global admin.
         return ['present', 'array', 'size:0'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function messages()
+    {
+        $type = $this->input('type', Service::TYPE_SERVICE);
+
+        return [
+            'organisation_id.required' => 'Details tab - Please select the name of your organisation from the dropdown list.',
+            'slug.required' => "Details tab -  Please enter a 'unique slug'.",
+            'name.required' => "Details tab - Please enter the name of your {$type}.",
+            'intro.required' => "Description tab - Please enter a brief description of the {$type}.",
+            'description.required' => "Description tab - Please enter all the information someone should know about your {$type}.",
+            'is_free.required' => "Additional info tab - Please provide more information about the cost of the {$type}.",
+            'url.required' => "Details Tab - Please provide the web address for your {$type}.",
+            'url.url' => 'Details tab - Please enter a valid web address in the correct format (starting with https:// or http://).',
+            'category_taxonomies.required' => 'Taxonomy tab - Please select at least one relevant taxonomy.',
+            'video_embed.url' => 'Additional info tab - Please enter a valid video link (eg. https://www.youtube.com/watch?v=JyHR_qQLsLM).',
+            'contact_email.email' => "Additional Info tab -  Please enter an email address users can use to contact your {$type} (eg. name@example.com).",
+            'useful_infos.*.title.required_with' => 'Good to know tab - Please select a title.',
+            'useful_infos.*.description.required_with' => 'Good to know tab - Please enter a description.',
+            'social_medias.*.url.url' => 'Additional info tab - Please enter a valid social media web address (eg. https://www.youtube.com/watch?v=h-2sgpokvGI).',
+        ];
     }
 }
