@@ -13,13 +13,20 @@ class MarkdownMinLength implements Rule
     protected $minLength;
 
     /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
      * MarkdownMaxLength constructor.
      *
      * @param int $minLength
+     * @param string|null $message
      */
-    public function __construct(int $minLength)
+    public function __construct(int $minLength, ?string $message = null)
     {
         $this->minLength = $minLength;
+        $this->message = $message;
     }
 
     /**
@@ -44,6 +51,6 @@ class MarkdownMinLength implements Rule
      */
     public function message()
     {
-        return "The :attribute must be at least {$this->minLength} characters long.";
+        return $this->message ?? "The :attribute must be at least {$this->minLength} characters long.";
     }
 }

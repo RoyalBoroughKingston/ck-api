@@ -13,13 +13,20 @@ class MarkdownMaxLength implements Rule
     protected $maxLength;
 
     /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
      * MarkdownMaxLength constructor.
      *
      * @param int $maxLength
+     * @param string|null $message
      */
-    public function __construct(int $maxLength)
+    public function __construct(int $maxLength, ?string $message = null)
     {
         $this->maxLength = $maxLength;
+        $this->message = $message;
     }
 
     /**
@@ -44,6 +51,6 @@ class MarkdownMaxLength implements Rule
      */
     public function message()
     {
-        return "The :attribute must be not more than {$this->maxLength} characters long.";
+        return $this->message ?? "The :attribute must be not more than {$this->maxLength} characters long.";
     }
 }
