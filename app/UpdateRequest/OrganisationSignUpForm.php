@@ -40,48 +40,50 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
+        $data = $updateRequest->data;
+
         /** @var \App\Models\User $user */
         $user = User::create([
-            'first_name' => $updateRequest->getFromData('user.first_name'),
-            'last_name' => $updateRequest->getFromData('user.last_name'),
-            'email' => $updateRequest->getFromData('user.email'),
-            'phone' => $updateRequest->getFromData('user.phone'),
-            'password' => $updateRequest->getFromData('user.password'),
+            'first_name' => Arr::get($data, 'user.first_name'),
+            'last_name' => Arr::get($data, 'user.last_name'),
+            'email' => Arr::get($data, 'user.email'),
+            'phone' => Arr::get($data, 'user.phone'),
+            'password' => Arr::get($data, 'user.password'),
         ]);
 
         /** @var \App\Models\Organisation $organisation */
         $organisation = Organisation::create([
-            'slug' => $updateRequest->getFromData('organisation.slug'),
-            'name' => $updateRequest->getFromData('organisation.name'),
+            'slug' => Arr::get($data, 'organisation.slug'),
+            'name' => Arr::get($data, 'organisation.name'),
             'description' => sanitize_markdown(
-                $updateRequest->getFromData('organisation.description')
+                Arr::get($data, 'organisation.description')
             ),
-            'url' => $updateRequest->getFromData('organisation.url'),
-            'email' => $updateRequest->getFromData('organisation.email'),
-            'phone' => $updateRequest->getFromData('organisation.phone'),
+            'url' => Arr::get($data, 'organisation.url'),
+            'email' => Arr::get($data, 'organisation.email'),
+            'phone' => Arr::get($data, 'organisation.phone'),
         ]);
 
         /** @var \App\Models\Service $service */
         $service = Service::create([
             'organisation_id' => $organisation->id,
-            'slug' => $updateRequest->getFromData('service.slug'),
-            'name' => $updateRequest->getFromData('service.name'),
-            'type' => $updateRequest->getFromData('service.type'),
+            'slug' => Arr::get($data, 'service.slug'),
+            'name' => Arr::get($data, 'service.name'),
+            'type' => Arr::get($data, 'service.type'),
             'status' => Service::STATUS_INACTIVE,
-            'intro' => $updateRequest->getFromData('service.intro'),
+            'intro' => Arr::get($data, 'service.intro'),
             'description' => sanitize_markdown(
-                $updateRequest->getFromData('service.description')
+                Arr::get($data, 'service.description')
             ),
-            'wait_time' => $updateRequest->getFromData('service.wait_time'),
-            'is_free' => $updateRequest->getFromData('service.is_free'),
-            'fees_text' => $updateRequest->getFromData('service.fees_text'),
-            'fees_url' => $updateRequest->getFromData('service.fees_url'),
-            'testimonial' => $updateRequest->getFromData('service.testimonial'),
-            'video_embed' => $updateRequest->getFromData('service.video_embed'),
-            'url' => $updateRequest->getFromData('service.url'),
-            'contact_name' => $updateRequest->getFromData('service.contact_name'),
-            'contact_phone' => $updateRequest->getFromData('service.contact_phone'),
-            'contact_email' => $updateRequest->getFromData('service.contact_email'),
+            'wait_time' => Arr::get($data, 'service.wait_time'),
+            'is_free' => Arr::get($data, 'service.is_free'),
+            'fees_text' => Arr::get($data, 'service.fees_text'),
+            'fees_url' => Arr::get($data, 'service.fees_url'),
+            'testimonial' => Arr::get($data, 'service.testimonial'),
+            'video_embed' => Arr::get($data, 'service.video_embed'),
+            'url' => Arr::get($data, 'service.url'),
+            'contact_name' => Arr::get($data, 'service.contact_name'),
+            'contact_phone' => Arr::get($data, 'service.contact_phone'),
+            'contact_email' => Arr::get($data, 'service.contact_email'),
             'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
@@ -93,18 +95,18 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
 
         // Create the service criterion record.
         $service->serviceCriterion()->create([
-            'age_group' => $updateRequest->getFromData('service.criteria.age_group'),
-            'disability' => $updateRequest->getFromData('service.criteria.disability'),
-            'employment' => $updateRequest->getFromData('service.criteria.employment'),
-            'gender' => $updateRequest->getFromData('service.criteria.gender'),
-            'housing' => $updateRequest->getFromData('service.criteria.housing'),
-            'income' => $updateRequest->getFromData('service.criteria.income'),
-            'language' => $updateRequest->getFromData('service.criteria.language'),
-            'other' => $updateRequest->getFromData('service.criteria.other'),
+            'age_group' => Arr::get($data, 'service.criteria.age_group'),
+            'disability' => Arr::get($data, 'service.criteria.disability'),
+            'employment' => Arr::get($data, 'service.criteria.employment'),
+            'gender' => Arr::get($data, 'service.criteria.gender'),
+            'housing' => Arr::get($data, 'service.criteria.housing'),
+            'income' => Arr::get($data, 'service.criteria.income'),
+            'language' => Arr::get($data, 'service.criteria.language'),
+            'other' => Arr::get($data, 'service.criteria.other'),
         ]);
 
         // Create the useful info records.
-        foreach ($updateRequest->getFromData('service.useful_infos') as $usefulInfo) {
+        foreach (Arr::get($data, 'service.useful_infos') as $usefulInfo) {
             $service->usefulInfos()->create([
                 'title' => $usefulInfo['title'],
                 'description' => sanitize_markdown($usefulInfo['description']),
@@ -113,7 +115,7 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
         }
 
         // Create the offering records.
-        foreach ($updateRequest->getFromData('service.offerings') as $offering) {
+        foreach (Arr::get($data, 'service.offerings') as $offering) {
             $service->offerings()->create([
                 'offering' => $offering['offering'],
                 'order' => $offering['order'],
@@ -121,7 +123,7 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
         }
 
         // Create the social media records.
-        foreach ($updateRequest->getFromData('service.social_medias') as $socialMedia) {
+        foreach (Arr::get($data, 'service.social_medias') as $socialMedia) {
             $service->socialMedias()->create([
                 'type' => $socialMedia['type'],
                 'url' => $socialMedia['url'],

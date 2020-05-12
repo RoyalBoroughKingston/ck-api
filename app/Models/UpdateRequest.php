@@ -7,7 +7,6 @@ use App\Models\Relationships\UpdateRequestRelationships;
 use App\Models\Scopes\UpdateRequestScopes;
 use App\UpdateRequest\AppliesUpdateRequests;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
@@ -135,15 +134,5 @@ class UpdateRequest extends Model
         $className = '\\App\\UpdateRequest\\' . Str::studly($this->updateable_type);
 
         return resolve($className);
-    }
-
-    /**
-     * @param string $key
-     * @param mixed|null $default
-     * @return mixed
-     */
-    public function getFromData(string $key, $default = null)
-    {
-        return Arr::get($this->data, $key, $default);
     }
 }
