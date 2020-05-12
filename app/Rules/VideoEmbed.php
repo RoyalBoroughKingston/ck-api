@@ -24,6 +24,7 @@ class VideoEmbed implements Rule
         $validDomains = [
             'https://www.youtube.com',
             'https://player.vimeo.com',
+            'https://vimeo.com',
         ];
 
         return Str::startsWith($value, $validDomains);
