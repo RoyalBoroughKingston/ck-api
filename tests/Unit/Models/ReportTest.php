@@ -846,7 +846,7 @@ class ReportTest extends TestCase
             $updateRequest->isApproved() ? 'Approved' : 'Declined',
             $updateRequest->isApproved()
                 ? $updateRequest->approved_at->format(CarbonImmutable::ISO8601)
-                : $updateRequest->declined_at->format(CarbonImmutable::ISO8601),
+                : $updateRequest->deleted_at->format(CarbonImmutable::ISO8601),
             $actioningUser->full_name,
         ], $csv[1]);
     }
