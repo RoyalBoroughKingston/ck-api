@@ -2497,6 +2497,25 @@ class ServicesTest extends TestCase
         $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
         $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
 
+        $inactiveService = factory(Service::class)->create([
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+        $inactiveService->usefulInfos()->create([
+            'title' => 'Did You Know?',
+            'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $inactiveService->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital/',
+        ]);
+        $inactiveService->serviceGalleryItems()->create([
+            'file_id' => factory(File::class)->create()->id,
+        ]);
+        $inactiveService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $inactiveService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
+        $inactiveService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThree->id]);
+
         $response = $this->json('GET', "/core/v1/services/{$service->id}/related");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -2591,6 +2610,7 @@ class ServicesTest extends TestCase
 
         $response->assertJsonFragment(['id' => $relatedService->id]);
         $response->assertJsonMissing(['id' => $unrelatedService->id]);
+        $response->assertJsonMissing(['id' => $inactiveService->id]);
     }
 
     /*

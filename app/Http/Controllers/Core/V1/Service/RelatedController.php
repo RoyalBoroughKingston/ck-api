@@ -30,6 +30,7 @@ class RelatedController extends Controller
          * 6. Order by service name.
          */
         $baseQuery = Service::query()
+            ->where('services.status', '=', Service::STATUS_ACTIVE)
             ->with('serviceCriterion', 'usefulInfos', 'socialMedias', 'serviceGalleryItems.file', 'taxonomies')
             ->where('services.id', '!=', $service->id)
             ->whereHas('serviceTaxonomies', function (Builder $query) use ($service) {
