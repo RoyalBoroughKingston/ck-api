@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\Taxonomy;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddDepthColumnToTaxonomiesTable extends Migration
@@ -24,6 +27,37 @@ class AddDepthColumnToTaxonomiesTable extends Migration
                 ->default(null)
                 ->change();
         });
+
+        // Calculate the depth for all.
+        DB::table('taxonomies')->orderBy('id')->chunk(
+            200,
+            function (Collection $taxonomies) {
+                $taxonomies->each(function (stdClass $taxonomy) {
+                    DB::table('taxonomies')
+                        ->where('id', '=', $taxonomy->id)
+                        ->update([
+                            'depth' => $this->getDepth($taxonomy),
+                        ]);
+                });
+            }
+        );
+    }
+
+    /**
+     * @param \stdClass $taxonomy
+     * @return int
+     */
+    protected function getDepth(stdClass $taxonomy): int
+    {
+        if ($taxonomy->parent_id === null) {
+            return 0;
+        }
+
+        $parentTaxonomy = DB::table('taxonomies')
+            ->where('id', '=', $taxonomy->parent_id)
+            ->first();
+
+        return 1 + $this->getDepth($parentTaxonomy);
     }
 
     /**
