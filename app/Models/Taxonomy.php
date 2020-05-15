@@ -74,7 +74,7 @@ class Taxonomy extends Model
             return 0;
         }
 
-        return 1 + $this->parent()->getDepth();
+        return 1 + $this->parent->getDepth();
     }
 
     /**
