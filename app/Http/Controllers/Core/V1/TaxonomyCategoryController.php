@@ -56,7 +56,7 @@ class TaxonomyCategoryController extends Controller
     {
         return DB::transaction(function () use ($request) {
             $parent = $request->filled('parent_id')
-                ? Taxonomy::query()->firstOrFail($request->parent_id)
+                ? Taxonomy::query()->findOrFail($request->parent_id)
                 : Taxonomy::category();
 
             $category = Taxonomy::create([
@@ -103,7 +103,7 @@ class TaxonomyCategoryController extends Controller
     {
         return DB::transaction(function () use ($request, $taxonomy) {
             $parent = $request->filled('parent_id')
-                ? Taxonomy::query()->firstOrFail($request->parent_id)
+                ? Taxonomy::query()->findOrFail($request->parent_id)
                 : Taxonomy::category();
 
             $taxonomy->update([

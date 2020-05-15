@@ -540,6 +540,7 @@ class TaxonomyOrganisationsTest extends TestCase
         return Taxonomy::organisation()->children()->create(array_merge([
             'name' => 'PHPUnit Organisation',
             'order' => $count + 1,
+            'depth' => 1,
         ], $data));
     }
 }
