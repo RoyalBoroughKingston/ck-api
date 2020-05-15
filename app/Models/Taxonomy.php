@@ -68,12 +68,26 @@ class Taxonomy extends Model
     /**
      * @return int
      */
-    public function getDepth(): int
+    protected function getDepth(): int
     {
         if ($this->parent_id === null) {
             return 0;
         }
 
-        return 1 + $this->parent->getDepth();
+        return 1 + $this->parent()->getDepth();
+    }
+
+    /**
+     * @return self
+     */
+    public function updateDepth(): self
+    {
+        $this->update(['depth' => $this->getDepth()]);
+
+        $this->children()->each(function (Taxonomy $child) {
+            $child->updateDepth();
+        });
+
+        return $this;
     }
 }

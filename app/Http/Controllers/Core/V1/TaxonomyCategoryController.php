@@ -63,8 +63,10 @@ class TaxonomyCategoryController extends Controller
                 'parent_id' => $parent->id,
                 'name' => $request->name,
                 'order' => $request->order,
-                'depth' => 1 + $parent->getDepth(),
+                'depth' => 0, // Placeholder
             ]);
+
+            $category->updateDepth();
 
             event(EndpointHit::onCreate($request, "Created taxonomy category [{$category->id}]", $category));
 
@@ -110,8 +112,10 @@ class TaxonomyCategoryController extends Controller
                 'parent_id' => $parent->id,
                 'name' => $request->name,
                 'order' => $request->order,
-                'depth' => 1 + $parent->getDepth(),
+                'depth' => 0, // Placeholder
             ]);
+
+            $taxonomy->updateDepth();
 
             event(EndpointHit::onUpdate($request, "Updated taxonomy category [{$taxonomy->id}]", $taxonomy));
 
