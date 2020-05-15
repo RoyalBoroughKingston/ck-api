@@ -64,4 +64,16 @@ class Taxonomy extends Model
 
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getDepth(): int
+    {
+        if ($this->parent_id === null) {
+            return 0;
+        }
+
+        return 1 + $this->parent->getDepth();
+    }
 }

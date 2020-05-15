@@ -55,10 +55,15 @@ class TaxonomyCategoryController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
+            $parent = $request->filled('parent_id')
+                ? Taxonomy::query()->firstOrFail($request->parent_id)
+                : Taxonomy::category();
+
             $category = Taxonomy::create([
-                'parent_id' => $request->parent_id ?? Taxonomy::category()->id,
+                'parent_id' => $parent->id,
                 'name' => $request->name,
                 'order' => $request->order,
+                'depth' => 1 + $parent->getDepth(),
             ]);
 
             event(EndpointHit::onCreate($request, "Created taxonomy category [{$category->id}]", $category));
@@ -97,10 +102,15 @@ class TaxonomyCategoryController extends Controller
     public function update(UpdateRequest $request, Taxonomy $taxonomy)
     {
         return DB::transaction(function () use ($request, $taxonomy) {
+            $parent = $request->filled('parent_id')
+                ? Taxonomy::query()->firstOrFail($request->parent_id)
+                : Taxonomy::category();
+
             $taxonomy->update([
-                'parent_id' => $request->parent_id ?? Taxonomy::category()->id,
+                'parent_id' => $parent->id,
                 'name' => $request->name,
                 'order' => $request->order,
+                'depth' => 1 + $parent->getDepth(),
             ]);
 
             event(EndpointHit::onUpdate($request, "Updated taxonomy category [{$taxonomy->id}]", $taxonomy));
