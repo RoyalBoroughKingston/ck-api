@@ -30,7 +30,9 @@ class RelatedController extends Controller
          * 6. Order by service name.
          */
         $taxonomyIds = $service->taxonomies()->pluck('taxonomies.id');
-        $taxonomyIdsPlaceholder = implode(',', str_split(
+        $taxonomyIdsPlaceholder = implode(
+            ',',
+            mb_str_split(
                 str_repeat('?', count($taxonomyIds))
             )
         );
@@ -47,8 +49,8 @@ class RelatedController extends Controller
             }, '>=', 3);
 
         foreach (range(6, 1) as $depth) {
-            $baseQuery->orderByRaw("
-                (
+            $baseQuery->orderByRaw(
+                "(
                     SELECT COUNT(*)
                     FROM `service_taxonomies`
                     WHERE `service_taxonomies`.`service_id` = `services`.`id`
