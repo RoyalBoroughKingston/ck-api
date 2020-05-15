@@ -57,6 +57,7 @@ class TaxonomyOrganisationController extends Controller
             $organisation = Taxonomy::organisation()->children()->create([
                 'name' => $request->name,
                 'order' => $request->order,
+                'depth' => 1,
             ]);
 
             event(EndpointHit::onCreate($request, "Created taxonomy organisation [{$organisation->id}]", $organisation));
