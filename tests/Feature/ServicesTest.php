@@ -2665,6 +2665,7 @@ class ServicesTest extends TestCase
 
         $services = $this->getResponseContent($response, 'data');
 
+        $this->assertCount(2, $services);
         $this->assertSame($closelyRelatedService->id, $services[0]['id']);
         $this->assertSame($distantlyRelatedService->id, $services[1]['id']);
     }
