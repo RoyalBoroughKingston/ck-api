@@ -2497,6 +2497,25 @@ class ServicesTest extends TestCase
         $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
         $unrelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
 
+        $inactiveService = factory(Service::class)->create([
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+        $inactiveService->usefulInfos()->create([
+            'title' => 'Did You Know?',
+            'description' => 'This is a test description',
+            'order' => 1,
+        ]);
+        $inactiveService->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital/',
+        ]);
+        $inactiveService->serviceGalleryItems()->create([
+            'file_id' => factory(File::class)->create()->id,
+        ]);
+        $inactiveService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
+        $inactiveService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwo->id]);
+        $inactiveService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThree->id]);
+
         $response = $this->json('GET', "/core/v1/services/{$service->id}/related");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -2591,6 +2610,64 @@ class ServicesTest extends TestCase
 
         $response->assertJsonFragment(['id' => $relatedService->id]);
         $response->assertJsonMissing(['id' => $unrelatedService->id]);
+        $response->assertJsonMissing(['id' => $inactiveService->id]);
+    }
+
+    public function test_related_services_order_by_taxonomy_depth()
+    {
+        // Create taxonomies.
+        $taxonomyOneDepthOne = Taxonomy::category()->children()->create([
+            'name' => 'Taxonomy One',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $taxonomyTwoDepthOne = Taxonomy::category()->children()->create([
+            'name' => 'Taxonomy Two',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $taxonomyThreeDepthOne = Taxonomy::category()->children()->create([
+            'name' => 'Taxonomy Three',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $taxonomyFourDepthTwo = $taxonomyOneDepthOne->children()->create([
+            'name' => 'Taxonomy Four',
+            'order' => 1,
+            'depth' => 2,
+        ]);
+
+        // Create service.
+        $service = factory(Service::class)->create();
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOneDepthOne->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwoDepthOne->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThreeDepthOne->id]);
+        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyFourDepthTwo->id]);
+
+        // Create closely related service.
+        $closelyRelatedService = factory(Service::class)->create([
+            'name' => 'Beta',
+        ]);
+        $closelyRelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOneDepthOne->id]);
+        $closelyRelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwoDepthOne->id]);
+        $closelyRelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyFourDepthTwo->id]);
+
+        // Create distantly related service.
+        $distantlyRelatedService = factory(Service::class)->create([
+            'name' => 'Alpha',
+        ]);
+        $distantlyRelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOneDepthOne->id]);
+        $distantlyRelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyTwoDepthOne->id]);
+        $distantlyRelatedService->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyThreeDepthOne->id]);
+
+        $response = $this->json('GET', "/core/v1/services/{$service->id}/related");
+        $response->assertStatus(Response::HTTP_OK);
+
+        $services = $this->getResponseContent($response, 'data');
+
+        $this->assertCount(2, $services);
+        $this->assertSame($closelyRelatedService->id, $services[0]['id']);
+        $this->assertSame($distantlyRelatedService->id, $services[1]['id']);
     }
 
     /*

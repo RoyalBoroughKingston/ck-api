@@ -9,6 +9,21 @@ class Password implements Rule
     const ALLOWED_SPECIAL_CHARACTERS = '!"#$%&\'()*+,-./:;<=>?@[]^_`{|}~';
 
     /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
+     * Password constructor.
+     *
+     * @param string|null $message
+     */
+    public function __construct(?string $message = null)
+    {
+        $this->message = $message;
+    }
+
+    /**
      * Determine if the validation rule passes.
      *
      * @param string $attribute
@@ -34,10 +49,7 @@ class Password implements Rule
      */
     public function message()
     {
-        return 'The :attribute must be at least eight characters long, 
-            contain one uppercase letter, 
-            one lowercase letter, 
-            one number and one special character (' . static::ALLOWED_SPECIAL_CHARACTERS . ').';
+        return $this->message ?? 'The :attribute must be at least eight characters long, contain one uppercase letter, one lowercase letter, one number and one special character (' . static::ALLOWED_SPECIAL_CHARACTERS . ').';
     }
 
     /**

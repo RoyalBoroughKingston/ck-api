@@ -72,7 +72,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_query_matches_taxonomy_name()
     {
         $service = factory(Service::class)->create();
-        $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create([
+            'name' => 'PHPUnit Taxonomy',
+            'order' => 1,
+            'depth' => 1,
+        ]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
 
         $response = $this->json('POST', '/core/v1/search', [
@@ -86,7 +90,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_query_matches_partial_taxonomy_name()
     {
         $service = factory(Service::class)->create();
-        $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create([
+            'name' => 'PHPUnit Taxonomy',
+            'order' => 1,
+            'depth' => 1,
+        ]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
 
         $response = $this->json('POST', '/core/v1/search', [
@@ -180,7 +188,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
             'meta' => [],
             'order' => 1,
         ]);
-        $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create([
+            'name' => 'PHPUnit Taxonomy',
+            'order' => 1,
+            'depth' => 1,
+        ]);
         $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
@@ -202,7 +214,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
             'meta' => [],
             'order' => 1,
         ]);
-        $taxonomy = Taxonomy::category()->children()->create(['name' => 'PHPUnit Taxonomy', 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create([
+            'name' => 'PHPUnit Taxonomy',
+            'order' => 1,
+            'depth' => 1,
+        ]);
         $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
@@ -287,7 +303,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
             'meta' => [],
             'order' => 1,
         ]);
-        $taxonomy = Taxonomy::category()->children()->create(['name' => 'Collection', 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create([
+            'name' => 'Collection',
+            'order' => 1,
+            'depth' => 1,
+        ]);
         $collectionTaxonomy = $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
@@ -299,7 +319,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
             'meta' => [],
             'order' => 1,
         ]);
-        $differentTaxonomy = Taxonomy::category()->children()->create(['name' => 'Persona', 'order' => 2]);
+        $differentTaxonomy = Taxonomy::category()->children()->create([
+            'name' => 'Persona',
+            'order' => 2,
+            'depth' => 1,
+        ]);
         $differentCollection->collectionTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->save();
@@ -323,7 +347,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
             'meta' => [],
             'order' => 1,
         ]);
-        $taxonomy = Taxonomy::category()->children()->create(['name' => 'Collection', 'order' => 1]);
+        $taxonomy = Taxonomy::category()->children()->create([
+            'name' => 'Collection',
+            'order' => 1,
+            'depth' => 1,
+        ]);
         $collectionTaxonomy = $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
@@ -335,7 +363,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
             'meta' => [],
             'order' => 1,
         ]);
-        $differentTaxonomy = Taxonomy::category()->children()->create(['name' => 'Persona', 'order' => 2]);
+        $differentTaxonomy = Taxonomy::category()->children()->create([
+            'name' => 'Persona',
+            'order' => 2,
+            'depth' => 1,
+        ]);
         $differentCollection->collectionTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->save();
@@ -448,9 +480,21 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_services_with_more_taxonomies_in_a_category_collection_are_more_relevant()
     {
         // Create 3 taxonomies
-        $taxonomy1 = Taxonomy::category()->children()->create(['name' => 'Red', 'order' => 1]);
-        $taxonomy2 = Taxonomy::category()->children()->create(['name' => 'Blue', 'order' => 2]);
-        $taxonomy3 = Taxonomy::category()->children()->create(['name' => 'Green', 'order' => 3]);
+        $taxonomy1 = Taxonomy::category()->children()->create([
+            'name' => 'Red',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $taxonomy2 = Taxonomy::category()->children()->create([
+            'name' => 'Blue',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $taxonomy3 = Taxonomy::category()->children()->create([
+            'name' => 'Green',
+            'order' => 3,
+            'depth' => 1,
+        ]);
 
         // Create a collection
         $collection = Collection::create([
@@ -499,9 +543,21 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_services_with_more_taxonomies_in_a_persona_collection_are_more_relevant()
     {
         // Create 3 taxonomies
-        $taxonomy1 = Taxonomy::category()->children()->create(['name' => 'Red', 'order' => 1]);
-        $taxonomy2 = Taxonomy::category()->children()->create(['name' => 'Blue', 'order' => 2]);
-        $taxonomy3 = Taxonomy::category()->children()->create(['name' => 'Green', 'order' => 3]);
+        $taxonomy1 = Taxonomy::category()->children()->create([
+            'name' => 'Red',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $taxonomy2 = Taxonomy::category()->children()->create([
+            'name' => 'Blue',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $taxonomy3 = Taxonomy::category()->children()->create([
+            'name' => 'Green',
+            'order' => 3,
+            'depth' => 1,
+        ]);
 
         // Create a collection
         $collection = Collection::create([

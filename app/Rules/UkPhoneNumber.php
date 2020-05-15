@@ -7,6 +7,21 @@ use Illuminate\Contracts\Validation\Rule;
 class UkPhoneNumber implements Rule
 {
     /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
+     * UkPhoneNumber constructor.
+     *
+     * @param string|null $message
+     */
+    public function __construct(?string $message = null)
+    {
+        $this->message = $message;
+    }
+
+    /**
      * Determine if the validation rule passes.
      *
      * @param string $attribute
@@ -32,6 +47,6 @@ class UkPhoneNumber implements Rule
      */
     public function message()
     {
-        return 'The :attribute must be a valid UK phone number.';
+        return $this->message ?? 'The :attribute must be a valid UK phone number.';
     }
 }

@@ -66,6 +66,7 @@ services:
       MYSQL_PASSWORD: "${DB_PASS}"
     networks:
       - app-net
+    command: mysqld --general-log=1 --general-log-file=/var/log/mysql/general-log.log
 
   redis:
     image: grokzen/redis-cluster:5.0.5
@@ -83,6 +84,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
     environment:
       discovery-type: single-node
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - app-net
     ports:
@@ -105,4 +108,6 @@ volumes:
   mysql-data:
     driver: local
   redis-data:
+    driver: local
+  elasticsearch-data:
     driver: local
