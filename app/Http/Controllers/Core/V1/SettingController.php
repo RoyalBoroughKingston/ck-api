@@ -6,6 +6,7 @@ use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Setting\IndexRequest;
 use App\Http\Requests\Setting\UpdateRequest;
+use App\Models\File;
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 
@@ -95,6 +96,18 @@ class SettingController extends Controller
                         ],
                     ],
                 ]);
+
+            if ($request->filled('cms.frontend.banner.image_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::query()
+                    ->findOrFail($request->input('cms.frontend.banner.image_file_id'))
+                    ->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
+            }
 
             event(EndpointHit::onUpdate($request, 'Updated settings'));
 
