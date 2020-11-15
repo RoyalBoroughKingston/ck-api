@@ -83,6 +83,16 @@ services:
     ports:
       - "${ELASTICSEARCH_PORT}:9200"
 
+  kibana:
+    image: kibana:7.9.3
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "${KIBANA_PORT}:5601"
+    depends_on:
+      - elasticsearch
+
   troposphere:
     image: royal-borough-kingston/ck-api/troposphere
     build:

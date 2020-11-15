@@ -8,6 +8,7 @@ export DB_NAME=${DB_NAME:-connected_kingston}
 export DB_USER=${DB_USER:-connected_kingston}
 export DB_PASS=${DB_PASS:-secret}
 export ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
+export KIBANA_PORT=${KIBANA_PORT:-5601}
 export CFN_TEMPLATE=${CFN_TEMPLATE:-cloudformation}
 
 # Set the docker-compose files to use.
