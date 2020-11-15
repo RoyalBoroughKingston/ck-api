@@ -10,7 +10,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "alphagov/notifications-php-client": "^1.6",
-        "babenkoivan/scout-elasticsearch-driver": "^3.8",
+        "babenkoivan/scout-elasticsearch-driver": "^4.2.3",
         "barryvdh/laravel-cors": "^0.11.0",
         "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "^2.8",
