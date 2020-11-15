@@ -51,9 +51,6 @@ class ElasticsearchSearch implements Search
                                     ],
                                 ],
                             ],
-                            'should' => [
-                                //
-                            ],
                         ],
                     ],
                     'must' => [
@@ -215,7 +212,11 @@ class ElasticsearchSearch implements Search
                 break;
         }
 
-        $this->query['query']['bool']['filter']['bool']['should'][] = $criteria;
+        $this->query['query']['bool']['filter']['bool']['must'][] = [
+            'bool' => [
+                'should' => $criteria,
+            ],
+        ];
 
         return $this;
     }
@@ -369,7 +370,7 @@ class ElasticsearchSearch implements Search
         if ($paginate) {
             $services = new LengthAwarePaginator(
                 $services,
-                $response['hits']['total'],
+                $response['hits']['total']['value'],
                 config('ck.pagination_results'),
                 $page,
                 ['path' => Paginator::resolveCurrentPath()]
@@ -387,7 +388,7 @@ class ElasticsearchSearch implements Search
     {
         SearchHistory::create([
             'query' => $this->query,
-            'count' => $response['hits']['total'],
+            'count' => $response['hits']['total']['value'],
         ]);
 
         return $this;

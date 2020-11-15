@@ -125,14 +125,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     ];
 
     /**
-     * Overridden to always boot searchable.
-     */
-    public static function bootSearchable()
-    {
-        self::sourceBootSearchable();
-    }
-
-    /**
      * Get the indexable data array for the model.
      *
      * @return array
