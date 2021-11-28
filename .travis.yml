@@ -30,19 +30,19 @@ script:
 after_failure:
   - cat storage/logs/testing.log
 
-before_deploy: |
-  echo "Compiling assets for production..."
-  ./develop npm run prod
+before_deploy:
+  - echo "Compiling assets for production..."
+  - ./develop npm run prod
 
-  echo "Installing AWS CLI..."
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  unzip awscliv2.zip
-  sudo ./aws/install -i /usr/local/aws -b /usr/local/bin/aws
+  - echo "Installing AWS CLI..."
+  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+  - sudo ./aws/install -i /usr/local/aws -b /usr/local/bin/aws
 
-  echo "Installing CloudFoundry CLI..."
-  wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
-  echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-  sudo apt-get update && sudo apt-get install -y --allow-unauthenticated cf-cli
+  - echo "Installing CloudFoundry CLI..."
+  - wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+  - echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+  - sudo apt-get update && sudo apt-get install -y --allow-unauthenticated cf-cli
 
 deploy:
   - provider: script
