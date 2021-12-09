@@ -18,7 +18,7 @@
         "laravel-mix": "^2.0",
         "lodash": "^4.17.4",
         "popper.js": "^1.12",
-        "swagger-ui": "^3.23.1",
+        "swagger-ui": "^4.1.2",
         "vue": "^2.5.7"
     },
     "dependencies": {}
