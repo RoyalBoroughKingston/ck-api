@@ -153,10 +153,10 @@ class ServiceLocationController extends Controller
         return DB::transaction(function () use ($request, $serviceLocation) {
             // Initialise the data array.
             $data = array_filter_missing([
-                'name' => $request->missing('name'),
+                'name' => $request->isMissing('name'),
                 'regular_opening_hours' => $request->has('regular_opening_hours') ? [] : new MissingValue(),
                 'holiday_opening_hours' => $request->has('holiday_opening_hours') ? [] : new MissingValue(),
-                'image_file_id' => $request->missing('image_file_id'),
+                'image_file_id' => $request->isMissing('image_file_id'),
             ]);
 
             // Loop through each regular opening hour to normalise and then append to the array.

@@ -340,11 +340,11 @@ class UpdateRequestsTest extends TestCase
 
     public function test_audit_created_when_viewed()
     {
-        $this->fakeEvents();
 
         $user = factory(User::class)->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
+        $this->fakeEvents();
         $serviceLocation = factory(ServiceLocation::class)->create();
         $updateRequest = $serviceLocation->updateRequests()->create([
             'user_id' => factory(User::class)->create()->id,

@@ -150,17 +150,17 @@ class LocationController extends Controller
             $updateRequest = $location->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => array_filter_missing([
-                    'address_line_1' => $request->missing('address_line_1'),
-                    'address_line_2' => $request->missing('address_line_2'),
-                    'address_line_3' => $request->missing('address_line_3'),
-                    'city' => $request->missing('city'),
-                    'county' => $request->missing('county'),
-                    'postcode' => $request->missing('postcode'),
-                    'country' => $request->missing('country'),
-                    'accessibility_info' => $request->missing('accessibility_info'),
-                    'has_wheelchair_access' => $request->missing('has_wheelchair_access'),
-                    'has_induction_loop' => $request->missing('has_induction_loop'),
-                    'image_file_id' => $request->missing('image_file_id'),
+                    'address_line_1' => $request->isMissing('address_line_1'),
+                    'address_line_2' => $request->isMissing('address_line_2'),
+                    'address_line_3' => $request->isMissing('address_line_3'),
+                    'city' => $request->isMissing('city'),
+                    'county' => $request->isMissing('county'),
+                    'postcode' => $request->isMissing('postcode'),
+                    'country' => $request->isMissing('country'),
+                    'accessibility_info' => $request->isMissing('accessibility_info'),
+                    'has_wheelchair_access' => $request->isMissing('has_wheelchair_access'),
+                    'has_induction_loop' => $request->isMissing('has_induction_loop'),
+                    'image_file_id' => $request->isMissing('image_file_id'),
                 ]),
             ]);
 
