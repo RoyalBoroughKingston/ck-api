@@ -20,8 +20,7 @@ RUN apt-add-repository -y ppa:ondrej/php \
     && apt-get update \
     && apt-get install -y php7.2-fpm php7.2-cli php7.2-gd php7.2-mysql php7.2-redis \
        php7.2-imap php7.2-mbstring php7.2-xml php7.2-curl php7.2-zip \
-    && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --version=1.10.16 --filename=composer \
-    && composer global require hirak/prestissimo \
+    && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --version=2.2.3 --filename=composer \
     && mkdir /run/php
 
 # Cleanup.
