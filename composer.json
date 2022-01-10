@@ -32,7 +32,7 @@
     "require-dev": {
         "beyondcode/laravel-dump-server": "~1.1",
         "filp/whoops": "^2.0",
-        "friendsofphp/php-cs-fixer": "^2.15",
+        "friendsofphp/php-cs-fixer": "^3.4",
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
@@ -84,7 +84,7 @@
             "@php vendor/bin/phpunit"
         ],
         "fix:style": [
-            "@php vendor/bin/php-cs-fixer fix --config=.php_cs --allow-risky=yes --verbose"
+            "@php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --allow-risky=yes --verbose"
         ]
     },
     "config": {
