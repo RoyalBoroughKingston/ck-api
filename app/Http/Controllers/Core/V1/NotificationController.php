@@ -8,7 +8,7 @@ use App\Http\Requests\Notification\IndexRequest;
 use App\Http\Requests\Notification\ShowRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class NotificationController extends Controller
@@ -34,10 +34,10 @@ class NotificationController extends Controller
 
         $notifications = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::scope('referral_id'),
-                Filter::scope('service_id'),
-                Filter::scope('user_id'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::scope('referral_id'),
+                AllowedFilter::scope('service_id'),
+                AllowedFilter::scope('user_id'),
             ])
             ->paginate(per_page($request->per_page));
 

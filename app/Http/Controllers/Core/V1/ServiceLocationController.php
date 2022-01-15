@@ -17,7 +17,7 @@ use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
 use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ServiceLocationController extends Controller
@@ -44,8 +44,8 @@ class ServiceLocationController extends Controller
 
         $serviceLocations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('service_id'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('service_id'),
             ])
             ->allowedIncludes(['location'])
             ->paginate(per_page($request->per_page));

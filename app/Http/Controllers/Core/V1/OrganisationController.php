@@ -16,7 +16,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\Organisation;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class OrganisationController extends Controller
@@ -41,9 +41,9 @@ class OrganisationController extends Controller
 
         $organisations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
                 'name',
-                Filter::custom('has_permission', HasPermissionFilter::class),
+                AllowedFilter::custom('has_permission', new HasPermissionFilter()),
             ])
             ->allowedSorts('name')
             ->defaultSort('name')

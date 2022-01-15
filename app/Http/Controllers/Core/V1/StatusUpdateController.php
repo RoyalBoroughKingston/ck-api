@@ -8,7 +8,7 @@ use App\Http\Requests\StatusUpdate\IndexRequest;
 use App\Http\Resources\StatusUpdateResource;
 use App\Models\Referral;
 use App\Models\StatusUpdate;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class StatusUpdateController extends Controller
@@ -37,8 +37,8 @@ class StatusUpdateController extends Controller
 
         $statusUpdates = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('referral_id'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('referral_id'),
             ])
             ->allowedIncludes(['user'])
             ->paginate(per_page($request->per_page));

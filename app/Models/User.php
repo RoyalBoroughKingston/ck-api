@@ -44,6 +44,8 @@ class User extends Authenticatable implements Notifiable
      */
     protected $guarded = [];
 
+    protected $keyType = 'string';
+
     /**
      * The attributes that should be cast to native types.
      *

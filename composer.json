@@ -22,6 +22,7 @@
         "laravel/passport": "^9.3.2",
         "laravel/scout": "^8.6",
         "laravel/tinker": "^2.0",
+        "laravel/ui": "^2.0",
         "league/flysystem-aws-s3-v3": "~1.0",
         "php-http/guzzle6-adapter": "^1.1",
         "phpoffice/phpspreadsheet": "^1.4",

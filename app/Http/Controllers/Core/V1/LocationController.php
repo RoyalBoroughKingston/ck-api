@@ -15,7 +15,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\Location;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class LocationController extends Controller
@@ -40,7 +40,7 @@ class LocationController extends Controller
 
         $locations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
                 'address_line_1',
                 'address_line_2',
                 'address_line_3',

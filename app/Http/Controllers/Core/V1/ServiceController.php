@@ -23,7 +23,8 @@ use App\Support\MissingValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sort;
 
@@ -61,18 +62,18 @@ class ServiceController extends Controller
 
         $services = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('organisation_id'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('organisation_id'),
                 'name',
-                Filter::custom('organisation_name', OrganisationNameFilter::class),
-                Filter::exact('status'),
-                Filter::exact('referral_method'),
-                Filter::custom('has_permission', HasPermissionFilter::class),
+                AllowedFilter::custom('organisation_name', new OrganisationNameFilter()),
+                AllowedFilter::exact('status'),
+                AllowedFilter::exact('referral_method'),
+                AllowedFilter::custom('has_permission', new HasPermissionFilter()),
             ])
             ->allowedIncludes(['organisation'])
             ->allowedSorts([
                 'name',
-                Sort::custom('organisation_name', OrganisationNameSort::class),
+                AllowedSort::custom('organisation_name', new OrganisationNameSort()),
                 'status',
                 'referral_method',
             ])

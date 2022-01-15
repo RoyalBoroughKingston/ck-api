@@ -14,7 +14,7 @@ use App\Models\Report;
 use App\Models\ReportType;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ReportController extends Controller
@@ -40,7 +40,7 @@ class ReportController extends Controller
 
         $reports = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
             ->paginate(per_page($request->per_page));
 

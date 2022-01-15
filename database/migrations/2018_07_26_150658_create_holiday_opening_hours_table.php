@@ -13,7 +13,7 @@ class CreateHolidayOpeningHoursTable extends Migration
     {
         Schema::create('holiday_opening_hours', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_location_id', 'service_locations');
+            $table->customForeignUuid('service_location_id', 'service_locations');
             $table->boolean('is_closed');
             $table->date('starts_at');
             $table->date('ends_at');
