@@ -5,7 +5,7 @@
     "license": "GNU AGPLv3",
     "type": "project",
     "require": {
-        "php": "~7.3.0",
+        "php": "~7.4.0",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-pdo": "*",
