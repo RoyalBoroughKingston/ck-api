@@ -7,6 +7,7 @@ use App\Exceptions\CannotRevokeRoleException;
 use App\Models\Notification;
 use App\Models\Role;
 use App\Models\Service;
+use App\Models\User;
 use App\Models\UserRole;
 
 class ServiceObserver

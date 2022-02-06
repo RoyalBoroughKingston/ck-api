@@ -13,7 +13,7 @@ class CreateReferralsTable extends Migration
     {
         Schema::create('referrals', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
+            $table->customForeignUuid('service_id', 'services');
             $table->char('reference', 10)->unique();
             $table->enum('status', ['new', 'in_progress', 'completed', 'incompleted']);
             $table->text('name');

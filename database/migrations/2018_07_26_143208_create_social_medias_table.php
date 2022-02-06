@@ -13,7 +13,7 @@ class CreateSocialMediasTable extends Migration
     {
         Schema::create('social_medias', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
+            $table->customForeignUuid('service_id', 'services');
             $table->enum('type', ['twitter', 'facebook', 'instagram', 'youtube', 'other']);
             $table->string('url');
             $table->timestamps();

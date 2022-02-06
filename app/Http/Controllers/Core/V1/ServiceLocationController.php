@@ -17,7 +17,7 @@ use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
 use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ServiceLocationController extends Controller
@@ -44,8 +44,8 @@ class ServiceLocationController extends Controller
 
         $serviceLocations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('service_id'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('service_id'),
             ])
             ->allowedIncludes(['location'])
             ->paginate(per_page($request->per_page));
@@ -153,10 +153,10 @@ class ServiceLocationController extends Controller
         return DB::transaction(function () use ($request, $serviceLocation) {
             // Initialise the data array.
             $data = array_filter_missing([
-                'name' => $request->missing('name'),
+                'name' => $request->isMissing('name'),
                 'regular_opening_hours' => $request->has('regular_opening_hours') ? [] : new MissingValue(),
                 'holiday_opening_hours' => $request->has('holiday_opening_hours') ? [] : new MissingValue(),
-                'image_file_id' => $request->missing('image_file_id'),
+                'image_file_id' => $request->isMissing('image_file_id'),
             ]);
 
             // Loop through each regular opening hour to normalise and then append to the array.

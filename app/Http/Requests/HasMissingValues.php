@@ -11,7 +11,7 @@ trait HasMissingValues
      * @param callable|null $pipe if the value exists then pass through this function
      * @return mixed|\App\Support\MissingValue
      */
-    public function missing(string $key, callable $pipe = null)
+    public function isMissing(string $key, callable $pipe = null)
     {
         if ($this->has($key)) {
             return $pipe ? $pipe($this->input($key)) : $this->input($key);

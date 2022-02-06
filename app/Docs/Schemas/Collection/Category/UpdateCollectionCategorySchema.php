@@ -38,7 +38,7 @@ class UpdateCollectionCategorySchema extends Schema
                                 Schema::string('title'),
                                 Schema::string('content')
                             )
-                        ),
+                    ),
                 Schema::array('category_taxonomies')
                     ->items(
                         Schema::string()

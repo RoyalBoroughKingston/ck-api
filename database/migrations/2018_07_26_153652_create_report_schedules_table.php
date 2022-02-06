@@ -13,7 +13,7 @@ class CreateReportSchedulesTable extends Migration
     {
         Schema::create('report_schedules', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('report_type_id', 'report_types');
+            $table->customForeignUuid('report_type_id', 'report_types');
             $table->enum('repeat_type', ['weekly', 'monthly']);
             $table->timestamps();
         });

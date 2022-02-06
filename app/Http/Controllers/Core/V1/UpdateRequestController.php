@@ -12,7 +12,7 @@ use App\Http\Resources\UpdateRequestResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\UpdateRequest;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UpdateRequestController extends Controller
@@ -40,12 +40,12 @@ class UpdateRequestController extends Controller
 
         $updateRequests = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::scope('service_id'),
-                Filter::scope('service_location_id'),
-                Filter::scope('location_id'),
-                Filter::scope('organisation_id'),
-                Filter::custom('entry', EntryFilter::class),
+                AllowedFilter::exact('id'),
+                AllowedFilter::scope('service_id'),
+                AllowedFilter::scope('service_location_id'),
+                AllowedFilter::scope('location_id'),
+                AllowedFilter::scope('organisation_id'),
+                AllowedFilter::custom('entry', new EntryFilter()),
             ])
             ->allowedIncludes(['user'])
             ->allowedSorts([

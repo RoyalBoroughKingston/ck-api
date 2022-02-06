@@ -13,7 +13,7 @@ class CreateServicesTable extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('organisation_id', 'organisations');
+            $table->customForeignUuid('organisation_id', 'organisations');
             $table->nullableForeignUuid('logo_file_id', 'files');
             $table->string('name');
             $table->enum('status', ['active', 'inactive']);
