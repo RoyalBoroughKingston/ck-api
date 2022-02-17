@@ -32,8 +32,8 @@ class StoreOrganisationSignUpFormOperation extends Operation
                     ->content(
                         MediaType::json()->schema(
                             StoreOrganisationSignUpFormSchema::create()
+                        )
                     )
-                )
             )
             ->responses(
                 UpdateRequestReceivedResponse::create(

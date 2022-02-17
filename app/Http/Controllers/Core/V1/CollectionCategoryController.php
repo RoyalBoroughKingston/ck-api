@@ -14,7 +14,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionCategoryController extends Controller
@@ -40,7 +40,7 @@ class CollectionCategoryController extends Controller
 
         $categories = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
             ->with('taxonomies')
             ->paginate(per_page($request->per_page));

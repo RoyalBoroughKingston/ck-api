@@ -13,7 +13,7 @@ class CreateUpdateRequestsTable extends Migration
     {
         Schema::create('update_requests', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id', 'users');
+            $table->customForeignUuid('user_id', 'users');
             $table->morphsUuid('updateable');
             $table->json('data');
             $table->timestamps();

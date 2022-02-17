@@ -14,7 +14,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Models\ReportSchedule;
 use App\Models\ReportType;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ReportScheduleController extends Controller
@@ -40,7 +40,7 @@ class ReportScheduleController extends Controller
 
         $reportSchedules = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
             ->paginate(per_page($request->per_page));
 

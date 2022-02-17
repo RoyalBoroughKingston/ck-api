@@ -9,9 +9,9 @@ use App\Http\Requests\Audit\ShowRequest;
 use App\Http\Resources\AuditResource;
 use App\Http\Sorts\Audit\UserFullNameSort;
 use App\Models\Audit;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Sort;
 
 class AuditController extends Controller
 {
@@ -36,17 +36,17 @@ class AuditController extends Controller
 
         $audits = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('user_id'),
-                Filter::exact('oauth_client_id'),
-                Filter::exact('action'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('user_id'),
+                AllowedFilter::exact('oauth_client_id'),
+                AllowedFilter::exact('action'),
                 'description',
             ])
             ->allowedIncludes(['user'])
             ->allowedSorts([
                 'action',
                 'description',
-                Sort::custom('user_full_name', UserFullNameSort::class),
+                AllowedSort::custom('user_full_name', new UserFullNameSort()),
                 'created_at',
             ])
             ->defaultSort('-created_at')

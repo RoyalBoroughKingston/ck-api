@@ -13,7 +13,7 @@ class CreateUsefulInfosTable extends Migration
     {
         Schema::create('useful_infos', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
+            $table->customForeignUuid('service_id', 'services');
             $table->string('title');
             $table->text('description');
             $table->unsignedInteger('order');

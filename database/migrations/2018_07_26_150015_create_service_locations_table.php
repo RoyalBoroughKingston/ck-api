@@ -13,8 +13,8 @@ class CreateServiceLocationsTable extends Migration
     {
         Schema::create('service_locations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
-            $table->foreignUuid('location_id', 'locations');
+            $table->customForeignUuid('service_id', 'services');
+            $table->customForeignUuid('location_id', 'locations');
             $table->string('name')->nullable();
             $table->timestamps();
         });

@@ -1,5 +1,5 @@
 # Set base image.
-FROM node:10.12
+FROM node:16.13
 
 # Set maintainer to Ayup Digital.
 LABEL maintainer="Ayup Digital"
