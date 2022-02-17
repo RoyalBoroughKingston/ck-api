@@ -18,6 +18,7 @@ Route::get('oauth/clients', 'Passport\\ClientController@index');
 Route::prefix('core/v1')
     ->namespace('Core\\V1')
     ->name('core.v1.')
+    ->middleware(\Fruitcake\Cors\HandleCors::class)
     ->group(
         function () {
             // Audits.
