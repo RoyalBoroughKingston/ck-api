@@ -53,7 +53,7 @@ class UpdateSettingSchema extends Schema
             ->properties(
                 Schema::string('title'),
                 Schema::string('content')->format('markdown')
-        );
+            );
 
         $privacyPolicy = Schema::object('privacy_policy')
             ->required(

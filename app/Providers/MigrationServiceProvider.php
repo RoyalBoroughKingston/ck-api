@@ -15,7 +15,7 @@ class MigrationServiceProvider extends ServiceProvider
         /*
          * ID Foreign Key Helper.
          */
-        Blueprint::macro('foreignId', function (string $column, string $referencesTable, string $referencedColumn = 'id', bool $nullable = false) {
+        Blueprint::macro('customForeignId', function (string $column, string $referencesTable, string $referencedColumn = 'id', bool $nullable = false) {
             $this->unsignedInteger($column)->nullable($nullable);
             $this->foreign($column)->references($referencedColumn)->on($referencesTable);
         });
@@ -30,7 +30,7 @@ class MigrationServiceProvider extends ServiceProvider
         /*
          * UUID Foreign Key Helper.
          */
-        Blueprint::macro('foreignUuid', function (string $column, string $referencesTable, string $referencedColumn = 'id', bool $nullable = false) {
+        Blueprint::macro('customForeignUuid', function (string $column, string $referencesTable, string $referencedColumn = 'id', bool $nullable = false) {
             $this->uuid($column)->nullable($nullable);
             $this->foreign($column)->references($referencedColumn)->on($referencesTable);
         });
@@ -39,7 +39,7 @@ class MigrationServiceProvider extends ServiceProvider
          * UUID Nullable Foreign Key Helper.
          */
         Blueprint::macro('nullableForeignUuid', function (string $column, string $referencesTable, string $referencedColumn = 'id') {
-            $this->foreignUuid($column, $referencesTable, $referencedColumn, true);
+            $this->customForeignUuid($column, $referencesTable, $referencedColumn, true);
         });
 
         /*

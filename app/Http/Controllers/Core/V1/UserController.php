@@ -24,7 +24,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -58,15 +58,15 @@ class UserController extends Controller
 
         $users = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
                 'first_name',
                 'last_name',
                 'email',
                 'phone',
-                Filter::custom('highest_role', HighestRoleFilter::class),
-                Filter::custom('has_permission', HasPermissionFilter::class),
-                Filter::custom('at_organisation', AtOrganisationFilter::class),
-                Filter::custom('at_service', AtServiceFilter::class),
+                AllowedFilter::custom('highest_role', new HighestRoleFilter()),
+                AllowedFilter::custom('has_permission', new HasPermissionFilter()),
+                AllowedFilter::custom('at_organisation', new AtOrganisationFilter()),
+                AllowedFilter::custom('at_service', new AtServiceFilter()),
             ])
             ->allowedIncludes([
                 'user-roles.organisation',

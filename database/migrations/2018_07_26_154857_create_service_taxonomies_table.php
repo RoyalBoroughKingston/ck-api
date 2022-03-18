@@ -13,8 +13,8 @@ class CreateServiceTaxonomiesTable extends Migration
     {
         Schema::create('service_taxonomies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
-            $table->foreignUuid('taxonomy_id', 'taxonomies');
+            $table->customForeignUuid('service_id', 'services');
+            $table->customForeignUuid('taxonomy_id', 'taxonomies');
             $table->timestamps();
         });
     }

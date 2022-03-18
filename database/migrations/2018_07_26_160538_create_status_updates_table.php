@@ -13,8 +13,8 @@ class CreateStatusUpdatesTable extends Migration
     {
         Schema::create('status_updates', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id', 'users');
-            $table->foreignUuid('referral_id', 'referrals');
+            $table->customForeignUuid('user_id', 'users');
+            $table->customForeignUuid('referral_id', 'referrals');
             $table->enum('from', ['new', 'in_progress', 'completed', 'incompleted']);
             $table->enum('to', ['new', 'in_progress', 'completed', 'incompleted']);
             $table->text('comments')->nullable();

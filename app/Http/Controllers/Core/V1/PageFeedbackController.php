@@ -11,7 +11,7 @@ use App\Http\Resources\PageFeedbackResource;
 use App\Models\PageFeedback;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PageFeedbackController extends Controller
@@ -36,7 +36,7 @@ class PageFeedbackController extends Controller
 
         $pageFeedbacks = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
                 'url',
             ])
             ->allowedSorts([

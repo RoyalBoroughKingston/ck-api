@@ -15,7 +15,7 @@ use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionPersonaController extends Controller
@@ -41,7 +41,7 @@ class CollectionPersonaController extends Controller
 
         $personas = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
             ->with('taxonomies')
             ->paginate(per_page($request->per_page));

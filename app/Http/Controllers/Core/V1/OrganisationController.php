@@ -16,7 +16,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\Organisation;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class OrganisationController extends Controller
@@ -41,9 +41,9 @@ class OrganisationController extends Controller
 
         $organisations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
                 'name',
-                Filter::custom('has_permission', HasPermissionFilter::class),
+                AllowedFilter::custom('has_permission', new HasPermissionFilter()),
             ])
             ->allowedSorts('name')
             ->defaultSort('name')
@@ -124,15 +124,15 @@ class OrganisationController extends Controller
             $updateRequest = $organisation->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => array_filter_missing([
-                    'slug' => $request->missing('slug'),
-                    'name' => $request->missing('name'),
-                    'description' => $request->missing('description', function ($description) {
+                    'slug' => $request->isMissing('slug'),
+                    'name' => $request->isMissing('name'),
+                    'description' => $request->isMissing('description', function ($description) {
                         return sanitize_markdown($description);
                     }),
-                    'url' => $request->missing('url'),
-                    'email' => $request->missing('email'),
-                    'phone' => $request->missing('phone'),
-                    'logo_file_id' => $request->missing('logo_file_id'),
+                    'url' => $request->isMissing('url'),
+                    'email' => $request->isMissing('email'),
+                    'phone' => $request->isMissing('phone'),
+                    'logo_file_id' => $request->isMissing('logo_file_id'),
                 ]),
             ]);
 

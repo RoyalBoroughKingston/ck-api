@@ -11,5 +11,5 @@ class ScoutImportCommand extends ImportCommand
      *
      * @var string
      */
-    protected $signature = 'ck:scout-import {model}';
+    protected $signature = 'ck:scout-import {model} {--c|chunk=}';
 }

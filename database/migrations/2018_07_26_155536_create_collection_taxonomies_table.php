@@ -13,8 +13,8 @@ class CreateCollectionTaxonomiesTable extends Migration
     {
         Schema::create('collection_taxonomies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('collection_id', 'collections');
-            $table->foreignUuid('taxonomy_id', 'taxonomies');
+            $table->customForeignUuid('collection_id', 'collections');
+            $table->customForeignUuid('taxonomy_id', 'taxonomies');
             $table->timestamps();
         });
     }

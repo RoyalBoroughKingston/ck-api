@@ -13,7 +13,7 @@ class CreateServiceCriteriaTable extends Migration
     {
         Schema::create('service_criteria', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
+            $table->customForeignUuid('service_id', 'services');
             $table->string('age_group')->nullable();
             $table->string('disability')->nullable();
             $table->string('employment')->nullable();

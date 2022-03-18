@@ -19,5 +19,5 @@ mix
 mix
     .sass('resources/assets/sass/app.scss', 'public/css')
     .copy('resources/assets/img', 'public/img')
-    .copy('node_modules/govuk-frontend/assets/fonts', 'public/assets/fonts')
+    .copy('node_modules/govuk-frontend/govuk/assets/fonts', 'public/assets/fonts')
     .version();
