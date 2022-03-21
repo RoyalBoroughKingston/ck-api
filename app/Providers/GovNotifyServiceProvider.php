@@ -14,7 +14,7 @@ class GovNotifyServiceProvider extends ServiceProvider
         $this->app->singleton(\Alphagov\Notifications\Client::class, function () {
             return new \Alphagov\Notifications\Client([
                 'apiKey' => config('ck.gov_notify_api_key'),
-                'httpClient' => new \Http\Adapter\Guzzle6\Client(),
+                'httpClient' => new \Http\Adapter\Guzzle7\Client()
             ]);
         });
     }
