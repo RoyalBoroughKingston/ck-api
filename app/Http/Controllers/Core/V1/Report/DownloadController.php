@@ -27,6 +27,6 @@ class DownloadController extends Controller
     {
         event(EndpointHit::onRead($request, "Downloaded file for report [{$report->id}]", $report));
 
-        return response()->file($report->file, ['Access-Control-Expose-Headers' => 'Content-Disposition']);
+        return $report->file;
     }
 }

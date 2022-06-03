@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
+        \App\Http\Middleware\ContentDispositionHeader::class
     ];
 
     /**
@@ -41,6 +42,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ContentDispositionHeader::class
         ],
     ];
 
@@ -61,6 +63,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \App\Http\Middleware\ThrottleRequests::class,
         'otp' => \App\Http\Middleware\OtpCodeSent::class,
+        'contentdisposition.headers' => \App\Http\Middleware\ContentDispositionHeader::class
     ];
 
     /**
