@@ -441,6 +441,7 @@ class CollectionPersonasTest extends TestCase
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
             'order' => 4,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
