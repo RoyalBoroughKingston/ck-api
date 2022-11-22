@@ -17,6 +17,7 @@ class CollectionPersonaResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'intro' => $this->meta['intro'],
             'subtitle' => $this->meta['subtitle'],

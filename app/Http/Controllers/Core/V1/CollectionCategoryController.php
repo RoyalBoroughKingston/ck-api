@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionCategory\DestroyRequest;
 use App\Http\Requests\CollectionCategory\IndexRequest;
@@ -54,11 +55,12 @@ class CollectionCategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\CollectionCategory\StoreRequest $request
+     * @param \App\Generators\UniqueSlugGenerator $slugGenerator
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $slugGenerator) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -69,6 +71,7 @@ class CollectionCategoryController extends Controller
 
             // Create the collection record.
             $category = Collection::create([
+                'slug' => $slugGenerator->generate($request->name, table(Collection::class)),
                 'type' => Collection::TYPE_CATEGORY,
                 'name' => $request->name,
                 'meta' => [
@@ -119,9 +122,9 @@ class CollectionCategoryController extends Controller
      * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Collection $collection)
+    public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $collection) {
+        return DB::transaction(function () use ($request, $slugGenerator, $collection) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -132,6 +135,9 @@ class CollectionCategoryController extends Controller
 
             // Update the collection record.
             $collection->update([
+                'slug' => $slugGenerator->compareEquals($request->name, $collection->slug)
+                    ? $collection->slug
+                    : $slugGenerator->generate($request->name, table(Collection::class)),
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,

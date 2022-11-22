@@ -19,6 +19,7 @@ class CollectionPersonaSchema extends Schema
             ->properties(
                 Schema::string('id')
                     ->format(Schema::FORMAT_UUID),
+                Schema::string('slug'),
                 Schema::string('name'),
                 Schema::string('intro'),
                 Schema::string('subtitle'),
