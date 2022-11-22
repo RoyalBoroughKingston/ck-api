@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\CollectionCategory;
 
-use App\Models\Collection;
+use App\Rules\Slug;
 use App\Models\Taxonomy;
+use App\Models\Collection;
 use App\Rules\RootTaxonomyIs;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -31,6 +33,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
+            'slug' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique(table(Collection::class), 'slug')->ignoreModel($this->collection),
+                new Slug(),
+            ],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'intro' => ['required', 'string', 'min:1', 'max:300'],
             'icon' => ['required', 'string', 'min:1', 'max:255'],

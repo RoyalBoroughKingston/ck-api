@@ -141,10 +141,7 @@ class CollectionPersonaController extends Controller
             }, $request->sideboxes ?? []);
 
             // Update the collection record.
-            $collection->update([
-                'slug' => $slugGenerator->compareEquals($request->name, $collection->slug)
-                    ? $collection->slug
-                    : $slugGenerator->generate($request->name, table(Collection::class)),
+            $params = [
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
@@ -155,7 +152,15 @@ class CollectionPersonaController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
-            ]);
+            ];
+
+            if ($request->has('slug')) {
+                $params['slug'] = $slugGenerator->compareEquals($request->slug, $collection->slug)
+                ? $collection->slug
+                : $slugGenerator->generate($request->slug, table(Collection::class));
+            }
+
+            $collection->update($params);
 
             if ($request->filled('image_file_id')) {
                 File::findOrFail($request->image_file_id)->assigned();

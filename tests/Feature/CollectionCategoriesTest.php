@@ -684,6 +684,7 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
@@ -719,6 +720,7 @@ class CollectionCategoriesTest extends TestCase
             'updated_at',
         ]);
         $response->assertJsonFragment([
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
@@ -1005,6 +1007,7 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'icon' => 'info',

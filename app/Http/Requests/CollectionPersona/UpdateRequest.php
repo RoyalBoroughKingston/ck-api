@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\CollectionPersona;
 
-use App\Models\Collection;
+use App\Rules\Slug;
 use App\Models\File;
 use App\Models\Taxonomy;
+use App\Models\Collection;
 use App\Rules\FileIsMimeType;
-use App\Rules\FileIsPendingAssignment;
 use App\Rules\RootTaxonomyIs;
+use Illuminate\Validation\Rule;
+use App\Rules\FileIsPendingAssignment;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -34,6 +36,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
+            'slug' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique(table(Collection::class), 'slug')->ignoreModel($this->collection),
+                new Slug(),
+            ],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'intro' => ['required', 'string', 'min:1', 'max:500'],
             'subtitle' => ['required', 'string', 'min:1', 'max:255'],

@@ -134,10 +134,7 @@ class CollectionCategoryController extends Controller
             }, $request->sideboxes ?? []);
 
             // Update the collection record.
-            $collection->update([
-                'slug' => $slugGenerator->compareEquals($request->name, $collection->slug)
-                    ? $collection->slug
-                    : $slugGenerator->generate($request->name, table(Collection::class)),
+            $params = [
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
@@ -145,7 +142,15 @@ class CollectionCategoryController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
-            ]);
+            ];
+
+            if ($request->has('slug')) {
+                $params['slug'] = $slugGenerator->compareEquals($request->slug, $collection->slug)
+                ? $collection->slug
+                : $slugGenerator->generate($request->slug, table(Collection::class));
+            }
+
+            $collection->update($params);
 
             // Update or create all of the pivot records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
