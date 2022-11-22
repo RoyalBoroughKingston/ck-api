@@ -2,15 +2,15 @@
 
 namespace App\Http\Requests\CollectionPersona;
 
-use App\Rules\Slug;
+use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
-use App\Models\Collection;
 use App\Rules\FileIsMimeType;
-use App\Rules\RootTaxonomyIs;
-use Illuminate\Validation\Rule;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\RootTaxonomyIs;
+use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {

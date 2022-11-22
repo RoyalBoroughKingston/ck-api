@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\CollectionCategory;
 
-use App\Rules\Slug;
-use App\Models\Taxonomy;
 use App\Models\Collection;
+use App\Models\Taxonomy;
 use App\Rules\RootTaxonomyIs;
-use Illuminate\Validation\Rule;
+use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
