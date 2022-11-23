@@ -21,7 +21,6 @@ class CollectionCategorySchema extends Schema
                     ->format(Schema::FORMAT_UUID),
                 Schema::string('name'),
                 Schema::string('intro'),
-                Schema::string('icon'),
                 Schema::integer('order'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
