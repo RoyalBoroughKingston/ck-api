@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\File;
 use App\Models\User;
 use App\Models\Audit;
 use App\Models\Service;
@@ -319,7 +320,7 @@ class CollectionCategoriesTest extends TestCase
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
 
-        $image = factory(File::class)->create([
+        $image = factory(File::class)->states('pending-assignment')->create([
             'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
@@ -384,7 +385,7 @@ class CollectionCategoriesTest extends TestCase
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
 
-        $image = factory(File::class)->create([
+        $image = factory(File::class)->states('pending-assignment')->create([
             'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
@@ -449,7 +450,7 @@ class CollectionCategoriesTest extends TestCase
         // Delete the existing seeded categories.
         $this->truncateCollectionCategories();
 
-        $image = factory(File::class)->create([
+        $image = factory(File::class)->states('pending-assignment')->create([
             'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
@@ -606,7 +607,7 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $image = factory(File::class)->create([
+        $image = factory(File::class)->states('pending-assignment')->create([
             'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
@@ -949,8 +950,8 @@ class CollectionCategoriesTest extends TestCase
         $category = $category->fresh();
         $this->assertEquals($image->id, $category->meta['image_file_id']);
 
-        $content = $this->get("/core/v1/collections/categories/{$category->id}/image.svg")->content();
-        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $content);
+        $content = $this->get("/core/v1/collections/categories/{$category->id}/image.jpg")->content();
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $content);
     }
 
     public function test_global_admin_cannot_update_one_without_an_image()
@@ -961,7 +962,7 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
         $category = Collection::categories()->inRandomOrder()->firstOrFail();
-        $category->enable()->save();
+        $category->save();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
@@ -978,7 +979,7 @@ class CollectionCategoriesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
-            'order' => 1,
+            'order' => $category->order,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -989,7 +990,7 @@ class CollectionCategoriesTest extends TestCase
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'image_file_id' => null,
-            'order' => 1,
+            'order' => $category->order,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1005,7 +1006,7 @@ class CollectionCategoriesTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
         $category = Collection::categories()->inRandomOrder()->firstOrFail();
-        $category->enable()->save();
+        $category->save();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->create([

@@ -12,6 +12,19 @@ if (!function_exists('uuid')) {
     }
 }
 
+if (!function_exists('is_uuid')) {
+    /**
+     * Check a string to see if it is a valid UUID
+     *
+     * @param string $uuid
+     * @return bool
+     **/
+    function is_uuid(string $uuid): bool
+    {
+        return 1 === preg_match('/^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/', $uuid);
+    }
+}
+
 if (!function_exists('random_uk_phone')) {
     /**
      * Generate a random UK phone number.

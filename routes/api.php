@@ -36,6 +36,9 @@ Route::prefix('core/v1')
                     'update' => 'collection-categories.update',
                     'destroy' => 'collection-categories.destroy',
                 ]);
+            Route::get('/collections/categories/{collection}/image.{suffix}', 'CollectionCategory\\ImageController')
+                ->where('suffix', 'png|jpg|jpeg|svg')
+                ->name('collection-categories.image');
 
             // Collection Personas.
             Route::match(['GET', 'POST'], '/collections/personas/index', 'CollectionPersonaController@index');
