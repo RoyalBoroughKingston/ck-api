@@ -1263,14 +1263,14 @@ class CollectionPersonasTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeSuperAdmin();
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
-        $image = Storage::disk('local')->get('/test-data/image.png');
+        $image = Storage::disk('local')->get('/test-data/image.svg');
 
         Passport::actingAs($user);
 
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
-            'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'mime_type' => 'image/svg+xml',
+            'file' => 'data:image/svg+xml;base64,' . base64_encode($image),
         ]);
 
         $response = $this->json('POST', '/core/v1/collections/personas', [
@@ -1285,7 +1285,7 @@ class CollectionPersonasTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $collectionArray = $this->getResponseContent($response)['data'];
-        $content = $this->get("/core/v1/collections/personas/{$collectionArray['id']}/image.png")->content();
+        $content = $this->get("/core/v1/collections/personas/{$collectionArray['id']}/image.svg")->content();
         $this->assertEquals($image, $content);
 
         $this->assertDatabaseHas((new File)->getTable(), [

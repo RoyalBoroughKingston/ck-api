@@ -51,7 +51,8 @@ Route::prefix('core/v1')
                     'update' => 'collection-personas.update',
                     'destroy' => 'collection-personas.destroy',
                 ]);
-            Route::get('/collections/personas/{collection}/image.png', 'CollectionPersona\\ImageController')
+            Route::get('/collections/personas/{collection}/image.{suffix}', 'CollectionPersona\\ImageController')
+                ->where('suffix', 'png|jpg|jpeg|svg')
                 ->name('collection-personas.image');
 
             // Files.
