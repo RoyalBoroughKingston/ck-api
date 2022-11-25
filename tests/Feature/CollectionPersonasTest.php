@@ -820,6 +820,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'slug' => 'test-persona',
             'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',

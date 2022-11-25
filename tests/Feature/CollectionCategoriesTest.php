@@ -839,6 +839,7 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
