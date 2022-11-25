@@ -82,6 +82,7 @@ class CollectionPersonaController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {
@@ -152,6 +153,7 @@ class CollectionPersonaController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
+                'homepage' => $request->homepage,
             ];
 
             if ($request->has('slug')) {

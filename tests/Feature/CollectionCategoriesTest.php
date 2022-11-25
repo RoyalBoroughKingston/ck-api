@@ -34,6 +34,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -158,6 +159,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -175,6 +177,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -199,6 +202,77 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => false,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
+        ]);
+        $response->assertJsonFragment([
+            'id' => $randomCategory->id,
+        ]);
+    }
+
+    public function test_super_admin_can_create_a_homepage_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/categories', [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'homepage' => true,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonResource([
+            'id',
+            'name',
+            'intro',
+            'icon',
+            'order',
+            'homepage',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'homepage' => true,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -226,6 +300,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -237,6 +312,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -248,6 +324,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -262,6 +339,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -288,6 +366,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -299,6 +378,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -310,6 +390,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -324,6 +405,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 2,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -350,6 +432,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -361,6 +444,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -372,6 +456,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -386,6 +471,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 4,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -415,6 +501,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 0,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -437,6 +524,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -448,6 +536,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -462,6 +551,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 4,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -487,6 +577,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
         ]);
@@ -560,6 +651,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -584,6 +676,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => $collectionCategory->meta['intro'],
             'icon' => $collectionCategory->meta['icon'],
             'order' => $collectionCategory->order,
+            'homepage' => $collectionCategory->homepage,
             'sideboxes' => $collectionCategory->meta['sideboxes'],
             'created_at' => $collectionCategory->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $collectionCategory->updated_at->format(CarbonImmutable::ISO8601),
@@ -689,6 +782,68 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => true,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'name',
+            'intro',
+            'icon',
+            'order',
+            'homepage',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'homepage' => true,
+            'sideboxes' => [],
+        ]);
+        $response->assertJsonFragment([
+            'id' => $taxonomy->id,
+        ]);
+    }
+
+    public function test_global_admin_can_update_homepage()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -701,6 +856,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -725,6 +881,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
@@ -747,6 +904,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -758,6 +916,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -769,6 +928,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -784,6 +944,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -809,6 +970,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -820,6 +982,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -831,6 +994,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -846,6 +1010,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 2,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -871,6 +1036,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -882,6 +1048,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -893,6 +1060,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -908,6 +1076,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 3,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -933,6 +1102,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -948,6 +1118,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 0,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -970,6 +1141,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -985,6 +1157,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 2,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1012,6 +1185,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1139,6 +1313,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1150,6 +1325,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1161,6 +1337,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1193,6 +1370,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1204,6 +1382,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1215,6 +1394,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1247,6 +1427,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1258,6 +1439,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1269,6 +1451,7 @@ class CollectionCategoriesTest extends TestCase
             'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',

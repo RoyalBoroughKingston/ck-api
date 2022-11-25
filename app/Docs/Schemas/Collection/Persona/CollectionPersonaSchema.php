@@ -24,6 +24,7 @@ class CollectionPersonaSchema extends Schema
                 Schema::string('intro'),
                 Schema::string('subtitle'),
                 Schema::integer('order'),
+                Schema::boolean('homepage'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(

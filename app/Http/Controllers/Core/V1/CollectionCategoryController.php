@@ -80,6 +80,7 @@ class CollectionCategoryController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
+                'homepage' => $request->homepage,
             ]);
 
             // Create all of the pivot records.
@@ -142,6 +143,7 @@ class CollectionCategoryController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
+                'homepage' => $request->homepage,
             ];
 
             if ($request->has('slug')) {
