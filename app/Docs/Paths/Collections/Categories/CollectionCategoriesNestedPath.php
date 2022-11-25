@@ -24,9 +24,9 @@ class CollectionCategoriesNestedPath extends PathItem
             ->parameters(
                 Parameter::path()
                     ->name('category')
-                    ->description('The ID of the category collection')
+                    ->description('The ID or slug of the category collection')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->operations(
                 ShowCollectionCategoryOperation::create(),

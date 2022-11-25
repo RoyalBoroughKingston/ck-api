@@ -1892,7 +1892,7 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function test_global_admin_cannot_update_slug()
+    public function test_global_admin_can_update_slug()
     {
         $service = factory(Service::class)->create([
             'slug' => 'test-service',

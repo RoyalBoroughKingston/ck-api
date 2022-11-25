@@ -7,8 +7,10 @@ use App\Models\Role;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
 use App\Rules\RootTaxonomyIs;
+use App\Rules\Slug;
 use App\Rules\UserHasRole;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
@@ -34,6 +36,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
+            'slug' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique(table(Collection::class), 'slug')->ignoreModel($this->collection),
+                new Slug(),
+            ],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'intro' => ['required', 'string', 'min:1', 'max:300'],
             'icon' => ['required', 'string', 'min:1', 'max:255'],

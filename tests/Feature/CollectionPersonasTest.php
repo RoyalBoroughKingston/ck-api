@@ -31,6 +31,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCollection([
             'id',
+            'slug',
             'name',
             'intro',
             'subtitle',
@@ -168,6 +169,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'subtitle',
@@ -276,6 +278,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -287,6 +290,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -298,6 +302,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -339,6 +344,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -350,6 +356,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -361,6 +368,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -402,6 +410,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -413,6 +422,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -424,6 +434,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -490,6 +501,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -501,6 +513,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -568,6 +581,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'subtitle',
@@ -593,6 +607,52 @@ class CollectionPersonasTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $persona->id,
+            'slug' => $persona->slug,
+            'name' => $persona->name,
+            'intro' => $persona->meta['intro'],
+            'subtitle' => $persona->meta['subtitle'],
+            'order' => $persona->order,
+            'sideboxes' => $persona->meta['sideboxes'],
+            'created_at' => $persona->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $persona->updated_at->format(CarbonImmutable::ISO8601),
+        ]);
+    }
+
+    public function test_guest_can_view_one_by_slug()
+    {
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+
+        $response = $this->json('GET', "/core/v1/collections/personas/{$persona->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'slug',
+            'name',
+            'intro',
+            'subtitle',
+            'order',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'id' => $persona->id,
+            'slug' => $persona->slug,
             'name' => $persona->name,
             'intro' => $persona->meta['intro'],
             'subtitle' => $persona->meta['subtitle'],
@@ -698,6 +758,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'slug' => 'test-persona',
             'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -759,6 +820,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'slug' => 'test-persona',
             'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -771,6 +833,7 @@ class CollectionPersonasTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'subtitle',
@@ -795,6 +858,7 @@ class CollectionPersonasTest extends TestCase
             'updated_at',
         ]);
         $response->assertJsonFragment([
+            'slug' => 'test-persona',
             'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -819,6 +883,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -831,6 +896,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -843,6 +909,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -857,6 +924,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$third->id}", [
+            'slug' => 'third',
             'name' => 'Third',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -884,6 +952,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -896,6 +965,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -908,6 +978,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -922,6 +993,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$first->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -949,6 +1021,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -961,6 +1034,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -973,6 +1047,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -987,6 +1062,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$first->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -1014,6 +1090,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $persona = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -1028,6 +1105,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -1052,6 +1130,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $persona = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -1066,6 +1145,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -1093,6 +1173,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'slug' => 'test-persona',
             'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
             'subtitle' => 'Subtitle here',
@@ -1222,6 +1303,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -1233,6 +1315,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -1244,6 +1327,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -1276,6 +1360,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -1287,6 +1372,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -1298,6 +1384,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -1330,6 +1417,7 @@ class CollectionPersonasTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'homepage' => false,
@@ -1341,6 +1429,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'homepage' => false,
@@ -1352,6 +1441,7 @@ class CollectionPersonasTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_PERSONA,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'homepage' => false,
@@ -1481,6 +1571,7 @@ class CollectionPersonasTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'slug' => $persona->slug,
             'name' => $persona->name,
             'intro' => $persona->meta['intro'],
             'subtitle' => $persona->meta['subtitle'],
