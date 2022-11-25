@@ -20,7 +20,7 @@ class CollectionCategoryResource extends JsonResource
             'slug' => $this->slug,
             'name' => $this->name,
             'intro' => $this->meta['intro'],
-            'icon' => $this->meta['icon'],
+            'image_file_id' => $this->meta['image_file_id'] ?? null,
             'order' => $this->order,
             'homepage' => $this->homepage,
             'sideboxes' => $this->meta['sideboxes'],

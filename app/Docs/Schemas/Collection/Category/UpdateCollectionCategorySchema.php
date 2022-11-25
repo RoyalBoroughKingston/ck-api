@@ -20,7 +20,7 @@ class UpdateCollectionCategorySchema extends Schema
                 'slug',
                 'name',
                 'intro',
-                'icon',
+                'image_file_id',
                 'order',
                 'sideboxes',
                 'category_taxonomies'
@@ -29,7 +29,6 @@ class UpdateCollectionCategorySchema extends Schema
                 Schema::string('slug'),
                 Schema::string('name'),
                 Schema::string('intro'),
-                Schema::string('icon'),
                 Schema::integer('order'),
                 Schema::boolean('homepage'),
                 Schema::array('sideboxes')
@@ -42,6 +41,10 @@ class UpdateCollectionCategorySchema extends Schema
                                 Schema::string('content')
                             )
                     ),
+                Schema::string('image_file_id')
+                    ->format(Schema::FORMAT_UUID)
+                    ->description('The ID of the file uploaded')
+                    ->nullable(),
                 Schema::array('category_taxonomies')
                     ->items(
                         Schema::string()
