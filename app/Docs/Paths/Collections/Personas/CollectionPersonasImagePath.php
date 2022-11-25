@@ -22,9 +22,9 @@ class CollectionPersonasImagePath extends PathItem
             ->parameters(
                 Parameter::path()
                     ->name('persona')
-                    ->description('The ID of the persona collection')
+                    ->description('The ID or slug of the persona collection')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->operations(
                 ImageCollectionPersonaOperation::create()

@@ -19,6 +19,24 @@ class Collection extends Model
     const TYPE_PERSONA = 'persona';
 
     /**
+     * Attributes that need to be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'homepage' => 'boolean',
+    ];
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'homepage' => false,
+    ];
+
+    /**
      * @return \App\Models\Collection
      */
     public function touchServices(): Collection

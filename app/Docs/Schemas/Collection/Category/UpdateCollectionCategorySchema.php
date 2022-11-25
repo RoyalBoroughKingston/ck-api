@@ -17,6 +17,7 @@ class UpdateCollectionCategorySchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->required(
+                'slug',
                 'name',
                 'intro',
                 'image_file_id',
@@ -25,9 +26,11 @@ class UpdateCollectionCategorySchema extends Schema
                 'category_taxonomies'
             )
             ->properties(
+                Schema::string('slug'),
                 Schema::string('name'),
                 Schema::string('intro'),
                 Schema::integer('order'),
+                Schema::boolean('homepage'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(

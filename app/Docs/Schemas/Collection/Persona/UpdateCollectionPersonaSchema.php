@@ -17,6 +17,7 @@ class UpdateCollectionPersonaSchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->required(
+                'slug',
                 'name',
                 'intro',
                 'subtitle',
@@ -25,10 +26,12 @@ class UpdateCollectionPersonaSchema extends Schema
                 'category_taxonomies'
             )
             ->properties(
+                Schema::string('slug'),
                 Schema::string('name'),
                 Schema::string('intro'),
                 Schema::string('subtitle'),
                 Schema::integer('order'),
+                Schema::boolean('homepage'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(

@@ -32,10 +32,12 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCollection([
             'id',
+            'slug',
             'name',
             'intro',
             'order',
             'image_file_id',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -169,6 +171,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -181,9 +184,11 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'order',
+            'homepage',
             'image_file_id',
             'sideboxes' => [
                 '*' => [
@@ -204,9 +209,92 @@ class CollectionCategoriesTest extends TestCase
             'updated_at',
         ]);
         $response->assertJsonFragment([
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'order' => 1,
+            'homepage' => false,
+            'image_file_id' => $image->id,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
+        ]);
+        $response->assertJsonFragment([
+            'id' => $randomCategory->id,
+        ]);
+    }
+
+    public function test_super_admin_can_create_a_homepage_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        $image = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.svg',
+            'mime_type' => 'image/svg+xml',
+        ]);
+
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+
+        $image->uploadBase64EncodedFile($base64Image);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/categories', [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'homepage' => true,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonResource([
+            'id',
+            'name',
+            'intro',
+            'image_file_id',
+            'order',
+            'homepage',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'slug' => 'test-category',
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'order' => 1,
+            'homepage' => true,
+            'image_file_id' => $image->id,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -336,8 +424,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -345,8 +435,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -354,8 +446,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -369,6 +463,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -401,8 +496,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -410,8 +507,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -419,8 +518,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -434,6 +535,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 2,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -466,8 +568,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -475,8 +579,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -484,8 +590,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -499,6 +607,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 4,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -537,6 +646,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 0,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -565,8 +675,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -574,8 +686,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -589,6 +703,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 4,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -623,6 +738,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
         ]);
@@ -647,9 +763,11 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'order',
+            'homepage',
             'image_file_id',
             'sideboxes' => [
                 '*' => [
@@ -671,9 +789,59 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $collectionCategory->id,
+            'slug' => $collectionCategory->slug,
             'name' => $collectionCategory->name,
             'intro' => $collectionCategory->meta['intro'],
             'order' => $collectionCategory->order,
+            'homepage' => $collectionCategory->homepage,
+            'image_file_id' => $collectionCategory->image_file_id,
+            'sideboxes' => $collectionCategory->meta['sideboxes'],
+            'created_at' => $collectionCategory->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $collectionCategory->updated_at->format(CarbonImmutable::ISO8601),
+        ]);
+    }
+
+    public function test_guest_can_view_one_by_slug()
+    {
+        $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
+
+        $response = $this->json('GET', "/core/v1/collections/categories/{$collectionCategory->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'slug',
+            'name',
+            'intro',
+            'order',
+            'homepage',
+            'image_file_id',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collectionCategory->id,
+            'slug' => $collectionCategory->slug,
+            'name' => $collectionCategory->name,
+            'intro' => $collectionCategory->meta['intro'],
+            'order' => $collectionCategory->order,
+            'homepage' => $collectionCategory->homepage,
+            'image_file_id' => $collectionCategory->image_file_id,
             'sideboxes' => $collectionCategory->meta['sideboxes'],
             'created_at' => $collectionCategory->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $collectionCategory->updated_at->format(CarbonImmutable::ISO8601),
@@ -752,11 +920,11 @@ class CollectionCategoriesTest extends TestCase
         $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random() . '.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
-        $base64Image = 'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
+        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -903,10 +1071,12 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => true,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -916,8 +1086,9 @@ class CollectionCategoriesTest extends TestCase
             'id',
             'name',
             'intro',
-            'order',
             'image_file_id',
+            'order',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -941,6 +1112,79 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => true,
+            'sideboxes' => [],
+        ]);
+        $response->assertJsonFragment([
+            'id' => $taxonomy->id,
+        ]);
+    }
+
+    public function test_global_admin_can_update_homepage()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        $image = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.png',
+            'mime_type' => 'image/jpeg',
+        ]);
+
+        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
+
+        $image->uploadBase64EncodedFile($base64Image);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'slug',
+            'name',
+            'intro',
+            'order',
+            'image_file_id',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'slug' => 'test-category',
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
@@ -977,9 +1221,11 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'order' => $category->order,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -987,10 +1233,12 @@ class CollectionCategoriesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'image_file_id' => null,
             'order' => $category->order,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1021,10 +1269,12 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1054,10 +1304,12 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1088,8 +1340,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeGlobalAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1097,8 +1351,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1106,8 +1362,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1117,9 +1375,11 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$third->id}", [
+            'slug' => 'third',
             'name' => 'Third',
             'intro' => 'Lorem ipsum',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1142,8 +1402,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1151,8 +1413,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1160,8 +1424,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1171,9 +1437,11 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$third->id}", [
+            'slug' => 'third',
             'name' => 'Third',
             'intro' => 'Lorem ipsum',
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1196,8 +1464,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1205,8 +1475,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1214,8 +1486,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1225,9 +1499,11 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$first->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 2,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1250,8 +1526,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1259,8 +1537,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1268,8 +1548,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1279,9 +1561,11 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$first->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 3,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1304,8 +1588,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $category = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1315,9 +1601,11 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 0,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1337,8 +1625,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $category = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1348,9 +1638,11 @@ class CollectionCategoriesTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 2,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1370,12 +1662,24 @@ class CollectionCategoriesTest extends TestCase
         $category = Collection::categories()->inRandomOrder()->firstOrFail();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
+        $image = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.svg',
+            'mime_type' => 'image/svg+xml',
+        ]);
+
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+
+        $image->uploadBase64EncodedFile($base64Image);
+
         Passport::actingAs($user);
 
         $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'slug' => 'test-category',
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
             'order' => 1,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1500,8 +1804,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1509,8 +1815,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1518,8 +1826,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1548,8 +1858,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1557,8 +1869,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1566,8 +1880,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1596,8 +1912,10 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1605,8 +1923,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
@@ -1614,8 +1934,10 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'sideboxes' => [],
