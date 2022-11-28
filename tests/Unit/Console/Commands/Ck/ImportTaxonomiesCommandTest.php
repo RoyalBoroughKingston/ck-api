@@ -71,7 +71,7 @@ class ImportTaxonomiesCommandTest extends TestCase
             $parentUuid = $this->taxonomyRecords[$recordKey][2] === Taxonomy::category()->id? Taxonomy::category()->id : array_search($this->taxonomyRecords[$parentKey][1], array_column($associativeRecords, 'name', 'id'));
             $this->assertEquals(
                 [
-                    'id' => $uuid,
+                    'id' => $record['id'],
                     'name' => $this->taxonomyRecords[$recordKey][1],
                     'parent_id' => $parentUuid,
                     'order' => 0,
@@ -136,7 +136,7 @@ class ImportTaxonomiesCommandTest extends TestCase
 
         $cmd = new ImportTaxonomiesCommand();
 
-        $recordsWithDepth = $cmd->calculateTaxonomyDepth(['level-0-0'], $records);
+        $recordsWithDepth = $cmd->calculateTaxonomyDepth(['level-0-0'], $records, 1);
 
         $this->assertEquals(1, $recordsWithDepth['level-0-0']['depth']);
         $this->assertEquals(2, $recordsWithDepth['level-1-0']['depth']);
@@ -160,6 +160,7 @@ class ImportTaxonomiesCommandTest extends TestCase
 
         $cmd = new ImportTaxonomiesCommand($params);
         $taxonomyRecords = $cmd->mapToUuidKeys($this->taxonomyRecords);
+
 
         $taxonomyRecords = $cmd->mapTaxonomyDepth($taxonomyRecords);
 
