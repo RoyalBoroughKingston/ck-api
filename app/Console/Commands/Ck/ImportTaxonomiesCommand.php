@@ -2,19 +2,19 @@
 
 namespace App\Console\Commands\Ck;
 
+use App\Models\CollectionTaxonomy;
+use App\Models\ServiceTaxonomy;
+use App\Models\Taxonomy;
+use App\Models\UpdateRequest;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\Models\Taxonomy;
-use Illuminate\Support\Str;
-use App\Models\UpdateRequest;
-use App\Models\ServiceTaxonomy;
 use Illuminate\Console\Command;
-use App\Models\CollectionTaxonomy;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class ImportTaxonomiesCommand extends Command
 {
@@ -56,66 +56,66 @@ class ImportTaxonomiesCommand extends Command
     protected $csvHeaders;
 
     /**
-    * The taxonomy which will be used as the root
-    *
-    * @var \App\Models\Taxonomy
-    **/
+     * The taxonomy which will be used as the root
+     *
+     * @var \App\Models\Taxonomy
+     **/
     protected $rootTaxonomy;
 
     /**
-    * The URL to fetch the csv import file from
-    *
-    * @var string
-    **/
+     * The URL to fetch the csv import file from
+     *
+     * @var string
+     **/
     protected $csvUrl;
 
     /**
-    * Flag to indicate if the first row of the import should be ignored
-    *
-    * @var bool
-    **/
+     * Flag to indicate if the first row of the import should be ignored
+     *
+     * @var bool
+     **/
     protected $firstRowLabels;
 
     /**
-    * The column index for the parent relationship
-    *
-    * @var int
-    **/
+     * The column index for the parent relationship
+     *
+     * @var int
+     **/
     protected $parentIdColumn;
 
     /**
-    * The column index for the unique taxonomy identifier
-    *
-    * @var int
-    **/
+     * The column index for the unique taxonomy identifier
+     *
+     * @var int
+     **/
     protected $taxonomyIdColumn;
 
     /**
-    * The column index for the taxonomy name
-    *
-    * @var int
-    **/
+     * The column index for the taxonomy name
+     *
+     * @var int
+     **/
     protected $taxonomyNameColumn;
 
     /**
-    * Ignore duplicate imports, no duplicate warning
-    *
-    * @var bool
-    **/
+     * Ignore duplicate imports, no duplicate warning
+     *
+     * @var bool
+     **/
     protected $ignoreDuplicates = false;
 
     /**
-    * Should the current taxonomies be deleted first?
-    *
-    * @var bool
-    **/
+     * Should the current taxonomies be deleted first?
+     *
+     * @var bool
+     **/
     protected $refresh = false;
 
     /**
-    * Dry run: no taxonomies will be created
-    *
-    * @var bool
-    **/
+     * Dry run: no taxonomies will be created
+     *
+     * @var bool
+     **/
     protected $dryRun = false;
 
     /**
@@ -182,18 +182,20 @@ class ImportTaxonomiesCommand extends Command
     public function manageParameters()
     {
         if (!preg_match("/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $this->argument('url'))) {
-            $this->error("The CSV file URL is invalid. Exiting");
+            $this->error('The CSV file URL is invalid. Exiting');
+
             return false;
         }
         $this->csvUrl = $this->argument('url');
 
         if (!is_numeric($this->argument('id-column')) || !is_numeric($this->argument('name-column')) || !(is_null($this->option('parent-column')) || is_numeric($this->option('parent-column')))) {
             $this->error('Column number references should be numeric');
+
             return false;
         }
         $this->taxonomyIdColumn = $this->argument('id-column') - 1;
         $this->taxonomyNameColumn = $this->argument('name-column') - 1;
-        $this->parentIdColumn = $this->option('parent-column')? $this->option('parent-column') - 1 : null;
+        $this->parentIdColumn = $this->option('parent-column') ? $this->option('parent-column') - 1 : null;
 
         if (empty($this->option('root-id'))) {
             $this->rootTaxonomy = Taxonomy::category();
@@ -201,11 +203,13 @@ class ImportTaxonomiesCommand extends Command
             $this->rootTaxonomy = Taxonomy::find($this->option('root-id'));
         } else {
             $this->error('The root category does not exist. Exiting');
+
             return false;
         }
 
         if ($this->ignoreDuplicates && $this->refresh) {
             $this->error('Do not use the options --ignore-duplicates and --refresh together as some taxonomies may not be imported');
+
             return false;
         }
 
@@ -295,7 +299,7 @@ class ImportTaxonomiesCommand extends Command
      * @return string[]|false
      * @author https://www.php.net/manual/en/function.str-getcsv.php#111665
      */
-    protected function parse_csv($csv_string, $delimiter = ",", $skip_empty_lines = true, $trim_fields = true)
+    protected function parse_csv($csv_string, $delimiter = ',', $skip_empty_lines = true, $trim_fields = true)
     {
         $enc = preg_replace('/(?<!")""/', '!!Q!!', $csv_string);
         $enc = preg_replace_callback(
@@ -306,9 +310,11 @@ class ImportTaxonomiesCommand extends Command
             $enc
         );
         $lines = preg_split($skip_empty_lines ? ($trim_fields ? '/( *\R)+/s' : '/\R+/s') : '/\R/s', $enc);
+
         return array_map(
             function ($line) use ($delimiter, $trim_fields) {
                 $fields = $trim_fields ? array_map('trim', explode($delimiter, $line)) : explode($delimiter, $line);
+
                 return array_map(
                     function ($field) {
                         return str_replace('!!Q!!', '"', utf8_decode(urldecode($field)));
@@ -426,7 +432,7 @@ class ImportTaxonomiesCommand extends Command
         $existingTaxonomyIds = DB::table((new Taxonomy())->getTable(), 'taxonomies')
         ->join((new Taxonomy())->getTable() . ' as parents', 'parents.id', '=', 'taxonomies.parent_id')
         ->where('taxonomies.name', trim($record[$this->taxonomyNameColumn]))
-        ->where('parents.name', $this->parentIdColumn? $taxonomyNames->get($record[$this->parentIdColumn]) : $this->rootTaxonomy->name)
+        ->where('parents.name', $this->parentIdColumn ? $taxonomyNames->get($record[$this->parentIdColumn]) : $this->rootTaxonomy->name)
         ->pluck('taxonomies.id');
         if (!$this->refresh && count($existingTaxonomyIds)) {
             foreach ($existingTaxonomyIds as $taxonomyId) {
@@ -448,6 +454,7 @@ class ImportTaxonomiesCommand extends Command
     public function taxonomyAncestors(string $taxonomyId): array
     {
         $taxonomyTable = (new Taxonomy)->getTable();
+
         return collect(DB::select(
             'SELECT T2.id
             FROM (
@@ -482,7 +489,7 @@ class ImportTaxonomiesCommand extends Command
                 $record[$this->taxonomyIdColumn] => [
                     'id' => (string) Str::uuid(),
                     'name' => $record[$this->taxonomyNameColumn],
-                    'parent_id' => ($this->parentIdColumn && !empty($record[$this->parentIdColumn]))? $record[$this->parentIdColumn] : $this->rootTaxonomy->id,
+                    'parent_id' => ($this->parentIdColumn && !empty($record[$this->parentIdColumn])) ? $record[$this->parentIdColumn] : $this->rootTaxonomy->id,
                     'order' => 0,
                     'depth' => 1,
                     'created_at' => Carbon::now()->toDateTimeString(),
@@ -495,6 +502,7 @@ class ImportTaxonomiesCommand extends Command
             if ($record['parent_id'] !== $this->rootTaxonomy->id) {
                 $record['parent_id'] = $taxonomies->get($record['parent_id'])['id'];
             }
+
             return [$key => $record];
         })
         ->mapWithKeys(function ($record, $key) {
