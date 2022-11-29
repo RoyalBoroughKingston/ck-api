@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BatchUpload;
+namespace App\BatchImport;
 
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;

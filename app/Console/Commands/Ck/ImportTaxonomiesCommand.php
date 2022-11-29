@@ -166,7 +166,7 @@ class ImportTaxonomiesCommand extends Command
                 $this->info('All records imported. Total records imported: ' . $importCount);
             }
         } else {
-            $this->info('Spreadsheet could not be uploaded');
+            $this->warn('Spreadsheet could not be uploaded');
         }
 
         if ($this->dryRun) {
@@ -365,6 +365,10 @@ class ImportTaxonomiesCommand extends Command
             $this->info('Commiting transaction');
             DB::commit();
         }
+
+        $this->rootTaxonomy->refresh();
+
+        $this->rootTaxonomy->updateDepth();
 
         return count($taxonomyImports);
     }

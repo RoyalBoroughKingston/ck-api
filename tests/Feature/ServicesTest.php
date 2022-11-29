@@ -2467,9 +2467,9 @@ class ServicesTest extends TestCase
 
     public function test_guest_can_list_related()
     {
-        $taxonomyOne = Taxonomy::category()->children()->first()->children()->skip(0)->take(1)->first();
-        $taxonomyTwo = Taxonomy::category()->children()->first()->children()->skip(1)->take(1)->first();
-        $taxonomyThree = Taxonomy::category()->children()->first()->children()->skip(2)->take(1)->first();
+        $taxonomyOne = factory(Taxonomy::class)->states('lga-standards')->create();
+        $taxonomyTwo = factory(Taxonomy::class)->states('lga-standards')->create();
+        $taxonomyThree = factory(Taxonomy::class)->states('lga-standards')->create();
 
         $service = factory(Service::class)->create();
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomyOne->id]);
