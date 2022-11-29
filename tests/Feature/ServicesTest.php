@@ -468,7 +468,7 @@ class ServicesTest extends TestCase
 
     public function test_taxonomy_hierarchy_works_when_creating()
     {
-        $taxonomy = Taxonomy::category()->children()->firstOrFail()->children()->firstOrFail();
+        $taxonomy = factory(Taxonomy::class)->states('lga-standards')->create();
 
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create()->makeGlobalAdmin();

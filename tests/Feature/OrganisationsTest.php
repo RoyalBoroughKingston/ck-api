@@ -206,6 +206,62 @@ class OrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function test_global_admin_can_create_one_with_taxonomies()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        $taxonomy = factory(Taxonomy::class)->states('lga-standards')->create();
+
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => null,
+            'category_taxonomies' => [$taxonomy->id],
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/organisations', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $organisation = Organisation::findOrFail($response->json('data.id'));
+        $this->assertDatabaseHas(table(OrganisationTaxonomy::class), [
+            'organisation_id' => $organisation->id,
+            'taxonomy_id' => $taxonomy->id,
+        ]);
+        $this->assertDatabaseHas(table(OrganisationTaxonomy::class), [
+            'organisation_id' => $organisation->id,
+            'taxonomy_id' => $taxonomy->parent_id,
+        ]);
+
+        $responsePayload = $payload;
+        $responsePayload['category_taxonomies'] = [
+            [
+                'id' => $taxonomy->parent->id,
+                'parent_id' => $taxonomy->parent->parent_id,
+                'name' => $taxonomy->parent->name,
+                'created_at' => $taxonomy->parent->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $taxonomy->parent->updated_at->format(CarbonImmutable::ISO8601),
+            ],
+            [
+                'id' => $taxonomy->id,
+                'parent_id' => $taxonomy->parent_id,
+                'name' => $taxonomy->name,
+                'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
+            ],
+        ];
+        $response->assertJsonFragment($responsePayload);
+    }
+
     public function test_audit_created_when_created()
     {
         $this->fakeEvents();
