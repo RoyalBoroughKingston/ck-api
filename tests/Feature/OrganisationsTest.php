@@ -2,19 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
+use Tests\TestCase;
 use App\Models\File;
-use App\Models\Organisation;
-use App\Models\Service;
-use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Service;
+use App\Models\Taxonomy;
+use App\Events\EndpointHit;
 use Carbon\CarbonImmutable;
+use App\Models\Organisation;
+use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
 
 class OrganisationsTest extends TestCase
 {

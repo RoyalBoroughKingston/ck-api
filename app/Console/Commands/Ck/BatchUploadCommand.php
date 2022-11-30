@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Ck;
 
-use App\BatchUpload\BatchUploader;
+use App\BatchImport\BatchUploader;
 use Illuminate\Console\Command;
 
 class BatchUploadCommand extends Command
@@ -22,7 +22,7 @@ class BatchUploadCommand extends Command
     protected $description = 'Uploads an xlsx spreadsheet to the database';
 
     /**
-     * @var \App\BatchUpload\BatchUploader
+     * @var \App\BatchImport\BatchUploader
      */
     protected $batchUploader;
 
