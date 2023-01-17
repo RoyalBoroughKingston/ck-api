@@ -463,6 +463,41 @@ class ReferralsTest extends TestCase
         });
     }
 
+    /**
+    * @test
+    */
+    public function guestCannotCreateReferralWhenApplicationisDownForMaintenance503()
+    {
+        $this->artisan('down');
+
+        $service = factory(Service::class)->create([
+            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'referral_email' => $this->faker->safeEmail,
+        ]);
+
+        sleep(1);
+
+        $response = $this->json('POST', '/core/v1/referrals', [
+            'service_id' => $service->id,
+            'name' => $this->faker->name,
+            'email' => $this->faker->safeEmail,
+            'phone' => null,
+            'other_contact' => null,
+            'postcode_outward_code' => null,
+            'comments' => null,
+            'referral_consented' => true,
+            'feedback_consented' => false,
+            'referee_name' => $this->faker->name,
+            'referee_email' => $this->faker->safeEmail,
+            'referee_phone' => random_uk_phone(),
+            'organisation' => $this->faker->company,
+        ]);
+
+        $response->assertStatus(Response::HTTP_SERVICE_UNAVAILABLE);
+
+        $this->artisan('up');
+    }
+
     /*
      * Get a specific referral.
      */

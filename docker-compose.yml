@@ -67,12 +67,12 @@ services:
     command: mysqld --general-log=1 --general-log-file=/var/log/mysql/general-log.log
 
   redis:
-    image: grokzen/redis-cluster:5.0.5
+    image: grokzen/redis-cluster:6.0.16
     volumes:
       - redis-data:/data
 
   redis-testing:
-    image: grokzen/redis-cluster:5.0.5
+    image: grokzen/redis-cluster:6.0.16
 
   elasticsearch:
     image: elasticsearch:7.9.3
