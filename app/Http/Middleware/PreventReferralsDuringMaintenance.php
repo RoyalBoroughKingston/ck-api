@@ -9,6 +9,7 @@ class PreventReferralsDuringMaintenance extends PreventRequestsDuringMaintenance
 {
     /**
      * Reject calls to referrals api if the app is in maintenance mode
+     * This allows the frontend to function in maintenance mode but not make changes to the db
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
