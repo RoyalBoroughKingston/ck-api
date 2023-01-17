@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 class PreventReferralsDuringMaintenance extends PreventRequestsDuringMaintenance
 {
     /**
-     * Handle an incoming request.
+     * Reject calls to referrals api if the app is in maintenance mode
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
