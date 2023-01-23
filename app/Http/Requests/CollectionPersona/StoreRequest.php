@@ -38,6 +38,7 @@ class StoreRequest extends FormRequest
             'intro' => ['required', 'string', 'min:1', 'max:500'],
             'subtitle' => ['required', 'string', 'min:1', 'max:255'],
             'order' => ['required', 'integer', 'min:1', 'max:' . (Collection::personas()->count() + 1)],
+            'homepage' => ['required', 'boolean'],
             'sideboxes' => ['present', 'array', 'max:3'],
             'sideboxes.*' => ['array'],
             'sideboxes.*.title' => ['required_with:sideboxes.*', 'string'],
@@ -46,7 +47,7 @@ class StoreRequest extends FormRequest
             'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'image_file_id' => [
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_JPEG, File::MIME_TYPE_SVG),
                 new FileIsPendingAssignment(),
             ],
         ];

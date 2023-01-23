@@ -19,6 +19,24 @@ class Collection extends Model
     const TYPE_PERSONA = 'persona';
 
     /**
+     * Attributes that need to be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'homepage' => 'boolean',
+    ];
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'homepage' => false,
+    ];
+
+    /**
      * @return \App\Models\Collection
      */
     public function touchServices(): Collection
@@ -43,6 +61,24 @@ class Collection extends Model
         }
 
         return $this;
+    }
+
+    /**
+     * @param int|null $maxDimension
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     */
+    public static function categoryPlaceholderLogo(int $maxDimension = null)
+    {
+        if ($maxDimension !== null) {
+            return File::resizedPlaceholder($maxDimension, File::META_PLACEHOLDER_FOR_COLLECTION_CATEGORY);
+        }
+
+        return response()->make(
+            Storage::disk('local')->get('/placeholders/collection_category.png'),
+            Response::HTTP_OK,
+            ['Content-Type' => File::MIME_TYPE_PNG]
+        );
     }
 
     /**

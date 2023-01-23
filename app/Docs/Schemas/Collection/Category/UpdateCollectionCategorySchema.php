@@ -17,18 +17,20 @@ class UpdateCollectionCategorySchema extends Schema
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
             ->required(
+                'slug',
                 'name',
                 'intro',
-                'icon',
+                'image_file_id',
                 'order',
                 'sideboxes',
                 'category_taxonomies'
             )
             ->properties(
+                Schema::string('slug'),
                 Schema::string('name'),
                 Schema::string('intro'),
-                Schema::string('icon'),
                 Schema::integer('order'),
+                Schema::boolean('homepage'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(
@@ -39,6 +41,10 @@ class UpdateCollectionCategorySchema extends Schema
                                 Schema::string('content')
                             )
                     ),
+                Schema::string('image_file_id')
+                    ->format(Schema::FORMAT_UUID)
+                    ->description('The ID of the file uploaded')
+                    ->nullable(),
                 Schema::array('category_taxonomies')
                     ->items(
                         Schema::string()

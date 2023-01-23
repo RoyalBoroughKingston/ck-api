@@ -17,10 +17,12 @@ class CollectionPersonaResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'intro' => $this->meta['intro'],
             'subtitle' => $this->meta['subtitle'],
             'order' => $this->order,
+            'homepage' => $this->homepage,
             'sideboxes' => $this->meta['sideboxes'],
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
             'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),

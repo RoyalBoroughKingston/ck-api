@@ -16,3 +16,18 @@ $factory->state(App\Models\File::class, 'pending-assignment', [
         'type' => \App\Models\File::META_TYPE_PENDING_ASSIGNMENT,
     ],
 ]);
+
+$factory->state(App\Models\File::class, 'image-png', [
+    'filename' => Str::random() . '.png',
+    'mime_type' => 'image/png',
+]);
+
+$factory->state(App\Models\File::class, 'image-jpg', [
+    'filename' => Str::random() . '.jpg',
+    'mime_type' => 'image/jpeg',
+]);
+
+$factory->state(App\Models\File::class, 'image-svg', [
+    'filename' => Str::random() . '.svg',
+    'mime_type' => 'image/svg+xml',
+]);

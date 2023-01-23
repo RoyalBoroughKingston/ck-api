@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionCategory\DestroyRequest;
 use App\Http\Requests\CollectionCategory\IndexRequest;
@@ -12,6 +13,7 @@ use App\Http\Requests\CollectionCategory\UpdateRequest;
 use App\Http\Resources\CollectionCategoryResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
+use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -54,11 +56,12 @@ class CollectionCategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\CollectionCategory\StoreRequest $request
+     * @param \App\Generators\UniqueSlugGenerator $slugGenerator
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $slugGenerator) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -69,15 +72,21 @@ class CollectionCategoryController extends Controller
 
             // Create the collection record.
             $category = Collection::create([
+                'slug' => $slugGenerator->generate($request->name, table(Collection::class)),
                 'type' => Collection::TYPE_CATEGORY,
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
-                    'icon' => $request->icon,
+                    'image_file_id' => $request->image_file_id,
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
+                'homepage' => $request->homepage,
             ]);
+
+            if ($request->filled('image_file_id')) {
+                File::findOrFail($request->image_file_id)->assigned();
+            }
 
             // Create all of the pivot records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
@@ -119,9 +128,9 @@ class CollectionCategoryController extends Controller
      * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Collection $collection)
+    public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $collection) {
+        return DB::transaction(function () use ($request, $slugGenerator, $collection) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -130,16 +139,35 @@ class CollectionCategoryController extends Controller
                 ];
             }, $request->sideboxes ?? []);
 
+            if ($request->filled('image_file_id') && $request->image_file_id !== ($collection->meta['image_file_id']?? null)) {
+                File::findOrFail($request->image_file_id)->assigned();
+            }
+
             // Update the collection record.
-            $collection->update([
+            $params = [
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
-                    'icon' => $request->icon,
+                    'image_file_id' => $request->has('image_file_id')
+                        ? $request->image_file_id
+                        : $collection->meta['image_file_id'] ?? null,
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
-            ]);
+                'homepage' => $request->homepage,
+            ];
+
+            if ($request->has('slug')) {
+                $params['slug'] = $slugGenerator->compareEquals($request->slug, $collection->slug)
+                ? $collection->slug
+                : $slugGenerator->generate($request->slug, table(Collection::class));
+            }
+
+            $collection->update($params);
+
+            if ($request->filled('image_file_id') && $request->image_file_id !== $collection->meta['image_file_id']) {
+                File::findOrFail($request->image_file_id)->assigned();
+            }
 
             // Update or create all of the pivot records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
