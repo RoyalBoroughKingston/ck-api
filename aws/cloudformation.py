@@ -1,184 +1,266 @@
-# ==================================================
-# This stack creates the API infrastructure.
-# ==================================================
-from troposphere import Template, Parameter, Ref, GetAtt, Join, Output
-import troposphere.s3 as s3
-import troposphere.iam as iam
-import troposphere.sqs as sqs
 import uuid
+import json
+from template import create_template
 
-# ==================================================
-# Template details.
-# ==================================================
-template = Template('Create the infrastructure needed to run the Connected Kingston API')
-template.add_version('2010-09-09')
+from parameters import create_uuid_parameter, create_environment_parameter, create_certificate_arn_parameter, \
+    create_vpc_parameter, create_cname_parameter, create_database_username_parameter,\
+    create_subnets_parameter, create_database_password_parameter, create_database_class_parameter, \
+    create_database_allocated_storage_parameter, create_redis_node_class_parameter, create_redis_nodes_count_parameter, \
+    create_api_instance_class_parameter, create_api_instance_count_parameter, create_api_task_count_parameter, \
+    create_scheduler_task_count_parameter, create_queue_worker_task_count_parameter, \
+    create_elasticsearch_instance_class_parameter, create_elasticsearch_instance_count_parameter
 
-# ==================================================
+from variables import create_default_queue_name_variable, create_notifications_queue_name_variable, \
+    create_search_queue_name_variable, create_uploads_bucket_name_variable, create_api_launch_template_name_variable, \
+    create_docker_repository_name_variable, create_api_log_group_name_variable, create_queue_worker_log_group_name_variable, \
+    create_scheduler_log_group_name_variable, create_elasticsearch_log_group_name_variable, create_api_task_definition_family_variable, \
+    create_queue_worker_task_definition_family_variable, create_scheduler_task_definition_family_variable, \
+    create_api_user_name_variable, create_ci_user_name_variable, create_api_name_variable, create_elasticsearch_domain_name_variable, create_elasticsearch_log_access_policy_lambda_name_variable
+
+from resources import create_load_balancer_security_group_resource, create_api_security_group_resource, \
+    create_database_security_group_resource, create_redis_security_group_resource, create_database_subnet_group_resource, \
+    create_database_resource, create_redis_subnet_group_resource, create_redis_resource, create_default_queue_resource, \
+    create_notifications_queue_resource, create_search_queue_resource, create_uploads_bucket_resource, \
+    create_ecs_cluster_role_resource, create_ec2_instance_profile_resource, create_ecs_cluster_resource, \
+    create_launch_template_resource, create_docker_repository_resource, create_api_log_group_resource, \
+    create_queue_worker_log_group_resource, create_scheduler_log_group_resource, create_elasticsearch_log_group_resource, create_elasticsearch_lambda_log_group_resource, create_api_task_definition_resource, \
+    create_queue_worker_task_definition_resource, create_scheduler_task_definition_resource, create_load_balancer_resource, \
+    create_api_target_group_resource, create_load_balancer_listener_resource, create_ecs_service_role_resource, \
+    create_api_service_resource, create_queue_worker_service_resource, create_scheduler_service_resource, \
+    create_autoscaling_group_resource, create_api_user_resource, create_ci_user_resource, \
+    create_elasticsearch_security_group_resource, create_elasticsearch_lambda_execution_role_resource, \
+    create_elasticsearch_lambda_log_group_policy_function_resource, create_elasticsearch_log_group_policy_custom_resource, \
+    create_elasticsearch_resource
+
+from outputs import create_database_name_output, create_database_username_output, create_database_host_output, \
+    create_database_port_output, create_redis_host_output, create_redis_port_output, create_default_queue_url_output, \
+    create_default_queue_output, create_notifications_queue_output, create_load_balancer_domain_output, create_elasticsearch_host_output, \
+    create_docker_repository_uri_output, create_docker_cluster_name_output, \
+    create_uploads_bucket_name_output
+
+# UUID.
+uuid = str(uuid.uuid4())
+
+# Template.
+api_name = create_api_name_variable()
+template = create_template(api_name)
+
 # Parameters.
-# ==================================================
-uuid_parameter = template.add_parameter(
-  Parameter(
-    'Uuid',
-    Type='String',
-    Default=str(uuid.uuid4()),
-    Description='The unique ID for this stack.',
-    MinLength='36',
-    MaxLength='36'
-  )
-)
+uuid_parameter = create_uuid_parameter(template, uuid)
+environment_parameter = create_environment_parameter(template)
+cname_parameter = create_cname_parameter(template)
+certificate_arn_parameter = create_certificate_arn_parameter(template)
+vpc_parameter = create_vpc_parameter(template)
+subnets_parameter = create_subnets_parameter(template)
+database_username_parameter = create_database_username_parameter(template)
+database_password_parameter = create_database_password_parameter(template)
+database_class_parameter = create_database_class_parameter(template)
+database_allocated_storage_parameter = create_database_allocated_storage_parameter(
+    template)
+redis_node_class_parameter = create_redis_node_class_parameter(template)
+redis_nodes_count_parameter = create_redis_nodes_count_parameter(template)
+api_instance_class_parameter = create_api_instance_class_parameter(template)
+api_instance_count_parameter = create_api_instance_count_parameter(template)
+api_task_count_parameter = create_api_task_count_parameter(template)
+scheduler_task_count_parameter = create_scheduler_task_count_parameter(
+    template)
+queue_worker_task_count_parameter = create_queue_worker_task_count_parameter(
+    template)
+elasticsearch_instance_class_parameter = create_elasticsearch_instance_class_parameter(
+    template)
+elasticsearch_instance_count_parameter = create_elasticsearch_instance_count_parameter(
+    template)
 
-environment_parameter = template.add_parameter(
-  Parameter(
-    'Environment',
-    Type='String',
-    Description='The environment this stack is for (e.g. production or staging).',
-    MinLength='1'
-  )
-)
-
-# ==================================================
 # Variables.
-# ==================================================
-bucket_name_variable = Join('-', ['api', Ref(environment_parameter), Ref(uuid_parameter)])
-default_queue_name_variable = Join('-', [Ref(environment_parameter), 'default'])
-notifications_queue_name_variable = Join('-', [Ref(environment_parameter), 'notifications'])
-search_queue_name_variable = Join('-', [Ref(environment_parameter), 'search'])
-ci_user_name_variable = Join('-', ['ci-api', Ref(environment_parameter)])
-api_user_name_variable = Join('-', ['api', Ref(environment_parameter)])
+default_queue_name_variable = create_default_queue_name_variable(
+    environment_parameter, uuid_parameter)
+notifications_queue_name_variable = create_notifications_queue_name_variable(
+    environment_parameter, uuid_parameter)
+search_queue_name_variable = create_search_queue_name_variable(
+    environment_parameter, uuid_parameter)
+uploads_bucket_name_variable = create_uploads_bucket_name_variable(
+    environment_parameter, uuid_parameter)
+api_launch_template_name_variable = create_api_launch_template_name_variable(
+    environment_parameter)
+docker_repository_name_variable = create_docker_repository_name_variable(
+    environment_parameter, uuid_parameter)
+api_log_group_name_variable = create_api_log_group_name_variable(
+    environment_parameter)
+queue_worker_log_group_name_variable = create_queue_worker_log_group_name_variable(
+    environment_parameter)
+scheduler_log_group_name_variable = create_scheduler_log_group_name_variable(
+    environment_parameter)
+elasticsearch_log_group_name_variable = create_elasticsearch_log_group_name_variable(
+    environment_parameter)
+api_task_definition_family_variable = create_api_task_definition_family_variable(
+    environment_parameter)
+queue_worker_task_definition_family_variable = create_queue_worker_task_definition_family_variable(
+    environment_parameter)
+scheduler_task_definition_family_variable = create_scheduler_task_definition_family_variable(
+    environment_parameter)
+api_user_name_variable = create_api_user_name_variable(environment_parameter)
+ci_user_name_variable = create_ci_user_name_variable(environment_parameter)
+elasticsearch_domain_name_variable = create_elasticsearch_domain_name_variable(
+    environment_parameter)
+elasticsearch_log_access_policy_lambda_name_variable = create_elasticsearch_log_access_policy_lambda_name_variable(
+    environment_parameter)
 
-# ==================================================
 # Resources.
-# ==================================================
-bucket_resource = template.add_resource(
-  s3.Bucket(
-    'Bucket',
-    AccessControl='Private',
-    BucketEncryption=s3.BucketEncryption(
-      ServerSideEncryptionConfiguration=[
-        s3.ServerSideEncryptionRule(
-          ServerSideEncryptionByDefault=s3.ServerSideEncryptionByDefault(
-            SSEAlgorithm='AES256'
-          )
-        )
-      ]
-    ),
-    BucketName=bucket_name_variable,
-    VersioningConfiguration=s3.VersioningConfiguration(
-      Status='Enabled'
-    )
-  )
-)
 
-default_queue_resource = template.add_resource(
-    sqs.Queue(
-        'DefaultQueue',
-        QueueName=default_queue_name_variable
-    )
-)
+# Security Groups
+load_balancer_security_group_resource = create_load_balancer_security_group_resource(
+    template)
+api_security_group_resource = create_api_security_group_resource(
+    template, load_balancer_security_group_resource)
+database_security_group_resource = create_database_security_group_resource(
+    template, api_security_group_resource)
+redis_security_group_resource = create_redis_security_group_resource(
+    template, api_security_group_resource)
+elasticsearch_security_group_resource = create_elasticsearch_security_group_resource(
+    template, api_security_group_resource)
 
-notifications_queue_resource = template.add_resource(
-    sqs.Queue(
-        'NotificationsQueue',
-        QueueName=notifications_queue_name_variable
-    )
-)
+# Database
+database_subnet_group_resource = create_database_subnet_group_resource(
+    template, subnets_parameter)
+database_resource = create_database_resource(template, database_allocated_storage_parameter,
+                                             database_class_parameter, database_username_parameter,
+                                             database_password_parameter, database_security_group_resource,
+                                             database_subnet_group_resource)
 
-search_queue_resource = template.add_resource(
-    sqs.Queue(
-        'SearchQueue',
-        QueueName=search_queue_name_variable
-    )
-)
+# Redis
+redis_subnet_group_resource = create_redis_subnet_group_resource(
+    template, subnets_parameter)
+redis_resource = create_redis_resource(template, redis_node_class_parameter, redis_nodes_count_parameter,
+                                       redis_security_group_resource, redis_subnet_group_resource)
 
-ci_user_resource = template.add_resource(
-  iam.User(
-    'CiUser',
-    UserName=ci_user_name_variable,
-    Policies=[
-      iam.Policy(
-        PolicyName='CiUserPolicy',
-        PolicyDocument={
-          'Version': '2012-10-17',
-          'Statement': [
-            {
-              'Action': 'secretsmanager:GetSecretValue',
-              'Effect': 'Allow',
-              'Resource': '*'
-            }
-          ]
-        }
-      )
-    ]
-  )
-)
+# Queues
+default_queue_resource = create_default_queue_resource(
+    template, default_queue_name_variable)
+notifications_queue_resource = create_notifications_queue_resource(
+    template, notifications_queue_name_variable)
+search_queue_resource = create_search_queue_resource(
+    template, search_queue_name_variable)
 
-api_user_resource = template.add_resource(
-  iam.User(
-    'ApiUser',
-    UserName=api_user_name_variable,
-    Policies=[
-      iam.Policy(
-        PolicyName='ApiUserPolicy',
-        PolicyDocument={
-          'Version': '2012-10-17',
-          'Statement': [
-            {
-              'Action': 's3:*',
-              'Effect': 'Allow',
-              'Resource': '*'
-            },
-            {
-              'Action': 'sqs:*',
-              'Effect': 'Allow',
-              'Resource': [
-                GetAtt(default_queue_resource, 'Arn'),
-                GetAtt(notifications_queue_resource, 'Arn'),
-                GetAtt(search_queue_resource, 'Arn')
-              ]
-            }
-          ]
-        }
-      )
-    ]
-  )
-)
+# Buckets
+uploads_bucket_resource = create_uploads_bucket_resource(
+    template, uploads_bucket_name_variable)
 
-# ==================================================
+# Elastic Container Service
+ecs_cluster_role_resource = create_ecs_cluster_role_resource(template)
+ecs_cluster_resource = create_ecs_cluster_resource(template)
+
+# EC2
+ec2_instance_profile_resource = create_ec2_instance_profile_resource(
+    template, ecs_cluster_role_resource)
+
+# Launch Template
+launch_template_resource = create_launch_template_resource(template, api_launch_template_name_variable,
+                                                           api_instance_class_parameter, ec2_instance_profile_resource,
+                                                           api_security_group_resource, ecs_cluster_resource)
+
+# Docker
+docker_repository_resource = create_docker_repository_resource(
+    template, docker_repository_name_variable)
+
+# Logs
+api_log_group_resource = create_api_log_group_resource(
+    template, api_log_group_name_variable)
+queue_worker_log_group_resource = create_queue_worker_log_group_resource(
+    template, queue_worker_log_group_name_variable)
+scheduler_log_group_resource = create_scheduler_log_group_resource(
+    template, scheduler_log_group_name_variable)
+elasticsearch_log_group_resource = create_elasticsearch_log_group_resource(
+    template, elasticsearch_log_group_name_variable)
+elasticsearch_lambda_log_group_resource = create_elasticsearch_lambda_log_group_resource(
+    template, elasticsearch_log_access_policy_lambda_name_variable)
+
+# ECS Task Definitions
+api_task_definition_resource = create_api_task_definition_resource(template, api_task_definition_family_variable,
+                                                                   docker_repository_resource, api_log_group_resource)
+queue_worker_task_definition_resource = create_queue_worker_task_definition_resource(template,
+                                                                                     queue_worker_task_definition_family_variable,
+                                                                                     docker_repository_resource,
+                                                                                     queue_worker_log_group_resource,
+                                                                                     default_queue_name_variable,
+                                                                                     notifications_queue_name_variable,
+                                                                                     search_queue_name_variable)
+scheduler_task_definition_resource = create_scheduler_task_definition_resource(template,
+                                                                               scheduler_task_definition_family_variable,
+                                                                               docker_repository_name_variable,
+                                                                               scheduler_log_group_resource)
+
+# Load Balancing
+load_balancer_resource = create_load_balancer_resource(
+    template, load_balancer_security_group_resource, subnets_parameter)
+api_target_group_resource = create_api_target_group_resource(
+    template, vpc_parameter, load_balancer_resource)
+load_balancer_listener_resource = create_load_balancer_listener_resource(template, load_balancer_resource,
+                                                                         api_target_group_resource,
+                                                                         certificate_arn_parameter)
+
+# ECS Services
+ecs_service_role_resource = create_ecs_service_role_resource(template)
+api_service_resource = create_api_service_resource(template, ecs_cluster_resource, api_task_definition_resource,
+                                                   api_task_count_parameter, api_target_group_resource,
+                                                   ecs_service_role_resource, load_balancer_listener_resource)
+queue_worker_service_resource = create_queue_worker_service_resource(template, ecs_cluster_resource,
+                                                                     queue_worker_task_definition_resource,
+                                                                     queue_worker_task_count_parameter)
+scheduler_service_resource = create_scheduler_service_resource(template, ecs_cluster_resource,
+                                                               scheduler_task_definition_resource,
+                                                               scheduler_task_count_parameter)
+
+# Auto Scaling
+autoscaling_group_resource = create_autoscaling_group_resource(template, api_instance_count_parameter,
+                                                               launch_template_resource)
+
+# Users
+api_user_resource = create_api_user_resource(template, api_user_name_variable, uploads_bucket_resource,
+                                             default_queue_resource, notifications_queue_resource, search_queue_resource)
+ci_user_resource = create_ci_user_resource(template, ci_user_name_variable)
+
+# Elastic Search
+elasticsearch_lambda_execution_role_resource = create_elasticsearch_lambda_execution_role_resource(
+    template, elasticsearch_log_access_policy_lambda_name_variable, elasticsearch_log_group_name_variable)
+elasticsearch_lambda_log_group_policy_function_resource = create_elasticsearch_lambda_log_group_policy_function_resource(
+    template, elasticsearch_log_access_policy_lambda_name_variable, elasticsearch_lambda_log_group_resource, elasticsearch_lambda_execution_role_resource)
+elasticsearch_log_group_policy_custom_resource = create_elasticsearch_log_group_policy_custom_resource(
+    template, elasticsearch_lambda_log_group_policy_function_resource, elasticsearch_log_group_name_variable, elasticsearch_log_group_resource)
+elasticsearch_resource = create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
+                                                       elasticsearch_instance_count_parameter,
+                                                       elasticsearch_instance_class_parameter,
+                                                       elasticsearch_security_group_resource,
+                                                       subnets_parameter)
+
 # Outputs.
-# ==================================================
-template.add_output(
-  Output(
-    'BucketName',
-    Description='The S3 bucket name',
-    Value=bucket_name_variable
-  )
-)
+create_database_name_output(template, database_username_parameter)
+create_database_username_output(template, database_username_parameter)
+create_database_host_output(template, database_resource)
+create_database_port_output(template, database_resource)
+create_redis_host_output(template, redis_resource)
+create_redis_port_output(template, redis_resource)
+create_default_queue_url_output(template, default_queue_resource)
+create_default_queue_output(template, default_queue_name_variable)
+create_notifications_queue_output(template, notifications_queue_name_variable)
+create_load_balancer_domain_output(template, load_balancer_resource)
+create_elasticsearch_host_output(template, elasticsearch_resource)
+create_docker_repository_uri_output(template, docker_repository_resource)
+create_docker_cluster_name_output(template, ecs_cluster_resource)
+create_uploads_bucket_name_output(template, uploads_bucket_name_variable)
 
-template.add_output(
-  Output(
-    'DefaultQueue',
-    Description='The URI of the default queue',
-    Value=Ref(default_queue_resource)
-  )
-)
+# Troposhere cannot set LogPublishingOptions on Elasticsearch, so we do it via JSON here
+json_template = json.loads(template.to_json())
+json_template["Resources"]["Elasticsearch"]["Properties"]["LogPublishingOptions"] = {
+    "ES_APPLICATION_LOGS": {
+        "CloudWatchLogsLogGroupArn": {
+            "Fn::GetAtt": [
+                "SearchLogGroup",
+                "Arn"
+            ]
+        },
+        "Enabled": True
+    }
+}
 
-template.add_output(
-  Output(
-    'NotificationsQueue',
-    Description='The URI of the notifications queue',
-    Value=Ref(notifications_queue_resource)
-  )
-)
-
-template.add_output(
-  Output(
-    'SearchQueue',
-    Description='The URI of the search queue',
-    Value=Ref(search_queue_resource)
-  )
-)
-
-# ==================================================
 # Print the generated template in JSON.
-# ==================================================
-print(template.to_json())
+print(json.dumps(json_template, indent=4))

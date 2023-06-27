@@ -1,18 +1,31 @@
-if: tag IS blank
+os: linux
+dist: focal
+
 branches:
   only:
+    # Tagged releases
+    - /^[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$/
+    # Master
     - master
+    # Develop
     - develop
 
 language: python
-python:
-  - "2.7"
 
-sudo: required
+python:
+  - "3.8"
+
 services:
   - docker
 
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+
 before_script:
+  - if [ ! -z "$DOCKER_USER" ] && [ ! -z "$DOCKER_PWD" ];  then echo ${DOCKER_PWD} | docker login --username ${DOCKER_USER} --password-stdin; fi
   - sudo service mysql stop
   - ./develop build
   - ./develop up -d
@@ -30,25 +43,31 @@ script:
 after_failure:
   - cat storage/logs/testing.log
 
-before_deploy:
-  - echo "Compiling assets for production..."
-  - ./develop npm run prod
+before_deploy: |
+  if ! [[ ${HAS_RAN_BEFORE_DEPLOY} ]]; then
+    export HAS_RAN_BEFORE_DEPLOY="TRUE"
 
-  - echo "Installing AWS CLI..."
-  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  - unzip awscliv2.zip
-  - sudo ./aws/install -i /usr/local/aws -b /usr/local/bin
+    echo "Compiling assets for production..."
+    ./develop npm run prod
 
-  - echo "Installing CloudFoundry CLI..."
-  - wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
-  - echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-  - sudo apt-get update && sudo apt-get install -y --allow-unauthenticated cf-cli
+    echo "Installing AWS CLI..."
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install
+    echo aws --version
+  fi
 
 deploy:
+  # Tagged releases
   - provider: script
-    script: ./.travis/deploy
+    script: ENVIRONMENT=production REPO_URI=$REPO_URI_PRODUCTION CLUSTER=$CLUSTER_PRODUCTION AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PRODUCTION AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PRODUCTION AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION_PRODUCTION bash .travis/deploy.sh
     skip_cleanup: true
     on:
-      branch:
-        - master
-        - develop
+      all_branches: true
+      condition: ${TRAVIS_TAG} =~ ^[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$
+  # Develop
+  - provider: script
+    script: ENVIRONMENT=staging REPO_URI=$REPO_URI_STAGING CLUSTER=$CLUSTER_STAGING AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_STAGING AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_STAGING AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION_STAGING bash .travis/deploy.sh
+    skip_cleanup: true
+    on:
+      branch: develop
