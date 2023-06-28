@@ -1,5 +1,5 @@
 # Set base image.
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 # Set maintainer to Ayup Digital.
 LABEL maintainer="Ayup Digital"
@@ -22,13 +22,6 @@ RUN apt-add-repository -y ppa:ondrej/php \
        php7.4-imap php7.4-mbstring php7.4-xml php7.4-curl php7.4-zip \
     && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --version=2.2.3 --filename=composer \
     && mkdir /run/php
-
-# RUN apt-add-repository -y ppa:ondrej/php \
-#     && apt-get update \
-#     && apt-get install -y php8.0-fpm php8.0-cli php8.0-gd php8.0-mysql php8.0-redis \
-#        php8.0-imap php8.0-mbstring php8.0-xml php8.0-curl php8.0-zip \
-#     && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --version=2.2.3 --filename=composer \
-#     && mkdir /run/php
 
 # Cleanup.
 RUN apt-get remove -y --purge software-properties-common \
