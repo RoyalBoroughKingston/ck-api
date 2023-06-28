@@ -5,7 +5,7 @@ FROM ubuntu:22.04
 LABEL maintainer="Ayup Digital"
 
 # Install generic software.
-RUN apt-get update \
+RUN apt update \
     && apt-get install -y locales nginx curl zip unzip git software-properties-common supervisor \
     && locale-gen en_GB.UTF-8
 
@@ -24,7 +24,7 @@ RUN apt-add-repository -y ppa:ondrej/php \
     && mkdir /run/php
 
 # Cleanup.
-RUN apt-get remove -y --purge software-properties-common \
+RUN apt remove -y --purge software-properties-common \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
