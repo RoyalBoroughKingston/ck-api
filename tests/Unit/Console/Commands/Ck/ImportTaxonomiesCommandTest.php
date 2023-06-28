@@ -2,11 +2,10 @@
 
 namespace Tests\Unit\Console\Commands\Ck;
 
-use Tests\TestCase;
+use App\Console\Commands\Ck\ImportTaxonomiesCommand;
 use App\Models\Taxonomy;
 use Faker\Factory as Faker;
-use Illuminate\Support\Str;
-use App\Console\Commands\Ck\ImportTaxonomiesCommand;
+use Tests\TestCase;
 
 class ImportTaxonomiesCommandTest extends TestCase
 {
@@ -61,14 +60,14 @@ class ImportTaxonomiesCommandTest extends TestCase
             'taxonomyIdColumn' => 0,
             'taxonomyNameColumn' => 1,
             'parentIdColumn' => 2,
-            'rootTaxonomy' => Taxonomy::category()
+            'rootTaxonomy' => Taxonomy::category(),
         ];
         $associativeRecords = (new ImportTaxonomiesCommand($params))->mapToUuidKeys($this->taxonomyRecords);
 
         foreach ($associativeRecords as $uuid => $record) {
             $recordKey = array_search($record['name'], array_column($this->taxonomyRecords, 1));
             $parentKey = array_search($this->taxonomyRecords[$recordKey][2], array_column($this->taxonomyRecords, 0));
-            $parentUuid = $this->taxonomyRecords[$recordKey][2] === Taxonomy::category()->id? Taxonomy::category()->id : array_search($this->taxonomyRecords[$parentKey][1], array_column($associativeRecords, 'name', 'id'));
+            $parentUuid = $this->taxonomyRecords[$recordKey][2] === Taxonomy::category()->id ? Taxonomy::category()->id : array_search($this->taxonomyRecords[$parentKey][1], array_column($associativeRecords, 'name', 'id'));
             $this->assertEquals(
                 [
                     'id' => $record['id'],
@@ -155,12 +154,11 @@ class ImportTaxonomiesCommandTest extends TestCase
             'taxonomyIdColumn' => 0,
             'taxonomyNameColumn' => 1,
             'parentIdColumn' => 2,
-            'rootTaxonomy' => Taxonomy::category()
+            'rootTaxonomy' => Taxonomy::category(),
         ];
 
         $cmd = new ImportTaxonomiesCommand($params);
         $taxonomyRecords = $cmd->mapToUuidKeys($this->taxonomyRecords);
-
 
         $taxonomyRecords = $cmd->mapTaxonomyDepth($taxonomyRecords);
 
@@ -206,7 +204,7 @@ class ImportTaxonomiesCommandTest extends TestCase
             'taxonomyNameColumn' => 1,
             'parentIdColumn' => 2,
             'firstRowLabels' => true,
-            'rootTaxonomy' => Taxonomy::category()
+            'rootTaxonomy' => Taxonomy::category(),
         ];
         $cmd = new ImportTaxonomiesCommand($params);
         $currentTaxonomyCount = count($cmd->getDescendantTaxonomyIds([Taxonomy::category()->id]));
@@ -246,7 +244,7 @@ class ImportTaxonomiesCommandTest extends TestCase
             'taxonomyNameColumn' => 1,
             'parentIdColumn' => 2,
             'firstRowLabels' => true,
-            'rootTaxonomy' => Taxonomy::category()
+            'rootTaxonomy' => Taxonomy::category(),
         ];
         $cmd = new ImportTaxonomiesCommand($params);
 

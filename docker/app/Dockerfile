@@ -18,8 +18,8 @@ ENV LC_ALL en_GB.UTF-8
 # Install PHP.
 RUN apt-add-repository -y ppa:ondrej/php \
     && apt update \
-    && apt install -y php7.4-fpm php7.4-cli php7.4-gd php7.4-mysql php7.4-redis \
-       php7.4-imap php7.4-mbstring php7.4-xml php7.4-curl php7.4-zip \
+    && apt install -y php8.1-fpm php8.1-cli php8.1-gd php8.1-mysql php8.1-redis \
+       php8.1-imap php8.1-mbstring php8.1-xml php8.1-curl php8.1-zip \
     && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --version=2.2.3 --filename=composer \
     && mkdir /run/php
 
@@ -36,7 +36,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 # Copy configuration files over for installed software.
 COPY etc/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY etc/nginx/sites-available/default /etc/nginx/sites-available/default
-COPY etc/php/7.4/fpm/php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
+COPY etc/php/8.1/fpm/php-fpm.conf /etc/php/8.1/fpm/php-fpm.conf
 COPY etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy the bootstrap script over and make executable.
