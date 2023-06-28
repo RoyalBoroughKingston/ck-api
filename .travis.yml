@@ -1,4 +1,6 @@
-if: tag IS blank
+os: linux
+dist: focal
+
 branches:
   only:
     - master
