@@ -62,7 +62,7 @@ def create_ci_user_name_variable(environment_parameter):
 
 
 def create_api_name_variable():
-    return 'Sutton Information Hub'
+    return 'Connected Kingston'
 
 
 def create_elasticsearch_domain_name_variable(environment_parameter):
