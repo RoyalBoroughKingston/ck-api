@@ -1,4 +1,6 @@
-if: tag IS blank
+os: linux
+dist: focal
+
 branches:
   only:
     - master
@@ -6,11 +8,18 @@ branches:
 
 language: python
 python:
-  - "2.7"
+  - '3.8'
 
-sudo: required
 services:
   - docker
+
+before_install:
+  - echo "Installing Docker"
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - echo "Docker installed"
 
 before_script:
   - sudo service mysql stop

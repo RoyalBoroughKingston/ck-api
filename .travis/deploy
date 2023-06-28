@@ -33,20 +33,20 @@ echo "Downloading .env file..."
 rm -f .env
 aws secretsmanager get-secret-value \
     --secret-id ${ENV_SECRET_ID} | \
-    python -c "import json,sys;obj=json.load(sys.stdin);print obj['SecretString'];" > .env
+    python -c "import json,sys;obj=json.load(sys.stdin);print(obj['SecretString']);" > .env
 
 # Get the OAuth keys.
 echo "Downloading public OAuth key..."
 rm -f storage/oauth-public.key
 aws secretsmanager get-secret-value \
     --secret-id ${PUBLIC_KEY_SECRET_ID} | \
-    python -c "import json,sys;obj=json.load(sys.stdin);print obj['SecretString'];" > storage/oauth-public.key
+    python -c "import json,sys;obj=json.load(sys.stdin);print(obj['SecretString']);" > storage/oauth-public.key
 
 echo "Downloading private OAuth key..."
 rm -f storage/oauth-private.key
 aws secretsmanager get-secret-value \
     --secret-id ${PRIVATE_KEY_SECRET_ID} | \
-    python -c "import json,sys;obj=json.load(sys.stdin);print obj['SecretString'];" > storage/oauth-private.key
+    python -c "import json,sys;obj=json.load(sys.stdin);print(obj['SecretString']);" > storage/oauth-private.key
 
 # Connect to the Cloud Foundry API.
 echo "Logging into Cloud Foundry..."
