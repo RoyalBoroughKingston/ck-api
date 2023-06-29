@@ -94,19 +94,19 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
                         return true;
                     }
                     break;
-                // If monthly then check that the day of the month is the same as today.
+                    // If monthly then check that the day of the month is the same as today.
                 case RegularOpeningHour::FREQUENCY_MONTHLY:
                     if (Date::today()->day === $regularOpeningHour->day_of_month) {
                         return true;
                     }
                     break;
-                // If fortnightly then check that today falls directly on a multiple of 2 weeks.
+                    // If fortnightly then check that today falls directly on a multiple of 2 weeks.
                 case RegularOpeningHour::FREQUENCY_FORTNIGHTLY:
                     if (fmod(Date::today()->diffInDays($regularOpeningHour->starts_at) / CarbonImmutable::DAYS_PER_WEEK, 2) === 0.0) {
                         return true;
                     }
                     break;
-                // If nth occurrence of month then check today is the same occurrence.
+                    // If nth occurrence of month then check today is the same occurrence.
                 case RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH:
                     $occurrence = occurrence($regularOpeningHour->occurrence_of_month);
                     $weekday = weekday($regularOpeningHour->weekday);
