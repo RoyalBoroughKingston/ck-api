@@ -434,10 +434,10 @@ class ImportTaxonomiesCommand extends Command
          * Does a taxonomy with the same name and optionally, the same parent, exist?
          */
         $existingTaxonomyIds = DB::table((new Taxonomy())->getTable(), 'taxonomies')
-        ->join((new Taxonomy())->getTable() . ' as parents', 'parents.id', '=', 'taxonomies.parent_id')
-        ->where('taxonomies.name', trim($record[$this->taxonomyNameColumn]))
-        ->where('parents.name', $this->parentIdColumn ? $taxonomyNames->get($record[$this->parentIdColumn]) : $this->rootTaxonomy->name)
-        ->pluck('taxonomies.id');
+            ->join((new Taxonomy())->getTable() . ' as parents', 'parents.id', '=', 'taxonomies.parent_id')
+            ->where('taxonomies.name', trim($record[$this->taxonomyNameColumn]))
+            ->where('parents.name', $this->parentIdColumn ? $taxonomyNames->get($record[$this->parentIdColumn]) : $this->rootTaxonomy->name)
+            ->pluck('taxonomies.id');
         if (!$this->refresh && count($existingTaxonomyIds)) {
             foreach ($existingTaxonomyIds as $taxonomyId) {
                 if (in_array($this->rootTaxonomy->id, $this->taxonomyAncestors($taxonomyId))) {
@@ -476,8 +476,8 @@ class ImportTaxonomiesCommand extends Command
             WHERE T2.id <> "' . $taxonomyId . '"
             ORDER BY T1.lvl'
         ))
-        ->pluck('id')
-        ->all();
+            ->pluck('id')
+            ->all();
     }
 
     /**
@@ -509,10 +509,10 @@ class ImportTaxonomiesCommand extends Command
 
             return [$key => $record];
         })
-        ->mapWithKeys(function ($record, $key) {
-            return [$record['id'] => $record];
-        })
-        ->all();
+            ->mapWithKeys(function ($record, $key) {
+                return [$record['id'] => $record];
+            })
+            ->all();
     }
 
     /**
