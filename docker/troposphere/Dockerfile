@@ -8,15 +8,9 @@ LABEL maintainer="Ayup Digital"
 WORKDIR /tmp
 
 # Install generic software.
-RUN pip install troposphere \
-    awacs \
-    pyyaml \
-    yapf==0.11.0 \
-    flake8 \
-    autoflake \
-    awscli \
-    codeclimate-test-reporter \
-    rainbow_logging_handler
+RUN apt-get -qq update \
+    && apt-get install -y build-essential libssl-dev libseccomp2 libpaper1 groff \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy and install the Python dependency requirements.
 COPY requirements.txt .

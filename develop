@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-# Set script scope environment variables for dev or CI.
+# Set the docker-compose files to use.
+COMPOSE="docker-compose"
+
+# Set script scope environment variables to be used in testing
 export APP_PORT=${APP_PORT:-80}
 export DB_PORT=${DB_PORT:-3306}
 export DB_ROOT_PASS=${DB_ROOT_PASS:-secret}
@@ -11,13 +14,6 @@ export ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
 export KIBANA_PORT=${KIBANA_PORT:-5601}
 export CFN_TEMPLATE=${CFN_TEMPLATE:-cloudformation}
 
-# Set the docker-compose files to use.
-DOCKER_COMPOSE="docker-compose"
-
-if [[ $(uname) == "Darwin" ]]; then
-  DOCKER_COMPOSE="${DOCKER_COMPOSE} -f docker-compose.mac.yml"
-fi
-
 # Disable pseudo-TTY allocation for CI. The -T flag removes interaction.
 TTY=""
 
@@ -25,41 +21,95 @@ TTY=""
 # this is running in a CI environment.
 if [[ ${CI:-false} == "true" ]]; then
     TTY="-T"
+else
+    # Get the script directory
+    script_dir=`dirname $0`
+
+    # Set environment variables for dev
+    source $script_dir/.env
+
+    export WWWUID="$(id -u)"
 fi
 
 # Pass arguments to docker-compose, or default to docker-compose ps.
 if [[ $# -gt 0  ]]; then
     case "$1" in
 
+        # Run an artisan command inside a new container
         art|artisan )
             shift 1
-            ${DOCKER_COMPOSE} run --rm ${TTY} \
+            ${COMPOSE} run --rm ${TTY} \
+                -w /var/www/html \
+                -e WWWUID=${WWWUID} \
                 app \
                 php artisan "$@"
             ;;
 
+        # Open a shell inside a new container
+        bash )
+            shift 1
+            $COMPOSE run --rm ${TTY} \
+                -w /var/www/html \
+                -e WWWUID=${WWWUID} \
+                app \
+                bash "$@"
+            ;;
+
+        # Run a composer command inside a new container
         composer )
             shift 1
-            ${DOCKER_COMPOSE} run --rm ${TTY} \
+            ${COMPOSE} run --rm ${TTY} \
+                -w /var/www/html \
+                -e WWWUID=${WWWUID} \
+                -e COMPOSER_MEMORY_LIMIT=-1 \
                 app \
                 composer "$@"
             ;;
 
+        # Run a node command inside a new container
         npm )
             shift 1
-            ${DOCKER_COMPOSE} run --rm ${TTY} \
+            ${COMPOSE} run --rm ${TTY} \
+                -w /var/www/html \
+                -e WWWUID=${WWWUID} \
                 node \
                 npm "$@"
             ;;
 
+        # Run PHPUnit tests inside a new container
+        test )
+            shift 1
+            $COMPOSE run --rm ${TTY} \
+                -w /var/www/html \
+                -e WWWUID=${WWWUID} \
+                app \
+                vendor/bin/phpunit "$@"
+            ;;
+
+        # Run the Cloudformation generate command inside a new container
         cfn|cloudformation )
-            ${DOCKER_COMPOSE} run --rm troposphere > aws/${CFN_TEMPLATE}.json
+            ${COMPOSE} run --rm troposphere > aws/${CFN_TEMPLATE}.json
             cat aws/${CFN_TEMPLATE}.json
             ;;
 
-        * ) ${DOCKER_COMPOSE} "$@"; ;;
+        # Manually work with objects in S3 buckets
+        store )
+            docker run --rm -it \
+                -v `pwd`:/var/www/html \
+                -w /var/www/html \
+                -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-''} \
+                -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-''} \
+                -e AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-''} \
+                -e AWS_BUCKET_NAME=${AWS_BUCKET_NAME:-''} \
+                ubuntu:latest \
+                bash aws/store.sh
+            ;;
+
+        # Run a docker-compose command
+        * ) ${COMPOSE} "$@"; ;;
 
     esac
 else
-    ${DOCKER_COMPOSE} ps
+    # Default; list the running containers
+    ${COMPOSE} ps
 fi

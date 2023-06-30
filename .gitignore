@@ -13,12 +13,15 @@
 /.vscode
 /.vagrant
 /.*.cache
+/aws/__pycache__
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
 secrets.yml
+sitemap.xsd
+docker-compose.override.yml
 
 # Created by https://www.gitignore.io/api/macos
 
