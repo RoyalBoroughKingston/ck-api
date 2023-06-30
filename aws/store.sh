@@ -16,7 +16,6 @@
 set -e
 
 # Set environment variables.
-CF_API='https://api.cloud.service.gov.uk'
 APPROOT=${APPROOT:-'/var/www/html'}
 RED='\e[1;31m'
 BLUE='\e[1;34m'
