@@ -253,7 +253,7 @@ def create_launch_template_resource(template, api_launch_template_name_variable,
                 Monitoring=ec2.Monitoring(Enabled=True),
                 SecurityGroups=[Ref(api_security_group_resource)],
                 BlockDeviceMappings=[
-                    ec2.BlockDeviceMapping(
+                    ec2.LaunchTemplateBlockDeviceMapping(
                         DeviceName='/dev/xvdcz',
                         Ebs=ec2.EBSBlockDevice(
                             DeleteOnTermination=True,

@@ -35,7 +35,7 @@ from resources import create_load_balancer_security_group_resource, create_api_s
 from outputs import create_database_name_output, create_database_username_output, create_database_host_output, \
     create_database_port_output, create_redis_host_output, create_redis_port_output, create_default_queue_url_output, \
     create_default_queue_output, create_notifications_queue_output, create_load_balancer_domain_output, create_elasticsearch_host_output, \
-    create_elasticsearch_service_linked_role_id_output, create_docker_repository_uri_output, create_docker_cluster_name_output, \
+    create_docker_repository_uri_output, create_docker_cluster_name_output, \
     create_uploads_bucket_name_output
 
 # UUID.
@@ -244,7 +244,6 @@ create_default_queue_url_output(template, default_queue_resource)
 create_default_queue_output(template, default_queue_name_variable)
 create_notifications_queue_output(template, notifications_queue_name_variable)
 create_load_balancer_domain_output(template, load_balancer_resource)
-create_elasticsearch_service_linked_role_id_output(template, elasticsearch_service_linked_role_resource)
 create_elasticsearch_host_output(template, elasticsearch_resource)
 create_docker_repository_uri_output(template, docker_repository_resource)
 create_docker_cluster_name_output(template, ecs_cluster_resource)
