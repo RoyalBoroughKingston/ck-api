@@ -101,6 +101,15 @@ def create_load_balancer_domain_output(template, load_balancer_resource):
     )
 
 
+def create_elasticsearch_service_linked_role_id_output(template, elasticsearch_service_linked_role):
+    return template.add_output(
+        Output(
+            'ElasticsearchServiceLinkedRoleId',
+            Description='The ID of the Service Linked Role used by the Elasticsearch service',
+            Value=Ref(elasticsearch_service_linked_role)
+        )
+    )
+
 def create_elasticsearch_host_output(template, elasticsearch_resource):
     return template.add_output(
         Output(

@@ -46,9 +46,9 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
-      MYSQL_DATABASE: "${DB_NAME}"
-      MYSQL_USER: "${DB_USER}"
-      MYSQL_PASSWORD: "${DB_PASS}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - mysql-data:/var/lib/mysql
 
@@ -56,9 +56,9 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
-      MYSQL_DATABASE: "${DB_NAME}"
-      MYSQL_USER: "${DB_USER}"
-      MYSQL_PASSWORD: "${DB_PASS}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
     command: mysqld --general-log=1 --general-log-file=/var/log/mysql/general-log.log
 
   redis:
@@ -84,7 +84,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./aws:/tmp
-    command: "python ${CFN_TEMPLATE}.py"
+    command: python ${CFN_TEMPLATE}.py
 
 volumes:
   mysql-data:

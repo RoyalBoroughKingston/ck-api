@@ -17,11 +17,11 @@ RUN apt update \
     && locale-gen en_GB.UTF-8
 
 # Install PHP.
-RUN apt-add-repository -y ppa:ondrej/php \
-    && apt update \
+RUN add-apt-repository -y ppa:ondrej/php \
+    && apt update -y \
     && apt install -y php8.1-fpm php8.1-cli php8.1-gd php8.1-mysql php8.1-redis \
        php8.1-imap php8.1-mbstring php8.1-xml php8.1-curl php8.1-zip \
-    && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --version=2.2.3 --filename=composer \
+    && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
     && mkdir /run/php
 
 # Cleanup.
