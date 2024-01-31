@@ -250,6 +250,7 @@ def create_elasticsearch_instance_count_parameter(template):
         )
     )
 
+
 def create_cname_parameter(template):
     return template.add_parameter(
     Parameter(
@@ -261,3 +262,35 @@ def create_cname_parameter(template):
         ConstraintDescription='Must be a valid domain'
     )
 )
+
+
+def create_fortinet_managed_rules_all_rules_group_parameter(template):
+    return template.add_parameter(
+        Parameter(
+            'FortinetManagedRulesAllRulesGroup',
+            Description='Enable the Fortinet Managed Rules All Rules Group.',
+            Type='String',
+            Default='Disabled',
+            AllowedValues=[
+                'Enabled',
+                'Disabled'
+            ],
+            ConstraintDescription='Enabled or Disabled'
+        )
+    )
+
+
+def create_aws_managed_rules_common_rules_group_parameter(template):
+    return template.add_parameter(
+        Parameter(
+            'AWSManagedRulesCommonRulesGroup',
+            Description='Enable the AWS Managed Rules Common Rules Group.',
+            Type='String',
+            Default='Disabled',
+            AllowedValues=[
+                'Enabled',
+                'Disabled'
+            ],
+            ConstraintDescription='Enabled or Disabled'
+        )
+    )

@@ -13,6 +13,7 @@ import troposphere.logs as logs
 import troposphere.rds as rds
 import troposphere.s3 as s3
 import troposphere.sqs as sqs
+import troposphere.wafv2 as wafv2
 
 
 class CustomLogGroupPolicy(AWSCustomObject):
@@ -333,6 +334,27 @@ def create_elasticsearch_lambda_log_group_resource(template, elasticsearch_log_a
             'SearchLambdaLogGroup',
             LogGroupName=Sub('/aws/lambda/${LambdaFunctionName}',
                              LambdaFunctionName=elasticsearch_log_access_policy_lambda_name_variable),
+            RetentionInDays=7
+        )
+    )
+
+def create_fortinet_web_acl_log_group_resource(template, fortinet_log_group_name_variable, fortinet_managed_rules_all_rules_group_condition):
+    return template.add_resource(
+        logs.LogGroup(
+            'FortinetACLLogGroup',
+            Condition=fortinet_managed_rules_all_rules_group_condition,
+            LogGroupName=fortinet_log_group_name_variable,
+            RetentionInDays=7
+        )
+    )
+
+
+def create_aws_web_acl_log_group_resource(template, aws_waf_log_group_name_variable, aws_managed_rules_common_rules_group_condition):
+    return template.add_resource(
+        logs.LogGroup(
+            'AWSACLLogGroup',
+            Condition=aws_managed_rules_common_rules_group_condition,
+            LogGroupName=aws_waf_log_group_name_variable,
             RetentionInDays=7
         )
     )
@@ -980,5 +1002,170 @@ def create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
                     GetAtt(elasticsearch_security_group_resource, 'GroupId')],
                 SubnetIds=[Select(0, Ref(subnets_parameter))]
             )
+        )
+    )
+
+def create_fortinet_web_acl_resource(template, fortinet_metric_name_variable, fortinet_managed_rules_all_rules_group_condition):
+    return template.add_resource(
+        wafv2.WebACL(
+            'FortinetWAFWebACL',
+            Condition=fortinet_managed_rules_all_rules_group_condition,
+            DefaultAction=wafv2.DefaultAction(
+                Allow=wafv2.AllowAction()
+            ),
+            Rules=[
+                wafv2.WebACLRule(
+                    Name='Fortinet-FortinetManagedRulesAllRules',
+                    Statement=wafv2.StatementOne(
+                        ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
+                            Name='all_rules',
+                            VendorName='Fortinet'
+                        )
+                    ),
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
+                    ),
+                    Priority=1,
+                    VisibilityConfig=wafv2.VisibilityConfig(
+                        CloudWatchMetricsEnabled=True,
+                        MetricName=Join('-',[fortinet_metric_name_variable, 'AllRules']),
+                        SampledRequestsEnabled=True
+                    )
+                ),
+            ],
+            Scope='REGIONAL',
+            VisibilityConfig=wafv2.VisibilityConfig(
+                CloudWatchMetricsEnabled=True,
+                MetricName=fortinet_metric_name_variable,
+                SampledRequestsEnabled=True
+            )
+        )
+    )
+
+def create_fortinet_web_acl_association_resource(template, fortinet_managed_rules_all_rules_group_condition, load_balancer_resource, fortinet_web_acl_resource):
+    return template.add_resource(
+        wafv2.WebACLAssociation(
+            'FortinetWAFWebACLAssociation',
+            Condition=fortinet_managed_rules_all_rules_group_condition,
+            ResourceArn=Ref(load_balancer_resource),
+            WebACLArn=GetAtt(fortinet_web_acl_resource, 'Arn'),
+            DependsOn=[load_balancer_resource, fortinet_web_acl_resource]
+        )
+    )
+
+def create_aws_web_acl_resource(template, aws_metric_name_variable,  aws_managed_rules_common_rules_group_condition):
+    return template.add_resource(
+        wafv2.WebACL(
+            'AWSWAFWebACL',
+            Condition=aws_managed_rules_common_rules_group_condition,
+            DefaultAction=wafv2.DefaultAction(
+                Allow=wafv2.AllowAction()
+            ),
+            Rules=[
+                wafv2.WebACLRule(
+                    Name='AWS-AWSManagedRulesCommonRuleSet',
+                    Statement=wafv2.StatementOne(
+                        ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
+                            Name='AWSManagedRulesCommonRuleSet',
+                            VendorName='AWS',
+                            ExcludedRules=[
+                                wafv2.ExcludedRule(
+                                    Name='NoUserAgent_HEADER'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='UserAgent_BadBots_HEADER'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_QUERYSTRING'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_Cookie_HEADER'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_COOKIE'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericLFI_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericLFI_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericLFI_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='RestrictedExtensions_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='RestrictedExtensions_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericRFI_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericRFI_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericRFI_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_COOKIE'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_URIPATH'
+                                )
+                            ]
+                        )
+                    ),
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
+                    ),
+                    Priority=2,
+                    VisibilityConfig=wafv2.VisibilityConfig(
+                        CloudWatchMetricsEnabled=True,
+                        MetricName=Join('-',[aws_metric_name_variable, 'CommonRuleSet']),
+                        SampledRequestsEnabled=True
+                    )
+                )
+            ],
+            Scope='REGIONAL',
+            VisibilityConfig=wafv2.VisibilityConfig(
+                CloudWatchMetricsEnabled=True,
+                MetricName=aws_metric_name_variable,
+                SampledRequestsEnabled=True
+            )
+        )
+    )
+
+
+def create_aws_web_acl_association_resource(template, aws_managed_rules_common_rules_group_condition, load_balancer_resource, aws_web_acl_resource):
+    return template.add_resource(
+        wafv2.WebACLAssociation(
+            'AWSWAFWebACLAssociation',
+            Condition=aws_managed_rules_common_rules_group_condition,
+            ResourceArn=Ref(load_balancer_resource),
+            WebACLArn=GetAtt(aws_web_acl_resource, 'Arn'),
+            DependsOn=[load_balancer_resource, aws_web_acl_resource]
         )
     )
