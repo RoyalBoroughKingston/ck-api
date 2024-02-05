@@ -125,7 +125,7 @@ def create_database_resource(template, database_allocated_storage_parameter,
             AllocatedStorage=Ref(database_allocated_storage_parameter),
             DBInstanceClass=Ref(database_class_parameter),
             Engine='MySQL',
-            EngineVersion='5.7',
+            EngineVersion='8.0',
             MasterUsername=Ref(database_username_parameter),
             MasterUserPassword=Ref(database_password_parameter),
             VPCSecurityGroups=[
