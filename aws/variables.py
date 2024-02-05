@@ -21,6 +21,14 @@ def create_api_launch_template_name_variable(environment_parameter):
     return Join('-', ['api-launch-template', Ref(environment_parameter)])
 
 
+def create_fortinet_metric_name_variable(environment_parameter):
+    return Join('-', ['Fortinet', 'all_rules', Ref(environment_parameter)])
+
+
+def create_aws_metric_name_variable(environment_parameter):
+    return Join('-', ['AWS', 'ManagedRules', Ref(environment_parameter)])
+
+
 def create_docker_repository_name_variable(environment_parameter, uuid_parameter):
     return Join('-', ['api', Ref(environment_parameter), Ref(uuid_parameter)])
 
@@ -35,6 +43,14 @@ def create_queue_worker_log_group_name_variable(environment_parameter):
 
 def create_scheduler_log_group_name_variable(environment_parameter):
     return Join('-', ['scheduler', Ref(environment_parameter)])
+
+
+def create_fortinet_waf_log_group_name_variable(environment_parameter):
+    return Join('-', ['aws-waf-logs', 'fortinet', Ref(environment_parameter)])
+
+
+def create_aws_waf_log_group_name_variable(environment_parameter):
+    return Join('-', ['aws-waf-logs', 'aws', Ref(environment_parameter)])
 
 
 def create_elasticsearch_log_group_name_variable(environment_parameter):
