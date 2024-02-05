@@ -131,7 +131,8 @@ def create_database_resource(template, database_allocated_storage_parameter,
             VPCSecurityGroups=[
                 GetAtt(database_security_group_resource, 'GroupId')],
             DBSubnetGroupName=Ref(database_subnet_group_resource),
-            PubliclyAccessible=False
+            PubliclyAccessible=False,
+            AllowMajorVersionUpgrade=True
         )
     )
 
